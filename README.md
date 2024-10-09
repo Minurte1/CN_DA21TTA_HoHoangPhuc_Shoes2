@@ -1,7 +1,5 @@
 # PhucShoe2
 
-This project is aimed at managing and optimizing faculty teaching hours using a web application built with React.js and Node.js. The backend uses MySQL for data storage.
-
 ## Table of Contents
 
 - [Getting Started](#getting-started)
