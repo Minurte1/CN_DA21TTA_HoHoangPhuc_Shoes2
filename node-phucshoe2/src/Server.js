@@ -24,7 +24,7 @@ app.use(bodyParser.json());
 app.use("/helloworld", (req, res) => {
   res.send("hellowork");
 });
-app.use("/api/v1/", apiRoute);
+// app.use("/api/v1/", apiRoute);
 configViewEngine(app);
 
 app.listen(port, hostname, () => {
