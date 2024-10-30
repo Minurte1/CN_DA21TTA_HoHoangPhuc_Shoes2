@@ -1,9 +1,7 @@
-const express = require("express");
-const router = express.Router();
-const connection = require("../db"); // Đảm bảo `connection` được import từ tệp kết nối cơ sở dữ liệu của bạn
+const connection = require("../../config/database"); // Đảm bảo `connection` được import từ tệp kết nối cơ sở dữ liệu của bạn
 
 // 1. Lấy danh sách bình luận
-router.get("/binhluan", async (req, res) => {
+const getBinhLuan = async (req, res) => {
   try {
     const [results] = await connection.execute("SELECT * FROM `BINH_LUAN`");
     res
@@ -13,10 +11,10 @@ router.get("/binhluan", async (req, res) => {
     console.error(error);
     res.status(500).json({ EM: "Lỗi hệ thống", EC: -1 });
   }
-});
+};
 
 // 2. Thêm mới bình luận
-router.post("/binhluan", async (req, res) => {
+const createBinhLuan = async (req, res) => {
   const {
     ID_SAN_PHAM,
     ID_NGUOI_DUNG,
@@ -36,10 +34,10 @@ router.post("/binhluan", async (req, res) => {
     console.error(error);
     res.status(500).json({ EM: "Lỗi hệ thống", EC: -1 });
   }
-});
+};
 
 // 3. Cập nhật bình luận
-router.put("/binhluan/:id", async (req, res) => {
+const updateBinhLuan = async (req, res) => {
   const { id } = req.params;
   const { DANH_GIA, NOI_DUNG_CMT, NGAY_TAO_BAI_VIET } = req.body;
   try {
@@ -54,10 +52,10 @@ router.put("/binhluan/:id", async (req, res) => {
     console.error(error);
     res.status(500).json({ EM: "Lỗi hệ thống", EC: -1 });
   }
-});
+};
 
 // 4. Xóa bình luận
-router.delete("/binhluan/:id", async (req, res) => {
+const deleteBinhLuan = async (req, res) => {
   const { id } = req.params;
   try {
     const [results] = await connection.execute(
@@ -71,6 +69,11 @@ router.delete("/binhluan/:id", async (req, res) => {
     console.error(error);
     res.status(500).json({ EM: "Lỗi hệ thống", EC: -1 });
   }
-});
+};
 
-module.exports = router;
+module.exports = {
+  getBinhLuan,
+  createBinhLuan,
+  updateBinhLuan,
+  deleteBinhLuan,
+};

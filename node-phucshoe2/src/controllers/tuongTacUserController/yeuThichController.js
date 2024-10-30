@@ -1,11 +1,9 @@
-const express = require("express");
-const router = express.Router();
-const connection = require("../config/old.js");
+const connection = require("../../config/database"); // Đảm bảo `connection` được import từ tệp kết nối cơ sở dữ liệu của bạn
 
 // Lấy danh sách yêu thích
 const getYEU_THICH = async (req, res) => {
   try {
-    const [results] = await connection.execute("SELECT * FROM `yeu_thich`");
+    const [results] = await connection.execute("SELECT * FROM `YEU_THICH`");
     return res.status(200).json({
       EM: "Xem thông tin thành công",
       EC: 1,
@@ -20,13 +18,34 @@ const getYEU_THICH = async (req, res) => {
     });
   }
 };
-
+const getYEU_THICH_By_IdUser = async (req, res) => {
+  try {
+    const id = req.params;
+    const [results] = await connection.execute(
+      "SELECT * FROM `YEU_THICH` where ID_NGUOI_DUNG =?",
+      [id]
+    );
+    return res.status(200).json({
+      EM: "Xem thông tin thành công",
+      EC: 1,
+      DT: results,
+    });
+  } catch (error) {
+    console.error("Error getting yeu thich:", error);
+    return res.status(500).json({
+      EM: "Có lỗi xảy ra khi lấy thông tin",
+      EC: 0,
+      DT: [],
+    });
+  }
+};
 // Tạo yêu thích mới
-const createYEU_THICH = async (idSanPham, idNguoiDung) => {
+const createYEU_THICH = async (req, res) => {
+  const { idSanPham, idNguoiDung } = req.body;
   try {
     // Kiểm tra xem đã tồn tại trong yêu thích chưa
     const [results] = await connection.execute(
-      "SELECT * FROM yeu_thich WHERE ID_SAN_PHAM = ? AND ID_NGUOI_DUNG = ?",
+      "SELECT * FROM YEU_THICH WHERE ID_SAN_PHAM = ? AND ID_NGUOI_DUNG = ?",
       [idSanPham, idNguoiDung]
     );
 
@@ -38,7 +57,7 @@ const createYEU_THICH = async (idSanPham, idNguoiDung) => {
       };
     } else {
       const [results1] = await connection.execute(
-        "INSERT INTO yeu_thich (ID_SAN_PHAM, ID_NGUOI_DUNG) VALUES (?, ?)",
+        "INSERT INTO YEU_THICH (ID_SAN_PHAM, ID_NGUOI_DUNG) VALUES (?, ?)",
         [idSanPham, idNguoiDung]
       );
       return {
@@ -54,16 +73,17 @@ const createYEU_THICH = async (idSanPham, idNguoiDung) => {
 };
 
 // Xóa sản phẩm khỏi danh sách yêu thích
-const deleteYEU_THICH = async (idSanPham, idNguoiDung) => {
+const deleteYEU_THICH = async (req, res) => {
+  const { idSanPham, idNguoiDung } = req.body;
   try {
     const [results] = await connection.execute(
-      "SELECT * FROM yeu_thich WHERE ID_SAN_PHAM = ? AND ID_NGUOI_DUNG = ?",
+      "SELECT * FROM YEU_THICH WHERE ID_SAN_PHAM = ? AND ID_NGUOI_DUNG = ?",
       [idSanPham, idNguoiDung]
     );
 
     if (results.length > 0) {
       await connection.execute(
-        "DELETE FROM yeu_thich WHERE ID_SAN_PHAM = ? AND ID_NGUOI_DUNG = ?",
+        "DELETE FROM YEU_THICH WHERE ID_SAN_PHAM = ? AND ID_NGUOI_DUNG = ?",
         [idSanPham, idNguoiDung]
       );
       return {
@@ -88,17 +108,9 @@ const deleteYEU_THICH = async (idSanPham, idNguoiDung) => {
   }
 };
 
-// Định nghĩa các route
-router.get("/yeu-thich", getYEU_THICH);
-router.post("/yeu-thich", async (req, res) => {
-  const { idSanPham, idNguoiDung } = req.body;
-  const result = await createYEU_THICH(idSanPham, idNguoiDung);
-  return res.status(result.EC === 1 ? 200 : 400).json(result);
-});
-router.delete("/yeu-thich", async (req, res) => {
-  const { idSanPham, idNguoiDung } = req.body;
-  const result = await deleteYEU_THICH(idSanPham, idNguoiDung);
-  return res.status(result.EC === 1 ? 200 : 400).json(result);
-});
-
-module.exports = router;
+module.exports = {
+  getYEU_THICH,
+  createYEU_THICH,
+  deleteYEU_THICH,
+  getYEU_THICH_By_IdUser,
+};

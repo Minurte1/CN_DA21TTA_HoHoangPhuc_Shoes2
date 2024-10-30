@@ -1,9 +1,7 @@
-const express = require("express");
-const router = express.Router();
-const connection = require("../db"); // Đảm bảo rằng kết nối cơ sở dữ liệu được import đúng
+const connection = require("../../config/database"); // Đảm bảo `connection` được import từ tệp kết nối cơ sở dữ liệu của bạn
 
 // 1. Lấy danh sách giỏ hàng của người dùng
-router.get("/giohang/:id_nguoidung", async (req, res) => {
+const getGioHang = async (req, res) => {
   const { id_nguoidung } = req.params;
   try {
     const [results] = await connection.execute(
@@ -15,10 +13,10 @@ router.get("/giohang/:id_nguoidung", async (req, res) => {
     console.error(error);
     res.status(500).json({ EM: "Lỗi hệ thống", EC: -1 });
   }
-});
+};
 
 // 2. Thêm sản phẩm vào giỏ hàng
-router.post("/giohang", async (req, res) => {
+const createGioHang = async (req, res) => {
   const {
     ID_SAN_PHAM,
     ID_NGUOI_DUNG,
@@ -37,10 +35,10 @@ router.post("/giohang", async (req, res) => {
     console.error(error);
     res.status(500).json({ EM: "Lỗi hệ thống", EC: -1 });
   }
-});
+};
 
 // 3. Cập nhật số lượng sản phẩm trong giỏ hàng
-router.put("/giohang/:id", async (req, res) => {
+const updateGioHang = async (req, res) => {
   const { id } = req.params;
   const { SO_LUONG_GIOHANG, NGAY_CAP_NHAT_GIOHANG } = req.body;
   try {
@@ -55,27 +53,25 @@ router.put("/giohang/:id", async (req, res) => {
     console.error(error);
     res.status(500).json({ EM: "Lỗi hệ thống", EC: -1 });
   }
-});
+};
 
 // 4. Xóa sản phẩm khỏi giỏ hàng
-router.delete("/giohang/:id", async (req, res) => {
+const deleteGioHang = async (req, res) => {
   const { id } = req.params;
   try {
     const [results] = await connection.execute(
       "DELETE FROM `GIO_HANG` WHERE ID_GIO_HANG = ?",
       [id]
     );
-    res
-      .status(200)
-      .json({
-        EM: "Xóa sản phẩm khỏi giỏ hàng thành công",
-        EC: 1,
-        DT: results,
-      });
+    res.status(200).json({
+      EM: "Xóa sản phẩm khỏi giỏ hàng thành công",
+      EC: 1,
+      DT: results,
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ EM: "Lỗi hệ thống", EC: -1 });
   }
-});
+};
 
-module.exports = router;
+module.exports = { getGioHang, createGioHang, updateGioHang, deleteGioHang };
