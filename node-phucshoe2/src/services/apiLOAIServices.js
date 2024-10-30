@@ -1,24 +1,26 @@
 const connection = require("../config/old.js");
 
-const getLOAI = async () => {
+// Lấy danh sách loại danh mục
+const getLOAI_DANH_MUC = async () => {
   try {
-    const [results, fields] = await connection.execute("SELECT * FROM `loai`");
+    const [results] = await connection.execute("SELECT * FROM `loai`");
     return {
-      EM: "xem thoong tin thanh cong",
+      EM: "Xem thông tin thành công",
       EC: 1,
       DT: results,
     };
   } catch (error) {
-    console.error("Error creating login user:", error);
+    console.error("Error getting danh muc:", error);
     throw error;
   }
 };
 
-const createLOAI = async (name) => {
+// Tạo loại danh mục mới
+const createLOAI_DANH_MUC = async (tenDanhMuc, moTaLoaiDanhMuc, trangThai) => {
   try {
-    const [results, fields] = await connection.execute(
-      `select * from loai where name = ?`,
-      [name]
+    const [results] = await connection.execute(
+      "SELECT * FROM loai WHERE TEN_DANH_MUC = ?",
+      [tenDanhMuc]
     );
 
     if (results.length > 0) {
@@ -28,79 +30,86 @@ const createLOAI = async (name) => {
         DT: [],
       };
     } else {
-      const [results1, fields1] = await connection.execute(
-        "insert into loai (name)  values (?)",
-        [name]
+      const [results1] = await connection.execute(
+        "INSERT INTO loai (TEN_DANH_MUC, MO_TA_LOAI_DANH_MUC, TRANG_THAI_DANHMUC) VALUES (?, ?, ?)",
+        [tenDanhMuc, moTaLoaiDanhMuc, trangThai]
       );
       return {
-        EM: "thêm thể loại mới thành công",
+        EM: "Thêm thể loại mới thành công",
         EC: 1,
         DT: results1,
       };
     }
   } catch (error) {
-    console.error("Error creating login user:", error);
+    console.error("Error creating loai danh muc:", error);
     throw error;
   }
 };
 
-const updateLOAI = async (maloai, name) => {
+// Cập nhật loại danh mục
+const updateLOAI_DANH_MUC = async (
+  idDanhMuc,
+  tenDanhMuc,
+  moTaLoaiDanhMuc,
+  trangThai
+) => {
   try {
-    const [results, fields] = await connection.execute(
-      `select * from loai where MALOAI = ?`,
-      [maloai]
+    const [results] = await connection.execute(
+      "SELECT * FROM loai WHERE ID_DANH_MUC = ?",
+      [idDanhMuc]
     );
 
     if (results.length > 0) {
-      const [results1, fields] = await connection.execute(
-        "update loai set name = ? where maloai = ?",
-        [name, maloai]
+      const [results1] = await connection.execute(
+        "UPDATE loai SET TEN_DANH_MUC = ?, MO_TA_LOAI_DANH_MUC = ?, TRANG_THAI_DANHMUC = ? WHERE ID_DANH_MUC = ?",
+        [tenDanhMuc, moTaLoaiDanhMuc, trangThai, idDanhMuc]
       );
       return {
-        EM: "update thể loại thành công",
+        EM: "Cập nhật thể loại thành công",
         EC: 1,
         DT: results1,
       };
     } else {
       return {
-        EM: "không tìm thấy thể loại",
+        EM: "Không tìm thấy thể loại",
         EC: 0,
         DT: [],
       };
     }
   } catch (error) {
-    console.error("Error creating login user:", error);
+    console.error("Error updating loai danh muc:", error);
     throw error;
   }
 };
 
-const deleteLOAI = async (maloai) => {
+// Xóa loại danh mục
+const deleteLOAI_DANH_MUC = async (idDanhMuc) => {
   try {
-    const [results, fields] = await connection.execute(
-      `select * from loai where MALOAI = ?`,
-      [maloai]
+    const [results] = await connection.execute(
+      "SELECT * FROM loai WHERE ID_DANH_MUC = ?",
+      [idDanhMuc]
     );
-    console.log("check results", results);
+
     if (results.length > 0) {
-      const [results1, fields] = await connection.execute(
-        "delete from loai where MALOAI = ?",
-        [maloai]
-      );
+      await connection.execute("DELETE FROM loai WHERE ID_DANH_MUC = ?", [
+        idDanhMuc,
+      ]);
       return {
-        EM: "xóa thể loại sản phẩm thành công",
+        EM: "Xóa thể loại sản phẩm thành công",
         EC: 1,
         DT: [],
       };
     } else {
       return {
-        EM: "không thể xóa thể loại ",
+        EM: "Không thể xóa thể loại vì không tìm thấy",
         EC: 0,
         DT: [],
       };
     }
   } catch (error) {
+    console.error("Error deleting loai danh muc:", error);
     return {
-      EM: "không thể xóa thể loại vì trùng khóa",
+      EM: "Không thể xóa thể loại vì có thể có dữ liệu liên quan",
       EC: 0,
       DT: [],
     };
@@ -108,8 +117,8 @@ const deleteLOAI = async (maloai) => {
 };
 
 module.exports = {
-  getLOAI,
-  createLOAI,
-  updateLOAI,
-  deleteLOAI,
+  getLOAI_DANH_MUC,
+  createLOAI_DANH_MUC,
+  updateLOAI_DANH_MUC,
+  deleteLOAI_DANH_MUC,
 };
