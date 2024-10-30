@@ -1,4 +1,4 @@
-const connection = require("../config/old.js");
+const connection = require("../config/database.js");
 
 // Lấy danh sách loại danh mục
 const getLOAI_DANH_MUC = async () => {

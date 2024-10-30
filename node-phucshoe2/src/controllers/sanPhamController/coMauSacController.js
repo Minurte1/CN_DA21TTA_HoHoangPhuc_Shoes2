@@ -24,8 +24,9 @@ const getMAU_SAC_SAN_PHAM = async (req, res) => {
 };
 
 // Tạo màu sắc sản phẩm mới
-const createMAU_SAC_SAN_PHAM = async (idSanPham, mauSacId) => {
+const createMAU_SAC_SAN_PHAM = async (req, res) => {
   try {
+    const { idSanPham, mauSacId } = req.body;
     const [results] = await connection.execute(
       "INSERT INTO mau_sac_san_pham (ID_SAN_PHAM, MAU_SAC_ID) VALUES (?, ?)",
       [idSanPham, mauSacId]
@@ -42,8 +43,10 @@ const createMAU_SAC_SAN_PHAM = async (idSanPham, mauSacId) => {
 };
 
 // Cập nhật màu sắc sản phẩm
-const updateMAU_SAC_SAN_PHAM = async (id, idSanPham, mauSacId) => {
+const updateMAU_SAC_SAN_PHAM = async (req, res) => {
   try {
+    const { id } = req.params;
+    const { idSanPham, mauSacId } = req.body;
     const [results] = await connection.execute(
       "SELECT * FROM mau_sac_san_pham WHERE ID_MAU_SAC = ?",
       [id]
@@ -77,7 +80,8 @@ const updateMAU_SAC_SAN_PHAM = async (id, idSanPham, mauSacId) => {
 };
 
 // Xóa màu sắc sản phẩm
-const deleteMAU_SAC_SAN_PHAM = async (id) => {
+const deleteMAU_SAC_SAN_PHAM = async (req, res) => {
+  const { id } = req.params;
   try {
     const [results] = await connection.execute(
       "SELECT * FROM mau_sac_san_pham WHERE ID_MAU_SAC = ?",
@@ -111,23 +115,9 @@ const deleteMAU_SAC_SAN_PHAM = async (id) => {
   }
 };
 
-// Định nghĩa các route
-router.get("/mau-sac-san-pham", getMAU_SAC_SAN_PHAM);
-router.post("/mau-sac-san-pham", async (req, res) => {
-  const { idSanPham, mauSacId } = req.body;
-  const result = await createMAU_SAC_SAN_PHAM(idSanPham, mauSacId);
-  return res.status(result.EC === 1 ? 200 : 400).json(result);
-});
-router.put("/mau-sac-san-pham/:id", async (req, res) => {
-  const { id } = req.params;
-  const { idSanPham, mauSacId } = req.body;
-  const result = await updateMAU_SAC_SAN_PHAM(id, idSanPham, mauSacId);
-  return res.status(result.EC === 1 ? 200 : 400).json(result);
-});
-router.delete("/mau-sac-san-pham/:id", async (req, res) => {
-  const { id } = req.params;
-  const result = await deleteMAU_SAC_SAN_PHAM(id);
-  return res.status(result.EC === 1 ? 200 : 400).json(result);
-});
-
-module.exports = router;
+module.exports = {
+  getMAU_SAC_SAN_PHAM,
+  createMAU_SAC_SAN_PHAM,
+  updateMAU_SAC_SAN_PHAM,
+  deleteMAU_SAC_SAN_PHAM,
+};

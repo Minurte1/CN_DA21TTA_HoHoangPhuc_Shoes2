@@ -1,4 +1,4 @@
-const connection = require("../config/old");
+const connection = require("../config/database");
 const getAllSanPham = async () => {
   let [results, fields] = await (
     await connection

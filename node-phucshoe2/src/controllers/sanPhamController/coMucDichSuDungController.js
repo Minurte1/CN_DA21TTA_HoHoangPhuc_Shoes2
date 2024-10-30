@@ -24,7 +24,8 @@ const getMUC_DICH_SU_DUNG_SAN_PHAM = async (req, res) => {
 };
 
 // Tạo mục đích sử dụng sản phẩm mới
-const createMUC_DICH_SU_DUNG_SAN_PHAM = async (idSanPham, idMucDichSuDung) => {
+const createMUC_DICH_SU_DUNG_SAN_PHAM = async (req, res) => {
+  const { idSanPham, idMucDichSuDung } = req.body;
   try {
     const [results] = await connection.execute(
       "INSERT INTO muc_dich_su_dung_san_pham (ID_SAN_PHAM, ID_MUC_DICH_SU_DUNG) VALUES (?, ?)",
@@ -42,11 +43,9 @@ const createMUC_DICH_SU_DUNG_SAN_PHAM = async (idSanPham, idMucDichSuDung) => {
 };
 
 // Cập nhật mục đích sử dụng sản phẩm
-const updateMUC_DICH_SU_DUNG_SAN_PHAM = async (
-  idMucDich,
-  idSanPham,
-  idMucDichSuDung
-) => {
+const updateMUC_DICH_SU_DUNG_SAN_PHAM = async (req, res) => {
+  const { idMucDich } = req.params;
+  const { idSanPham, idMucDichSuDung } = req.body;
   try {
     const [results] = await connection.execute(
       "SELECT * FROM muc_dich_su_dung_san_pham WHERE ID_MUC_DICH = ?",
@@ -81,17 +80,18 @@ const updateMUC_DICH_SU_DUNG_SAN_PHAM = async (
 };
 
 // Xóa mục đích sử dụng sản phẩm
-const deleteMUC_DICH_SU_DUNG_SAN_PHAM = async (idMucDich) => {
+const deleteMUC_DICH_SU_DUNG_SAN_PHAM = async (req, res) => {
+  const { id } = req.params;
   try {
     const [results] = await connection.execute(
       "SELECT * FROM muc_dich_su_dung_san_pham WHERE ID_MUC_DICH = ?",
-      [idMucDich]
+      [id]
     );
 
     if (results.length > 0) {
       await connection.execute(
         "DELETE FROM muc_dich_su_dung_san_pham WHERE ID_MUC_DICH = ?",
-        [idMucDich]
+        [id]
       );
       return {
         EM: "Xóa mục đích sử dụng sản phẩm thành công",
@@ -115,30 +115,9 @@ const deleteMUC_DICH_SU_DUNG_SAN_PHAM = async (idMucDich) => {
   }
 };
 
-// Định nghĩa các route
-router.get("/muc-dich-su-dung-san-pham", getMUC_DICH_SU_DUNG_SAN_PHAM);
-router.post("/muc-dich-su-dung-san-pham", async (req, res) => {
-  const { idSanPham, idMucDichSuDung } = req.body;
-  const result = await createMUC_DICH_SU_DUNG_SAN_PHAM(
-    idSanPham,
-    idMucDichSuDung
-  );
-  return res.status(result.EC === 1 ? 200 : 400).json(result);
-});
-router.put("/muc-dich-su-dung-san-pham/:id", async (req, res) => {
-  const { id } = req.params;
-  const { idSanPham, idMucDichSuDung } = req.body;
-  const result = await updateMUC_DICH_SU_DUNG_SAN_PHAM(
-    id,
-    idSanPham,
-    idMucDichSuDung
-  );
-  return res.status(result.EC === 1 ? 200 : 400).json(result);
-});
-router.delete("/muc-dich-su-dung-san-pham/:id", async (req, res) => {
-  const { id } = req.params;
-  const result = await deleteMUC_DICH_SU_DUNG_SAN_PHAM(id);
-  return res.status(result.EC === 1 ? 200 : 400).json(result);
-});
-
-module.exports = router;
+module.exports = {
+  getMUC_DICH_SU_DUNG_SAN_PHAM,
+  createMUC_DICH_SU_DUNG_SAN_PHAM,
+  updateMUC_DICH_SU_DUNG_SAN_PHAM,
+  deleteMUC_DICH_SU_DUNG_SAN_PHAM,
+};

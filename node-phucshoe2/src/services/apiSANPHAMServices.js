@@ -1,4 +1,4 @@
-const connection = require("../config/old.js");
+const connection = require("../config/database.js");
 
 const createSANPHAM = async (
   tengiay,

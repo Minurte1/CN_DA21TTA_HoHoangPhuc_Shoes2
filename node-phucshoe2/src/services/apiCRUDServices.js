@@ -3,7 +3,7 @@ const saltRounds = 10;
 require("dotenv").config();
 const salt = bcrypt.genSaltSync(saltRounds);
 const { format } = require("date-fns");
-const connection = require("../config/old.js");
+const connection = require("../config/database.js");
 const { createJWT } = require("../middleware/JWTaction");
 const hashPassword = (userPassword) => {
   let hashPassword = bcrypt.hashSync(userPassword, salt);

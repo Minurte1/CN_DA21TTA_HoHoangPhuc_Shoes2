@@ -22,7 +22,8 @@ const getCO_KICH_CO = async (req, res) => {
 };
 
 // Tạo kích cỡ mới
-const createCO_KICH_CO = async (idSanPham, idKichCo) => {
+const createCO_KICH_CO = async (req, res) => {
+  const { idSanPham, idKichCo } = req.body;
   try {
     const [results] = await connection.execute(
       "INSERT INTO co_kich_co (ID_SAN_PHAM, ID_KICH_CO) VALUES (?, ?)",
@@ -40,7 +41,9 @@ const createCO_KICH_CO = async (idSanPham, idKichCo) => {
 };
 
 // Cập nhật kích cỡ
-const updateCO_KICH_CO = async (idCoKichCo, idSanPham, idKichCo) => {
+const updateCO_KICH_CO = async (req, res) => {
+  const { id } = req.params;
+  const { idSanPham, idKichCo } = req.body;
   try {
     const [results] = await connection.execute(
       "SELECT * FROM co_kich_co WHERE ID_CO_KICH_CO = ?",
@@ -75,7 +78,8 @@ const updateCO_KICH_CO = async (idCoKichCo, idSanPham, idKichCo) => {
 };
 
 // Xóa kích cỡ
-const deleteCO_KICH_CO = async (idCoKichCo) => {
+const deleteCO_KICH_CO = async (req, res) => {
+  const { id } = req.params;
   try {
     const [results] = await connection.execute(
       "SELECT * FROM co_kich_co WHERE ID_CO_KICH_CO = ?",
@@ -109,23 +113,9 @@ const deleteCO_KICH_CO = async (idCoKichCo) => {
   }
 };
 
-// Định nghĩa các route
-router.get("/co-kich-co", getCO_KICH_CO);
-router.post("/co-kich-co", async (req, res) => {
-  const { idSanPham, idKichCo } = req.body;
-  const result = await createCO_KICH_CO(idSanPham, idKichCo);
-  return res.status(result.EC === 1 ? 200 : 400).json(result);
-});
-router.put("/co-kich-co/:id", async (req, res) => {
-  const { id } = req.params;
-  const { idSanPham, idKichCo } = req.body;
-  const result = await updateCO_KICH_CO(id, idSanPham, idKichCo);
-  return res.status(result.EC === 1 ? 200 : 400).json(result);
-});
-router.delete("/co-kich-co/:id", async (req, res) => {
-  const { id } = req.params;
-  const result = await deleteCO_KICH_CO(id);
-  return res.status(result.EC === 1 ? 200 : 400).json(result);
-});
-
-module.exports = router;
+module.exports = {
+  getCO_KICH_CO,
+  createCO_KICH_CO,
+  updateCO_KICH_CO,
+  deleteCO_KICH_CO,
+};

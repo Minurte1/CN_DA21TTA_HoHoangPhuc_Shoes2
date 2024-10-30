@@ -1,6 +1,4 @@
-const express = require("express");
-const router = express.Router();
-const connection = require("../config/old.js");
+const connection = require("../../config/database.js");
 
 // Lấy danh sách sản phẩm
 const getSAN_PHAM = async (req, res) => {
@@ -22,19 +20,20 @@ const getSAN_PHAM = async (req, res) => {
 };
 
 // Tạo sản phẩm mới
-const createSAN_PHAM = async (
-  idThuongHieu,
-  idDanhMuc,
-  gioiTinhId,
-  chatLieuId,
-  tenSanPham,
-  gia,
-  moTaSanPham,
-  hinhAnhSanPham,
-  trangThaiSanPham
-) => {
+const createSAN_PHAM = async (req, res) => {
   try {
-    const ngayTaoSanPham = new Date(); // Lấy ngày hiện tại
+    const {
+      idThuongHieu,
+      idDanhMuc,
+      gioiTinhId,
+      chatLieuId,
+      tenSanPham,
+      gia,
+      moTaSanPham,
+      hinhAnhSanPham,
+      trangThaiSanPham,
+    } = req.body;
+    const ngayTaoSanPham = new Date();
     const [results] = await connection.execute(
       "INSERT INTO san_pham (ID_THUONG_HIEU, ID_DANH_MUC, GIOI_TINH_ID, CHAT_LIEU_ID, TEN_SAN_PHAM, GIA, MO_TA_SAN_PHAM, HINH_ANH_SANPHAM, TRANG_THAI_SANPHAM, NGAY_TAO_SANPHAM, NGAY_CAP_NHAT_SANPHAM, SO_LUONG_SANPHAM) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
       [
@@ -64,22 +63,12 @@ const createSAN_PHAM = async (
 };
 
 // Cập nhật sản phẩm
-const updateSAN_PHAM = async (
-  idSanPham,
-  idThuongHieu,
-  idDanhMuc,
-  gioiTinhId,
-  chatLieuId,
-  tenSanPham,
-  gia,
-  moTaSanPham,
-  hinhAnhSanPham,
-  trangThaiSanPham
-) => {
+const updateSAN_PHAM = async (req, res) => {
   try {
+    const { id } = req.params;
     const [results] = await connection.execute(
       "SELECT * FROM san_pham WHERE ID_SAN_PHAM = ?",
-      [idSanPham]
+      [id]
     );
 
     if (results.length > 0) {
@@ -97,7 +86,7 @@ const updateSAN_PHAM = async (
           hinhAnhSanPham,
           trangThaiSanPham,
           ngayCapNhatSanPham,
-          idSanPham,
+          id,
         ]
       );
       return {
@@ -123,16 +112,17 @@ const updateSAN_PHAM = async (
 };
 
 // Xóa sản phẩm
-const deleteSAN_PHAM = async (idSanPham) => {
+const deleteSAN_PHAM = async (req, res) => {
+  const { id } = req.params;
   try {
     const [results] = await connection.execute(
       "SELECT * FROM san_pham WHERE ID_SAN_PHAM = ?",
-      [idSanPham]
+      [id]
     );
 
     if (results.length > 0) {
       await connection.execute("DELETE FROM san_pham WHERE ID_SAN_PHAM = ?", [
-        idSanPham,
+        id,
       ]);
       return {
         EM: "Xóa sản phẩm thành công",
@@ -156,64 +146,9 @@ const deleteSAN_PHAM = async (idSanPham) => {
   }
 };
 
-// Định nghĩa các route
-router.get("/san-pham", getSAN_PHAM);
-router.post("/san-pham", async (req, res) => {
-  const {
-    idThuongHieu,
-    idDanhMuc,
-    gioiTinhId,
-    chatLieuId,
-    tenSanPham,
-    gia,
-    moTaSanPham,
-    hinhAnhSanPham,
-    trangThaiSanPham,
-  } = req.body;
-  const result = await createSAN_PHAM(
-    idThuongHieu,
-    idDanhMuc,
-    gioiTinhId,
-    chatLieuId,
-    tenSanPham,
-    gia,
-    moTaSanPham,
-    hinhAnhSanPham,
-    trangThaiSanPham
-  );
-  return res.status(result.EC === 1 ? 200 : 400).json(result);
-});
-router.put("/san-pham/:id", async (req, res) => {
-  const { id } = req.params;
-  const {
-    idThuongHieu,
-    idDanhMuc,
-    gioiTinhId,
-    chatLieuId,
-    tenSanPham,
-    gia,
-    moTaSanPham,
-    hinhAnhSanPham,
-    trangThaiSanPham,
-  } = req.body;
-  const result = await updateSAN_PHAM(
-    id,
-    idThuongHieu,
-    idDanhMuc,
-    gioiTinhId,
-    chatLieuId,
-    tenSanPham,
-    gia,
-    moTaSanPham,
-    hinhAnhSanPham,
-    trangThaiSanPham
-  );
-  return res.status(result.EC === 1 ? 200 : 400).json(result);
-});
-router.delete("/san-pham/:id", async (req, res) => {
-  const { id } = req.params;
-  const result = await deleteSAN_PHAM(id);
-  return res.status(result.EC === 1 ? 200 : 400).json(result);
-});
-
-module.exports = router;
+module.exports = {
+  getSAN_PHAM,
+  createSAN_PHAM,
+  updateSAN_PHAM,
+  deleteSAN_PHAM,
+};

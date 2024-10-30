@@ -5,7 +5,7 @@ require("dotenv").config();
 const path = require("path");
 const port = process.env.PORT;
 const configViewEngine = require("./config/viewEngine");
-require("./config/old.js");
+require("./config/database.js");
 const bodyParser = require("body-parser");
 
 const cookieParser = require("cookie-parser");

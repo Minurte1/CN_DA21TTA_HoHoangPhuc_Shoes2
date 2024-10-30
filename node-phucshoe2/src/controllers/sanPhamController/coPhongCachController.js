@@ -24,8 +24,9 @@ const getPHONG_CACH_SAN_PHAM = async (req, res) => {
 };
 
 // Tạo phong cách sản phẩm mới
-const createPHONG_CACH_SAN_PHAM = async (idSanPham, idPhuongCach) => {
+const createPHONG_CACH_SAN_PHAM = async (req, res) => {
   try {
+    const { idSanPham, idPhuongCach } = req.body;
     const [results] = await connection.execute(
       "INSERT INTO phong_cach_san_pham (ID_SAN_PHAM, ID_PHUONG_CACH) VALUES (?, ?)",
       [idSanPham, idPhuongCach]
@@ -42,8 +43,10 @@ const createPHONG_CACH_SAN_PHAM = async (idSanPham, idPhuongCach) => {
 };
 
 // Cập nhật phong cách sản phẩm
-const updatePHONG_CACH_SAN_PHAM = async (id, idSanPham, idPhuongCach) => {
+const updatePHONG_CACH_SAN_PHAM = async (req, res) => {
   try {
+    const { id } = req.params;
+    const { idSanPham, idPhuongCach } = req.body;
     const [results] = await connection.execute(
       "SELECT * FROM phong_cach_san_pham WHERE ID_PHONG_CACH = ?",
       [id]
@@ -77,7 +80,8 @@ const updatePHONG_CACH_SAN_PHAM = async (id, idSanPham, idPhuongCach) => {
 };
 
 // Xóa phong cách sản phẩm
-const deletePHONG_CACH_SAN_PHAM = async (id) => {
+const deletePHONG_CACH_SAN_PHAM = async (req, res) => {
+  const { id } = req.params;
   try {
     const [results] = await connection.execute(
       "SELECT * FROM phong_cach_san_pham WHERE ID_PHONG_CACH = ?",
@@ -111,23 +115,9 @@ const deletePHONG_CACH_SAN_PHAM = async (id) => {
   }
 };
 
-// Định nghĩa các route
-router.get("/phong-cach-san-pham", getPHONG_CACH_SAN_PHAM);
-router.post("/phong-cach-san-pham", async (req, res) => {
-  const { idSanPham, idPhuongCach } = req.body;
-  const result = await createPHONG_CACH_SAN_PHAM(idSanPham, idPhuongCach);
-  return res.status(result.EC === 1 ? 200 : 400).json(result);
-});
-router.put("/phong-cach-san-pham/:id", async (req, res) => {
-  const { id } = req.params;
-  const { idSanPham, idPhuongCach } = req.body;
-  const result = await updatePHONG_CACH_SAN_PHAM(id, idSanPham, idPhuongCach);
-  return res.status(result.EC === 1 ? 200 : 400).json(result);
-});
-router.delete("/phong-cach-san-pham/:id", async (req, res) => {
-  const { id } = req.params;
-  const result = await deletePHONG_CACH_SAN_PHAM(id);
-  return res.status(result.EC === 1 ? 200 : 400).json(result);
-});
-
-module.exports = router;
+module.exports = {
+  getPHONG_CACH_SAN_PHAM,
+  createPHONG_CACH_SAN_PHAM,
+  updatePHONG_CACH_SAN_PHAM,
+  deletePHONG_CACH_SAN_PHAM,
+};
