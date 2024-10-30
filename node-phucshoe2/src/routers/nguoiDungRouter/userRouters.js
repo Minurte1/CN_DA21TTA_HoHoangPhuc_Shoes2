@@ -17,10 +17,13 @@ const {
   muahangUser,
   CapnhatAdmin,
   countUsers,
-} = require("../controllers/apiUserController");
+  loginUserGoogle,
+} = require("../../controllers/apiUserController");
 router.post("/register", CreateUser);
 router.post("/login", loginUser);
 router.post("/logout", logoutUser);
+router.post("/users/login/google", loginUserGoogle);
+
 //----------------------------------------------------------------------------------------------------------------
 //admin routers login and register
 router.post("/loginAdmin", loginAdmin);

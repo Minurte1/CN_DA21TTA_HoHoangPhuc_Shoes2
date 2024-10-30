@@ -266,6 +266,72 @@ const countUsers = async (req, res) => {
     });
   }
 };
+const loginUserGoogle = async (req, res) => {
+  const { email } = req.body;
+
+  if (!email) {
+    return res.status(401).json({
+      EM: "email is missing",
+      EC: 401,
+      DT: [],
+    });
+  }
+
+  try {
+    // Check if the user already exists in the database
+    const userName = "MyName";
+    const password = "asdasda123123asdasd";
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const [rows] = await pool.query("SELECT * FROM user WHERE email = ?", [
+      email,
+    ]);
+    if (rows.length > 0) {
+      // User exists, generate token and return user information
+      const user = rows[0];
+      const token = jwt.sign(
+        { id: user.id, email: user.email, role: user.role },
+        JWT_SECRET,
+        { expiresIn: "1h" }
+      );
+
+      return res.status(200).json({
+        EM: "Login successful",
+        EC: 200,
+        DT: {
+          accessToken: token,
+          user: { id: user.id, email: user.email, role: user.role },
+        },
+      });
+    } else {
+      // User does not exist, insert the new user
+      const [insertResult] = await pool.query(
+        "INSERT INTO user (userName,email,password,createdAt,updatedAt) VALUES (?,?,?,NOW(),NOW())",
+        [userName, email, hashedPassword]
+      );
+
+      const newUserId = insertResult.insertId;
+      const token = jwt.sign({ id: newUserId, email, role: 0 }, JWT_SECRET, {
+        expiresIn: "1h",
+      });
+
+      return res.status(200).json({
+        EM: "New user created and logged in successfully",
+        EC: 200,
+        DT: {
+          accessToken: token,
+          user: { id: newUserId, email, role: 0 }, // Adjust role as needed
+        },
+      });
+    }
+  } catch (error) {
+    console.error("Error in loginUserGoogle:", error);
+    return res.status(500).json({
+      EM: `Error: ${error.message}`,
+      EC: 500,
+      DT: [],
+    });
+  }
+};
 module.exports = {
   CreateUser,
   getAllUser,
@@ -281,4 +347,5 @@ module.exports = {
   muahangUser,
   countUsers,
   CapnhatAdmin,
+  loginUserGoogle,
 };

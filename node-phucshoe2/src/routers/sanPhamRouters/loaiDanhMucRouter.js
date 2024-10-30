@@ -5,7 +5,7 @@ const {
   Taoloai,
   Capnhatloai,
   XoaLoai,
-} = require("../controllers/ProductApiController");
+} = require("../../controllers/ProductApiController");
 
 //api MALOAI
 router.get("/loai", DanhSachloai); // get list of users
