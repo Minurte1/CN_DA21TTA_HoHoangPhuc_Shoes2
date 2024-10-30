@@ -1,7 +1,4 @@
-const express = require("express");
-const router = express.Router();
-const connection = require("../config/old.js");
-
+const connection = require("../../../config/database");
 // Lấy danh sách mục đích sử dụng
 const getMUC_DICH_SU_DUNG = async (req, res) => {
   try {
@@ -24,7 +21,8 @@ const getMUC_DICH_SU_DUNG = async (req, res) => {
 };
 
 // Tạo mục đích sử dụng mới
-const createMUC_DICH_SU_DUNG = async (tenMucDichSuDung) => {
+const createMUC_DICH_SU_DUNG = async (req, res) => {
+  const { tenMucDichSuDung } = req.body;
   try {
     const createMucDichSuDung = new Date(); // Lấy ngày hiện tại
     const [results] = await connection.execute(
@@ -43,11 +41,13 @@ const createMUC_DICH_SU_DUNG = async (tenMucDichSuDung) => {
 };
 
 // Cập nhật mục đích sử dụng
-const updateMUC_DICH_SU_DUNG = async (idMucDichSuDung, tenMucDichSuDung) => {
+const updateMUC_DICH_SU_DUNG = async (req, res) => {
+  const { id } = req.params;
+  const { tenMucDichSuDung } = req.body;
   try {
     const [results] = await connection.execute(
       "SELECT * FROM muc_dich_su_dung WHERE ID_MUC_DICH_SU_DUNG = ?",
-      [idMucDichSuDung]
+      [id]
     );
 
     if (results.length > 0) {
@@ -79,17 +79,18 @@ const updateMUC_DICH_SU_DUNG = async (idMucDichSuDung, tenMucDichSuDung) => {
 };
 
 // Xóa mục đích sử dụng
-const deleteMUC_DICH_SU_DUNG = async (idMucDichSuDung) => {
+const deleteMUC_DICH_SU_DUNG = async (req, res) => {
   try {
+    const { id } = req.params;
     const [results] = await connection.execute(
       "SELECT * FROM muc_dich_su_dung WHERE ID_MUC_DICH_SU_DUNG = ?",
-      [idMucDichSuDung]
+      [id]
     );
 
     if (results.length > 0) {
       await connection.execute(
         "DELETE FROM muc_dich_su_dung WHERE ID_MUC_DICH_SU_DUNG = ?",
-        [idMucDichSuDung]
+        [id]
       );
       return {
         EM: "Xóa mục đích sử dụng thành công",
@@ -113,23 +114,9 @@ const deleteMUC_DICH_SU_DUNG = async (idMucDichSuDung) => {
   }
 };
 
-// Định nghĩa các route
-router.get("/muc-dich-su-dung", getMUC_DICH_SU_DUNG);
-router.post("/muc-dich-su-dung", async (req, res) => {
-  const { tenMucDichSuDung } = req.body;
-  const result = await createMUC_DICH_SU_DUNG(tenMucDichSuDung);
-  return res.status(result.EC === 1 ? 200 : 400).json(result);
-});
-router.put("/muc-dich-su-dung/:id", async (req, res) => {
-  const { id } = req.params;
-  const { tenMucDichSuDung } = req.body;
-  const result = await updateMUC_DICH_SU_DUNG(id, tenMucDichSuDung);
-  return res.status(result.EC === 1 ? 200 : 400).json(result);
-});
-router.delete("/muc-dich-su-dung/:id", async (req, res) => {
-  const { id } = req.params;
-  const result = await deleteMUC_DICH_SU_DUNG(id);
-  return res.status(result.EC === 1 ? 200 : 400).json(result);
-});
-
-module.exports = router;
+module.exports = {
+  getMUC_DICH_SU_DUNG,
+  createMUC_DICH_SU_DUNG,
+  updateMUC_DICH_SU_DUNG,
+  deleteMUC_DICH_SU_DUNG,
+};

@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const connection = require("../config/old.js");
+const connection = require("../../../config/database");
 
 // Lấy danh sách giới tính
 const getGIOI_TINH = async (req, res) => {
@@ -22,8 +22,9 @@ const getGIOI_TINH = async (req, res) => {
 };
 
 // Tạo giới tính mới
-const createGIOI_TINH = async (tenGioiTinh) => {
+const createGIOI_TINH = async (req, res) => {
   try {
+    const { tenGioiTinh } = req.body;
     const createdGioiTinh = new Date(); // Lấy ngày hiện tại
     const [results] = await connection.execute(
       "INSERT INTO gioi_tinh (TEN_GIOI_TINH, CREATED_GIOI_TINH, UPDATE_GIOI_TINH, TRANG_THAI_GIOI_TINH) VALUES (?, ?, ?, ?)",
@@ -41,7 +42,9 @@ const createGIOI_TINH = async (tenGioiTinh) => {
 };
 
 // Cập nhật giới tính
-const updateGIOI_TINH = async (idGioiTinh, tenGioiTinh) => {
+const updateGIOI_TINH = async (req, res) => {
+  const { id } = req.params;
+  const { tenGioiTinh } = req.body;
   try {
     const [results] = await connection.execute(
       "SELECT * FROM gioi_tinh WHERE ID_GIOI_TINH = ?",
@@ -77,16 +80,17 @@ const updateGIOI_TINH = async (idGioiTinh, tenGioiTinh) => {
 };
 
 // Xóa giới tính
-const deleteGIOI_TINH = async (idGioiTinh) => {
+const deleteGIOI_TINH = async (req, res) => {
+  const { id } = req.params;
   try {
     const [results] = await connection.execute(
       "SELECT * FROM gioi_tinh WHERE ID_GIOI_TINH = ?",
-      [idGioiTinh]
+      [id]
     );
 
     if (results.length > 0) {
       await connection.execute("DELETE FROM gioi_tinh WHERE ID_GIOI_TINH = ?", [
-        idGioiTinh,
+        id,
       ]);
       return {
         EM: "Xóa giới tính thành công",
@@ -110,23 +114,9 @@ const deleteGIOI_TINH = async (idGioiTinh) => {
   }
 };
 
-// Định nghĩa các route
-router.get("/gioi-tinh", getGIOI_TINH);
-router.post("/gioi-tinh", async (req, res) => {
-  const { tenGioiTinh } = req.body;
-  const result = await createGIOI_TINH(tenGioiTinh);
-  return res.status(result.EC === 1 ? 200 : 400).json(result);
-});
-router.put("/gioi-tinh/:id", async (req, res) => {
-  const { id } = req.params;
-  const { tenGioiTinh } = req.body;
-  const result = await updateGIOI_TINH(id, tenGioiTinh);
-  return res.status(result.EC === 1 ? 200 : 400).json(result);
-});
-router.delete("/gioi-tinh/:id", async (req, res) => {
-  const { id } = req.params;
-  const result = await deleteGIOI_TINH(id);
-  return res.status(result.EC === 1 ? 200 : 400).json(result);
-});
-
-module.exports = router;
+module.exports = {
+  getGIOI_TINH,
+  createGIOI_TINH,
+  updateGIOI_TINH,
+  deleteGIOI_TINH,
+};

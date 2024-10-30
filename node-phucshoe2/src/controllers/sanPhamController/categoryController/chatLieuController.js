@@ -22,7 +22,8 @@ const getCHAT_LIEU = async (req, res) => {
 };
 
 // Tạo chất liệu mới
-const createCHAT_LIEU = async (tenChatLieu) => {
+const createCHAT_LIEU = async (req, res) => {
+  const { tenChatLieu } = req.body;
   try {
     const createdChatLieu = new Date(); // Lấy ngày hiện tại
     const [results] = await connection.execute(
@@ -41,18 +42,20 @@ const createCHAT_LIEU = async (tenChatLieu) => {
 };
 
 // Cập nhật chất liệu
-const updateCHAT_LIEU = async (idChatLieu, tenChatLieu) => {
+const updateCHAT_LIEU = async (req, res) => {
   try {
+    const { id } = req.params;
+    const { tenChatLieu } = req.body;
     const [results] = await connection.execute(
       "SELECT * FROM chat_lieu WHERE ID_CHAT_LIEU = ?",
-      [idChatLieu]
+      [id]
     );
 
     if (results.length > 0) {
       const updateChatLieu = new Date(); // Lấy ngày hiện tại
       await connection.execute(
         "UPDATE chat_lieu SET TEN_CHAT_LIEU = ?, UPDATE_CHAT_LIEU = ? WHERE ID_CHAT_LIEU = ?",
-        [tenChatLieu, updateChatLieu, idChatLieu]
+        [tenChatLieu, updateChatLieu, id]
       );
       return {
         EM: "Cập nhật chất liệu thành công",
@@ -77,16 +80,17 @@ const updateCHAT_LIEU = async (idChatLieu, tenChatLieu) => {
 };
 
 // Xóa chất liệu
-const deleteCHAT_LIEU = async (idChatLieu) => {
+const deleteCHAT_LIEU = async (req, res) => {
   try {
+    const { id } = req.params;
     const [results] = await connection.execute(
       "SELECT * FROM chat_lieu WHERE ID_CHAT_LIEU = ?",
-      [idChatLieu]
+      [id]
     );
 
     if (results.length > 0) {
       await connection.execute("DELETE FROM chat_lieu WHERE ID_CHAT_LIEU = ?", [
-        idChatLieu,
+        id,
       ]);
       return {
         EM: "Xóa chất liệu thành công",
@@ -110,23 +114,9 @@ const deleteCHAT_LIEU = async (idChatLieu) => {
   }
 };
 
-// Định nghĩa các route
-router.get("/chat-lieu", getCHAT_LIEU);
-router.post("/chat-lieu", async (req, res) => {
-  const { tenChatLieu } = req.body;
-  const result = await createCHAT_LIEU(tenChatLieu);
-  return res.status(result.EC === 1 ? 200 : 400).json(result);
-});
-router.put("/chat-lieu/:id", async (req, res) => {
-  const { id } = req.params;
-  const { tenChatLieu } = req.body;
-  const result = await updateCHAT_LIEU(id, tenChatLieu);
-  return res.status(result.EC === 1 ? 200 : 400).json(result);
-});
-router.delete("/chat-lieu/:id", async (req, res) => {
-  const { id } = req.params;
-  const result = await deleteCHAT_LIEU(id);
-  return res.status(result.EC === 1 ? 200 : 400).json(result);
-});
-
-module.exports = router;
+module.exports = {
+  getCHAT_LIEU,
+  createCHAT_LIEU,
+  updateCHAT_LIEU,
+  deleteCHAT_LIEU,
+};

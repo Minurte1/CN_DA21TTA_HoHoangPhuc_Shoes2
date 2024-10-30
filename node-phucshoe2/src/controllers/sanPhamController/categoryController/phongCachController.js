@@ -1,6 +1,4 @@
-const express = require("express");
-const router = express.Router();
-const connection = require("../config/old.js");
+const connection = require("../../../config/database");
 
 // Lấy danh sách phong cách
 const getPHONG_CACH = async (req, res) => {
@@ -22,8 +20,9 @@ const getPHONG_CACH = async (req, res) => {
 };
 
 // Tạo phong cách mới
-const createPHONG_CACH = async (tenPhuongCach) => {
+const createPHONG_CACH = async (req, res) => {
   try {
+    const { tenPhuongCach } = req.body;
     const createdPhongCach = new Date(); // Lấy ngày hiện tại
     const [results] = await connection.execute(
       "INSERT INTO phong_cach (TEN_PHUONG_CACH, CREATED_PHONG_CACH, UPDATE_PHONG_CACH, TRANG_THAI_PHONG_CACH) VALUES (?, ?, ?, ?)",
@@ -41,7 +40,9 @@ const createPHONG_CACH = async (tenPhuongCach) => {
 };
 
 // Cập nhật phong cách
-const updatePHONG_CACH = async (idPhongCach, tenPhuongCach) => {
+const updatePHONG_CACH = async (req, res) => {
+  const { id } = req.params;
+  const { tenPhuongCach } = req.body;
   try {
     const [results] = await connection.execute(
       "SELECT * FROM phong_cach WHERE ID_PHONG_CACH = ?",
@@ -77,7 +78,8 @@ const updatePHONG_CACH = async (idPhongCach, tenPhuongCach) => {
 };
 
 // Xóa phong cách
-const deletePHONG_CACH = async (idPhongCach) => {
+const deletePHONG_CACH = async (req, res) => {
+  const { id } = req.params;
   try {
     const [results] = await connection.execute(
       "SELECT * FROM phong_cach WHERE ID_PHONG_CACH = ?",
@@ -111,23 +113,9 @@ const deletePHONG_CACH = async (idPhongCach) => {
   }
 };
 
-// Định nghĩa các route
-router.get("/phong-cach", getPHONG_CACH);
-router.post("/phong-cach", async (req, res) => {
-  const { tenPhuongCach } = req.body;
-  const result = await createPHONG_CACH(tenPhuongCach);
-  return res.status(result.EC === 1 ? 200 : 400).json(result);
-});
-router.put("/phong-cach/:id", async (req, res) => {
-  const { id } = req.params;
-  const { tenPhuongCach } = req.body;
-  const result = await updatePHONG_CACH(id, tenPhuongCach);
-  return res.status(result.EC === 1 ? 200 : 400).json(result);
-});
-router.delete("/phong-cach/:id", async (req, res) => {
-  const { id } = req.params;
-  const result = await deletePHONG_CACH(id);
-  return res.status(result.EC === 1 ? 200 : 400).json(result);
-});
-
-module.exports = router;
+module.exports = {
+  getPHONG_CACH,
+  createPHONG_CACH,
+  updatePHONG_CACH,
+  deletePHONG_CACH,
+};

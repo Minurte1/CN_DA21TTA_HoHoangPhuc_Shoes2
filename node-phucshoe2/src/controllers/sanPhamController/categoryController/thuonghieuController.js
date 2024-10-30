@@ -1,6 +1,4 @@
-const express = require("express");
-const router = express.Router();
-const connection = require("../config/old.js");
+const connection = require("../../../config/database");
 
 // Lấy danh sách thương hiệu
 const getTHUONG_HIEU = async (req, res) => {
@@ -22,7 +20,8 @@ const getTHUONG_HIEU = async (req, res) => {
 };
 
 // Tạo thương hiệu mới
-const createTHUONG_HIEU = async (tenThuongHieu) => {
+const createTHUONG_HIEU = async (req, res) => {
+  const { tenThuongHieu } = req.body;
   try {
     const createdThuongHieu = new Date(); // Lấy ngày hiện tại
     const [results] = await connection.execute(
@@ -41,7 +40,9 @@ const createTHUONG_HIEU = async (tenThuongHieu) => {
 };
 
 // Cập nhật thương hiệu
-const updateTHUONG_HIEU = async (idThuongHieu, tenThuongHieu) => {
+const updateTHUONG_HIEU = async (req, res) => {
+  const { id } = req.params;
+  const { tenThuongHieu } = req.body;
   try {
     const [results] = await connection.execute(
       "SELECT * FROM thuong_hieu WHERE ID_THUONG_HIEU = ?",
@@ -77,7 +78,8 @@ const updateTHUONG_HIEU = async (idThuongHieu, tenThuongHieu) => {
 };
 
 // Xóa thương hiệu
-const deleteTHUONG_HIEU = async (idThuongHieu) => {
+const deleteTHUONG_HIEU = async (req, res) => {
+  const { id } = req.params;
   try {
     const [results] = await connection.execute(
       "SELECT * FROM thuong_hieu WHERE ID_THUONG_HIEU = ?",
@@ -111,23 +113,9 @@ const deleteTHUONG_HIEU = async (idThuongHieu) => {
   }
 };
 
-// Định nghĩa các route
-router.get("/thuong-hieu", getTHUONG_HIEU);
-router.post("/thuong-hieu", async (req, res) => {
-  const { tenThuongHieu } = req.body;
-  const result = await createTHUONG_HIEU(tenThuongHieu);
-  return res.status(result.EC === 1 ? 200 : 400).json(result);
-});
-router.put("/thuong-hieu/:id", async (req, res) => {
-  const { id } = req.params;
-  const { tenThuongHieu } = req.body;
-  const result = await updateTHUONG_HIEU(id, tenThuongHieu);
-  return res.status(result.EC === 1 ? 200 : 400).json(result);
-});
-router.delete("/thuong-hieu/:id", async (req, res) => {
-  const { id } = req.params;
-  const result = await deleteTHUONG_HIEU(id);
-  return res.status(result.EC === 1 ? 200 : 400).json(result);
-});
-
-module.exports = router;
+module.exports = {
+  getTHUONG_HIEU,
+  createTHUONG_HIEU,
+  updateTHUONG_HIEU,
+  deleteTHUONG_HIEU,
+};
