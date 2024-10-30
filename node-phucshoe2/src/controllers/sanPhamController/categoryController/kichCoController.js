@@ -5,7 +5,7 @@ const {
   Capnhatkichco,
   Taokichco,
   XoaKichco,
-} = require("../../controllers/ProductApiController");
+} = require("../../../controllers/ProductApiController");
 
 //api KICHCO
 router.get("/kichco", DanhSachkichco);
