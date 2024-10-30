@@ -1,6 +1,4 @@
-const express = require("express");
-const router = express.Router();
-const connection = require("../config/old.js");
+const connection = require("../../config/database");
 
 // Lấy danh sách phương thức thanh toán
 const getTHANH_TOAN = async (req, res) => {
@@ -22,7 +20,8 @@ const getTHANH_TOAN = async (req, res) => {
 };
 
 // Tạo phương thức thanh toán mới
-const createTHANH_TOAN = async (phuongThucThanhToan, trangThaiThanhToan) => {
+const createTHANH_TOAN = async (req, res) => {
+  const { phuongThucThanhToan, trangThaiThanhToan } = req.body;
   try {
     const ngayThanhToan = new Date(); // Lấy ngày hiện tại
     const [results] = await connection.execute(
@@ -41,22 +40,20 @@ const createTHANH_TOAN = async (phuongThucThanhToan, trangThaiThanhToan) => {
 };
 
 // Cập nhật phương thức thanh toán
-const updateTHANH_TOAN = async (
-  idThanhToan,
-  phuongThucThanhToan,
-  trangThaiThanhToan
-) => {
+const updateTHANH_TOAN = async (req, res) => {
+  const { id } = req.params;
+  const { phuongThucThanhToan, trangThaiThanhToan } = req.body;
   try {
     const [results] = await connection.execute(
       "SELECT * FROM thanh_toan WHERE ID_THANH_TOAN = ?",
-      [idThanhToan]
+      [id]
     );
 
     if (results.length > 0) {
       const ngayThanhToan = new Date(); // Lấy ngày hiện tại
       await connection.execute(
         "UPDATE thanh_toan SET PHUONG_THUC_THANH_TOAN = ?, NGAY_THANH_TOAN = ?, TRANG_THAI_THANH_TOAN = ? WHERE ID_THANH_TOAN = ?",
-        [phuongThucThanhToan, ngayThanhToan, trangThaiThanhToan, idThanhToan]
+        [phuongThucThanhToan, ngayThanhToan, trangThaiThanhToan, id]
       );
       return {
         EM: "Cập nhật phương thức thanh toán thành công",
@@ -81,17 +78,18 @@ const updateTHANH_TOAN = async (
 };
 
 // Xóa phương thức thanh toán
-const deleteTHANH_TOAN = async (idThanhToan) => {
+const deleteTHANH_TOAN = async (req, res) => {
+  const { id } = req.params;
   try {
     const [results] = await connection.execute(
       "SELECT * FROM thanh_toan WHERE ID_THANH_TOAN = ?",
-      [idThanhToan]
+      [id]
     );
 
     if (results.length > 0) {
       await connection.execute(
         "DELETE FROM thanh_toan WHERE ID_THANH_TOAN = ?",
-        [idThanhToan]
+        [id]
       );
       return {
         EM: "Xóa phương thức thanh toán thành công",
@@ -115,30 +113,9 @@ const deleteTHANH_TOAN = async (idThanhToan) => {
   }
 };
 
-// Định nghĩa các route
-router.get("/thanh-toan", getTHANH_TOAN);
-router.post("/thanh-toan", async (req, res) => {
-  const { phuongThucThanhToan, trangThaiThanhToan } = req.body;
-  const result = await createTHANH_TOAN(
-    phuongThucThanhToan,
-    trangThaiThanhToan
-  );
-  return res.status(result.EC === 1 ? 200 : 400).json(result);
-});
-router.put("/thanh-toan/:id", async (req, res) => {
-  const { id } = req.params;
-  const { phuongThucThanhToan, trangThaiThanhToan } = req.body;
-  const result = await updateTHANH_TOAN(
-    id,
-    phuongThucThanhToan,
-    trangThaiThanhToan
-  );
-  return res.status(result.EC === 1 ? 200 : 400).json(result);
-});
-router.delete("/thanh-toan/:id", async (req, res) => {
-  const { id } = req.params;
-  const result = await deleteTHANH_TOAN(id);
-  return res.status(result.EC === 1 ? 200 : 400).json(result);
-});
-
-module.exports = router;
+module.exports = {
+  getTHANH_TOAN,
+  createTHANH_TOAN,
+  updateTHANH_TOAN,
+  deleteTHANH_TOAN,
+};

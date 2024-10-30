@@ -1,6 +1,4 @@
-const express = require("express");
-const router = express.Router();
-const connection = require("../config/old.js");
+const connection = require("../../config/database");
 
 // Lấy danh sách đơn hàng
 const getDON_HANG = async (req, res) => {
@@ -22,13 +20,14 @@ const getDON_HANG = async (req, res) => {
 };
 
 // Tạo đơn hàng mới
-const createDON_HANG = async (
-  idNguoiDung,
-  idThanhToan,
-  tongTien,
-  trangThaiDonHang,
-  ghiChuDonHang
-) => {
+const createDON_HANG = async (req, res) => {
+  const {
+    idNguoiDung,
+    idThanhToan,
+    tongTien,
+    trangThaiDonHang,
+    ghiChuDonHang,
+  } = req.body;
   try {
     const ngayTaoDonHang = new Date(); // Lấy ngày hiện tại
     const [results] = await connection.execute(
@@ -55,18 +54,19 @@ const createDON_HANG = async (
 };
 
 // Cập nhật đơn hàng
-const updateDON_HANG = async (
-  idDonHang,
-  idNguoiDung,
-  idThanhToan,
-  tongTien,
-  trangThaiDonHang,
-  ghiChuDonHang
-) => {
+const updateDON_HANG = async (req, res) => {
+  const { id } = req.params;
+  const {
+    idNguoiDung,
+    idThanhToan,
+    tongTien,
+    trangThaiDonHang,
+    ghiChuDonHang,
+  } = req.body;
   try {
     const [results] = await connection.execute(
       "SELECT * FROM don_hang WHERE ID_DON_HANG = ?",
-      [idDonHang]
+      [id]
     );
 
     if (results.length > 0) {
@@ -80,7 +80,7 @@ const updateDON_HANG = async (
           trangThaiDonHang,
           ghiChuDonHang,
           ngayCapNhatDonHang,
-          idDonHang,
+          id,
         ]
       );
       return {
@@ -106,16 +106,17 @@ const updateDON_HANG = async (
 };
 
 // Xóa đơn hàng
-const deleteDON_HANG = async (idDonHang) => {
+const deleteDON_HANG = async (req, res) => {
+  const { id } = req.params;
   try {
     const [results] = await connection.execute(
       "SELECT * FROM don_hang WHERE ID_DON_HANG = ?",
-      [idDonHang]
+      [id]
     );
 
     if (results.length > 0) {
       await connection.execute("DELETE FROM don_hang WHERE ID_DON_HANG = ?", [
-        idDonHang,
+        id,
       ]);
       return {
         EM: "Xóa đơn hàng thành công",
@@ -139,48 +140,9 @@ const deleteDON_HANG = async (idDonHang) => {
   }
 };
 
-// Định nghĩa các route
-router.get("/don-hang", getDON_HANG);
-router.post("/don-hang", async (req, res) => {
-  const {
-    idNguoiDung,
-    idThanhToan,
-    tongTien,
-    trangThaiDonHang,
-    ghiChuDonHang,
-  } = req.body;
-  const result = await createDON_HANG(
-    idNguoiDung,
-    idThanhToan,
-    tongTien,
-    trangThaiDonHang,
-    ghiChuDonHang
-  );
-  return res.status(result.EC === 1 ? 200 : 400).json(result);
-});
-router.put("/don-hang/:id", async (req, res) => {
-  const { id } = req.params;
-  const {
-    idNguoiDung,
-    idThanhToan,
-    tongTien,
-    trangThaiDonHang,
-    ghiChuDonHang,
-  } = req.body;
-  const result = await updateDON_HANG(
-    id,
-    idNguoiDung,
-    idThanhToan,
-    tongTien,
-    trangThaiDonHang,
-    ghiChuDonHang
-  );
-  return res.status(result.EC === 1 ? 200 : 400).json(result);
-});
-router.delete("/don-hang/:id", async (req, res) => {
-  const { id } = req.params;
-  const result = await deleteDON_HANG(id);
-  return res.status(result.EC === 1 ? 200 : 400).json(result);
-});
-
-module.exports = router;
+module.exports = {
+  getDON_HANG,
+  createDON_HANG,
+  updateDON_HANG,
+  deleteDON_HANG,
+};
