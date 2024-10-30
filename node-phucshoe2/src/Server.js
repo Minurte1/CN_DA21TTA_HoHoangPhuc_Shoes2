@@ -7,9 +7,9 @@ const port = process.env.PORT;
 const configViewEngine = require("./config/viewEngine");
 require("./config/old.js");
 const bodyParser = require("body-parser");
-const apiRoute = require("../src/routers/api.js");
+
 const cookieParser = require("cookie-parser");
-const hostname = process.env.HOST_NAME || "2701";
+const hostname = process.env.HOST_NAME || "3002";
 const corsOptions = {
   origin: true, // Cho phép truy cập từ tất cả các nguồn
   credentials: true, // Cho phép gửi cookie
@@ -24,7 +24,9 @@ app.use(bodyParser.json());
 app.use("/helloworld", (req, res) => {
   res.send("hellowork");
 });
-// app.use("/api/v1/", apiRoute);
+
+const apiRoute = require("../src/routers/api.js");
+app.use("/api", apiRoute);
 configViewEngine(app);
 
 app.listen(port, hostname, () => {
