@@ -1,28 +1,24 @@
-/* eslint-disable no-sparse-arrays */
 import { useRoutes, Navigate } from "react-router-dom";
-import Dashboard from "./pages/Dashboard";
+import DashboardAdmin from "./pages/DashboardAdmin";
+import DonHangGame from "./pages/DonHang";
 
-import Users from "./pages/Users";
-
-const AdminRouter = () => {
+const RouterAdmin = () => {
   const element = useRoutes([
     {
-      path: "", // Route chính cho Dashboard
-      element: <Dashboard />,
-      children: [
-        {
-          path: "", // Khi vào "/admin/" sẽ render Users
-          element: <Users />,
-        },
-
-        {
-          path: "*",
-          element: <Navigate to="/admin/users" replace />, // Chuyển hướng nếu không tìm thấy route
-        },
-      ],
+      path: "/",
+      element: <DashboardAdmin />,
+    },
+    {
+      path: "/donhang",
+      element: <DonHangGame />,
+    },
+    {
+      path: "*",
+      element: <Navigate to="/login" replace />, // Chuyển hướng nếu không tìm thấy route
     },
   ]);
+
   return element;
 };
 
-export default AdminRouter;
+export default RouterAdmin;
