@@ -323,7 +323,7 @@ const loginUserGoogle = async (req, res) => {
         },
       });
     } else {
-      const VAI_TRO = 0;
+      const VAI_TRO = "0";
       const TRANG_THAI_USER = "1";
       const [insertResult] = await pool.query(
         "INSERT INTO NGUOI_DUNG (EMAIL, VAI_TRO, HO_TEN, TRANG_THAI_USER,NGAY_TAO_USER,NGAY_CAP_NHAT_USER) VALUES (?,?,?,?,NOW(),NOW())",
@@ -367,6 +367,62 @@ const loginUserGoogle = async (req, res) => {
   }
 };
 
+const verifyAdmin = async (req, res) => {
+  const { token } = req.body;
+  console.log("token", token);
+  if (!token) {
+    return res.status(401).json({
+      EM: "Token is missing",
+      EC: 401,
+      DT: { isAdmin: false },
+    });
+  }
+
+  try {
+    // Giải mã token
+    const decoded = jwt.verify(token, JWT_SECRET);
+
+    const ID_NGUOI_DUNG = decoded.ID_NGUOI_DUNG;
+    console.log("id", decoded);
+    // Truy vấn để lấy thông tin user từ database
+    const [rows] = await pool.query(
+      "SELECT VAI_TRO FROM NGUOI_DUNG WHERE ID_NGUOI_DUNG = ?",
+      [ID_NGUOI_DUNG]
+    );
+
+    if (rows.length > 0) {
+      const user = rows[0];
+      console.log(user.VAI_TRO);
+      // Kiểm tra vai trò của người dùng
+      if (user.VAI_TRO == "1") {
+        return res.status(200).json({
+          EM: "User is admin",
+          EC: 200,
+          DT: { isAdmin: true }, // Người dùng là admin
+        });
+      } else {
+        return res.status(403).json({
+          EM: "User is not admin",
+          EC: 403,
+          DT: { isAdmin: false }, // Người dùng không phải admin
+        });
+      }
+    } else {
+      return res.status(404).json({
+        EM: "User not found",
+        EC: 404,
+        DT: { isAdmin: false }, // Người dùng không tìm thấy
+      });
+    }
+  } catch (error) {
+    console.error("Error decoding token or querying database:", error);
+    return res.status(401).json({
+      EM: `Invalid token: ${error.message}`, // Thông báo lỗi token không hợp lệ
+      EC: 401,
+      DT: { isAdmin: false }, // Token không hợp lệ, trả về false
+    });
+  }
+};
 module.exports = {
   CreateUser,
   getAllUser,
@@ -383,4 +439,5 @@ module.exports = {
   countUsers,
   CapnhatAdmin,
   loginUserGoogle,
+  verifyAdmin,
 };

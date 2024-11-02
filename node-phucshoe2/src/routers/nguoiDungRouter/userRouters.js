@@ -18,6 +18,7 @@ const {
   CapnhatAdmin,
   countUsers,
   loginUserGoogle,
+  verifyAdmin,
 } = require("../../controllers/apiUserController");
 const { checkUserJWT } = require("../../middleware/JWTaction");
 const upload = require("../../config/multerConfig");
@@ -51,5 +52,7 @@ router.put(
 router.delete("/user/info/delete/:username", checkUserJWT, XoaUser); //xóa user (cho admin)
 router.get("/countuser", countUsers); //Tính số lượng tài khoản đã tạo cho ADMIN
 router.post("/productt", muahangUser);
+
+router.post("/verify-admin", verifyAdmin);
 
 module.exports = router;

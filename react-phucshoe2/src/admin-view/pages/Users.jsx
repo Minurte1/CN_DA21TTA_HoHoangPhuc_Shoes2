@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import UserModal from "../components/modal/modalUser"; // Assuming you have a UserModal component
-import { getAllUsers } from "../../service/userAccountService"; // Import the appropriate service function
+
 import moment from "moment"; // For formatting dates
 
 const Users = () => {
@@ -9,15 +8,15 @@ const Users = () => {
   const [formData, setFormData] = useState(null); // To handle data for adding/editing users
   const [isDelete, checkDelete] = useState(false); // Flag to check if it's delete action
 
-  useEffect(() => {
-    getAllUsersList();
-  }, []);
+  // useEffect(() => {
+  //   getAllUsersList();
+  // }, []);
 
-  const getAllUsersList = async () => {
-    const response = await getAllUsers(); // Fetch users from API
-    console.log("Users fetched", response);
-    setListUsers(response || []); // Set the list of users
-  };
+  // const getAllUsersList = async () => {
+  //   const response = await getAllUsers(); // Fetch users from API
+  //   console.log("Users fetched", response);
+  //   setListUsers(response || []); // Set the list of users
+  // };
 
   // Function to open modal for adding a new user
   const handleOpen = () => {
@@ -30,7 +29,6 @@ const Users = () => {
     setOpen(false);
     setFormData(undefined); // Reset formData when closing modal
     checkDelete(false);
-    getAllUsersList(); // Refresh the user list
   };
 
   // Function to handle editing a user
@@ -49,13 +47,13 @@ const Users = () => {
   return (
     <div>
       {/* User Modal Component */}
-      <UserModal
+      {/* <UserModal
         open={open}
         handleClose={handleClose}
         formData={formData}
         isDelete={isDelete}
-      />
-      
+      /> */}
+
       {/* Header Section */}
       <div className="group-header">
         <h2>Danh sách người dùng</h2>
@@ -98,7 +96,7 @@ const Users = () => {
               <td>{index + 1}</td>
               <td>{user.userName || "Không có tên"}</td>
               <td>{user.email || "Không có email"}</td>
-              <td>{user.score }</td>
+              <td>{user.score}</td>
               <td>{moment(user.createdAt).format("DD/MM/YYYY")}</td>
               {/* <td>{moment(user.updatedDate).format("DD/MM/YYYY")}</td> */}
               <td>
@@ -107,7 +105,7 @@ const Users = () => {
                   checked={user.isActive === 1}
                   disabled
                 /> */}
-                {user.role != -1 ?'Đang hoạt động':'Tạm Khoá'}
+                {user.role != -1 ? "Đang hoạt động" : "Tạm Khoá"}
               </td>
               <td>
                 <button

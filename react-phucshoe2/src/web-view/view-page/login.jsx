@@ -6,7 +6,7 @@ import axios from "axios";
 
 import { GoogleLogin, useGoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode"; // Import jwtDecode trực tiếp thay vì từ jwt-decode
-
+import axiosInstance from "../../authentication/axiosInstance";
 import logo from "../../public/logo/iconlogo.png";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";

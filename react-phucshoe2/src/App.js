@@ -3,7 +3,7 @@ import "./App.css";
 // import Header from "./share-view/header";
 // import Footer from "./share-view/footer";
 import RouterView from "./web-view/router-view";
-// import RouterAdmin from "./admin-view/router-admin";
+import RouterAdmin from "./admin-view/router-admin";
 import GuardRoute from "./authentication/guardRoute";
 
 function App() {
@@ -13,10 +13,10 @@ function App() {
         <Routes>
           <Route path="/*" element={<MainLayout />} />
 
-          {/* <Route
+          <Route
             path="/admin/*"
             element={<GuardRoute element={AdminLayout} />}
-          /> */}
+          />
           {/* <Route path="/admin/*" element={<RouterAdmin />} /> */}
         </Routes>
       </Router>
@@ -33,7 +33,10 @@ const MainLayout = () => (
   </>
 );
 const AdminLayout = () => (
-  <Routes>{/* <Route path="/*" element={<RouterAdmin />} /> */}</Routes>
+  <Routes>
+    {" "}
+    <Route path="/*" element={<RouterAdmin />} />{" "}
+  </Routes>
 );
 
 export default App;

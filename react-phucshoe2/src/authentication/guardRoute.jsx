@@ -15,7 +15,7 @@ const GuardRoute = ({ element: Element, ...rest }) => {
           const isAdmin = await verifyAdmin(accessToken);
           setIsAuthenticated(isAdmin);
         } catch (error) {
-          // console.error("Error verifying admin:", error);
+          console.error("Error verifying admin:", error);
           setIsAuthenticated(false);
         }
       } else {

@@ -1,6 +1,7 @@
 import { toast } from "react-toastify";
 import axiosInstance from "../authentication/axiosInstance";
 import Cookies from "js-cookie";
+import axios from "axios";
 const apiUrl = process.env.REACT_APP_URL_SERVER;
 
 // Login User
@@ -91,9 +92,12 @@ export const verifyAdmin = async (accessToken) => {
   }
 
   try {
-    const response = await axiosInstance.post(`${apiUrl}/verify-admin`, {
-      token: accessToken,
-    });
+    const response = await axios.post(
+      `${process.env.REACT_APP_URL_SERVER}/verify-admin`,
+      {
+        token: accessToken,
+      }
+    );
 
     // Kết quả phản hồi từ backend
     console.log("response", response.data);
@@ -105,7 +109,7 @@ export const verifyAdmin = async (accessToken) => {
       return false;
     }
   } catch (error) {
-    // console.error("Error verifying admin:", error);
+    console.error("Error verifying admin:", error);
     return false;
   }
 };
