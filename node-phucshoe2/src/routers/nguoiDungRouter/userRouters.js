@@ -19,10 +19,12 @@ const {
   countUsers,
   loginUserGoogle,
 } = require("../../controllers/apiUserController");
+const { checkUserJWT } = require("../../middleware/JWTaction");
+const upload = require("../../config/multerConfig");
 router.post("/register", CreateUser);
 router.post("/login", loginUser);
 router.post("/logout", logoutUser);
-router.post("/users/login/google", loginUserGoogle);
+router.post("/login/google", loginUserGoogle);
 
 //----------------------------------------------------------------------------------------------------------------
 //admin routers login and register

@@ -1903,7 +1903,7 @@ SOURCE 0 Arial,8,N</a:FontList>
 <o:AssociationLinkSymbol Id="o31">
 <a:CreationDate>1728460659</a:CreationDate>
 <a:ModificationDate>1730293523</a:ModificationDate>
-<a:Rect>((34025,54373), (44079,67330))</a:Rect>
+<a:Rect>((34025,54368), (44079,67330))</a:Rect>
 <a:ListOfPoints>((43679,55984),(34425,55984),(34425,66930))</a:ListOfPoints>
 <a:CornerStyle>1</a:CornerStyle>
 <a:ArrowStyle>0</a:ArrowStyle>
@@ -2008,7 +2008,7 @@ SOURCE 0 Arial,8,N</a:FontList>
 <o:AssociationLinkSymbol Id="o47">
 <a:CreationDate>1728460906</a:CreationDate>
 <a:ModificationDate>1730293434</a:ModificationDate>
-<a:Rect>((66927,49691), (70936,50712))</a:Rect>
+<a:Rect>((66927,49686), (70936,50712))</a:Rect>
 <a:ListOfPoints>((67327,50312),(70536,50312))</a:ListOfPoints>
 <a:CornerStyle>1</a:CornerStyle>
 <a:ArrowStyle>0</a:ArrowStyle>
@@ -2176,7 +2176,7 @@ SOURCE 0 Arial,8,N</a:FontList>
 <o:AssociationLinkSymbol Id="o69">
 <a:CreationDate>1728461193</a:CreationDate>
 <a:ModificationDate>1730294055</a:ModificationDate>
-<a:Rect>((66927,49323), (102081,55352))</a:Rect>
+<a:Rect>((66927,49323), (102081,55347))</a:Rect>
 <a:ListOfPoints>((67327,54784),(101681,54784),(101681,49723))</a:ListOfPoints>
 <a:CornerStyle>1</a:CornerStyle>
 <a:ArrowStyle>0</a:ArrowStyle>
@@ -2239,7 +2239,7 @@ SOURCE 0 Arial,8,N</a:FontList>
 <o:AssociationLinkSymbol Id="o77">
 <a:CreationDate>1728463315</a:CreationDate>
 <a:ModificationDate>1730293434</a:ModificationDate>
-<a:Rect>((27696,48139), (44079,50055))</a:Rect>
+<a:Rect>((27696,48134), (44079,50055))</a:Rect>
 <a:ListOfPoints>((43679,49655),(28096,49655))</a:ListOfPoints>
 <a:CornerStyle>1</a:CornerStyle>
 <a:ArrowStyle>0</a:ArrowStyle>
@@ -2260,7 +2260,7 @@ SOURCE 0 Arial,8,N</a:FontList>
 <o:AssociationLinkSymbol Id="o80">
 <a:CreationDate>1728463315</a:CreationDate>
 <a:ModificationDate>1728472324</a:ModificationDate>
-<a:Rect>((16778,48175), (22933,49134))</a:Rect>
+<a:Rect>((16778,48170), (22933,49129))</a:Rect>
 <a:ListOfPoints>((17178,48686),(22533,48686))</a:ListOfPoints>
 <a:CornerStyle>1</a:CornerStyle>
 <a:ArrowStyle>0</a:ArrowStyle>
@@ -2281,7 +2281,7 @@ SOURCE 0 Arial,8,N</a:FontList>
 <o:AssociationLinkSymbol Id="o82">
 <a:CreationDate>1728470865</a:CreationDate>
 <a:ModificationDate>1730293434</a:ModificationDate>
-<a:Rect>((17518,53062), (44079,75622))</a:Rect>
+<a:Rect>((17518,53057), (44079,75622))</a:Rect>
 <a:ListOfPoints>((43679,54784),(17918,54784),(17918,75222))</a:ListOfPoints>
 <a:CornerStyle>1</a:CornerStyle>
 <a:ArrowStyle>0</a:ArrowStyle>
@@ -2323,7 +2323,7 @@ SOURCE 0 Arial,8,N</a:FontList>
 <o:AssociationLinkSymbol Id="o88">
 <a:CreationDate>1730293401</a:CreationDate>
 <a:ModificationDate>1730293661</a:ModificationDate>
-<a:Rect>((66927,58459), (82811,59418))</a:Rect>
+<a:Rect>((66927,58454), (82811,59413))</a:Rect>
 <a:ListOfPoints>((67327,58935),(82411,58935))</a:ListOfPoints>
 <a:CornerStyle>1</a:CornerStyle>
 <a:ArrowStyle>0</a:ArrowStyle>
@@ -2344,7 +2344,7 @@ SOURCE 0 Arial,8,N</a:FontList>
 <o:AssociationLinkSymbol Id="o91">
 <a:CreationDate>1730293401</a:CreationDate>
 <a:ModificationDate>1730293661</a:ModificationDate>
-<a:Rect>((88804,57724), (104984,59181))</a:Rect>
+<a:Rect>((88804,57719), (104984,59181))</a:Rect>
 <a:ListOfPoints>((104584,58781),(89204,58781))</a:ListOfPoints>
 <a:CornerStyle>1</a:CornerStyle>
 <a:ArrowStyle>0</a:ArrowStyle>
@@ -2407,7 +2407,7 @@ SOURCE 0 Arial,8,N</a:FontList>
 <o:AssociationLinkSymbol Id="o100">
 <a:CreationDate>1730293403</a:CreationDate>
 <a:ModificationDate>1730293838</a:ModificationDate>
-<a:Rect>((66927,55583), (74558,78101))</a:Rect>
+<a:Rect>((66927,55578), (74558,78101))</a:Rect>
 <a:ListOfPoints>((67327,55984),(74158,55984),(74158,77701))</a:ListOfPoints>
 <a:CornerStyle>1</a:CornerStyle>
 <a:ArrowStyle>0</a:ArrowStyle>
@@ -2533,7 +2533,7 @@ SOURCE 0 Arial,8,N</a:FontList>
 <o:AssociationLinkSymbol Id="o118">
 <a:CreationDate>1730295268</a:CreationDate>
 <a:ModificationDate>1730295277</a:ModificationDate>
-<a:Rect>((92055,66213), (119759,68865))</a:Rect>
+<a:Rect>((92055,66208), (119759,68865))</a:Rect>
 <a:ListOfPoints>((117899,68465),(117899,66857),(92455,66857))</a:ListOfPoints>
 <a:CornerStyle>1</a:CornerStyle>
 <a:ArrowStyle>0</a:ArrowStyle>
@@ -7098,13 +7098,13 @@ EntityPrimaryAttribute 0 Arial,8,U</a:FontList>
 <a:Code>CONCEPTUALDATAMODEL_1_PHUCSHOE</a:Code>
 <a:CreationDate>1730294169</a:CreationDate>
 <a:Creator>HELLO</a:Creator>
-<a:ModificationDate>1730295332</a:ModificationDate>
+<a:ModificationDate>1730297299</a:ModificationDate>
 <a:Modifier>HELLO</a:Modifier>
 <a:GlobalObjectID/>
 <a:TargetModelURL>file:///D|/BAI TAP/Đồ Án Chuyên Ngành/project_phucShoe2_DoAnCN/database/ERD/ConceptualDataModel_1_PhucShoe.pdm</a:TargetModelURL>
 <a:TargetModelID>D9AAF891-C8DB-48E1-87AF-3B243D2F419B</a:TargetModelID>
 <a:TargetModelClassID>CDE44E21-9669-11D1-9914-006097355D9B</a:TargetModelClassID>
-<a:TargetModelLastModificationDate>1730295332</a:TargetModelLastModificationDate>
+<a:TargetModelLastModificationDate>1730297319</a:TargetModelLastModificationDate>
 <c:SessionShortcuts>
 <o:Shortcut Ref="o4"/>
 </c:SessionShortcuts>

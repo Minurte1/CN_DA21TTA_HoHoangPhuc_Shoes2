@@ -13,7 +13,10 @@ const {
   buyProductpost,
   updateAdminPassword,
 } = require("../services/apiCRUDServices");
-
+const pool = require("../config/database.js");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const JWT_SECRET = process.env.JWT_SECRET;
 const CreateUser = async (req, res) => {
   try {
     const taikhoan = req.body.username;
@@ -267,8 +270,8 @@ const countUsers = async (req, res) => {
   }
 };
 const loginUserGoogle = async (req, res) => {
-  const { email } = req.body;
-
+  const { email, HO_TEN } = req.body;
+  console.log("req.body loginUserGoogle", req.body);
   if (!email) {
     return res.status(401).json({
       EM: "email is missing",
@@ -280,24 +283,23 @@ const loginUserGoogle = async (req, res) => {
   try {
     // Check if the user already exists in the database
 
-    const [rows] = await pool.query("SELECT * FROM user WHERE email = ?", [
-      email,
-    ]);
+    const [rows] = await pool.query(
+      "SELECT * FROM NGUOI_DUNG WHERE EMAIL = ?",
+      [email]
+    );
 
     if (rows.length > 0) {
       const user = rows[0];
-
+      console.log(user);
       const token = jwt.sign(
         {
-          id: user.id,
-          email: user.email,
-          role: user.role,
-          userName: user.userName,
-          score: user.score,
-          phone: user.phone,
+          ID_NGUOI_DUNG: user.ID_NGUOI_DUNG,
+          EMAIL: user.EMAIL,
+          VAI_TRO: user.VAI_TRO,
+          HO_TEN: user.HO_TEN,
         },
         JWT_SECRET,
-        { expiresIn: "1h" }
+        { expiresIn: "2h" }
       );
       // Kiểm tra nếu role = -1, không cho phép đăng nhập
       if (user.role === -1) {
@@ -313,27 +315,45 @@ const loginUserGoogle = async (req, res) => {
         EC: 200,
         DT: {
           accessToken: token,
-          user: { id: user.id, email: user.email, role: user.role },
+          user: {
+            ID_NGUOI_DUNG: user.ID_NGUOI_DUNG,
+            EMAIL: user.EMAIL,
+            VAI_TRO: user.VAI_TRO,
+          },
         },
       });
     } else {
-      // User does not exist, insert the new user
+      const VAI_TRO = 0;
+      const TRANG_THAI_USER = "1";
       const [insertResult] = await pool.query(
-        "INSERT INTO user (userName, email, createdAt, updatedAt) VALUES (?,?,NOW(),NOW())",
-        [email, email]
+        "INSERT INTO NGUOI_DUNG (EMAIL, VAI_TRO, HO_TEN, TRANG_THAI_USER,NGAY_TAO_USER,NGAY_CAP_NHAT_USER) VALUES (?,?,?,?,NOW(),NOW())",
+        [email, VAI_TRO, HO_TEN, TRANG_THAI_USER]
       );
 
       const newUserId = insertResult.insertId;
-      const token = jwt.sign({ id: newUserId, email, role: 0 }, JWT_SECRET, {
-        expiresIn: "1h",
-      });
+
+      const token = jwt.sign(
+        {
+          ID_NGUOI_DUNG: newUserId,
+          EMAIL: email,
+          VAI_TRO: VAI_TRO,
+          HO_TEN: HO_TEN,
+        },
+        JWT_SECRET,
+        { expiresIn: "2h" }
+      );
 
       return res.status(200).json({
         EM: "New user created and logged in successfully",
         EC: 200,
         DT: {
           accessToken: token,
-          user: { id: newUserId, email, role: 0 }, // Adjust role as needed
+          user: {
+            ID_NGUOI_DUNG: newUserId,
+            EMAIL: email,
+            HO_TEN: HO_TEN,
+            VAI_TRO: VAI_TRO,
+          },
         },
       });
     }
@@ -346,6 +366,7 @@ const loginUserGoogle = async (req, res) => {
     });
   }
 };
+
 module.exports = {
   CreateUser,
   getAllUser,

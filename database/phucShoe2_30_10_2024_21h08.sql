@@ -1,6 +1,6 @@
 /*==============================================================*/
 /* DBMS name:      MySQL 5.0                                    */
-/* Created on:     10/30/2024 9:08:39 PM                        */
+/* Created on:     11/2/2024 2:19:26 PM                         */
 /*==============================================================*/
 
 
@@ -9,7 +9,7 @@
 /*==============================================================*/
 create table BINH_LUAN
 (
-   ID_BINH_LUAN         int not null  comment '',
+   ID_BINH_LUAN         int not null auto_increment comment '',
    ID_SAN_PHAM          int not null  comment '',
    ID_NGUOI_DUNG        int not null  comment '',
    DANH_GIA             int  comment '',
@@ -23,7 +23,7 @@ create table BINH_LUAN
 /*==============================================================*/
 create table CHAT_LIEU
 (
-   CHAT_LIEU_ID_        int not null  comment '',
+   CHAT_LIEU_ID_        int not null auto_increment comment '',
    TEN_CHAT_LIEU_       varchar(255)  comment '',
    CREATED_TEN_CHAT_LIEU_ datetime  comment '',
    UPDATE_CHAT_LIEU     datetime  comment '',
@@ -36,7 +36,7 @@ create table CHAT_LIEU
 /*==============================================================*/
 create table CHI_TIET_HOA_DON
 (
-   ID_CHI_TIET_HOA_DON  int not null  comment '',
+   ID_CHI_TIET_HOA_DON  int not null auto_increment comment '',
    ID_SAN_PHAM          int not null  comment '',
    ID_DON_HANG          int not null  comment '',
    SO_LUONG_SP          int  comment '',
@@ -58,7 +58,7 @@ create table CO_KICH_CO
 /*==============================================================*/
 create table DON_HANG
 (
-   ID_DON_HANG          int not null  comment '',
+   ID_DON_HANG          int not null auto_increment comment '',
    ID_NGUOI_DUNG        int not null  comment '',
    ID_THANH_TOAN        int not null  comment '',
    TONG_TIEN            float  comment '',
@@ -75,7 +75,7 @@ create table DON_HANG
 /*==============================================================*/
 create table GIOI_TINH
 (
-   GIOI_TINH_ID         int not null  comment '',
+   GIOI_TINH_ID         int not null auto_increment comment '',
    TEN_GIOI_TINH        varchar(255)  comment '',
    CREATED_GIOI_TINH    datetime  comment '',
    UPDATE_GIOI_TINH     datetime  comment '',
@@ -88,7 +88,7 @@ create table GIOI_TINH
 /*==============================================================*/
 create table GIO_HANG
 (
-   ID_GIO_HANG          int not null  comment '',
+   ID_GIO_HANG          int not null auto_increment comment '',
    ID_SAN_PHAM          int not null  comment '',
    ID_NGUOI_DUNG        int not null  comment '',
    SO_LUONG_GIOHANG     int  comment '',
@@ -101,7 +101,7 @@ create table GIO_HANG
 /*==============================================================*/
 create table ID_BAI_VIET
 (
-   ID_BAI_VIET          int not null  comment '',
+   ID_BAI_VIET          int not null auto_increment comment '',
    ID_NGUOI_DUNG        int not null  comment '',
    TIEU_DE              varchar(255)  comment '',
    NGAY_TAO_BLOG        datetime  comment '',
@@ -117,7 +117,7 @@ create table ID_BAI_VIET
 /*==============================================================*/
 create table KICH_CO
 (
-   ID_KICH_CO           int not null  comment '',
+   ID_KICH_CO           int not null auto_increment comment '',
    KICH_CO              varchar(255)  comment '',
    TRANG_THAI_KICH_CO   varchar(255)  comment '',
    CREATED_KICH_CO      datetime  comment '',
@@ -130,7 +130,7 @@ create table KICH_CO
 /*==============================================================*/
 create table LOAI_DANH_MUC
 (
-   ID_DANH_MUC          varchar(255) not null  comment '',
+   ID_DANH_MUC          int not null auto_increment comment '',
    TEN_DANH_MUC         varchar(255)  comment '',
    MO_TA_LOAI_DANH_MUC  varchar(255)  comment '',
    TRANG_THAI_DANHMUC   int  comment '',
@@ -144,7 +144,7 @@ create table LOAI_DANH_MUC
 /*==============================================================*/
 create table MAU_SAC
 (
-   MAU_SAC_ID           int not null  comment '',
+   MAU_SAC_ID           int not null auto_increment comment '',
    TEN_MAU_SAC          varchar(255)  comment '',
    CREATE_MAU_SAC       datetime  comment '',
    UPDATE_MAU_SAC       datetime  comment '',
@@ -167,7 +167,7 @@ create table MAU_SAC_SAN_PHAM
 /*==============================================================*/
 create table MUC_DICH_SU_DUNG
 (
-   ID_MUC_DICH_SU_DUNG  int not null  comment '',
+   ID_MUC_DICH_SU_DUNG  int not null auto_increment comment '',
    TEN_MUC_DICH_SU_DUNG varchar(255)  comment '',
    CREATE_MUC_DICH_SU_DUNG datetime  comment '',
    UPDATE_MUC_DICH_SU_DUNG datetime  comment '',
@@ -190,8 +190,7 @@ create table MUC_DICH_SU_DUNG_SAN_PHAM
 /*==============================================================*/
 create table NGUOI_DUNG
 (
-   ID_NGUOI_DUNG        int not null  comment '',
-   TEN_DANG_NHAP        varchar(255)  comment '',
+   ID_NGUOI_DUNG        int not null auto_increment comment '',
    MAT_KHAU             varchar(255)  comment '',
    EMAIL                varchar(255)  comment '',
    VAI_TRO              varchar(255)  comment '',
@@ -201,6 +200,7 @@ create table NGUOI_DUNG
    TRANG_THAI_USER      varchar(255)  comment '',
    NGAY_TAO_USER        datetime  comment '',
    NGAY_CAP_NHAT_USER   varchar(255)  comment '',
+   AVATAR               varchar(255)  comment '',
    primary key (ID_NGUOI_DUNG)
 );
 
@@ -219,7 +219,7 @@ create table PHONG_CACH_SAN_PHAM
 /*==============================================================*/
 create table PHUONG_CACH
 (
-   ID_PHUONG_CACH       int not null  comment '',
+   ID_PHUONG_CACH       int not null auto_increment comment '',
    TEN_PHUONG_CACH      varchar(255)  comment '',
    CREATED_PHONG_CACH   datetime  comment '',
    UPDATE_PHONG_CACH    datetime  comment '',
@@ -232,9 +232,9 @@ create table PHUONG_CACH
 /*==============================================================*/
 create table SAN_PHAM
 (
-   ID_SAN_PHAM          int not null  comment '',
+   ID_SAN_PHAM          int not null auto_increment comment '',
    ID_THUONG_HIEU       int not null  comment '',
-   ID_DANH_MUC          varchar(255) not null  comment '',
+   ID_DANH_MUC          int not null  comment '',
    GIOI_TINH_ID         int not null  comment '',
    CHAT_LIEU_ID_        int not null  comment '',
    TEN_SAN_PHAM         varchar(255)  comment '',
@@ -253,7 +253,7 @@ create table SAN_PHAM
 /*==============================================================*/
 create table THANH_TOAN
 (
-   ID_THANH_TOAN        int not null  comment '',
+   ID_THANH_TOAN        int not null auto_increment comment '',
    PHUONG_THUC_THANH_TOAN varchar(255)  comment '',
    NGAY_THANH_TOAN      datetime  comment '',
    TRANG_THAI_THANH_TOAN varchar(266)  comment '',
@@ -265,7 +265,7 @@ create table THANH_TOAN
 /*==============================================================*/
 create table THUONG_HIEU
 (
-   ID_THUONG_HIEU       int not null  comment '',
+   ID_THUONG_HIEU       int not null auto_increment comment '',
    TEN_THUONG_HIEU      varchar(255)  comment '',
    CREATE_THUONG_HIEU   varchar(255)  comment '',
    UPDATE_THUONG_HIEU   datetime  comment '',
@@ -278,7 +278,7 @@ create table THUONG_HIEU
 /*==============================================================*/
 create table TIN_NHAN
 (
-   ID_TIN_NHAN          int not null  comment '',
+   ID_TIN_NHAN          int not null auto_increment comment '',
    ID_NGUOI_DUNG        int not null  comment '',
    NGAY_TAO_TIN_NHAN    datetime  comment '',
    NOI_DUNG_TINNHAN     varchar(255)  comment '',
@@ -290,7 +290,7 @@ create table TIN_NHAN
 /*==============================================================*/
 create table YEU_THICH
 (
-   ID_YEU_THICH         int not null  comment '',
+   ID_YEU_THICH         int not null auto_increment comment '',
    ID_SAN_PHAM          int not null  comment '',
    ID_NGUOI_DUNG        int not null  comment '',
    primary key (ID_YEU_THICH)

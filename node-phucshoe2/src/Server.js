@@ -10,7 +10,7 @@ const hostname = process.env.HOST_NAME || "3002";
 
 //setting
 const corsOptions = {
-  origin: true, // Cho phép truy cập từ tất cả các nguồn
+  origin: "*", // Cho phép truy cập từ tất cả các nguồn
   credentials: true, // Cho phép gửi cookie
 };
 app.use(cors(corsOptions));
@@ -20,13 +20,15 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use("/", (req, res) => {
-  res.send("helloworld");
-});
 
 //api
 const apiRoute = require("../src/routers/api.js");
+const userRoute = require("./routers/nguoiDungRouter/userRouters.js");
 app.use("/api", apiRoute);
+app.use("/", userRoute);
+// app.use("/", (req, res) => {
+//   res.send("helloworld");
+// });
 
 const configViewEngine = require("./config/viewEngine");
 configViewEngine(app);

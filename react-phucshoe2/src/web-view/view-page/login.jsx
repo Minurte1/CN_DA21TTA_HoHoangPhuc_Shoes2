@@ -42,15 +42,18 @@ const LoginPage = () => {
       console.error("Login Failed:", error);
     },
   });
-
+  console.log(
+    "process.env.REACT_APP_URL_SERVER",
+    process.env.REACT_APP_URL_SERVER
+  );
   useEffect(() => {
     if (user) {
       console.log("check user =>", user.email);
       const fetchData = async () => {
         try {
           const response = await axios.post(
-            `${process.env.REACT_APP_URL_SERVER}/api/login/google`,
-            { email: user.email }
+            `${process.env.REACT_APP_URL_SERVER}/login/google`,
+            { email: user.email, HO_TEN: user.name }
           );
           console.log("check token =>", response.data);
 
