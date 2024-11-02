@@ -1,14 +1,15 @@
 import { useRoutes, Navigate } from "react-router-dom";
 import Home from "../web-view/view-page/home";
 import Contact from "../web-view/view-page/contact";
-import Movie from "./view-page/movie";
+
 import Detail from "./view-page/Detail";
 import SelectFilm from "./view-page/SelectFilm.jsx";
 import SelectPosition from "./view-page/SelectPosition.jsx";
 import MovieConfirmation from "./view-page/MovieConfirmation.jsx";
-import Login from "../authentication/login.jsx";
-import Register from "../authentication/register.jsx";
 import SelectMovie from "./view-page/selectMovie.jsx";
+import LoginPage from "./view-page/login.jsx";
+import RegistrationForm from "./view-page/register.jsx";
+
 const RouterView = () => {
   const element = useRoutes([
     {
@@ -17,11 +18,11 @@ const RouterView = () => {
     },
     {
       path: "/login",
-      element: <Login />,
+      element: <LoginPage />,
     },
     {
       path: "/register",
-      element: <Register />,
+      element: <RegistrationForm />,
     },
     {
       path: "/detail",
@@ -47,10 +48,7 @@ const RouterView = () => {
       path: "/contact",
       element: <Contact />,
     },
-    {
-      path: "/movie",
-      element: <Movie />,
-    },
+
     {
       path: "*",
       element: <Navigate to="/contact" replace />,

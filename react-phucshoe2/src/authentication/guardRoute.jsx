@@ -1,7 +1,7 @@
 import { Navigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
-import { verifyAdmin } from "../service/userAccountService";
+import { verifyAdmin } from "../services/userAccountService";
 
 const GuardRoute = ({ element: Element, ...rest }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);

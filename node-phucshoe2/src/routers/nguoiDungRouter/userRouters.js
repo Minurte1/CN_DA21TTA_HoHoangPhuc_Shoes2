@@ -49,4 +49,5 @@ router.put(
 router.delete("/user/info/delete/:username", checkUserJWT, XoaUser); //xóa user (cho admin)
 router.get("/countuser", countUsers); //Tính số lượng tài khoản đã tạo cho ADMIN
 router.post("/productt", muahangUser);
+
 module.exports = router;

@@ -2,9 +2,9 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./App.css";
 // import Header from "./share-view/header";
 // import Footer from "./share-view/footer";
-// import RouterView from "./web-view/router-view";
+import RouterView from "./web-view/router-view";
 // import RouterAdmin from "./admin-view/router-admin";
-// import GuardRoute from "./authentication/guardRoute";
+import GuardRoute from "./authentication/guardRoute";
 
 function App() {
   return (
@@ -12,7 +12,7 @@ function App() {
       <Router>
         <Routes>
           <Route path="/*" element={<MainLayout />} />
-          <>fdf</>
+
           {/* <Route
             path="/admin/*"
             element={<GuardRoute element={AdminLayout} />}
@@ -26,7 +26,9 @@ function App() {
 const MainLayout = () => (
   <>
     {/* <Header /> */}
-    <Routes>{/* <Route path="/*" element={<RouterView />} /> */}</Routes>
+    <Routes>
+      <Route path="/*" element={<RouterView />} />
+    </Routes>
     {/* <Footer /> */}
   </>
 );

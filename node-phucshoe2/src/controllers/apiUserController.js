@@ -279,20 +279,34 @@ const loginUserGoogle = async (req, res) => {
 
   try {
     // Check if the user already exists in the database
-    const userName = "MyName";
-    const password = "asdasda123123asdasd";
-    const hashedPassword = await bcrypt.hash(password, 10);
+
     const [rows] = await pool.query("SELECT * FROM user WHERE email = ?", [
       email,
     ]);
+
     if (rows.length > 0) {
-      // User exists, generate token and return user information
       const user = rows[0];
+
       const token = jwt.sign(
-        { id: user.id, email: user.email, role: user.role },
+        {
+          id: user.id,
+          email: user.email,
+          role: user.role,
+          userName: user.userName,
+          score: user.score,
+          phone: user.phone,
+        },
         JWT_SECRET,
         { expiresIn: "1h" }
       );
+      // Kiểm tra nếu role = -1, không cho phép đăng nhập
+      if (user.role === -1) {
+        return res.status(403).json({
+          EM: "Tài khoản đã bị khóa, không thể đăng nhập",
+          EC: 403,
+          DT: "Account is disabled",
+        });
+      }
 
       return res.status(200).json({
         EM: "Login successful",
@@ -305,8 +319,8 @@ const loginUserGoogle = async (req, res) => {
     } else {
       // User does not exist, insert the new user
       const [insertResult] = await pool.query(
-        "INSERT INTO user (userName,email,password,createdAt,updatedAt) VALUES (?,?,?,NOW(),NOW())",
-        [userName, email, hashedPassword]
+        "INSERT INTO user (userName, email, createdAt, updatedAt) VALUES (?,?,NOW(),NOW())",
+        [email, email]
       );
 
       const newUserId = insertResult.insertId;

@@ -11,7 +11,8 @@ import {
   DialogActions,
 } from "@mui/material";
 import { deleteMoviesyById } from "../../service/moviesServices";
-const apiUrl = import.meta.env.VITE_API_URL; // Đường dẫn API lấy từ biến môi trường
+const apiUrl = process.env.REACT_APP_URL_SERVER;
+
 const apiImage = apiUrl + "/uploads/";
 
 const Movies = () => {
