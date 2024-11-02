@@ -3,7 +3,7 @@ import { Container, Grid, Box, Button, Typography } from "@mui/material";
 
 import StarIcon from "@mui/icons-material/Star";
 
-const SelectGame = () => {
+const SelectShoe = () => {
   return (
     <Container maxWidth="lg" className="container-select-game">
       <Grid container spacing={2}>
@@ -230,4 +230,4 @@ const SelectGame = () => {
   );
 };
 
-export default SelectGame;
+export default SelectShoe;

@@ -9,7 +9,7 @@ import RouterView from "./web-view/router-view";
 
 import UserRouter from "./user-view/router-user";
 import NavBarUser from "./user-view/components/navBarUser";
-import HeaderUser from "./admin-view/components/headerAdmin";
+import HeaderUser from "./user-view/components/headerUser";
 
 import RouterAdmin from "./admin-view/router-admin";
 import NavBarAdmin from "./admin-view/components/navBarAdmin";

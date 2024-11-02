@@ -3,7 +3,7 @@ import { useRoutes, Navigate } from "react-router-dom";
 import LoginPage from "./view-page/login.jsx";
 import RegistrationForm from "./view-page/register.jsx";
 import Home from "./view-page/home.jsx";
-import SelectGame from "./view-page/selectGame.jsx";
+import SelectShoe from "./view-page/selectShoe.jsx";
 
 const RouterView = () => {
   const element = useRoutes([
@@ -21,8 +21,8 @@ const RouterView = () => {
     },
 
     {
-      path: "/selectGame/*",
-      element: <SelectGame />,
+      path: "/selectShoe/*",
+      element: <SelectShoe />,
     },
 
     {

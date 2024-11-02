@@ -191,13 +191,13 @@ const HeaderAdmin = () => {
           Minurte1
         </Typography>
       </Box>
-      <Button
+      {/* <Button
         variant="contained"
         href="https://launcher-public-service-prod06.ol.epicgames.com/launcher/api/installer/download/EpicGamesLauncherInstaller.msi?trackingId=aebf7d1fc5764a45acab1b551038bebf"
         style={{ backgroundColor: "#00aaff", marginLeft: 16 }}
       >
         Download
-      </Button>
+      </Button> */}
     </>
   );
 
@@ -252,14 +252,14 @@ const HeaderAdmin = () => {
                 <AccountCircle sx={{ marginRight: 1 }} />
                 Minurte1
               </MenuItem>
-              <MenuItem onClick={handleMobileMenuClose}>
+              {/* <MenuItem onClick={handleMobileMenuClose}>
                 <Button
                   variant="contained"
                   style={{ backgroundColor: "#00aaff" }}
                 >
                   Download
                 </Button>
-              </MenuItem>
+              </MenuItem> */}
             </Menu>
           </>
         ) : (

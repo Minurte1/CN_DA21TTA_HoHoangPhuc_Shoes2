@@ -15,8 +15,8 @@ import LanguageIcon from "@mui/icons-material/Language";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useTheme } from "@mui/material/styles";
 import { Link } from "react-router-dom";
-import logo from "../public/logo/iconlogo.png";
-const Header = () => {
+
+const HeaderUser = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
   const theme = useTheme();
@@ -191,13 +191,13 @@ const Header = () => {
           Minurte1
         </Typography>
       </Box>
-      <Button
+      {/* <Button
         variant="contained"
         href="https://launcher-public-service-prod06.ol.epicgames.com/launcher/api/installer/download/EpicGamesLauncherInstaller.msi?trackingId=aebf7d1fc5764a45acab1b551038bebf"
         style={{ backgroundColor: "#00aaff", marginLeft: 16 }}
       >
         Download
-      </Button>
+      </Button> */}
     </>
   );
 
@@ -208,15 +208,10 @@ const Header = () => {
     >
       <Toolbar>
         <img
-          src={logo}
+          src="https://upload.wikimedia.org/wikipedia/commons/3/31/Epic_Games_logo.svg"
           alt="Epic Games"
-          style={{
-            height: 50,
-            marginRight: 16,
-            filter: "drop-shadow(1px 4px 3.5px rgb(38, 187, 255))",
-          }}
+          style={{ height: 30, marginRight: 16 }}
         />
-
         <Typography
           variant="h6"
           component="div"
@@ -257,14 +252,14 @@ const Header = () => {
                 <AccountCircle sx={{ marginRight: 1 }} />
                 Minurte1
               </MenuItem>
-              <MenuItem onClick={handleMobileMenuClose}>
+              {/* <MenuItem onClick={handleMobileMenuClose}>
                 <Button
                   variant="contained"
                   style={{ backgroundColor: "#00aaff" }}
                 >
                   Download
                 </Button>
-              </MenuItem>
+              </MenuItem> */}
             </Menu>
           </>
         ) : (
@@ -275,4 +270,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default HeaderUser;
