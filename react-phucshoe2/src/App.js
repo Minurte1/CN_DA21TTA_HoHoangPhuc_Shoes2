@@ -6,6 +6,8 @@ import RouterView from "./web-view/router-view";
 import RouterAdmin from "./admin-view/router-admin";
 import GuardRoute from "./authentication/guardRoute";
 import Navbar from "./share-view/navbar";
+import UserRouter from "./user-view/router-user";
+import NavBarUser from "./user-view/components/navBarUser";
 
 function App() {
   return (
@@ -18,6 +20,7 @@ function App() {
             path="/admin/*"
             element={<GuardRoute element={AdminLayout} />}
           />
+          <Route path="/profile/*" element={<RouterUser />} />
           {/* <Route path="/admin/*" element={<RouterAdmin />} /> */}
         </Routes>
       </Router>
@@ -33,6 +36,19 @@ const MainLayout = () => (
     </Routes>
     <Footer />
   </>
+);
+const RouterUser = () => (
+  <div style={{ display: "flex" }}>
+    <div style={{ flex: 1 }}>
+      <NavBarUser />
+    </div>
+
+    <div style={{ flex: 9 }}>
+      <Routes>
+        <Route path="/*" element={<UserRouter />} />
+      </Routes>
+    </div>
+  </div>
 );
 const AdminLayout = () => (
   <Routes>
