@@ -1,6 +1,9 @@
 import { useRoutes, Navigate } from "react-router-dom";
 import DashboardAdmin from "./pages/DashboardAdmin";
 import DonHangGame from "./pages/DonHang";
+// import QuanLyNguoiDung from "./pages/QuanLyNguoiDung";
+// import QuanLySanPham from "./pages/QuanLySanPham";
+// import TuongTacNguoiDung from "./pages/TuongTacNguoiDung";
 
 const RouterAdmin = () => {
   const element = useRoutes([
@@ -12,6 +15,18 @@ const RouterAdmin = () => {
       path: "/donhang",
       element: <DonHangGame />,
     },
+    // {
+    //   path: "/nguoi-dung",
+    //   element: <QuanLyNguoiDung />,
+    // },
+    // {
+    //   path: "/san-pham",
+    //   element: <QuanLySanPham />,
+    // },
+    // {
+    //   path: "/tuong-tac-nguoi-dung",
+    //   element: <TuongTacNguoiDung />,
+    // },
     {
       path: "*",
       element: <Navigate to="/login" replace />, // Chuyển hướng nếu không tìm thấy route
