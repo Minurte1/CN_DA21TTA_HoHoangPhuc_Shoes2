@@ -1,7 +1,8 @@
 import { useRoutes, Navigate } from "react-router-dom";
 import DashboardAdmin from "./pages/DashboardAdmin";
 import DonHangGame from "./pages/DonHang";
-// import QuanLyNguoiDung from "./pages/QuanLyNguoiDung";
+import DanhSachNguoiDungAdmin from "./pages/quanLyNguoiDung/DanhSachNguoiDungAdmin";
+
 // import QuanLySanPham from "./pages/QuanLySanPham";
 // import TuongTacNguoiDung from "./pages/TuongTacNguoiDung";
 
@@ -15,10 +16,10 @@ const RouterAdmin = () => {
       path: "/donhang",
       element: <DonHangGame />,
     },
-    // {
-    //   path: "/nguoi-dung",
-    //   element: <QuanLyNguoiDung />,
-    // },
+    {
+      path: "/nguoi-dung/danh-sach",
+      element: <DanhSachNguoiDungAdmin />,
+    },
     // {
     //   path: "/san-pham",
     //   element: <QuanLySanPham />,

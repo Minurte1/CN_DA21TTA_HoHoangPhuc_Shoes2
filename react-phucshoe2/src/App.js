@@ -14,6 +14,7 @@ import HeaderUser from "./user-view/components/headerUser";
 import RouterAdmin from "./admin-view/router-admin";
 import NavBarAdmin from "./admin-view/components/navBarAdmin";
 import HeaderAdmin from "./admin-view/components/headerAdmin";
+import { Grid } from "@mui/material";
 
 function App() {
   return (
@@ -61,16 +62,16 @@ const RouterUser = () => (
 const AdminLayout = () => (
   <>
     <HeaderAdmin />
-    <div style={{ display: "flex" }}>
-      <div style={{ flex: 1 }}>
+    <Grid container style={{ height: "100vh" }}>
+      <Grid item xs={3} md={2.5}>
         <NavBarAdmin />
-      </div>
-      <div style={{ flex: 9 }}>
+      </Grid>
+      <Grid item xs={9} md={9}>
         <Routes>
-          <Route path="/*" element={<RouterAdmin />} />{" "}
+          <Route path="/*" element={<RouterAdmin />} />
         </Routes>
-      </div>
-    </div>
+      </Grid>
+    </Grid>
   </>
 );
 

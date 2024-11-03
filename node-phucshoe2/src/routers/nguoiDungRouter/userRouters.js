@@ -34,7 +34,7 @@ router.post("/registerAdmin", registerAdmin);
 router.put("/admin/info/update/password/", checkUserJWT, CapnhatAdmin); //update mật khẩu cho admin
 //----------------------------------------------------------------------------------------------------------------
 //user routes READ POST PUT DELETE information
-router.get("/user", checkUserJWT, getAllUser); // get list of users
+router.get("/user", getAllUser); // get list of users
 router.get("/user/info/:username", checkUserJWT, getInfoUser); //get info 1 user
 router.put("/user/info/update/:username", checkUserJWT, CapnhatUser);
 router.put(

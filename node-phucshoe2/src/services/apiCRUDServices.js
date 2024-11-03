@@ -18,7 +18,7 @@ const checkPassword = (inputpassword, hashpass) => {
 const getUser = async () => {
   try {
     const [results, fields] = await connection.execute(
-      "SELECT u.*,k.makhachhang,k.ten,k.avatar, k.diachi,k.ghichu,k.sodienthoai FROM `users` as u, khachhang as k where u.taikhoan = k.taikhoan"
+      "select * from NGUOI_DUNG"
     );
     return {
       EM: "xem thoong tin thanh cong",

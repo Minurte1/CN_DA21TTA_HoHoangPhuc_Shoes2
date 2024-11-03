@@ -21,9 +21,10 @@ import GroupIcon from "@mui/icons-material/Group"; // Tương tác người dùn
 import ExpandLess from "@mui/icons-material/ExpandLess"; // Import đúng từ đây
 import ExpandMore from "@mui/icons-material/ExpandMore"; // Import đúng từ đây
 
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 const NavBarAdmin = () => {
   const [openSection, setOpenSection] = useState(null);
+  const location = useLocation();
 
   const toggleSection = (section) => {
     setOpenSection((prev) => (prev === section ? null : section));
@@ -59,7 +60,10 @@ const NavBarAdmin = () => {
       >
         <Typography
           variant="h6"
-          style={{ marginBottom: "20px", color: "#fff" }}
+          style={{
+            marginBottom: "20px",
+            color: "#fff",
+          }}
         >
           Quản lý hệ thống
         </Typography>
@@ -67,21 +71,34 @@ const NavBarAdmin = () => {
           <ListItem
             button
             component={Link}
-            to="/user"
-            sx={{ color: "#f0f6fc" }}
+            to="/admin/"
+            sx={{
+              borderRadius: "12px",
+              color: "#f0f6fc",
+              cursor: "pointer",
+              userSelect: "none",
+              backgroundColor:
+                location.pathname === "/admin" ? "#3c3f41" : "transparent", // Kiểm tra nếu đang ở trang này
+              "&:hover": { backgroundColor: "#3c3f41" },
+            }}
           >
             <ListItemIcon>
               <AccountCircleIcon sx={{ color: "#f0f6fc" }} />
             </ListItemIcon>
             <ListItemText primary="Thông Tin Admin" />
-          </ListItem>{" "}
+          </ListItem>
           {/* //----------------------- */}
           <List>
             {/* Quản lý người dùng */}
             <ListItem
               button
               onClick={() => toggleSection("nguoiDung")}
-              sx={{ color: "#f0f6fc" }}
+              sx={{
+                borderRadius: "12px",
+                color: "#f0f6fc",
+                cursor: "pointer",
+                userSelect: "none",
+              }}
             >
               <ListItemIcon>
                 <PeopleIcon sx={{ color: "#ffffff" }} />
@@ -95,19 +112,30 @@ const NavBarAdmin = () => {
               unmountOnExit
             >
               <List component="div" disablePadding>
-                <ListItem
+                {/* <ListItem
                   button
                   component={Link}
                   to="/user/nguoi-dung/add"
                   sx={{ pl: 4, color: "#f0f6fc" }}
                 >
                   <ListItemText primary="Thêm người dùng" />
-                </ListItem>
+                </ListItem> */}
                 <ListItem
                   button
                   component={Link}
-                  to="/user/nguoi-dung/list"
-                  sx={{ pl: 4, color: "#f0f6fc" }}
+                  to="/admin/nguoi-dung/danh-sach"
+                  sx={{
+                    borderRadius: "12px",
+                    pl: 4,
+                    color: "#f0f6fc",
+                    cursor: "pointer",
+                    userSelect: "none",
+                    backgroundColor:
+                      location.pathname === "/admin/nguoi-dung/danh-sach"
+                        ? "#3c3f41"
+                        : "transparent", // Kiểm tra nếu đang ở trang này
+                    "&:hover": { backgroundColor: "#3c3f41" },
+                  }}
                 >
                   <ListItemText primary="Danh sách người dùng" />
                 </ListItem>
