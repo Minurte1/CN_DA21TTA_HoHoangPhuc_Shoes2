@@ -149,6 +149,55 @@ const NavBarAdmin = () => {
                 </ListItem>
               </List>
             </Collapse>
+            {/* Quản lý sản phẩm */}
+            <ListItem
+              button
+              onClick={() => toggleSection("sanPham")}
+              sx={{
+                borderRadius: "12px",
+                color: "#f0f6fc",
+                cursor: "pointer",
+                userSelect: "none",
+              }}
+            >
+              <ListItemIcon>
+                <InventoryIcon sx={{ color: "#ffffff" }} />
+              </ListItemIcon>
+              <ListItemText primary="Quản lý sản phẩm" />
+              {openSection === "sanPham" ? <ExpandLess /> : <ExpandMore />}
+            </ListItem>
+            <Collapse
+              in={openSection === "sanPham"}
+              timeout="auto"
+              unmountOnExit
+            >
+              <List component="div" disablePadding>
+                <ListItem
+                  button
+                  component={Link}
+                  to="/admin/san-pham/add"
+                  sx={{ pl: 4, color: "#f0f6fc" }}
+                >
+                  <ListItemText primary="Thêm sản phẩm" />
+                </ListItem>
+                <ListItem
+                  button
+                  component={Link}
+                  to="/admin/san-pham/inventory"
+                  sx={{ pl: 4, color: "#f0f6fc" }}
+                >
+                  <ListItemText primary="Kho hàng" />
+                </ListItem>
+                <ListItem
+                  button
+                  component={Link}
+                  to="/admin/san-pham/categories"
+                  sx={{ pl: 4, color: "#f0f6fc" }}
+                >
+                  <ListItemText primary="Danh mục sản phẩm" />
+                </ListItem>
+              </List>
+            </Collapse>
 
             {/* Quản lý đơn hàng */}
             <ListItem
@@ -191,51 +240,6 @@ const NavBarAdmin = () => {
                   sx={{ pl: 4, color: "#f0f6fc" }}
                 >
                   <ListItemText primary="Lịch sử đơn hàng" />
-                </ListItem>
-              </List>
-            </Collapse>
-
-            {/* Quản lý sản phẩm */}
-            <ListItem
-              button
-              onClick={() => toggleSection("sanPham")}
-              sx={{ color: "#f0f6fc" }}
-            >
-              <ListItemIcon>
-                <InventoryIcon sx={{ color: "#ffffff" }} />
-              </ListItemIcon>
-              <ListItemText primary="Quản lý sản phẩm" />
-              {openSection === "sanPham" ? <ExpandLess /> : <ExpandMore />}
-            </ListItem>
-            <Collapse
-              in={openSection === "sanPham"}
-              timeout="auto"
-              unmountOnExit
-            >
-              <List component="div" disablePadding>
-                <ListItem
-                  button
-                  component={Link}
-                  to="/admin/san-pham/add"
-                  sx={{ pl: 4, color: "#f0f6fc" }}
-                >
-                  <ListItemText primary="Thêm sản phẩm" />
-                </ListItem>
-                <ListItem
-                  button
-                  component={Link}
-                  to="/admin/san-pham/inventory"
-                  sx={{ pl: 4, color: "#f0f6fc" }}
-                >
-                  <ListItemText primary="Kho hàng" />
-                </ListItem>
-                <ListItem
-                  button
-                  component={Link}
-                  to="/admin/san-pham/categories"
-                  sx={{ pl: 4, color: "#f0f6fc" }}
-                >
-                  <ListItemText primary="Danh mục sản phẩm" />
                 </ListItem>
               </List>
             </Collapse>

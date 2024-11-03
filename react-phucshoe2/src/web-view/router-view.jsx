@@ -4,6 +4,8 @@ import LoginPage from "./view-page/login.jsx";
 import RegistrationForm from "./view-page/register.jsx";
 import Home from "./view-page/home.jsx";
 import SelectShoe from "./view-page/selectShoe.jsx";
+import PaymentMoMo from "./component-view/thanhToanMoMo.jsx";
+import CheckOutMoMo from "./component-view/checkOutMoMo.jsx";
 
 const RouterView = () => {
   const element = useRoutes([
@@ -19,7 +21,14 @@ const RouterView = () => {
       path: "/register",
       element: <RegistrationForm />,
     },
-
+    {
+      path: "/pay",
+      element: <PaymentMoMo />,
+    },
+    {
+      path: "/checkout",
+      element: <CheckOutMoMo />,
+    },
     {
       path: "/selectShoe/*",
       element: <SelectShoe />,
