@@ -67,7 +67,7 @@ const Header = () => {
   }, []);
   const handleMenu = (event) => {
     const token = Cookies.get("accessToken");
-    if (token) {
+    if (isAuthenticated && token) {
       setAnchorEl(event.currentTarget);
     } else {
       navigate("/login");
@@ -105,7 +105,9 @@ const Header = () => {
     <>
       <Button color="inherit">Support</Button>
       <div>
+        <h2>{t.nameUser}</h2>
         <h2>{t.example}</h2>
+
         <p>{t.description}</p>
       </div>
       <div>
@@ -119,7 +121,6 @@ const Header = () => {
         <button onClick={() => handleChangeLanguage("vi")}>Tiếng Việt</button>
         <button onClick={() => handleChangeLanguage("en")}>English</button>
         <button onClick={() => handleChangeLanguage("es")}>Español</button>
-        {/* Thêm nhiều ngôn ngữ ở đây */}
       </div>
       <Button color="inherit">Distribute</Button>
       <IconButton color="inherit">
@@ -256,7 +257,9 @@ const Header = () => {
                 backgroundColor: "#4a494c", // Màu nền khi hover
               },
             }}
-            onClick={handleLogout}
+            onClick={() => {
+              handleLogout();
+            }}
           >
             Đăng xuất
           </MenuItem>

@@ -20,15 +20,26 @@ import dayjs from "dayjs";
 import { LocalizationProvider, DateTimePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { Link } from "react-router-dom";
+import axiosInstance from "../../authentication/axiosInstance";
+import { toast } from "react-toastify";
 const RegistrationForm = () => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [isOpenThongTinUser, setIsOpenThongTinUser] = useState(true);
   const scrollRef = useRef(null); // Tạo ref cho phần tử cuộn tới
-  const [infoUser, setInfoUser] = useState({
-    TENDANGNHAP: "",
-    PASSWORD: "",
-    EMAIL: "",
+  const [formData, setFormData] = useState({
+    fullName: "",
+    phone: "",
+    password: "",
+    email: "",
   });
+  const [confirmPassword, setConfirmPassword] = useState(null);
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
   const isOver18 = (dateOfBirth) => {
     const age = dayjs().diff(dayjs(dateOfBirth), "year");
     return age >= 18;
@@ -47,6 +58,28 @@ const RegistrationForm = () => {
       setIsOpenThongTinUser(!isOpenThongTinUser);
     } else {
       alert("Bạn phải trên 18 tuổi để tạo tài khoản.");
+    }
+  };
+  const handleRegister = async () => {
+    if (formData.password == confirmPassword) {
+      try {
+        const response = await axiosInstance.post(
+          `${process.env.REACT_APP_URL_SERVER}/register`,
+          {
+            formData,
+          }
+        );
+        if (response.data.EC === 1) {
+          toast.success(response.data.EM);
+        } else {
+          toast.error(response.data.EM);
+        }
+      } catch (error) {
+        toast.error(error);
+        console.log(error);
+      }
+    } else {
+      toast.error("Mật khẩu không trùng khớp!!");
     }
   };
   return (
@@ -159,7 +192,7 @@ const RegistrationForm = () => {
                 >
                   Create Account
                 </Typography>
-                <FormControl fullWidth margin="normal" variant="outlined">
+                {/* <FormControl fullWidth margin="normal" variant="outlined">
                   <InputLabel style={{ color: "#c1c1c1" }}>Country</InputLabel>
                   <Select
                     defaultValue="Vietnam"
@@ -174,21 +207,18 @@ const RegistrationForm = () => {
                     }}
                   >
                     <MenuItem value="Vietnam">Vietnam</MenuItem>
-                    {/* Add more countries as needed */}
                   </Select>
-                </FormControl>
+                </FormControl> */}
                 <TextField
                   label="Email Address"
                   variant="outlined"
                   fullWidth
                   margin="normal"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
                   InputProps={{
                     style: { color: "#c1c1c1" },
-                    // startAdornment: (
-                    //   <InputAdornment position="start">
-                    //     <Icon style={{ color: "#c1c1c1" }}>email</Icon>
-                    //   </InputAdornment>
-                    // ),
                   }}
                   InputLabelProps={{ style: { color: "#c1c1c1" } }}
                   sx={{
@@ -206,10 +236,13 @@ const RegistrationForm = () => {
                   }}
                 />
                 <TextField
-                  label="First Name"
+                  label="Full Name"
                   variant="outlined"
                   fullWidth
                   margin="normal"
+                  name="fullName"
+                  value={formData.fullName}
+                  onChange={handleInputChange}
                   required
                   InputProps={{ style: { color: "#c1c1c1" } }}
                   InputLabelProps={{ style: { color: "#c1c1c1" } }}
@@ -228,11 +261,13 @@ const RegistrationForm = () => {
                   }}
                 />
                 <TextField
-                  label="Last Name"
+                  label="Phone"
                   variant="outlined"
                   fullWidth
                   margin="normal"
-                  required
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleInputChange}
                   InputProps={{ style: { color: "#c1c1c1" } }}
                   InputLabelProps={{ style: { color: "#c1c1c1" } }}
                   sx={{
@@ -248,32 +283,38 @@ const RegistrationForm = () => {
                       },
                     },
                   }}
-                />
-                <TextField
-                  label="Display Name"
-                  variant="outlined"
-                  fullWidth
-                  margin="normal"
-                  InputProps={{ style: { color: "#c1c1c1" } }}
-                  InputLabelProps={{ style: { color: "#c1c1c1" } }}
-                  sx={{
-                    "& .MuiOutlinedInput-root": {
-                      "& fieldset": {
-                        borderColor: "#c1c1c1",
-                      },
-                      "&:hover fieldset": {
-                        borderColor: "#26bbff",
-                      },
-                      "&.Mui-focused fieldset": {
-                        borderColor: "#26bbff",
-                      },
-                    },
-                  }}
-                />
+                />{" "}
                 <TextField
                   label="Password"
                   type="password"
                   variant="outlined"
+                  fullWidth
+                  margin="normal"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleInputChange}
+                  InputProps={{ style: { color: "#c1c1c1" } }}
+                  InputLabelProps={{ style: { color: "#c1c1c1" } }}
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      "& fieldset": {
+                        borderColor: "#c1c1c1",
+                      },
+                      "&:hover fieldset": {
+                        borderColor: "#26bbff",
+                      },
+                      "&.Mui-focused fieldset": {
+                        borderColor: "#26bbff",
+                      },
+                    },
+                  }}
+                />{" "}
+                <TextField
+                  label="Confirm Password"
+                  type="password"
+                  variant="outlined"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
                   fullWidth
                   margin="normal"
                   InputProps={{ style: { color: "#c1c1c1" } }}
@@ -313,6 +354,7 @@ const RegistrationForm = () => {
                 <Button
                   variant="contained"
                   color="primary"
+                  onClick={() => handleRegister()}
                   fullWidth
                   style={{ backgroundColor: "#26bbff", color: "#101014" }}
                 >

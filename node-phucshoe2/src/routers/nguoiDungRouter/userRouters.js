@@ -18,6 +18,7 @@ router.post("/user-info", infoUserById);
 router.post("/logout", logoutUser);
 router.post("/login/google", loginUserGoogle);
 router.post("/verify-admin", verifyAdmin);
+router.post("/register");
 
 router.put("/user/update", updateUserById_Admin);
 module.exports = router;

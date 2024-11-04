@@ -158,6 +158,12 @@ const loginUserGoogle = async (req, res) => {
           EMAIL: user.EMAIL,
           VAI_TRO: user.VAI_TRO,
           HO_TEN: user.HO_TEN,
+          SO_DIEN_THOAI: user.SO_DIEN_THOAI,
+          DIA_CHI: user.DIA_CHI,
+          TRANG_THAI_USER: user.TRANG_THAI_USER,
+          NGAY_TAO_USER: user.NGAY_TAO_USER,
+          NGAY_CAP_NHAT_USER: user.NGAY_CAP_NHAT_USER,
+          AVATAR: user.AVATAR,
         },
         JWT_SECRET,
         { expiresIn: "2h" }
@@ -206,10 +212,16 @@ const loginUserGoogle = async (req, res) => {
 
       const token = jwt.sign(
         {
-          ID_NGUOI_DUNG: newUserId,
-          EMAIL: email,
-          VAI_TRO: VAI_TRO,
-          HO_TEN: HO_TEN,
+          ID_NGUOI_DUNG: user.ID_NGUOI_DUNG,
+          EMAIL: user.EMAIL,
+          VAI_TRO: user.VAI_TRO,
+          HO_TEN: user.HO_TEN,
+          SO_DIEN_THOAI: user.SO_DIEN_THOAI,
+          DIA_CHI: user.DIA_CHI,
+          TRANG_THAI_USER: user.TRANG_THAI_USER,
+          NGAY_TAO_USER: user.NGAY_TAO_USER,
+          NGAY_CAP_NHAT_USER: user.NGAY_CAP_NHAT_USER,
+          AVATAR: user.AVATAR,
         },
         JWT_SECRET,
         { expiresIn: "2h" }
