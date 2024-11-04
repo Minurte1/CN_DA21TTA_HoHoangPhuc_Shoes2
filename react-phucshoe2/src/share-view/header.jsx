@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   AppBar,
   Toolbar,
@@ -14,14 +14,35 @@ import AccountCircle from "@mui/icons-material/AccountCircle";
 import LanguageIcon from "@mui/icons-material/Language";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useTheme } from "@mui/material/styles";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import logo from "../public/logo/iconlogo.png";
+import Cookies from "js-cookie";
+import axios from "axios";
+import axiosInstance from "../authentication/axiosInstance";
+import { jwtDecode } from "jwt-decode";
+const apiUrl = process.env.REACT_APP_URL_SERVER;
 const Header = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
+  useEffect(() => {
+    const fetchProfileUser = async () => {
+      const token = Cookies.get("accessToken");
+
+      if (token) {
+        const decode = jwtDecode(token);
+        try {
+          const response = await axiosInstance.post(`${apiUrl}/user-info`, {
+            ID_NGUOI_DUNG: decode.ID_NGUOI_DUNG,
+          });
+        } catch (error) {}
+      }
+    };
+
+    fetchProfileUser();
+  }, []);
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -37,7 +58,12 @@ const Header = () => {
   const handleMobileMenuClose = () => {
     setMobileMoreAnchorEl(null);
   };
+  const navigate = useNavigate();
 
+  const handleLogout = () => {
+    Cookies.remove("tên_cookie");
+    navigate("/login");
+  };
   const menuItems = (
     <>
       <Button color="inherit">Support</Button>
@@ -176,9 +202,9 @@ const Header = () => {
                 backgroundColor: "#4a494c", // Màu nền khi hover
               },
             }}
-            onClick={handleClose}
+            onClick={handleLogout}
           >
-            My account
+            Đăng xuất
           </MenuItem>
         </Menu>
 

@@ -22,9 +22,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 //api
-const apiRoute = require("../src/routers/api.js");
+
 const userRoute = require("./routers/nguoiDungRouter/userRouters.js");
-app.use("/api", apiRoute);
+
 app.use("/", userRoute);
 // app.use("/", (req, res) => {
 //   res.send("helloworld");

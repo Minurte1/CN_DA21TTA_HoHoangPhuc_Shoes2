@@ -1,0 +1,17 @@
+Thông Tin Test Thẻ ATM
+Sử dụng Thử Nghiệm Thanh Toán ATM để hiểu cách hoạt động.
+
+Bước 1: Tạo yêu cầu thanh toán qua Cổng thanh toán MoMo.
+Bước 2: Chọn "Xác Nhận" => Điều hướng tới trang thanh toán của Ngân hàng/Napas tạo bởi MoMo.
+Bước 3: Sử dụng tài khoản test để thanh toán thử.
+1	NGUYEN VAN A	9704 0000 0000 0018	03/07	OTP	Thành công
+
+
+
+
+Credit Cards Test Details
+Bước 1: Tạo yêu cầu thanh toán qua Cổng thanh toán MoMo.
+Bước 2: Chọn "Xác Nhận" => Trang nhập OTP sẽ được mở ra (nếu có 3DS).
+Bước 3: Sử dụng tài khoản test để thanh toán thử.
+No	Name	Number	Card Expdate	CVC	OTP	Test Case
+1	NGUYEN VAN A	5200 0000 0000 1096	05/25	111	OTP	Card Successful
