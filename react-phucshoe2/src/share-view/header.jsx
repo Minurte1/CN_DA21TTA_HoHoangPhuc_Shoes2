@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   AppBar,
   Toolbar,
@@ -17,16 +17,30 @@ import { useTheme } from "@mui/material/styles";
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../public/logo/iconlogo.png";
 import Cookies from "js-cookie";
-import axios from "axios";
+
 import axiosInstance from "../authentication/axiosInstance";
 import { jwtDecode } from "jwt-decode";
+import { useDispatch, useSelector } from "react-redux";
+import { setUserInfo, logout } from "../redux/authSlice";
+import { setLanguage } from "../redux/languageSlice";
+import translations from "../redux/data/translations";
 const apiUrl = process.env.REACT_APP_URL_SERVER;
 const Header = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const [infoUser, setInfoUser] = useState("");
 
+  //redux
+  const dispatch = useDispatch();
+  const language = useSelector((state) => state.language.language);
+  const t = translations[language]; // Lấy đối tượng văn bản theo ngôn ngữ đã chọn
+  const { isAuthenticated, userInfo } = useSelector((state) => state.auth);
+
+  const handleChangeLanguage = (lang) => {
+    dispatch(setLanguage(lang)); // Cập nhật ngôn ngữ
+  };
   useEffect(() => {
     const fetchProfileUser = async () => {
       const token = Cookies.get("accessToken");
@@ -37,14 +51,27 @@ const Header = () => {
           const response = await axiosInstance.post(`${apiUrl}/user-info`, {
             ID_NGUOI_DUNG: decode.ID_NGUOI_DUNG,
           });
-        } catch (error) {}
+          if (response.data.EC === 1) {
+            setInfoUser(response.data.DT);
+            dispatch(setUserInfo(response.data.DT));
+          }
+
+          console.log("response", response.data);
+        } catch (error) {
+          console.log(error);
+        }
       }
     };
 
     fetchProfileUser();
   }, []);
   const handleMenu = (event) => {
-    setAnchorEl(event.currentTarget);
+    const token = Cookies.get("accessToken");
+    if (token) {
+      setAnchorEl(event.currentTarget);
+    } else {
+      navigate("/login");
+    }
   };
 
   const handleClose = () => {
@@ -60,13 +87,40 @@ const Header = () => {
   };
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    Cookies.remove("tên_cookie");
-    navigate("/login");
+  const handleLogout = async () => {
+    try {
+      await axiosInstance.post(`${apiUrl}/logout`);
+      Cookies.remove("accessToken");
+
+      // Cập nhật Redux bằng cách dispatch hành động logout
+      dispatch(logout());
+      handleClose();
+      navigate("/login");
+    } catch (error) {
+      console.error("Lỗi đăng xuất:", error);
+    }
   };
+
   const menuItems = (
     <>
       <Button color="inherit">Support</Button>
+      <div>
+        <h2>{t.example}</h2>
+        <p>{t.description}</p>
+      </div>
+      <div>
+        <h1>
+          {language === "vi"
+            ? "Chào mừng"
+            : language === "en"
+            ? "Welcome"
+            : "Bienvenido"}
+        </h1>
+        <button onClick={() => handleChangeLanguage("vi")}>Tiếng Việt</button>
+        <button onClick={() => handleChangeLanguage("en")}>English</button>
+        <button onClick={() => handleChangeLanguage("es")}>Español</button>
+        {/* Thêm nhiều ngôn ngữ ở đây */}
+      </div>
       <Button color="inherit">Distribute</Button>
       <IconButton color="inherit">
         <LanguageIcon />
@@ -212,9 +266,13 @@ const Header = () => {
           onClick={handleMenu}
           variant="body1"
           component="span"
-          sx={{ ml: 1, cursor: "pointer" }}
+          sx={{
+            ml: 1,
+            cursor: "pointer",
+            color: `${userInfo?.VAI_TRO === "1" ? "red" : "white"}`,
+          }}
         >
-          Minurte1
+          {isAuthenticated ? <div>{userInfo?.HO_TEN}</div> : <></>}
         </Typography>
       </Box>
       <Button

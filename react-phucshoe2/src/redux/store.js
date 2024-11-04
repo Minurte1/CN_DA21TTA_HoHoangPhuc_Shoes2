@@ -1,10 +1,11 @@
 // src/redux/store.js
 import { configureStore } from "@reduxjs/toolkit";
-import counterReducer from "./counterSlice"; // Import reducer từ slice
-
+import authReducer from "./authSlice";
+import languageReducer from "./languageSlice";
 const store = configureStore({
   reducer: {
-    counter: counterReducer, // Nơi bạn quản lý nhiều reducer
+    auth: authReducer,
+    language: languageReducer,
   },
 });
 

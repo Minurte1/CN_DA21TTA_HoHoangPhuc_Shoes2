@@ -176,10 +176,17 @@ const loginUserGoogle = async (req, res) => {
         EC: 200,
         DT: {
           accessToken: token,
-          user: {
+          userInfo: {
             ID_NGUOI_DUNG: user.ID_NGUOI_DUNG,
             EMAIL: user.EMAIL,
+            HO_TEN: user.HO_TEN,
             VAI_TRO: user.VAI_TRO,
+            SO_DIEN_THOAI: user.SO_DIEN_THOAI,
+            DIA_CHI: user.DIA_CHI,
+            TRANG_THAI_USER: user.TRANG_THAI_USER,
+            NGAY_TAO_USER: user.NGAY_TAO_USER,
+            NGAY_CAP_NHAT_USER: user.NGAY_CAP_NHAT_USER,
+            AVATAR: user.AVATAR,
           },
         },
       });
@@ -190,7 +197,11 @@ const loginUserGoogle = async (req, res) => {
         "INSERT INTO NGUOI_DUNG (EMAIL, VAI_TRO, HO_TEN, TRANG_THAI_USER,NGAY_TAO_USER,NGAY_CAP_NHAT_USER) VALUES (?,?,?,?,NOW(),NOW())",
         [email, VAI_TRO, HO_TEN, TRANG_THAI_USER]
       );
-
+      const [rows] = await pool.query(
+        "SELECT * FROM NGUOI_DUNG WHERE EMAIL = ?",
+        [email]
+      );
+      const user = rows[0];
       const newUserId = insertResult.insertId;
 
       const token = jwt.sign(
@@ -209,11 +220,17 @@ const loginUserGoogle = async (req, res) => {
         EC: 200,
         DT: {
           accessToken: token,
-          user: {
-            ID_NGUOI_DUNG: newUserId,
-            EMAIL: email,
-            HO_TEN: HO_TEN,
-            VAI_TRO: VAI_TRO,
+          userInfo: {
+            ID_NGUOI_DUNG: user.ID_NGUOI_DUNG,
+            EMAIL: user.EMAIL,
+            VAI_TRO: user.VAI_TRO,
+            HO_TEN: user.HO_TEN,
+            SO_DIEN_THOAI: user.SO_DIEN_THOAI,
+            DIA_CHI: user.DIA_CHI,
+            TRANG_THAI_USER: user.TRANG_THAI_USER,
+            NGAY_TAO_USER: user.NGAY_TAO_USER,
+            NGAY_CAP_NHAT_USER: user.NGAY_CAP_NHAT_USER,
+            AVATAR: user.AVATAR,
           },
         },
       });

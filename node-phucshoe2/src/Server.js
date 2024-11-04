@@ -10,10 +10,11 @@ const hostname = process.env.HOST_NAME || "3002";
 
 //setting
 const corsOptions = {
-  origin: "*", // Cho phép truy cập từ tất cả các nguồn
+  origin: process.env.URL_REACT, // Địa chỉ frontend
   credentials: true, // Cho phép gửi cookie
 };
 app.use(cors(corsOptions));
+
 app.use(cookieParser());
 
 app.use(express.json());

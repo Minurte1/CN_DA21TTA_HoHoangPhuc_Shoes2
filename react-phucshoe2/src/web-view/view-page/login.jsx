@@ -11,12 +11,17 @@ import logo from "../../public/logo/iconlogo.png";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+
+import { useDispatch } from "react-redux";
+import { login } from "../../redux/authSlice";
 const LoginPage = () => {
   const [user, setUser] = useState(null);
   const [tokenGoogle, setTokenGoogle] = useState(null);
+
+  const dispatch = useDispatch();
   const navigate = useNavigate();
-  // const { loginIs } = useAuth();
-  const login = useGoogleLogin({
+
+  const loginGoogle = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
       console.log("Token Response:", tokenResponse);
       setTokenGoogle(tokenResponse.access_token);
@@ -42,10 +47,7 @@ const LoginPage = () => {
       console.error("Login Failed:", error);
     },
   });
-  console.log(
-    "process.env.REACT_APP_URL_SERVER",
-    process.env.REACT_APP_URL_SERVER
-  );
+
   useEffect(() => {
     if (user) {
       console.log("check user =>", user.email);
@@ -58,11 +60,16 @@ const LoginPage = () => {
           console.log("check token =>", response.data);
 
           if (response.data.EC === 200) {
-            // Xóa token cũ và lưu token mới nếu đăng nhập thành công
             Cookies.remove("accessToken");
             const accessToken = response.data.DT.accessToken;
             Cookies.set("accessToken", accessToken, { expires: 7 });
             sessionStorage.setItem("userPicture", user.picture);
+            dispatch(
+              login({
+                accessToken,
+                userInfo: response.data.DT.userInfo, // Thông tin người dùng
+              })
+            );
             toast.success(response.data.EM);
             // loginIs();
             navigate("/");
@@ -78,7 +85,7 @@ const LoginPage = () => {
 
       fetchData();
     }
-  }, [user, navigate]);
+  }, [user, navigate, dispatch]);
 
   return (
     <Box
@@ -180,7 +187,9 @@ const LoginPage = () => {
                   width: "100%",
                   fontSize: { xs: "0.75rem", md: "0.875rem" }, // Responsive font size
                 }}
-                onClick={platform === "Google" ? () => login() : undefined}
+                onClick={
+                  platform === "Google" ? () => loginGoogle() : undefined
+                }
               >
                 <i
                   className="ml-4 fa-brands fa-google"
