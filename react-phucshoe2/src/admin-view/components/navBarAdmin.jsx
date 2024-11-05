@@ -29,6 +29,11 @@ const NavBarAdmin = () => {
   const toggleSection = (section) => {
     setOpenSection((prev) => (prev === section ? null : section));
   };
+  const [openCategory, setOpenCategory] = useState(false);
+
+  const handleClick = () => {
+    setOpenCategory(!openCategory);
+  };
   return (
     <>
       {" "}
@@ -177,6 +182,12 @@ const NavBarAdmin = () => {
                   component={Link}
                   to="/admin/san-pham/add"
                   sx={{ pl: 4, color: "#f0f6fc" }}
+                ></ListItem>
+                <ListItem
+                  button
+                  component={Link}
+                  to="/admin/san-pham/add"
+                  sx={{ pl: 4, color: "#f0f6fc" }}
                 >
                   <ListItemText primary="Thêm sản phẩm" />
                 </ListItem>
@@ -188,14 +199,86 @@ const NavBarAdmin = () => {
                 >
                   <ListItemText primary="Kho hàng" />
                 </ListItem>
-                <ListItem
-                  button
-                  component={Link}
-                  to="/admin/san-pham/categories"
-                  sx={{ pl: 4, color: "#f0f6fc" }}
-                >
-                  <ListItemText primary="Danh mục sản phẩm" />
-                </ListItem>
+                <List>
+                  <ListItem
+                    button
+                    onClick={handleClick}
+                    sx={{ pl: 4, color: "#f0f6fc" }}
+                  >
+                    <ListItemText primary="Danh mục sản phẩm" />
+                    {openCategory ? <ExpandLess /> : <ExpandMore />}
+                  </ListItem>
+
+                  {/* Nested list for subcategories */}
+                  <Collapse in={openCategory} timeout="auto" unmountOnExit>
+                    <List component="div" disablePadding>
+                      <ListItem
+                        button
+                        component={Link}
+                        to="/admin/san-pham/categories/subcategory1"
+                        sx={{ pl: 6, color: "#f0f6fc" }}
+                      >
+                        <ListItemText primary="Chất liệu giày" />
+                      </ListItem>
+                      <ListItem
+                        button
+                        component={Link}
+                        to="/admin/san-pham/categories/subcategory2"
+                        sx={{ pl: 6, color: "#f0f6fc" }}
+                      >
+                        <ListItemText primary="Giới tính giày " />
+                      </ListItem>
+                      <ListItem
+                        button
+                        component={Link}
+                        to="/admin/san-pham/categories/subcategory3"
+                        sx={{ pl: 6, color: "#f0f6fc" }}
+                      >
+                        <ListItemText primary="Kích cỡ giày" />
+                      </ListItem>
+                      <ListItem
+                        button
+                        component={Link}
+                        to="/admin/san-pham/categories/subcategory3"
+                        sx={{ pl: 6, color: "#f0f6fc" }}
+                      >
+                        <ListItemText primary="Thể loại giày" />
+                      </ListItem>
+                      <ListItem
+                        button
+                        component={Link}
+                        to="/admin/san-pham/categories/subcategory3"
+                        sx={{ pl: 6, color: "#f0f6fc" }}
+                      >
+                        <ListItemText primary="Màu sắc giày" />
+                      </ListItem>
+                      <ListItem
+                        button
+                        component={Link}
+                        to="/admin/san-pham/categories/subcategory3"
+                        sx={{ pl: 6, color: "#f0f6fc" }}
+                      >
+                        <ListItemText primary="Mục đích sử dụng" />
+                      </ListItem>
+                      <ListItem
+                        button
+                        component={Link}
+                        to="/admin/san-pham/categories/subcategory3"
+                        sx={{ pl: 6, color: "#f0f6fc" }}
+                      >
+                        <ListItemText primary="Danh mục phụ 3" />
+                      </ListItem>
+                      <ListItem
+                        button
+                        component={Link}
+                        to="/admin/san-pham/categories/subcategory3"
+                        sx={{ pl: 6, color: "#f0f6fc" }}
+                      >
+                        <ListItemText primary="Danh mục phụ 3" />
+                      </ListItem>
+                    </List>
+                  </Collapse>
+                </List>
               </List>
             </Collapse>
 

@@ -35,11 +35,12 @@ const Header = () => {
   //redux
   const dispatch = useDispatch();
   const language = useSelector((state) => state.language.language);
-  const t = translations[language]; // Lấy đối tượng văn bản theo ngôn ngữ đã chọn
+  const t = translations[language].header;
   const { isAuthenticated, userInfo } = useSelector((state) => state.auth);
-
+  const [optionLanguage, setOptionLanguage] = useState("vi");
   const handleChangeLanguage = (lang) => {
-    dispatch(setLanguage(lang)); // Cập nhật ngôn ngữ
+    setOptionLanguage(lang);
+    dispatch(setLanguage(lang));
   };
   useEffect(() => {
     const fetchProfileUser = async () => {
@@ -100,32 +101,94 @@ const Header = () => {
       console.error("Lỗi đăng xuất:", error);
     }
   };
+  const [anchorElLanguage, setAnchorElLanguage] = useState(null);
 
+  const handleLanguageMenu = (event) => {
+    setAnchorElLanguage(event.currentTarget);
+  };
+
+  const handleLanguageClose = () => {
+    setAnchorElLanguage(null);
+  };
   const menuItems = (
     <>
-      <Button color="inherit">Support</Button>
-      <div>
-        <h2>{t.nameUser}</h2>
-        <h2>{t.example}</h2>
+      <Button color="inherit">{t.support}</Button>
 
-        <p>{t.description}</p>
-      </div>
-      <div>
-        <h1>
-          {language === "vi"
-            ? "Chào mừng"
-            : language === "en"
-            ? "Welcome"
-            : "Bienvenido"}
-        </h1>
-        <button onClick={() => handleChangeLanguage("vi")}>Tiếng Việt</button>
-        <button onClick={() => handleChangeLanguage("en")}>English</button>
-        <button onClick={() => handleChangeLanguage("es")}>Español</button>
-      </div>
-      <Button color="inherit">Distribute</Button>
-      <IconButton color="inherit">
-        <LanguageIcon />
-      </IconButton>
+      <Box sx={{ display: "flex", alignItems: "center", ml: 2 }}>
+        <IconButton
+          color="inherit"
+          aria-label="language menu"
+          aria-controls="language-menu"
+          aria-haspopup="true"
+          onClick={handleLanguageMenu}
+        >
+          <LanguageIcon />
+        </IconButton>
+        <Button color="inherit" onClick={handleLanguageMenu}>
+          {optionLanguage == "vi"
+            ? "Tiếng Việt"
+            : optionLanguage == "en"
+            ? "English"
+            : " Español"}
+        </Button>
+
+        <Menu
+          id="language-menu"
+          anchorEl={anchorElLanguage}
+          open={Boolean(anchorElLanguage)}
+          onClose={handleLanguageClose}
+          PaperProps={{
+            sx: {
+              backgroundColor: "#29292d",
+              borderRadius: "13px",
+              paddingTop: 1,
+              paddingBottom: 1,
+            },
+          }}
+        >
+          <MenuItem
+            sx={{ color: "#fff", "&:hover": { backgroundColor: "#4a494c" } }}
+            onClick={() => {
+              handleChangeLanguage("vi");
+              handleLanguageClose();
+            }}
+          >
+            Tiếng Việt
+          </MenuItem>
+          <MenuItem
+            sx={{ color: "#fff", "&:hover": { backgroundColor: "#4a494c" } }}
+            onClick={() => {
+              handleChangeLanguage("en");
+              handleLanguageClose();
+            }}
+          >
+            English
+          </MenuItem>
+          <MenuItem
+            sx={{ color: "#fff", "&:hover": { backgroundColor: "#4a494c" } }}
+            onClick={() => {
+              handleChangeLanguage("es");
+              handleLanguageClose();
+            }}
+          >
+            Español
+          </MenuItem>
+        </Menu>
+
+        {/* <Typography
+          onClick={handleLanguageMenu}
+          variant="body1"
+          component="span"
+          sx={{
+            ml: 1,
+            cursor: "pointer",
+            color: `${userInfo?.VAI_TRO === "1" ? "red" : "white"}`,
+          }}
+        >
+          {isAuthenticated ? <div>{userInfo?.HO_TEN}</div> : <></>}
+        </Typography> */}
+      </Box>
+      {/* <Button color="inherit">Language</Button> */}
       <Box sx={{ display: "flex", alignItems: "center", ml: 2 }}>
         <IconButton
           size="large"
@@ -283,7 +346,7 @@ const Header = () => {
         href="https://launcher-public-service-prod06.ol.epicgames.com/launcher/api/installer/download/EpicGamesLauncherInstaller.msi?trackingId=aebf7d1fc5764a45acab1b551038bebf"
         style={{ backgroundColor: "#00aaff", marginLeft: 16 }}
       >
-        Download
+        {t.download}
       </Button>
     </>
   );
@@ -309,7 +372,7 @@ const Header = () => {
           component="div"
           sx={{ flexGrow: 1, display: { xs: "none", sm: "block" } }}
         >
-          STORE
+          {t.store}
         </Typography>
         {isMobile ? (
           <>

@@ -2,6 +2,7 @@ import { useRoutes, Navigate } from "react-router-dom";
 import DashboardAdmin from "./pages/DashboardAdmin";
 import DonHangGame from "./pages/DonHang";
 import DanhSachNguoiDungAdmin from "./pages/quanLyNguoiDung/DanhSachNguoiDungAdmin";
+import ChatLieuManager from "./pages/quanLySanPham/category/chatLieu";
 
 // import QuanLySanPham from "./pages/QuanLySanPham";
 // import TuongTacNguoiDung from "./pages/TuongTacNguoiDung";
@@ -19,6 +20,14 @@ const RouterAdmin = () => {
     {
       path: "/nguoi-dung/danh-sach",
       element: <DanhSachNguoiDungAdmin />,
+    },
+    {
+      path: "/them-san-pham",
+      element: <DanhSachNguoiDungAdmin />,
+    },
+    {
+      path: "/chat-lieu-san-pham",
+      element: <ChatLieuManager />,
     },
     // {
     //   path: "/san-pham",
