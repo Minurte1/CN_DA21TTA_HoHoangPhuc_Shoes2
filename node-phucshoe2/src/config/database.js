@@ -8,6 +8,7 @@ const pool = mysql.createPool({
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
+  charset: "utf8mb4",
 });
 // Kiểm tra kết nối cơ sở dữ liệu
 async function testConnection() {

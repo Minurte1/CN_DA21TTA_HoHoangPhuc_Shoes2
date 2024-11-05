@@ -7,9 +7,10 @@ const {
   deleteCHAT_LIEU,
 } = require("../../../controllers/sanPhamController/categoryController/chatLieuController");
 // Định nghĩa các route
-router.get("/chat-lieu", getCHAT_LIEU);
-router.post("/chat-lieu", createCHAT_LIEU);
-router.put("/chat-lieu/:id", updateCHAT_LIEU);
-router.delete("/chat-lieu/:id", deleteCHAT_LIEU);
+router.get("/", getCHAT_LIEU);
+router.post("/", createCHAT_LIEU);
+router.put("/:id", updateCHAT_LIEU);
+router.delete("/:id", deleteCHAT_LIEU);
 
+//http://localhost:3002/chat-lieu/
 module.exports = router;

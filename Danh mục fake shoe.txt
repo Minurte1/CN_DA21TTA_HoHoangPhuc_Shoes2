@@ -1,0 +1,42 @@
+Giới tính:
+
+Nam
+Nữ
+Trẻ em
+Loại giày:
+
+Giày thể thao
+Giày thời trang
+Giày công sở
+Giày lười
+Giày bốt
+Dép, sandal
+Thương hiệu:
+
+Nike, Adidas, Puma, Converse, Vans, New Balance, v.v.
+Phong cách:
+
+Cổ điển
+Hiện đại
+Đường phố
+Sang trọng
+Mục đích sử dụng:
+
+Chạy bộ
+Đi làm
+Thời trang hàng ngày
+Thể thao và tập luyện
+Size giày:
+
+Phân loại theo kích thước và hệ đo lường (US, EU, VN)
+Màu sắc:
+
+Đen, trắng, xanh, đỏ, vàng, v.v.
+Chất liệu:
+
+Da, vải, cao su, tổng hợp, v.v.
+Khuyến mãi và sản phẩm nổi bật:
+
+Sản phẩm giảm giá
+Sản phẩm mới
+Bán chạy

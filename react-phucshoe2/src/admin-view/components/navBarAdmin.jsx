@@ -205,7 +205,15 @@ const NavBarAdmin = () => {
                     onClick={handleClick}
                     sx={{ pl: 4, color: "#f0f6fc" }}
                   >
-                    <ListItemText primary="Danh mục sản phẩm" />
+                    <ListItemText
+                      primary="Danh mục sản phẩm"
+                      sx={{
+                        borderRadius: "12px",
+                        color: "#f0f6fc",
+                        cursor: "pointer",
+                        userSelect: "none",
+                      }}
+                    />
                     {openCategory ? <ExpandLess /> : <ExpandMore />}
                   </ListItem>
 
@@ -215,7 +223,7 @@ const NavBarAdmin = () => {
                       <ListItem
                         button
                         component={Link}
-                        to="/admin/san-pham/categories/subcategory1"
+                        to="/admin/san-pham/danh-muc/chat-lieu"
                         sx={{ pl: 6, color: "#f0f6fc" }}
                       >
                         <ListItemText primary="Chất liệu giày" />
@@ -223,7 +231,7 @@ const NavBarAdmin = () => {
                       <ListItem
                         button
                         component={Link}
-                        to="/admin/san-pham/categories/subcategory2"
+                        to="/admin/san-pham/danh-muc/gioi-tinh"
                         sx={{ pl: 6, color: "#f0f6fc" }}
                       >
                         <ListItemText primary="Giới tính giày " />
@@ -231,7 +239,7 @@ const NavBarAdmin = () => {
                       <ListItem
                         button
                         component={Link}
-                        to="/admin/san-pham/categories/subcategory3"
+                        to="/admin/san-pham/danh-muc/kich-co"
                         sx={{ pl: 6, color: "#f0f6fc" }}
                       >
                         <ListItemText primary="Kích cỡ giày" />
@@ -239,7 +247,7 @@ const NavBarAdmin = () => {
                       <ListItem
                         button
                         component={Link}
-                        to="/admin/san-pham/categories/subcategory3"
+                        to="/admin/san-pham/danh-muc/the-loai"
                         sx={{ pl: 6, color: "#f0f6fc" }}
                       >
                         <ListItemText primary="Thể loại giày" />
@@ -247,7 +255,7 @@ const NavBarAdmin = () => {
                       <ListItem
                         button
                         component={Link}
-                        to="/admin/san-pham/categories/subcategory3"
+                        to="/admin/san-pham/danh-muc/mau-sac"
                         sx={{ pl: 6, color: "#f0f6fc" }}
                       >
                         <ListItemText primary="Màu sắc giày" />
@@ -255,7 +263,7 @@ const NavBarAdmin = () => {
                       <ListItem
                         button
                         component={Link}
-                        to="/admin/san-pham/categories/subcategory3"
+                        to="/admin/san-pham/danh-muc/muc-dich-su-dung"
                         sx={{ pl: 6, color: "#f0f6fc" }}
                       >
                         <ListItemText primary="Mục đích sử dụng" />
@@ -263,18 +271,18 @@ const NavBarAdmin = () => {
                       <ListItem
                         button
                         component={Link}
-                        to="/admin/san-pham/categories/subcategory3"
+                        to="/admin/san-pham/danh-muc/phong-cach"
                         sx={{ pl: 6, color: "#f0f6fc" }}
                       >
-                        <ListItemText primary="Danh mục phụ 3" />
+                        <ListItemText primary="Phong cách giày" />
                       </ListItem>
                       <ListItem
                         button
                         component={Link}
-                        to="/admin/san-pham/categories/subcategory3"
+                        to="/admin/san-pham/danh-muc/thuong-hieu"
                         sx={{ pl: 6, color: "#f0f6fc" }}
                       >
-                        <ListItemText primary="Danh mục phụ 3" />
+                        <ListItemText primary="Thương hiệu giày" />
                       </ListItem>
                     </List>
                   </Collapse>

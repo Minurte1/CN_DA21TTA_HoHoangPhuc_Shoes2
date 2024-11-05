@@ -26,7 +26,7 @@ const RouterAdmin = () => {
       element: <DanhSachNguoiDungAdmin />,
     },
     {
-      path: "/chat-lieu-san-pham",
+      path: "/san-pham/danh-muc/chat-lieu",
       element: <ChatLieuManager />,
     },
     // {

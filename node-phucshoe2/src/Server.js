@@ -25,8 +25,9 @@ app.use(bodyParser.json());
 //api
 
 const userRoute = require("./routers/nguoiDungRouter/userRouters.js");
-
+const chatLieuRoute = require("./routers/sanPhamRouters/categoryRouter/chatLieuRouter.js");
 app.use("/", userRoute);
+app.use("/chat-lieu/", chatLieuRoute);
 // app.use("/", (req, res) => {
 //   res.send("helloworld");
 // });
