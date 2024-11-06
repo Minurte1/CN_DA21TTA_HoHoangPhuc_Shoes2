@@ -4,9 +4,9 @@ import authReducer from "./authSlice";
 import languageReducer from "./languageSlice";
 const store = configureStore({
   reducer: {
-    auth: authReducer,
+    auth: authReducer, ///
     language: languageReducer,
   },
 });
-
+ 
 export default store;

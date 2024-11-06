@@ -5,4 +5,18 @@ FROM information_schema.tables
 WHERE table_schema = 'PhucShoe2';
 
 
+-----------XÓA 1 TRƯỜNG TRONG BẢNG-----------------
 
+ALTER TABLE DON_HANG
+DROP COLUMN TRANG_THAI_DONHANG;
+
+
+
+-----------THÊM 1 TRƯỜNG TRONG BẢNG-----------------
+ALTER TABLE CHI_TIET_HOA_DON
+ADD COLUMN GIA_SAN_PHAM_CHI_TIET FLOAT;
+
+
+
+-----------CHO PHÉP CHỮ TIẾNG VIỆT TRONG BẢNG -----------------
+ALTER TABLE CHAT_LIEU  MODIFY TEN_CHAT_LIEU_  VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;

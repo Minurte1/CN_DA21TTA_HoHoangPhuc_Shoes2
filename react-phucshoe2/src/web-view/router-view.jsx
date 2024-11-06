@@ -18,6 +18,10 @@ const RouterView = () => {
       element: <LoginPage />,
     },
     {
+      path: "/test",
+      element: <CheckOutMoMo />,
+    },
+    {
       path: "/register",
       element: <RegistrationForm />,
     },
