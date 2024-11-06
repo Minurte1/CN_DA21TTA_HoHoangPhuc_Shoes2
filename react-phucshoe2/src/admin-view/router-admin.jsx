@@ -3,6 +3,7 @@ import DashboardAdmin from "./pages/DashboardAdmin";
 import DonHangGame from "./pages/DonHang";
 import DanhSachNguoiDungAdmin from "./pages/quanLyNguoiDung/DanhSachNguoiDungAdmin";
 import ChatLieuManager from "./pages/quanLySanPham/category/chatLieu";
+import GioiTinhManager from "./pages/quanLySanPham/category/gioiTinh";
 
 // import QuanLySanPham from "./pages/QuanLySanPham";
 // import TuongTacNguoiDung from "./pages/TuongTacNguoiDung";
@@ -28,6 +29,10 @@ const RouterAdmin = () => {
     {
       path: "/san-pham/danh-muc/chat-lieu",
       element: <ChatLieuManager />,
+    },
+    {
+      path: "/san-pham/danh-muc/gioi-tinh",
+      element: <GioiTinhManager />,
     },
     // {
     //   path: "/san-pham",

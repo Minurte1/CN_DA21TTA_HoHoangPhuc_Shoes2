@@ -17,6 +17,8 @@ import {
   TextField,
   IconButton,
   Box,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import moment from "moment";
 
@@ -105,7 +107,7 @@ const ChatLieuManager = () => {
 
   return (
     <Container>
-      <Box sx={{ width: "100%", textAlign: "left" }}>
+      <Box sx={{ width: "100%", textAlign: "left", mt: 4 }}>
         {" "}
         <Typography
           variant="h5"
@@ -113,7 +115,7 @@ const ChatLieuManager = () => {
           gutterBottom
           sx={{ textAlign: "left" }} // Căn trái cho tiêu đề
         >
-          Chất liệu của giày
+          CHẤT LIỆU CỦA GIÀY
         </Typography>
         <Button
           variant="outlined"
@@ -126,7 +128,7 @@ const ChatLieuManager = () => {
             textAlign: "left",
           }}
         >
-          Add Material
+          Thêm chất liệu
         </Button>
       </Box>
 
@@ -199,13 +201,13 @@ const ChatLieuManager = () => {
       {/* Dialog for Adding/Editing Material */}
       <Dialog open={openDialog} onClose={handleCloseDialog}>
         <DialogTitle>
-          {currentMaterial ? "Edit Material" : "Add New Material"}
+          {currentMaterial ? "Sửa Chất Liệu" : "Thêm Chất Liệu"}
         </DialogTitle>
         <DialogContent>
           <TextField
             autoFocus
             margin="dense"
-            label="Material Name"
+            label="Tên chất liệu"
             type="text"
             fullWidth
             variant="outlined"
@@ -214,29 +216,31 @@ const ChatLieuManager = () => {
           />
           <TextField
             margin="dense"
-            label="Material Description"
+            label="Mô tả chất liệu"
             type="text"
             fullWidth
             variant="outlined"
             value={moTaChatLieu}
             onChange={(e) => setMoTaChatLieu(e.target.value)}
           />
-          <TextField
+          <Select
             margin="dense"
             label="Material Status"
-            type="number"
             fullWidth
             variant="outlined"
             value={trangThaiChatLieu}
             onChange={(e) => setTrangThaiChatLieu(e.target.value)}
-          />
+          >
+            <MenuItem value={1}>Đang sử dụng</MenuItem>
+            <MenuItem value={0}>Ngưng sử dụng</MenuItem>
+          </Select>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialog} color="secondary">
-            Cancel
+            Hủy
           </Button>
           <Button onClick={handleSave} color="primary">
-            {currentMaterial ? "Update" : "Add"}
+            {currentMaterial ? "Sửa" : "Thêm"}
           </Button>
         </DialogActions>
       </Dialog>

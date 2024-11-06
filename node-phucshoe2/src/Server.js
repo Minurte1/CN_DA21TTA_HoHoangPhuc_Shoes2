@@ -26,8 +26,10 @@ app.use(bodyParser.json());
 
 const userRoute = require("./routers/nguoiDungRouter/userRouters.js");
 const chatLieuRoute = require("./routers/sanPhamRouters/categoryRouter/chatLieuRouter.js");
+const gioiTinhRoute = require("./routers/sanPhamRouters/categoryRouter/gioiTinhRouter.js");
 app.use("/", userRoute);
 app.use("/chat-lieu/", chatLieuRoute);
+app.use("/gioi-tinh/", gioiTinhRoute);
 // app.use("/", (req, res) => {
 //   res.send("helloworld");
 // });

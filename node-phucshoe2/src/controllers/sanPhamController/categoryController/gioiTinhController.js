@@ -5,7 +5,7 @@ const connection = require("../../../config/database");
 // Lấy danh sách giới tính
 const getGIOI_TINH = async (req, res) => {
   try {
-    const [results] = await connection.execute("SELECT * FROM `gioi_tinh`");
+    const [results] = await connection.execute("SELECT * FROM `GIOI_TINH`");
     return res.status(200).json({
       EM: "Xem thông tin giới tính thành công",
       EC: 1,
@@ -27,8 +27,8 @@ const createGIOI_TINH = async (req, res) => {
     const { tenGioiTinh } = req.body;
     const createdGioiTinh = new Date(); // Lấy ngày hiện tại
     const [results] = await connection.execute(
-      "INSERT INTO gioi_tinh (TEN_GIOI_TINH, CREATED_GIOI_TINH, UPDATE_GIOI_TINH, TRANG_THAI_GIOI_TINH) VALUES (?, ?, ?, ?)",
-      [tenGioiTinh, createdGioiTinh, createdGioiTinh, 1] // TRANG_THAI_GIOI_TINH mặc định là 1 (hoạt động)
+      "INSERT INTO GIOI_TINH (TEN_GIOI_TINH, CREATED_GIOI_TINH, UPDATE_GIOI_TINH, TRANG_THAI_GIOI_TINH) VALUES (?, ?, ?, ?)",
+      [tenGioiTinh, createdGioiTinh, createdGioiTinh, 1]
     );
     return {
       EM: "Thêm giới tính thành công",
@@ -47,14 +47,14 @@ const updateGIOI_TINH = async (req, res) => {
   const { tenGioiTinh } = req.body;
   try {
     const [results] = await connection.execute(
-      "SELECT * FROM gioi_tinh WHERE ID_GIOI_TINH = ?",
+      "SELECT * FROM GIOI_TINH WHERE GIOI_TINH_ID = ?",
       [idGioiTinh]
     );
 
     if (results.length > 0) {
       const updateGioiTinh = new Date(); // Lấy ngày hiện tại
       await connection.execute(
-        "UPDATE gioi_tinh SET TEN_GIOI_TINH = ?, UPDATE_GIOI_TINH = ? WHERE ID_GIOI_TINH = ?",
+        "UPDATE GIOI_TINH SET TEN_GIOI_TINH = ?, UPDATE_GIOI_TINH = ? WHERE GIOI_TINH_ID = ?",
         [tenGioiTinh, updateGioiTinh, idGioiTinh]
       );
       return {
@@ -84,12 +84,12 @@ const deleteGIOI_TINH = async (req, res) => {
   const { id } = req.params;
   try {
     const [results] = await connection.execute(
-      "SELECT * FROM gioi_tinh WHERE ID_GIOI_TINH = ?",
+      "SELECT * FROM GIOI_TINH WHERE GIOI_TINH_ID = ?",
       [id]
     );
 
     if (results.length > 0) {
-      await connection.execute("DELETE FROM gioi_tinh WHERE ID_GIOI_TINH = ?", [
+      await connection.execute("DELETE FROM GIOI_TINH WHERE GIOI_TINH_ID = ?", [
         id,
       ]);
       return {

@@ -30,12 +30,13 @@ const getCHAT_LIEU = async (req, res) => {
 // Tạo chất liệu mới
 
 const createCHAT_LIEU = async (req, res) => {
-  const { tenChatLieu, moTaChatLieu, trangThaiChatLieu } = req.body;
-  console.log("createCHAT_LIEU", req.body);
+  const { tenChatLieu, moTaChatLieu, trangThaiChatLieu } =
+    req.body.materialData;
+  console.log("createCHAT_LIEU", req.body.materialData);
   try {
     const createdChatLieu = new Date(); // Lấy ngày hiện tại
     await connection.execute(
-      "INSERT INTO CHAT_LIEU (TEN_CHAT_LIEU_, CREATED_TEN_CHAT_LIEU_, UPDATE_CHAT_LIEU, TRANG_THAI_CHAT_LIEU,MO_TA_CHAT_LIEU) VALUES (?, ?, ?, ?)",
+      "INSERT INTO CHAT_LIEU (TEN_CHAT_LIEU_, CREATED_TEN_CHAT_LIEU_, UPDATE_CHAT_LIEU, TRANG_THAI_CHAT_LIEU,MO_TA_CHAT_LIEU) VALUES (?, ?, ?, ?,?)",
       [
         tenChatLieu,
         createdChatLieu,
