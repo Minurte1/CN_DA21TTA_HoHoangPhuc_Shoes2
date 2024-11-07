@@ -28,10 +28,12 @@ const userRoute = require("./routers/nguoiDungRouter/userRouters.js");
 const chatLieuRoute = require("./routers/sanPhamRouters/categoryRouter/chatLieuRouter.js");
 const gioiTinhRoute = require("./routers/sanPhamRouters/categoryRouter/gioiTinhRouter.js");
 const kichCoRoute = require("./routers/sanPhamRouters/categoryRouter/kichCoRouter.js");
+const theLoaiRoute = require("./routers/sanPhamRouters/categoryRouter/loaiDanhMucRouter.js");
 app.use("/", userRoute);
 app.use("/chat-lieu/", chatLieuRoute);
 app.use("/gioi-tinh/", gioiTinhRoute);
 app.use("/kich-co/", kichCoRoute);
+app.use("/loai-danh-muc/", theLoaiRoute);
 // app.use("/", (req, res) => {
 //   res.send("helloworld");
 // });

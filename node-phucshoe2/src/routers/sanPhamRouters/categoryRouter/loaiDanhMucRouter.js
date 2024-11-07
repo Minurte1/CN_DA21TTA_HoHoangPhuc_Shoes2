@@ -1,16 +1,15 @@
 const express = require("express");
 const router = express.Router();
+
 const {
-  DanhSachloai,
-  Taoloai,
-  Capnhatloai,
-  XoaLoai,
-} = require("../../../controllers/ProductApiController");
+  getLOAI_DANH_MUC,
+  createLOAI_DANH_MUC,
+  updateLOAI_DANH_MUC,
+  deleteLOAI_DANH_MUC,
+} = require("../../../controllers/sanPhamController/categoryController/loaiDanhMucController");
 
-//api MALOAI
-router.get("/loai", DanhSachloai); // get list of users
-router.post("/loai/create", Taoloai); //get info 1 user
-router.put("/loai/info/update/:maloai", Capnhatloai);
-router.delete("/loai/info/delete", XoaLoai);
-
+router.get("/", getLOAI_DANH_MUC);
+router.post("/", createLOAI_DANH_MUC);
+router.put("/:id", updateLOAI_DANH_MUC);
+router.delete("/:id", deleteLOAI_DANH_MUC);
 module.exports = router;

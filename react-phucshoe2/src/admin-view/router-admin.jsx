@@ -5,6 +5,7 @@ import DanhSachNguoiDungAdmin from "./pages/quanLyNguoiDung/DanhSachNguoiDungAdm
 import ChatLieuManager from "./pages/quanLySanPham/category/chatLieu";
 import GioiTinhManager from "./pages/quanLySanPham/category/gioiTinh";
 import KichCoManager from "./pages/quanLySanPham/category/kichCo";
+import LoaiDanhMucManager from "./pages/quanLySanPham/category/theLoai";
 
 // import QuanLySanPham from "./pages/QuanLySanPham";
 // import TuongTacNguoiDung from "./pages/TuongTacNguoiDung";
@@ -41,7 +42,7 @@ const RouterAdmin = () => {
     },
     {
       path: "/san-pham/danh-muc/the-loai",
-      element: <GioiTinhManager />,
+      element: <LoaiDanhMucManager />,
     },
     {
       path: "/san-pham/danh-muc/mau-sac",
