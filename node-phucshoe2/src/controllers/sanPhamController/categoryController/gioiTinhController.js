@@ -30,14 +30,18 @@ const createGIOI_TINH = async (req, res) => {
       "INSERT INTO GIOI_TINH (TEN_GIOI_TINH, CREATED_GIOI_TINH, UPDATE_GIOI_TINH, TRANG_THAI_GIOI_TINH) VALUES (?, ?, ?, ?)",
       [tenGioiTinh, createdGioiTinh, createdGioiTinh, 1]
     );
-    return {
+    return res.status(200).json({
       EM: "Thêm giới tính thành công",
       EC: 1,
       DT: results,
-    };
+    });
   } catch (error) {
     console.error("Error creating gioi tinh:", error);
-    throw error;
+    return res.status(500).json({
+      EM: "Có lỗi xảy ra khi lấy thông tin",
+      EC: 0,
+      DT: [],
+    });
   }
 };
 
@@ -48,34 +52,34 @@ const updateGIOI_TINH = async (req, res) => {
   try {
     const [results] = await connection.execute(
       "SELECT * FROM GIOI_TINH WHERE GIOI_TINH_ID = ?",
-      [idGioiTinh]
+      [id]
     );
 
     if (results.length > 0) {
       const updateGioiTinh = new Date(); // Lấy ngày hiện tại
       await connection.execute(
         "UPDATE GIOI_TINH SET TEN_GIOI_TINH = ?, UPDATE_GIOI_TINH = ? WHERE GIOI_TINH_ID = ?",
-        [tenGioiTinh, updateGioiTinh, idGioiTinh]
+        [tenGioiTinh, updateGioiTinh, id]
       );
-      return {
+      return res.status(200).json({
         EM: "Cập nhật giới tính thành công",
         EC: 1,
         DT: [],
-      };
+      });
     } else {
-      return {
+      return res.status(200).json({
         EM: "Không tìm thấy giới tính",
         EC: 0,
         DT: [],
-      };
+      });
     }
   } catch (error) {
     console.error("Error updating gioi tinh:", error);
-    return {
+    return res.status(200).json({
       EM: "Có lỗi xảy ra khi cập nhật giới tính",
       EC: 0,
       DT: [],
-    };
+    });
   }
 };
 
@@ -92,25 +96,25 @@ const deleteGIOI_TINH = async (req, res) => {
       await connection.execute("DELETE FROM GIOI_TINH WHERE GIOI_TINH_ID = ?", [
         id,
       ]);
-      return {
+      return res.status(200).json({
         EM: "Xóa giới tính thành công",
         EC: 1,
         DT: [],
-      };
+      });
     } else {
-      return {
+      return res.status(500).json({
         EM: "Không tìm thấy giới tính để xóa",
         EC: 0,
         DT: [],
-      };
+      });
     }
   } catch (error) {
     console.error("Error deleting gioi tinh:", error);
-    return {
+    return res.status(500).json({
       EM: "Có lỗi xảy ra khi xóa giới tính",
       EC: 0,
       DT: [],
-    };
+    });
   }
 };
 

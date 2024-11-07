@@ -4,6 +4,7 @@ import DonHangGame from "./pages/DonHang";
 import DanhSachNguoiDungAdmin from "./pages/quanLyNguoiDung/DanhSachNguoiDungAdmin";
 import ChatLieuManager from "./pages/quanLySanPham/category/chatLieu";
 import GioiTinhManager from "./pages/quanLySanPham/category/gioiTinh";
+import KichCoManager from "./pages/quanLySanPham/category/kichCo";
 
 // import QuanLySanPham from "./pages/QuanLySanPham";
 // import TuongTacNguoiDung from "./pages/TuongTacNguoiDung";
@@ -32,6 +33,30 @@ const RouterAdmin = () => {
     },
     {
       path: "/san-pham/danh-muc/gioi-tinh",
+      element: <GioiTinhManager />,
+    },
+    {
+      path: "/san-pham/danh-muc/kich-co",
+      element: <KichCoManager />,
+    },
+    {
+      path: "/san-pham/danh-muc/the-loai",
+      element: <GioiTinhManager />,
+    },
+    {
+      path: "/san-pham/danh-muc/mau-sac",
+      element: <GioiTinhManager />,
+    },
+    {
+      path: "/san-pham/danh-muc/muc-dich",
+      element: <GioiTinhManager />,
+    },
+    {
+      path: "/san-pham/danh-muc/phong-cach",
+      element: <GioiTinhManager />,
+    },
+    {
+      path: "/san-pham/danh-muc/thuong-hieu",
       element: <GioiTinhManager />,
     },
     // {

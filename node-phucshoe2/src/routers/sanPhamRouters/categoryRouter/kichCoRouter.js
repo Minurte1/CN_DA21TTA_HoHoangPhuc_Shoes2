@@ -1,15 +1,15 @@
 const express = require("express");
 const router = express.Router();
-const {
-  DanhSachkichco,
-  Capnhatkichco,
-  Taokichco,
-  XoaKichco,
-} = require("../../../controllers/ProductApiController");
 
-//api KICHCO
-router.get("/kichco", DanhSachkichco);
-router.post("/kichco/create", Taokichco);
-router.put("/kichco/info/update/:magiatri", Capnhatkichco);
-router.delete("/kichco/info/delete", XoaKichco); // chưa làm được =))))
+const {
+  getKICH_CO,
+  createKICH_CO,
+  updateKICH_CO,
+  deleteKICH_CO,
+} = require("../../../controllers/sanPhamController/categoryController/kichCoController");
+
+router.get("/", getKICH_CO);
+router.post("/", createKICH_CO);
+router.put("/:id", updateKICH_CO);
+router.delete("/:id", deleteKICH_CO);
 module.exports = router;

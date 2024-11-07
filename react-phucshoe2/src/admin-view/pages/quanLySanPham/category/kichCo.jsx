@@ -26,73 +26,73 @@ import moment from "moment";
 
 const api = process.env.REACT_APP_URL_SERVER;
 
-const GioiTinhManager = () => {
-  const [genders, setGenders] = useState([]);
+const KichCoManager = () => {
+  const [kichCoList, setKichCoList] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
-  const [currentGender, setCurrentGender] = useState(null);
-  const [tenGioiTinh, setTenGioiTinh] = useState("");
-  const [trangThaiGioiTinh, setTrangThaiGioiTinh] = useState(1);
+  const [currentKichCo, setCurrentKichCo] = useState(null);
+  const [kichCo, setKichCo] = useState("");
+  const [trangThaiKichCo, setTrangThaiKichCo] = useState(1);
 
   useEffect(() => {
-    fetchGenders();
+    fetchKichCoList();
   }, []);
 
-  const fetchGenders = async () => {
+  const fetchKichCoList = async () => {
     try {
-      const response = await axios.get(`${api}/gioi-tinh/`);
+      const response = await axios.get(`${api}/kich-co/`);
       if (response.data.EC === 1) {
-        setGenders(response.data.DT);
+        setKichCoList(response.data.DT);
       }
     } catch (error) {
-      console.error("Error fetching genders:", error);
+      console.error("Error fetching kich co:", error);
     }
   };
 
-  const handleOpenDialog = (gender = null) => {
-    setCurrentGender(gender);
-    setTenGioiTinh(gender ? gender.TEN_GIOI_TINH : "");
-    setTrangThaiGioiTinh(gender ? gender.TRANG_THAI_GIOI_TINH : 1);
+  const handleOpenDialog = (kichCoItem = null) => {
+    setCurrentKichCo(kichCoItem);
+    setKichCo(kichCoItem ? kichCoItem.KICH_CO : "");
+    setTrangThaiKichCo(kichCoItem ? kichCoItem.TRANG_THAI_KICH_CO : 1);
     setOpenDialog(true);
   };
 
   const handleCloseDialog = () => {
     setOpenDialog(false);
-    setTenGioiTinh("");
-    setCurrentGender(null);
+    setKichCo("");
+    setCurrentKichCo(null);
   };
 
   const handleSave = async () => {
-    const genderData = {
-      tenGioiTinh,
-      trangThaiGioiTinh,
+    const kichCoData = {
+      kichCo,
+      trangThaiKichCo,
     };
     try {
-      if (currentGender) {
+      if (currentKichCo) {
         const response = await axios.put(
-          `${api}/gioi-tinh/${currentGender.GIOI_TINH_ID}`,
-          genderData
+          `${api}/kich-co/${currentKichCo.ID_KICH_CO}`,
+          kichCoData
         );
         if (response.data.EC === 1) {
-          fetchGenders();
+          fetchKichCoList();
         }
       } else {
-        const response = await axios.post(`${api}/gioi-tinh/`, genderData);
+        const response = await axios.post(`${api}/kich-co/`, kichCoData);
         if (response.data.EC === 1) {
-          fetchGenders();
+          fetchKichCoList();
         }
       }
       handleCloseDialog();
     } catch (error) {
-      console.error("Error saving gender:", error);
+      console.error("Error saving kich co:", error);
     }
   };
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`${api}/gioi-tinh/${id}`);
-      fetchGenders();
+      await axios.delete(`${api}/kich-co/${id}`);
+      fetchKichCoList();
     } catch (error) {
-      console.error("Error deleting gender:", error);
+      console.error("Error deleting kich co:", error);
     }
   };
 
@@ -100,7 +100,7 @@ const GioiTinhManager = () => {
     <Container>
       <Box sx={{ width: "100%", textAlign: "left" }}>
         <Typography variant="h5" color="primary" gutterBottom>
-          Danh sách giới tính
+          Danh sách kích cỡ
         </Typography>
         <Button
           variant="outlined"
@@ -108,7 +108,7 @@ const GioiTinhManager = () => {
           onClick={() => handleOpenDialog()}
           sx={{ marginBottom: 2, backgroundColor: "#fff", color: "black" }}
         >
-          Thêm giới tính
+          Thêm kích cỡ
         </Button>
       </Box>
 
@@ -117,7 +117,7 @@ const GioiTinhManager = () => {
           <TableHead>
             <TableRow>
               <TableCell sx={{ color: "#c9d1d9" }}>ID</TableCell>
-              <TableCell sx={{ color: "#c9d1d9" }}>Tên Giới Tính</TableCell>
+              <TableCell sx={{ color: "#c9d1d9" }}>Tên Kích Cỡ</TableCell>
               <TableCell sx={{ color: "#c9d1d9" }}>Trạng Thái</TableCell>
               <TableCell sx={{ color: "#c9d1d9" }}>Ngày Tạo</TableCell>
               <TableCell sx={{ color: "#c9d1d9" }}>Ngày Cập Nhật</TableCell>
@@ -125,39 +125,39 @@ const GioiTinhManager = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {genders.map((gender) => (
-              <TableRow key={gender.GIOI_TINH_ID}>
+            {kichCoList.map((kichCoItem) => (
+              <TableRow key={kichCoItem.ID_KICH_CO}>
                 <TableCell sx={{ color: "#c9d1d9" }}>
-                  {gender.GIOI_TINH_ID}
+                  {kichCoItem.ID_KICH_CO}
                 </TableCell>
                 <TableCell sx={{ color: "#c9d1d9" }}>
-                  {gender.TEN_GIOI_TINH}
+                  {kichCoItem.KICH_CO}
                 </TableCell>
                 <TableCell sx={{ color: "#c9d1d9" }}>
-                  {gender.TRANG_THAI_GIOI_TINH === 1
+                  {kichCoItem.TRANG_THAI_KICH_CO === 1
                     ? "Đang sử dụng"
                     : "Ngưng sử dụng"}
                 </TableCell>
                 <TableCell sx={{ color: "#c9d1d9" }}>
-                  {moment(gender.CREATED_GIOI_TINH).format(
+                  {moment(kichCoItem.CREATED_KICH_CO).format(
                     "HH:mm:ss - DD/MM/YYYY"
                   )}
                 </TableCell>
                 <TableCell sx={{ color: "#c9d1d9" }}>
-                  {moment(gender.UPDATE_GIOI_TINH).format(
+                  {moment(kichCoItem.UPDATE_KICH_CO).format(
                     "HH:mm:ss - DD/MM/YYYY"
                   )}
                 </TableCell>
                 <TableCell>
                   <IconButton
                     color="primary"
-                    onClick={() => handleOpenDialog(gender)}
+                    onClick={() => handleOpenDialog(kichCoItem)}
                   >
                     <Edit />
                   </IconButton>
                   <IconButton
                     color="secondary"
-                    onClick={() => handleDelete(gender.GIOI_TINH_ID)}
+                    onClick={() => handleDelete(kichCoItem.ID_KICH_CO)}
                   >
                     <Delete />
                   </IconButton>
@@ -170,18 +170,18 @@ const GioiTinhManager = () => {
 
       <Dialog open={openDialog} onClose={handleCloseDialog}>
         <DialogTitle>
-          {currentGender ? "Sửa giới tình giày" : "Thêm giới tính giày"}
+          {currentKichCo ? "Sửa kích cỡ" : "Thêm kích cỡ"}
         </DialogTitle>
         <DialogContent>
           <TextField
             autoFocus
             margin="dense"
-            label="Loại giới tính giày"
+            label="Tên kích cỡ"
             type="text"
             fullWidth
             variant="outlined"
-            value={tenGioiTinh}
-            onChange={(e) => setTenGioiTinh(e.target.value)}
+            value={kichCo}
+            onChange={(e) => setKichCo(e.target.value)}
           />
 
           <Select
@@ -189,8 +189,8 @@ const GioiTinhManager = () => {
             label="Trạng thái"
             fullWidth
             variant="outlined"
-            value={trangThaiGioiTinh}
-            onChange={(e) => setTrangThaiGioiTinh(e.target.value)}
+            value={trangThaiKichCo}
+            onChange={(e) => setTrangThaiKichCo(e.target.value)}
           >
             <MenuItem value={1}>Đang sử dụng</MenuItem>
             <MenuItem value={0}>Ngưng sử dụng</MenuItem>
@@ -201,7 +201,7 @@ const GioiTinhManager = () => {
             Cancel
           </Button>
           <Button onClick={handleSave} color="primary">
-            {currentGender ? "Update" : "Add"}
+            {currentKichCo ? "Update" : "Add"}
           </Button>
         </DialogActions>
       </Dialog>
@@ -209,4 +209,4 @@ const GioiTinhManager = () => {
   );
 };
 
-export default GioiTinhManager;
+export default KichCoManager;
