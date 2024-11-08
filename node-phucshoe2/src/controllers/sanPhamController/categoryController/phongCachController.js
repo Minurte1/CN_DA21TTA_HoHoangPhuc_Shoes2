@@ -3,7 +3,7 @@ const connection = require("../../../config/database");
 // Lấy danh sách phong cách
 const getPHONG_CACH = async (req, res) => {
   try {
-    const [results] = await connection.execute("SELECT * FROM `phong_cach`");
+    const [results] = await connection.execute("SELECT * FROM `PHONG_CACH`");
     return res.status(200).json({
       EM: "Xem thông tin phong cách thành công",
       EC: 1,
@@ -25,17 +25,21 @@ const createPHONG_CACH = async (req, res) => {
     const { tenPhuongCach } = req.body;
     const createdPhongCach = new Date(); // Lấy ngày hiện tại
     const [results] = await connection.execute(
-      "INSERT INTO phong_cach (TEN_PHUONG_CACH, CREATED_PHONG_CACH, UPDATE_PHONG_CACH, TRANG_THAI_PHONG_CACH) VALUES (?, ?, ?, ?)",
+      "INSERT INTO PHONG_CACH (TEN_PHONG_CACH, CREATED_PHONG_CACH, UPDATE_PHONG_CACH, TRANG_THAI_PHONG_CACH) VALUES (?, ?, ?, ?)",
       [tenPhuongCach, createdPhongCach, createdPhongCach, 1] // TRANG_THAI_PHONG_CACH mặc định là 1 (hoạt động)
     );
-    return {
+    return res.status(201).json({
       EM: "Thêm phong cách thành công",
       EC: 1,
       DT: results,
-    };
+    });
   } catch (error) {
     console.error("Error creating phong cach:", error);
-    throw error;
+    return res.status(500).json({
+      EM: "Có lỗi xảy ra khi tạo phong cách",
+      EC: 0,
+      DT: [],
+    });
   }
 };
 
@@ -45,35 +49,35 @@ const updatePHONG_CACH = async (req, res) => {
   const { tenPhuongCach } = req.body;
   try {
     const [results] = await connection.execute(
-      "SELECT * FROM phong_cach WHERE ID_PHONG_CACH = ?",
-      [idPhongCach]
+      "SELECT * FROM PHONG_CACH WHERE ID_PHUONG_CACH = ?",
+      [id]
     );
 
     if (results.length > 0) {
       const updatePhongCach = new Date(); // Lấy ngày hiện tại
       await connection.execute(
-        "UPDATE phong_cach SET TEN_PHUONG_CACH = ?, UPDATE_PHONG_CACH = ? WHERE ID_PHONG_CACH = ?",
-        [tenPhuongCach, updatePhongCach, idPhongCach]
+        "UPDATE PHONG_CACH SET TEN_PHONG_CACH = ?, UPDATE_PHONG_CACH = ? WHERE ID_PHUONG_CACH = ?",
+        [tenPhuongCach, updatePhongCach, id]
       );
-      return {
+      return res.status(200).json({
         EM: "Cập nhật phong cách thành công",
         EC: 1,
         DT: [],
-      };
+      });
     } else {
-      return {
+      return res.status(404).json({
         EM: "Không tìm thấy phong cách",
         EC: 0,
         DT: [],
-      };
+      });
     }
   } catch (error) {
     console.error("Error updating phong cach:", error);
-    return {
+    return res.status(500).json({
       EM: "Có lỗi xảy ra khi cập nhật phong cách",
       EC: 0,
       DT: [],
-    };
+    });
   }
 };
 
@@ -82,34 +86,34 @@ const deletePHONG_CACH = async (req, res) => {
   const { id } = req.params;
   try {
     const [results] = await connection.execute(
-      "SELECT * FROM phong_cach WHERE ID_PHONG_CACH = ?",
-      [idPhongCach]
+      "SELECT * FROM PHONG_CACH WHERE ID_PHUONG_CACH = ?",
+      [id]
     );
 
     if (results.length > 0) {
       await connection.execute(
-        "DELETE FROM phong_cach WHERE ID_PHONG_CACH = ?",
-        [idPhongCach]
+        "DELETE FROM PHONG_CACH WHERE ID_PHUONG_CACH = ?",
+        [id]
       );
-      return {
+      return res.status(200).json({
         EM: "Xóa phong cách thành công",
         EC: 1,
         DT: [],
-      };
+      });
     } else {
-      return {
+      return res.status(404).json({
         EM: "Không tìm thấy phong cách để xóa",
         EC: 0,
         DT: [],
-      };
+      });
     }
   } catch (error) {
     console.error("Error deleting phong cach:", error);
-    return {
+    return res.status(500).json({
       EM: "Có lỗi xảy ra khi xóa phong cách",
       EC: 0,
       DT: [],
-    };
+    });
   }
 };
 

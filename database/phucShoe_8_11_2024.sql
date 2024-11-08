@@ -1,0 +1,662 @@
+-- MySQL dump 10.13  Distrib 8.0.19, for Win64 (x86_64)
+--
+-- Host: localhost    Database: PhucShoe2
+-- ------------------------------------------------------
+-- Server version	5.7.40
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!50503 SET NAMES utf8mb4 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `BINH_LUAN`
+--
+
+DROP TABLE IF EXISTS `BINH_LUAN`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `BINH_LUAN` (
+  `ID_BINH_LUAN` int(11) NOT NULL AUTO_INCREMENT,
+  `ID_SAN_PHAM` int(11) NOT NULL,
+  `ID_NGUOI_DUNG` int(11) NOT NULL,
+  `DANH_GIA` int(11) DEFAULT NULL,
+  `NGAY_TAO_BAI_VIET` datetime DEFAULT NULL,
+  `NOI_DUNG_CMT` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`ID_BINH_LUAN`),
+  KEY `FK_BINH_LUA_CO_BINH_L_NGUOI_DU` (`ID_NGUOI_DUNG`),
+  KEY `FK_BINH_LUA__UOC_BINH_SAN_PHAM` (`ID_SAN_PHAM`),
+  CONSTRAINT `FK_BINH_LUA_CO_BINH_L_NGUOI_DU` FOREIGN KEY (`ID_NGUOI_DUNG`) REFERENCES `NGUOI_DUNG` (`ID_NGUOI_DUNG`),
+  CONSTRAINT `FK_BINH_LUA__UOC_BINH_SAN_PHAM` FOREIGN KEY (`ID_SAN_PHAM`) REFERENCES `SAN_PHAM` (`ID_SAN_PHAM`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `BINH_LUAN`
+--
+
+LOCK TABLES `BINH_LUAN` WRITE;
+/*!40000 ALTER TABLE `BINH_LUAN` DISABLE KEYS */;
+/*!40000 ALTER TABLE `BINH_LUAN` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `CHAT_LIEU`
+--
+
+DROP TABLE IF EXISTS `CHAT_LIEU`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `CHAT_LIEU` (
+  `CHAT_LIEU_ID_` int(11) NOT NULL AUTO_INCREMENT,
+  `TEN_CHAT_LIEU_` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `CREATED_TEN_CHAT_LIEU_` datetime DEFAULT NULL,
+  `UPDATE_CHAT_LIEU` datetime DEFAULT NULL,
+  `TRANG_THAI_CHAT_LIEU` int(11) DEFAULT NULL,
+  `MO_TA_CHAT_LIEU` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  PRIMARY KEY (`CHAT_LIEU_ID_`)
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `CHAT_LIEU`
+--
+
+LOCK TABLES `CHAT_LIEU` WRITE;
+/*!40000 ALTER TABLE `CHAT_LIEU` DISABLE KEYS */;
+INSERT INTO `CHAT_LIEU` VALUES (13,'Da','2024-11-05 15:46:17','2024-11-07 21:36:40',1,'Giày làm bằng chất liệu da là loại giày sử dụng các loại da như da thật, da tổng hợp, hoặc da lộn để sản xuất, mang lại sự sang trọng, bền bỉ và thoải mái cho người dùng.'),(14,'Vải','2024-11-05 16:00:34','2024-11-07 21:36:02',1,'Giày làm bằng chất liệu vải là loại giày sử dụng các loại vải như canvas, denim, lưới (mesh), và nhiều loại vải dệt khác để làm phần thân giày. Loại giày này rất phổ biến vì chúng thoải mái, dễ bảo quản và thường có giá thành phải chăng.'),(15,'Tổng hợp','2024-11-05 16:00:50','2024-11-07 21:35:23',1,'Giày làm từ chất liệu tổng hợp là giày được sản xuất từ các vật liệu nhân tạo, không phải tự nhiên'),(16,'Cao su','2024-11-05 16:01:04','2024-11-05 16:27:22',1,'một trong những chất liệu phổ biến được sử dụng trong sản xuất giày, đặc biệt là trong đế giày. Dưới đây là một số thông tin về cao su và ứng dụng của nó trong giày:'),(17,'Chất liệu tổng hợp ','2024-11-05 16:02:10','2024-11-05 16:26:39',1,'Các loại chất liệu như EVA (ethylene-vinyl acetate) thường được sử dụng cho đế giày, nhẹ và có khả năng đàn hồi tốt.');
+/*!40000 ALTER TABLE `CHAT_LIEU` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `CHI_TIET_HOA_DON`
+--
+
+DROP TABLE IF EXISTS `CHI_TIET_HOA_DON`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `CHI_TIET_HOA_DON` (
+  `ID_CHI_TIET_HOA_DON` int(11) NOT NULL AUTO_INCREMENT,
+  `ID_SAN_PHAM` int(11) NOT NULL,
+  `ID_DON_HANG` int(11) NOT NULL,
+  `SO_LUONG_SP` int(11) DEFAULT NULL,
+  `GIA_SAN_PHAM_CHI_TIET` float DEFAULT NULL,
+  PRIMARY KEY (`ID_CHI_TIET_HOA_DON`),
+  KEY `FK_CHI_TIET_CO_CHI_TI_DON_HANG` (`ID_DON_HANG`),
+  KEY `FK_CHI_TIET__UOC_CHI__SAN_PHAM` (`ID_SAN_PHAM`),
+  CONSTRAINT `FK_CHI_TIET_CO_CHI_TI_DON_HANG` FOREIGN KEY (`ID_DON_HANG`) REFERENCES `DON_HANG` (`ID_DON_HANG`),
+  CONSTRAINT `FK_CHI_TIET__UOC_CHI__SAN_PHAM` FOREIGN KEY (`ID_SAN_PHAM`) REFERENCES `SAN_PHAM` (`ID_SAN_PHAM`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `CHI_TIET_HOA_DON`
+--
+
+LOCK TABLES `CHI_TIET_HOA_DON` WRITE;
+/*!40000 ALTER TABLE `CHI_TIET_HOA_DON` DISABLE KEYS */;
+/*!40000 ALTER TABLE `CHI_TIET_HOA_DON` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `CO_KICH_CO`
+--
+
+DROP TABLE IF EXISTS `CO_KICH_CO`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `CO_KICH_CO` (
+  `ID_SAN_PHAM` int(11) NOT NULL,
+  `ID_KICH_CO` int(11) NOT NULL,
+  PRIMARY KEY (`ID_SAN_PHAM`,`ID_KICH_CO`),
+  KEY `FK_CO_KICH__CO_KICH_C_KICH_CO` (`ID_KICH_CO`),
+  CONSTRAINT `FK_CO_KICH__CO_KICH_C_KICH_CO` FOREIGN KEY (`ID_KICH_CO`) REFERENCES `KICH_CO` (`ID_KICH_CO`),
+  CONSTRAINT `FK_CO_KICH__CO_KICH_C_SAN_PHAM` FOREIGN KEY (`ID_SAN_PHAM`) REFERENCES `SAN_PHAM` (`ID_SAN_PHAM`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `CO_KICH_CO`
+--
+
+LOCK TABLES `CO_KICH_CO` WRITE;
+/*!40000 ALTER TABLE `CO_KICH_CO` DISABLE KEYS */;
+/*!40000 ALTER TABLE `CO_KICH_CO` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `DON_HANG`
+--
+
+DROP TABLE IF EXISTS `DON_HANG`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `DON_HANG` (
+  `ID_DON_HANG` int(11) NOT NULL AUTO_INCREMENT,
+  `ID_NGUOI_DUNG` int(11) NOT NULL,
+  `ID_THANH_TOAN` int(11) NOT NULL,
+  `TONG_TIEN` float DEFAULT NULL,
+  `TRANG_THAI_DON_HANG` varchar(255) DEFAULT NULL,
+  `GHI_CHU_DONHANG` varchar(255) DEFAULT NULL,
+  `NGAY_CAP_NHAT_DONHANG` datetime DEFAULT NULL,
+  `NGAY_TAO_DONHANG` datetime DEFAULT NULL,
+  PRIMARY KEY (`ID_DON_HANG`),
+  KEY `FK_DON_HANG_CO_THANH__THANH_TO` (`ID_THANH_TOAN`),
+  KEY `FK_DON_HANG_TAO__ON_H_NGUOI_DU` (`ID_NGUOI_DUNG`),
+  CONSTRAINT `FK_DON_HANG_CO_THANH__THANH_TO` FOREIGN KEY (`ID_THANH_TOAN`) REFERENCES `THANH_TOAN` (`ID_THANH_TOAN`),
+  CONSTRAINT `FK_DON_HANG_TAO__ON_H_NGUOI_DU` FOREIGN KEY (`ID_NGUOI_DUNG`) REFERENCES `NGUOI_DUNG` (`ID_NGUOI_DUNG`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `DON_HANG`
+--
+
+LOCK TABLES `DON_HANG` WRITE;
+/*!40000 ALTER TABLE `DON_HANG` DISABLE KEYS */;
+/*!40000 ALTER TABLE `DON_HANG` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `GIOI_TINH`
+--
+
+DROP TABLE IF EXISTS `GIOI_TINH`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `GIOI_TINH` (
+  `GIOI_TINH_ID` int(11) NOT NULL AUTO_INCREMENT,
+  `TEN_GIOI_TINH` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `CREATED_GIOI_TINH` datetime DEFAULT NULL,
+  `UPDATE_GIOI_TINH` datetime DEFAULT NULL,
+  `TRANG_THAI_GIOI_TINH` int(11) DEFAULT NULL,
+  PRIMARY KEY (`GIOI_TINH_ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `GIOI_TINH`
+--
+
+LOCK TABLES `GIOI_TINH` WRITE;
+/*!40000 ALTER TABLE `GIOI_TINH` DISABLE KEYS */;
+INSERT INTO `GIOI_TINH` VALUES (14,'Nam','2024-11-07 21:19:15','2024-11-07 21:23:51',1),(15,'Nữ','2024-11-07 21:32:40','2024-11-07 21:32:40',1),(16,'Trẻ em','2024-11-07 21:32:49','2024-11-07 21:32:49',1);
+/*!40000 ALTER TABLE `GIOI_TINH` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `GIO_HANG`
+--
+
+DROP TABLE IF EXISTS `GIO_HANG`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `GIO_HANG` (
+  `ID_GIO_HANG` int(11) NOT NULL AUTO_INCREMENT,
+  `ID_SAN_PHAM` int(11) NOT NULL,
+  `ID_NGUOI_DUNG` int(11) NOT NULL,
+  `SO_LUONG_GIOHANG` int(11) DEFAULT NULL,
+  `NGAY_CAP_NHAT_GIOHANG` date DEFAULT NULL,
+  PRIMARY KEY (`ID_GIO_HANG`),
+  KEY `FK_GIO_HANG_CO_SAN_PHAM` (`ID_SAN_PHAM`),
+  KEY `FK_GIO_HANG_CO_GIO_HA_NGUOI_DU` (`ID_NGUOI_DUNG`),
+  CONSTRAINT `FK_GIO_HANG_CO_GIO_HA_NGUOI_DU` FOREIGN KEY (`ID_NGUOI_DUNG`) REFERENCES `NGUOI_DUNG` (`ID_NGUOI_DUNG`),
+  CONSTRAINT `FK_GIO_HANG_CO_SAN_PHAM` FOREIGN KEY (`ID_SAN_PHAM`) REFERENCES `SAN_PHAM` (`ID_SAN_PHAM`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `GIO_HANG`
+--
+
+LOCK TABLES `GIO_HANG` WRITE;
+/*!40000 ALTER TABLE `GIO_HANG` DISABLE KEYS */;
+/*!40000 ALTER TABLE `GIO_HANG` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ID_BAI_VIET`
+--
+
+DROP TABLE IF EXISTS `ID_BAI_VIET`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `ID_BAI_VIET` (
+  `ID_BAI_VIET` int(11) NOT NULL AUTO_INCREMENT,
+  `ID_NGUOI_DUNG` int(11) NOT NULL,
+  `TIEU_DE` varchar(255) DEFAULT NULL,
+  `NGAY_TAO_BLOG` datetime DEFAULT NULL,
+  `NGAY_CAP_NHAT_BAIVIET` datetime DEFAULT NULL,
+  `NOI_DUNG_BAIVIET` varchar(255) DEFAULT NULL,
+  `TRANG_THAI_BAIVIET` varchar(255) DEFAULT NULL,
+  `HINH_ANH_BAIVIET` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`ID_BAI_VIET`),
+  KEY `FK_ID_BAI_V_CO_BAI_VI_NGUOI_DU` (`ID_NGUOI_DUNG`),
+  CONSTRAINT `FK_ID_BAI_V_CO_BAI_VI_NGUOI_DU` FOREIGN KEY (`ID_NGUOI_DUNG`) REFERENCES `NGUOI_DUNG` (`ID_NGUOI_DUNG`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ID_BAI_VIET`
+--
+
+LOCK TABLES `ID_BAI_VIET` WRITE;
+/*!40000 ALTER TABLE `ID_BAI_VIET` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ID_BAI_VIET` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `KICH_CO`
+--
+
+DROP TABLE IF EXISTS `KICH_CO`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `KICH_CO` (
+  `ID_KICH_CO` int(11) NOT NULL AUTO_INCREMENT,
+  `KICH_CO` varchar(255) DEFAULT NULL,
+  `TRANG_THAI_KICH_CO` varchar(255) DEFAULT NULL,
+  `CREATED_KICH_CO` datetime DEFAULT NULL,
+  `UPDATE_KICH_CO` datetime DEFAULT NULL,
+  PRIMARY KEY (`ID_KICH_CO`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `KICH_CO`
+--
+
+LOCK TABLES `KICH_CO` WRITE;
+/*!40000 ALTER TABLE `KICH_CO` DISABLE KEYS */;
+INSERT INTO `KICH_CO` VALUES (1,'40','1','2024-11-07 22:01:33','2024-11-07 22:02:50');
+/*!40000 ALTER TABLE `KICH_CO` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `LOAI_DANH_MUC`
+--
+
+DROP TABLE IF EXISTS `LOAI_DANH_MUC`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `LOAI_DANH_MUC` (
+  `ID_DANH_MUC` int(11) NOT NULL AUTO_INCREMENT,
+  `TEN_DANH_MUC` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `MO_TA_LOAI_DANH_MUC` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `TRANG_THAI_DANHMUC` int(11) DEFAULT NULL,
+  `CREATED_DANH_MUC` datetime DEFAULT NULL,
+  `UPDATE_DANH_MUC` datetime DEFAULT NULL,
+  PRIMARY KEY (`ID_DANH_MUC`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `LOAI_DANH_MUC`
+--
+
+LOCK TABLES `LOAI_DANH_MUC` WRITE;
+/*!40000 ALTER TABLE `LOAI_DANH_MUC` DISABLE KEYS */;
+INSERT INTO `LOAI_DANH_MUC` VALUES (1,'Giày thể thao','Giày thể thao là loại giày được thiết kế cho các hoạt động thể thao, với đặc điểm nhẹ, thoải mái và có đế chống trơn. Chúng giúp bảo vệ và hỗ trợ cơ thể khi vận động.',1,'2024-11-07 23:17:05','2024-11-07 23:17:05'),(5,'Giày thời trang','Giày thời trang là loại giày chủ yếu được thiết kế để làm đẹp, thể hiện phong cách và xu hướng thời trang, thay vì chỉ phục vụ cho mục đích thể thao hay công việc. Chúng có thể có nhiều kiểu dáng, chất liệu và màu sắc khác nhau, phù hợp với các dịp, hoàn cảnh khác nhau.',1,'2024-11-07 23:28:19','2024-11-07 23:28:19');
+/*!40000 ALTER TABLE `LOAI_DANH_MUC` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `MAU_SAC`
+--
+
+DROP TABLE IF EXISTS `MAU_SAC`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `MAU_SAC` (
+  `MAU_SAC_ID` int(11) NOT NULL AUTO_INCREMENT,
+  `TEN_MAU_SAC` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `CREATE_MAU_SAC` datetime DEFAULT NULL,
+  `UPDATE_MAU_SAC` datetime DEFAULT NULL,
+  `TRANG_THAI_MAU_SAC` int(11) DEFAULT NULL,
+  PRIMARY KEY (`MAU_SAC_ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `MAU_SAC`
+--
+
+LOCK TABLES `MAU_SAC` WRITE;
+/*!40000 ALTER TABLE `MAU_SAC` DISABLE KEYS */;
+INSERT INTO `MAU_SAC` VALUES (2,'Xanh','2024-11-08 07:50:33','2024-11-08 07:50:33',1),(3,'Đỏ','2024-11-08 07:51:34','2024-11-08 07:51:34',1),(4,'Tím ','2024-11-08 07:51:41','2024-11-08 07:51:41',1),(5,'Vàng','2024-11-08 07:51:44','2024-11-08 07:51:44',1),(7,'Đen','2024-11-08 07:52:00','2024-11-08 07:52:00',1),(8,'Tổng hợp','2024-11-08 07:52:05','2024-11-08 07:52:05',1),(9,'Trắng','2024-11-08 07:52:19','2024-11-08 07:52:19',1);
+/*!40000 ALTER TABLE `MAU_SAC` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `MAU_SAC_SAN_PHAM`
+--
+
+DROP TABLE IF EXISTS `MAU_SAC_SAN_PHAM`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `MAU_SAC_SAN_PHAM` (
+  `ID_SAN_PHAM` int(11) NOT NULL,
+  `MAU_SAC_ID` int(11) NOT NULL,
+  PRIMARY KEY (`ID_SAN_PHAM`,`MAU_SAC_ID`),
+  KEY `FK_MAU_SAC__MAU_SAC_S_MAU_SAC` (`MAU_SAC_ID`),
+  CONSTRAINT `FK_MAU_SAC__MAU_SAC_S_MAU_SAC` FOREIGN KEY (`MAU_SAC_ID`) REFERENCES `MAU_SAC` (`MAU_SAC_ID`),
+  CONSTRAINT `FK_MAU_SAC__MAU_SAC_S_SAN_PHAM` FOREIGN KEY (`ID_SAN_PHAM`) REFERENCES `SAN_PHAM` (`ID_SAN_PHAM`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `MAU_SAC_SAN_PHAM`
+--
+
+LOCK TABLES `MAU_SAC_SAN_PHAM` WRITE;
+/*!40000 ALTER TABLE `MAU_SAC_SAN_PHAM` DISABLE KEYS */;
+/*!40000 ALTER TABLE `MAU_SAC_SAN_PHAM` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `MUC_DICH_SU_DUNG`
+--
+
+DROP TABLE IF EXISTS `MUC_DICH_SU_DUNG`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `MUC_DICH_SU_DUNG` (
+  `ID_MUC_DICH_SU_DUNG` int(11) NOT NULL AUTO_INCREMENT,
+  `TEN_MUC_DICH_SU_DUNG` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `CREATE_MUC_DICH_SU_DUNG` datetime DEFAULT NULL,
+  `UPDATE_MUC_DICH_SU_DUNG` datetime DEFAULT NULL,
+  `TRANG_THAI_MUC_DICH_SU_DUNG` int(11) DEFAULT NULL,
+  PRIMARY KEY (`ID_MUC_DICH_SU_DUNG`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `MUC_DICH_SU_DUNG`
+--
+
+LOCK TABLES `MUC_DICH_SU_DUNG` WRITE;
+/*!40000 ALTER TABLE `MUC_DICH_SU_DUNG` DISABLE KEYS */;
+INSERT INTO `MUC_DICH_SU_DUNG` VALUES (8,'Chạy bộ','2024-11-08 08:01:59','2024-11-08 08:01:59',1),(9,'Thời trang hàng ngày','2024-11-08 08:02:09','2024-11-08 08:02:09',1),(10,'Thể thao và tập luyện','2024-11-08 08:02:14','2024-11-08 08:02:14',1);
+/*!40000 ALTER TABLE `MUC_DICH_SU_DUNG` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `MUC_DICH_SU_DUNG_SAN_PHAM`
+--
+
+DROP TABLE IF EXISTS `MUC_DICH_SU_DUNG_SAN_PHAM`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `MUC_DICH_SU_DUNG_SAN_PHAM` (
+  `ID_SAN_PHAM` int(11) NOT NULL,
+  `ID_MUC_DICH_SU_DUNG` int(11) NOT NULL,
+  PRIMARY KEY (`ID_SAN_PHAM`,`ID_MUC_DICH_SU_DUNG`),
+  KEY `FK_MUC_DICH_MUC_DICH__MUC_DICH` (`ID_MUC_DICH_SU_DUNG`),
+  CONSTRAINT `FK_MUC_DICH_MUC_DICH__MUC_DICH` FOREIGN KEY (`ID_MUC_DICH_SU_DUNG`) REFERENCES `MUC_DICH_SU_DUNG` (`ID_MUC_DICH_SU_DUNG`),
+  CONSTRAINT `FK_MUC_DICH_MUC_DICH__SAN_PHAM` FOREIGN KEY (`ID_SAN_PHAM`) REFERENCES `SAN_PHAM` (`ID_SAN_PHAM`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `MUC_DICH_SU_DUNG_SAN_PHAM`
+--
+
+LOCK TABLES `MUC_DICH_SU_DUNG_SAN_PHAM` WRITE;
+/*!40000 ALTER TABLE `MUC_DICH_SU_DUNG_SAN_PHAM` DISABLE KEYS */;
+/*!40000 ALTER TABLE `MUC_DICH_SU_DUNG_SAN_PHAM` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `NGUOI_DUNG`
+--
+
+DROP TABLE IF EXISTS `NGUOI_DUNG`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `NGUOI_DUNG` (
+  `ID_NGUOI_DUNG` int(11) NOT NULL AUTO_INCREMENT,
+  `MAT_KHAU` varchar(255) DEFAULT NULL,
+  `EMAIL` varchar(255) DEFAULT NULL,
+  `VAI_TRO` varchar(255) DEFAULT NULL,
+  `HO_TEN` varchar(255) DEFAULT NULL,
+  `SO_DIEN_THOAI` varchar(255) DEFAULT NULL,
+  `DIA_CHI` varchar(255) DEFAULT NULL,
+  `TRANG_THAI_USER` varchar(255) DEFAULT NULL,
+  `NGAY_TAO_USER` datetime DEFAULT NULL,
+  `NGAY_CAP_NHAT_USER` varchar(255) DEFAULT NULL,
+  `AVATAR` varchar(255) DEFAULT NULL,
+  `NGAY_SINH` datetime DEFAULT NULL,
+  PRIMARY KEY (`ID_NGUOI_DUNG`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `NGUOI_DUNG`
+--
+
+LOCK TABLES `NGUOI_DUNG` WRITE;
+/*!40000 ALTER TABLE `NGUOI_DUNG` DISABLE KEYS */;
+INSERT INTO `NGUOI_DUNG` VALUES (1,NULL,'hohoangphucjob12312@gmail.com','0','phúc','12312','ádasd','1','2024-11-02 07:29:46','2024-11-02 07:29:46','ádasd',NULL),(2,NULL,'hohoangphucjob123112@gmail.com','0','phúc1',NULL,NULL,'1','2024-11-02 07:33:45','2024-11-02 07:33:45',NULL,NULL),(3,NULL,'hohoangphucjob@gmail.com','1','Phúc Hoàng',NULL,NULL,'1','2024-11-02 07:41:11','2024-11-02 07:41:11',NULL,NULL);
+/*!40000 ALTER TABLE `NGUOI_DUNG` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `PHONG_CACH`
+--
+
+DROP TABLE IF EXISTS `PHONG_CACH`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `PHONG_CACH` (
+  `ID_PHUONG_CACH` int(11) NOT NULL AUTO_INCREMENT,
+  `TEN_PHONG_CACH` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `CREATED_PHONG_CACH` datetime DEFAULT NULL,
+  `UPDATE_PHONG_CACH` datetime DEFAULT NULL,
+  `TRANG_THAI_PHONG_CACH` int(11) DEFAULT NULL,
+  PRIMARY KEY (`ID_PHUONG_CACH`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `PHONG_CACH`
+--
+
+LOCK TABLES `PHONG_CACH` WRITE;
+/*!40000 ALTER TABLE `PHONG_CACH` DISABLE KEYS */;
+/*!40000 ALTER TABLE `PHONG_CACH` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `PHONG_CACH_SAN_PHAM`
+--
+
+DROP TABLE IF EXISTS `PHONG_CACH_SAN_PHAM`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `PHONG_CACH_SAN_PHAM` (
+  `ID_SAN_PHAM` int(11) NOT NULL,
+  `ID_PHUONG_CACH` int(11) NOT NULL,
+  PRIMARY KEY (`ID_SAN_PHAM`,`ID_PHUONG_CACH`),
+  KEY `FK_PHONG_CA_PHONG_CAC_PHUONG_C` (`ID_PHUONG_CACH`),
+  CONSTRAINT `FK_PHONG_CA_PHONG_CAC_PHUONG_C` FOREIGN KEY (`ID_PHUONG_CACH`) REFERENCES `PHONG_CACH` (`ID_PHUONG_CACH`),
+  CONSTRAINT `FK_PHONG_CA_PHONG_CAC_SAN_PHAM` FOREIGN KEY (`ID_SAN_PHAM`) REFERENCES `SAN_PHAM` (`ID_SAN_PHAM`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `PHONG_CACH_SAN_PHAM`
+--
+
+LOCK TABLES `PHONG_CACH_SAN_PHAM` WRITE;
+/*!40000 ALTER TABLE `PHONG_CACH_SAN_PHAM` DISABLE KEYS */;
+/*!40000 ALTER TABLE `PHONG_CACH_SAN_PHAM` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `SAN_PHAM`
+--
+
+DROP TABLE IF EXISTS `SAN_PHAM`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `SAN_PHAM` (
+  `ID_SAN_PHAM` int(11) NOT NULL AUTO_INCREMENT,
+  `ID_THUONG_HIEU` int(11) NOT NULL,
+  `ID_DANH_MUC` int(11) NOT NULL,
+  `GIOI_TINH_ID` int(11) NOT NULL,
+  `CHAT_LIEU_ID_` int(11) NOT NULL,
+  `TEN_SAN_PHAM` varchar(255) DEFAULT NULL,
+  `GIA` float DEFAULT NULL,
+  `MO_TA_SAN_PHAM` varchar(255) DEFAULT NULL,
+  `HINH_ANH_SANPHAM` varchar(255) DEFAULT NULL,
+  `TRANG_THAI_SANPHAM` varchar(255) DEFAULT NULL,
+  `NGAY_TAO_SANPHAM` datetime DEFAULT NULL,
+  `NGAY_CAP_NHAT_SANPHAM` varchar(255) DEFAULT NULL,
+  `SO_LUONG_SANPHAM` int(11) DEFAULT NULL,
+  PRIMARY KEY (`ID_SAN_PHAM`),
+  KEY `FK_SAN_PHAM_BRAND_PRO_THUONG_H` (`ID_THUONG_HIEU`),
+  KEY `FK_SAN_PHAM_CHAT_LIEU_CHAT_LIE` (`CHAT_LIEU_ID_`),
+  KEY `FK_SAN_PHAM_CO_DANH_M_LOAI_DAN` (`ID_DANH_MUC`),
+  KEY `FK_SAN_PHAM_GIOI_TINH_GIOI_TIN` (`GIOI_TINH_ID`),
+  CONSTRAINT `FK_SAN_PHAM_BRAND_PRO_THUONG_H` FOREIGN KEY (`ID_THUONG_HIEU`) REFERENCES `THUONG_HIEU` (`ID_THUONG_HIEU`),
+  CONSTRAINT `FK_SAN_PHAM_CHAT_LIEU_CHAT_LIE` FOREIGN KEY (`CHAT_LIEU_ID_`) REFERENCES `CHAT_LIEU` (`CHAT_LIEU_ID_`),
+  CONSTRAINT `FK_SAN_PHAM_CO_DANH_M_LOAI_DAN` FOREIGN KEY (`ID_DANH_MUC`) REFERENCES `LOAI_DANH_MUC` (`ID_DANH_MUC`),
+  CONSTRAINT `FK_SAN_PHAM_GIOI_TINH_GIOI_TIN` FOREIGN KEY (`GIOI_TINH_ID`) REFERENCES `GIOI_TINH` (`GIOI_TINH_ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `SAN_PHAM`
+--
+
+LOCK TABLES `SAN_PHAM` WRITE;
+/*!40000 ALTER TABLE `SAN_PHAM` DISABLE KEYS */;
+/*!40000 ALTER TABLE `SAN_PHAM` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `THANH_TOAN`
+--
+
+DROP TABLE IF EXISTS `THANH_TOAN`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `THANH_TOAN` (
+  `ID_THANH_TOAN` int(11) NOT NULL AUTO_INCREMENT,
+  `PHUONG_THUC_THANH_TOAN` varchar(255) DEFAULT NULL,
+  `NGAY_THANH_TOAN` datetime DEFAULT NULL,
+  `TRANG_THAI_THANH_TOAN` varchar(266) DEFAULT NULL,
+  PRIMARY KEY (`ID_THANH_TOAN`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `THANH_TOAN`
+--
+
+LOCK TABLES `THANH_TOAN` WRITE;
+/*!40000 ALTER TABLE `THANH_TOAN` DISABLE KEYS */;
+/*!40000 ALTER TABLE `THANH_TOAN` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `THUONG_HIEU`
+--
+
+DROP TABLE IF EXISTS `THUONG_HIEU`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `THUONG_HIEU` (
+  `ID_THUONG_HIEU` int(11) NOT NULL AUTO_INCREMENT,
+  `TEN_THUONG_HIEU` varchar(255) DEFAULT NULL,
+  `CREATE_THUONG_HIEU` varchar(255) DEFAULT NULL,
+  `UPDATE_THUONG_HIEU` datetime DEFAULT NULL,
+  `TRANG_THAI_THUONG_HIEU` int(11) DEFAULT NULL,
+  PRIMARY KEY (`ID_THUONG_HIEU`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `THUONG_HIEU`
+--
+
+LOCK TABLES `THUONG_HIEU` WRITE;
+/*!40000 ALTER TABLE `THUONG_HIEU` DISABLE KEYS */;
+/*!40000 ALTER TABLE `THUONG_HIEU` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `TIN_NHAN`
+--
+
+DROP TABLE IF EXISTS `TIN_NHAN`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `TIN_NHAN` (
+  `ID_TIN_NHAN` int(11) NOT NULL AUTO_INCREMENT,
+  `ID_NGUOI_DUNG` int(11) NOT NULL,
+  `NGAY_TAO_TIN_NHAN` datetime DEFAULT NULL,
+  `NOI_DUNG_TINNHAN` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`ID_TIN_NHAN`),
+  KEY `FK_TIN_NHAN_CO_TIN_NH_NGUOI_DU` (`ID_NGUOI_DUNG`),
+  CONSTRAINT `FK_TIN_NHAN_CO_TIN_NH_NGUOI_DU` FOREIGN KEY (`ID_NGUOI_DUNG`) REFERENCES `NGUOI_DUNG` (`ID_NGUOI_DUNG`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `TIN_NHAN`
+--
+
+LOCK TABLES `TIN_NHAN` WRITE;
+/*!40000 ALTER TABLE `TIN_NHAN` DISABLE KEYS */;
+/*!40000 ALTER TABLE `TIN_NHAN` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `YEU_THICH`
+--
+
+DROP TABLE IF EXISTS `YEU_THICH`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `YEU_THICH` (
+  `ID_YEU_THICH` int(11) NOT NULL AUTO_INCREMENT,
+  `ID_SAN_PHAM` int(11) NOT NULL,
+  `ID_NGUOI_DUNG` int(11) NOT NULL,
+  PRIMARY KEY (`ID_YEU_THICH`),
+  KEY `FK_YEU_THIC_CO_YEU_TH_NGUOI_DU` (`ID_NGUOI_DUNG`),
+  KEY `FK_YEU_THIC__UOC_SAN_PHAM` (`ID_SAN_PHAM`),
+  CONSTRAINT `FK_YEU_THIC_CO_YEU_TH_NGUOI_DU` FOREIGN KEY (`ID_NGUOI_DUNG`) REFERENCES `NGUOI_DUNG` (`ID_NGUOI_DUNG`),
+  CONSTRAINT `FK_YEU_THIC__UOC_SAN_PHAM` FOREIGN KEY (`ID_SAN_PHAM`) REFERENCES `SAN_PHAM` (`ID_SAN_PHAM`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `YEU_THICH`
+--
+
+LOCK TABLES `YEU_THICH` WRITE;
+/*!40000 ALTER TABLE `YEU_THICH` DISABLE KEYS */;
+/*!40000 ALTER TABLE `YEU_THICH` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Dumping routines for database 'PhucShoe2'
+--
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2024-11-08  8:13:40

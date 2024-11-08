@@ -6,14 +6,14 @@ const {
   updateDanhSachMauSac,
   deleteDanhSachMauSac,
 } = require("../../../controllers/sanPhamController/categoryController/mauSacController");
-router.get("/sanpham_mausac", getDanhSachMauSac);
+router.get("/", getDanhSachMauSac);
 
 // Thêm mới màu sắc
-router.post("/sanpham_mausac", createDanhSachMauSac);
+router.post("/", createDanhSachMauSac);
 
 // Cập nhật màu sắc
-router.put("/sanpham_mausac/:id", updateDanhSachMauSac);
+router.put("/:id", updateDanhSachMauSac);
 
 // Xóa màu sắc
-router.delete("/sanpham_mausac/:id", deleteDanhSachMauSac);
+router.delete("/:id", deleteDanhSachMauSac);
 module.exports = router;

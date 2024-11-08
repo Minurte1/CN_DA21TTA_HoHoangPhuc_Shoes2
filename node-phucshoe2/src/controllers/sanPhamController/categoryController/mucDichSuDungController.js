@@ -1,9 +1,10 @@
 const connection = require("../../../config/database");
+
 // Lấy danh sách mục đích sử dụng
 const getMUC_DICH_SU_DUNG = async (req, res) => {
   try {
     const [results] = await connection.execute(
-      "SELECT * FROM `muc_dich_su_dung`"
+      "SELECT * FROM `MUC_DICH_SU_DUNG`"
     );
     return res.status(200).json({
       EM: "Xem thông tin mục đích sử dụng thành công",
@@ -26,17 +27,21 @@ const createMUC_DICH_SU_DUNG = async (req, res) => {
   try {
     const createMucDichSuDung = new Date(); // Lấy ngày hiện tại
     const [results] = await connection.execute(
-      "INSERT INTO muc_dich_su_dung (TEN_MUC_DICH_SU_DUNG, CREATE_MUC_DICH_SU_DUNG, UPDATE_MUC_DICH_SU_DUNG, TRANG_THAI_MUC_DICH_SU_DUNG) VALUES (?, ?, ?, ?)",
+      "INSERT INTO MUC_DICH_SU_DUNG (TEN_MUC_DICH_SU_DUNG, CREATE_MUC_DICH_SU_DUNG, UPDATE_MUC_DICH_SU_DUNG, TRANG_THAI_MUC_DICH_SU_DUNG) VALUES (?, ?, ?, ?)",
       [tenMucDichSuDung, createMucDichSuDung, createMucDichSuDung, 1] // TRANG_THAI_MUC_DICH_SU_DUNG mặc định là 1 (hoạt động)
     );
-    return {
+    return res.status(201).json({
       EM: "Thêm mục đích sử dụng thành công",
       EC: 1,
       DT: results,
-    };
+    });
   } catch (error) {
     console.error("Error creating muc dich su dung:", error);
-    throw error;
+    return res.status(500).json({
+      EM: "Có lỗi xảy ra khi tạo mục đích sử dụng",
+      EC: 0,
+      DT: [],
+    });
   }
 };
 
@@ -46,71 +51,71 @@ const updateMUC_DICH_SU_DUNG = async (req, res) => {
   const { tenMucDichSuDung } = req.body;
   try {
     const [results] = await connection.execute(
-      "SELECT * FROM muc_dich_su_dung WHERE ID_MUC_DICH_SU_DUNG = ?",
+      "SELECT * FROM MUC_DICH_SU_DUNG WHERE ID_MUC_DICH_SU_DUNG = ?",
       [id]
     );
 
     if (results.length > 0) {
       const updateMucDichSuDung = new Date(); // Lấy ngày hiện tại
       await connection.execute(
-        "UPDATE muc_dich_su_dung SET TEN_MUC_DICH_SU_DUNG = ?, UPDATE_MUC_DICH_SU_DUNG = ? WHERE ID_MUC_DICH_SU_DUNG = ?",
-        [tenMucDichSuDung, updateMucDichSuDung, idMucDichSuDung]
+        "UPDATE MUC_DICH_SU_DUNG SET TEN_MUC_DICH_SU_DUNG = ?, UPDATE_MUC_DICH_SU_DUNG = ? WHERE ID_MUC_DICH_SU_DUNG = ?",
+        [tenMucDichSuDung, updateMucDichSuDung, id]
       );
-      return {
+      return res.status(200).json({
         EM: "Cập nhật mục đích sử dụng thành công",
         EC: 1,
         DT: [],
-      };
+      });
     } else {
-      return {
+      return res.status(404).json({
         EM: "Không tìm thấy mục đích sử dụng",
         EC: 0,
         DT: [],
-      };
+      });
     }
   } catch (error) {
     console.error("Error updating muc dich su dung:", error);
-    return {
+    return res.status(500).json({
       EM: "Có lỗi xảy ra khi cập nhật mục đích sử dụng",
       EC: 0,
       DT: [],
-    };
+    });
   }
 };
 
 // Xóa mục đích sử dụng
 const deleteMUC_DICH_SU_DUNG = async (req, res) => {
+  const { id } = req.params;
   try {
-    const { id } = req.params;
     const [results] = await connection.execute(
-      "SELECT * FROM muc_dich_su_dung WHERE ID_MUC_DICH_SU_DUNG = ?",
+      "SELECT * FROM MUC_DICH_SU_DUNG WHERE ID_MUC_DICH_SU_DUNG = ?",
       [id]
     );
 
     if (results.length > 0) {
       await connection.execute(
-        "DELETE FROM muc_dich_su_dung WHERE ID_MUC_DICH_SU_DUNG = ?",
+        "DELETE FROM MUC_DICH_SU_DUNG WHERE ID_MUC_DICH_SU_DUNG = ?",
         [id]
       );
-      return {
+      return res.status(200).json({
         EM: "Xóa mục đích sử dụng thành công",
         EC: 1,
         DT: [],
-      };
+      });
     } else {
-      return {
+      return res.status(404).json({
         EM: "Không tìm thấy mục đích sử dụng để xóa",
         EC: 0,
         DT: [],
-      };
+      });
     }
   } catch (error) {
     console.error("Error deleting muc dich su dung:", error);
-    return {
+    return res.status(500).json({
       EM: "Có lỗi xảy ra khi xóa mục đích sử dụng",
       EC: 0,
       DT: [],
-    };
+    });
   }
 };
 

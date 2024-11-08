@@ -29,11 +29,17 @@ const chatLieuRoute = require("./routers/sanPhamRouters/categoryRouter/chatLieuR
 const gioiTinhRoute = require("./routers/sanPhamRouters/categoryRouter/gioiTinhRouter.js");
 const kichCoRoute = require("./routers/sanPhamRouters/categoryRouter/kichCoRouter.js");
 const theLoaiRoute = require("./routers/sanPhamRouters/categoryRouter/loaiDanhMucRouter.js");
+const mauSacRoute = require("./routers/sanPhamRouters/categoryRouter/mauSacRouter.js");
+const mucDichSuDungRoute = require("./routers/sanPhamRouters/categoryRouter/mucDichSuDungRouter.js");
+const phongCachRoute = require("./routers/sanPhamRouters/categoryRouter/phongCachRouter.js");
 app.use("/", userRoute);
 app.use("/chat-lieu/", chatLieuRoute);
 app.use("/gioi-tinh/", gioiTinhRoute);
 app.use("/kich-co/", kichCoRoute);
 app.use("/loai-danh-muc/", theLoaiRoute);
+app.use("/mau-sac/", mauSacRoute);
+app.use("/muc-dich-su-dung", mucDichSuDungRoute);
+app.use("/phong-cach", phongCachRoute);
 // app.use("/", (req, res) => {
 //   res.send("helloworld");
 // });

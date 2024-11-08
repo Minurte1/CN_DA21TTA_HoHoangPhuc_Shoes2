@@ -7,9 +7,9 @@ const {
   updateMUC_DICH_SU_DUNG,
   deleteMUC_DICH_SU_DUNG,
 } = require("../../../controllers/sanPhamController/categoryController/mucDichSuDungController");
-router.get("/muc-dich-su-dung", getMUC_DICH_SU_DUNG);
-router.post("/muc-dich-su-dung", createMUC_DICH_SU_DUNG);
-router.put("/muc-dich-su-dung/:id", updateMUC_DICH_SU_DUNG);
-router.delete("/muc-dich-su-dung/:id", deleteMUC_DICH_SU_DUNG);
+router.get("/", getMUC_DICH_SU_DUNG);
+router.post("/", createMUC_DICH_SU_DUNG);
+router.put("/:id", updateMUC_DICH_SU_DUNG);
+router.delete("/:id", deleteMUC_DICH_SU_DUNG);
 
 module.exports = router;

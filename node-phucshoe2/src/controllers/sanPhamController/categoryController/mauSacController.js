@@ -3,9 +3,7 @@ const connection = require("../../../config/database");
 
 const getDanhSachMauSac = async (req, res) => {
   try {
-    const [results] = await connection.execute(
-      "SELECT * FROM `sanpham_mausac`"
-    );
+    const [results] = await connection.execute("SELECT * FROM `MAU_SAC`");
     res
       .status(200)
       .json({ EM: "Lấy danh sách màu sắc thành công", EC: 1, DT: results });
@@ -17,28 +15,36 @@ const getDanhSachMauSac = async (req, res) => {
 
 // Thêm mới màu sắc
 const createDanhSachMauSac = async (req, res) => {
-  const { ten_mau } = req.body;
+  const { tenMau } = req.body;
   try {
+    const createdMauSac = new Date(); // Lấy ngày hiện tại
     const [results] = await connection.execute(
-      "SELECT * FROM `sanpham_mausac`"
+      "INSERT INTO MAU_SAC (TEN_MAU_SAC, CREATE_MAU_SAC, UPDATE_MAU_SAC, TRANG_THAI_MAU_SAC) VALUES (?, ?, ?, ?)",
+      [tenMau, createdMauSac, createdMauSac, 1]
     );
-    res
-      .status(200)
-      .json({ EM: "Lấy danh sách màu sắc thành công", EC: 1, DT: results });
+    return res.status(200).json({
+      EM: "Thêm kích cỡ thành công",
+      EC: 1,
+      DT: results,
+    });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ EM: "Lỗi hệ thống", EC: -1 });
+    console.error("Error creating kich co:", error);
+    return res.status(500).json({
+      EM: "Có lỗi xảy ra khi thêm kích cỡ",
+      EC: 0,
+      DT: [],
+    });
   }
 };
 
 // Cập nhật màu sắc
 const updateDanhSachMauSac = async (req, res) => {
   const { id } = req.params;
-  const { ten_mau } = req.body;
+  const { tenMau, trangThaiMauSac } = req.body;
   try {
     const [results] = await connection.execute(
-      "UPDATE `sanpham_mausac` SET ten_mau = ? WHERE mau_id = ?",
-      [ten_mau, id]
+      "UPDATE `MAU_SAC` SET TEN_MAU_SAC = ? , TRANG_THAI_MAU_SAC = ? WHERE MAU_SAC_ID = ?",
+      [tenMau, trangThaiMauSac, id]
     );
     res
       .status(200)
@@ -54,7 +60,7 @@ const deleteDanhSachMauSac = async (req, res) => {
   const { id } = req.params;
   try {
     const [results] = await connection.execute(
-      "DELETE FROM `sanpham_mausac` WHERE mau_id = ?",
+      "DELETE FROM `MAU_SAC` WHERE MAU_SAC_ID = ?",
       [id]
     );
     res.status(200).json({ EM: "Xóa màu sắc thành công", EC: 1, DT: results });

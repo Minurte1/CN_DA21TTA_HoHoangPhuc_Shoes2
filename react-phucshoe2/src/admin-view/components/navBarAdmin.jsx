@@ -263,7 +263,7 @@ const NavBarAdmin = () => {
                       <ListItem
                         button
                         component={Link}
-                        to="/admin/san-pham/danh-muc/muc-dich-su-dung"
+                        to="/admin/san-pham/danh-muc/muc-dich"
                         sx={{ pl: 6, color: "#f0f6fc" }}
                       >
                         <ListItemText primary="Mục đích sử dụng" />

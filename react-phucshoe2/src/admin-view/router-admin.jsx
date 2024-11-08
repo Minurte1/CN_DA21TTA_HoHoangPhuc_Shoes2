@@ -6,6 +6,9 @@ import ChatLieuManager from "./pages/quanLySanPham/category/chatLieu";
 import GioiTinhManager from "./pages/quanLySanPham/category/gioiTinh";
 import KichCoManager from "./pages/quanLySanPham/category/kichCo";
 import LoaiDanhMucManager from "./pages/quanLySanPham/category/theLoai";
+import MauSacManager from "./pages/quanLySanPham/category/mauSac";
+import MucDichSuDungManager from "./pages/quanLySanPham/category/mucDichSuDung";
+import PhongCachManager from "./pages/quanLySanPham/category/phongCach";
 
 // import QuanLySanPham from "./pages/QuanLySanPham";
 // import TuongTacNguoiDung from "./pages/TuongTacNguoiDung";
@@ -46,15 +49,15 @@ const RouterAdmin = () => {
     },
     {
       path: "/san-pham/danh-muc/mau-sac",
-      element: <GioiTinhManager />,
+      element: <MauSacManager />,
     },
     {
       path: "/san-pham/danh-muc/muc-dich",
-      element: <GioiTinhManager />,
+      element: <MucDichSuDungManager />,
     },
     {
       path: "/san-pham/danh-muc/phong-cach",
-      element: <GioiTinhManager />,
+      element: <PhongCachManager />,
     },
     {
       path: "/san-pham/danh-muc/thuong-hieu",
