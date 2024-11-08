@@ -44,3 +44,8 @@ ALTER TABLE PHUONG_CACH RENAME TO PHONG_CACH;
 --------------------ĐỔI TÊN TRUONG------------------------------------
 ALTER TABLE PHONG_CACH CHANGE COLUMN TEN_PHUONG_CACH TEN_PHONG_CACH VARCHAR(500);
 
+
+--------------------ĐỔI KIỂU DỮ LIỆU ---------------------------
+ALTER TABLE SAN_PHAM 
+MODIFY COLUMN TRANG_THAI_SANPHAM INT;
+

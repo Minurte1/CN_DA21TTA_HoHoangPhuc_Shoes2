@@ -1,0 +1,39 @@
+INSERT INTO SAN_PHAM (ID_THUONG_HIEU, ID_DANH_MUC, GIOI_TINH_ID, CHAT_LIEU_ID_, TEN_SAN_PHAM, GIA, MO_TA_SAN_PHAM, HINH_ANH_SANPHAM, TRANG_THAI_SANPHAM, NGAY_TAO_SANPHAM, NGAY_CAP_NHAT_SANPHAM, SO_LUONG_SANPHAM)
+VALUES
+    (6, 1, 14, 13, 'Giày Thể Thao Classic', 150000, 'Giày thể thao phong cách cổ điển', 'classic.jpg', 1, '2023-07-01', '2023-07-10', 60),
+    (7, 5, 15, 14, 'Giày Chạy Bộ Ultra Boost', 250000, 'Giày chạy bộ siêu nhẹ, hỗ trợ tốt', 'ultraboost.jpg', 1, '2023-07-05', '2023-07-15', 80),
+    (8, 1, 16, 15, 'Giày Lười Slip-on', 120000, 'Giày lười tiện dụng và thoải mái', 'slipon.jpg', 0, '2023-07-10', '2023-07-20', 45),
+    (9, 5, 14, 16, 'Giày Bốt Da', 300000, 'Giày bốt làm từ da cao cấp', 'bootda.jpg', 1, '2023-07-15', '2023-07-25', 20),
+    (10, 1, 15, 13, 'Giày Tây Formal', 180000, 'Giày tây phù hợp với trang phục công sở', 'formal.jpg', 1, '2023-07-20', '2023-07-30', 55),
+    (11, 5, 16, 17, 'Giày Sandal Outdoor', 90000, 'Giày sandal cho các hoạt động ngoài trời', 'sandal.jpg', 1, '2023-07-25', '2023-08-05', 75),
+    (6, 1, 14, 14, 'Giày Sneakers Năng Động', 220000, 'Giày sneakers dành cho các bạn trẻ', 'sneakers.jpg', 0, '2023-08-01', '2023-08-10', 90),
+    (7, 5, 15, 15, 'Giày Cao Gót Thời Trang', 280000, 'Giày cao gót cho các buổi tiệc', 'caogot.jpg', 1, '2023-08-05', '2023-08-15', 40),
+    (8, 1, 16, 16, 'Giày Sandal Đi Biển', 80000, 'Sandal thích hợp cho đi biển', 'dibeach.jpg', 0, '2023-08-10', '2023-08-20', 50),
+    (9, 5, 14, 13, 'Giày Moccasin', 160000, 'Giày moccasin kiểu dáng cổ điển', 'moccasin.jpg', 1, '2023-08-15', '2023-08-25', 25),
+    (10, 1, 15, 14, 'Giày Đá Bóng', 260000, 'Giày đá bóng chất lượng cao', 'dabong.jpg', 1, '2023-08-20', '2023-08-30', 70),
+    (11, 5, 16, 15, 'Giày Leo Núi', 350000, 'Giày leo núi bền bỉ và an toàn', 'leonui.jpg', 1, '2023-08-25', '2023-09-05', 30);
+
+   
+   -- Thêm 20 dữ liệu giả cho SAN_PHAM với tên là các mẫu giày
+INSERT INTO SAN_PHAM (ID_THUONG_HIEU, ID_DANH_MUC, GIOI_TINH_ID, CHAT_LIEU_ID_, TEN_SAN_PHAM, GIA, MO_TA_SAN_PHAM, HINH_ANH_SANPHAM, TRANG_THAI_SANPHAM, NGAY_TAO_SANPHAM, NGAY_CAP_NHAT_SANPHAM, SO_LUONG_SANPHAM)
+VALUES
+    (6, 1, 14, 13, 'Giày Thể Thao Air Max', 220000, 'Giày thể thao dành cho vận động viên', 'airmax.jpg', 1, '2023-09-01', '2023-09-10', 60),
+    (7, 5, 15, 14, 'Giày Chạy Bộ Asics', 230000, 'Giày chạy bộ với công nghệ hỗ trợ gân chân', 'asics.jpg', 1, '2023-09-02', '2023-09-12', 50),
+    (8, 1, 16, 15, 'Giày Converse Chuck Taylor', 180000, 'Giày thể thao thời trang cho giới trẻ', 'converse.jpg', 0, '2023-09-03', '2023-09-13', 70),
+    (9, 5, 14, 16, 'Giày Nike Air Force 1', 250000, 'Giày thể thao huyền thoại của Nike', 'airforce1.jpg', 1, '2023-09-04', '2023-09-14', 80),
+    (10, 1, 15, 13, 'Giày Adidas Superstar', 210000, 'Giày Adidas cổ điển cho mọi lứa tuổi', 'superstar.jpg', 1, '2023-09-05', '2023-09-15', 55),
+    (11, 5, 16, 17, 'Giày Puma RS-X', 270000, 'Giày thể thao Puma kiểu dáng năng động', 'pumarsx.jpg', 1, '2023-09-06', '2023-09-16', 45),
+    (6, 1, 14, 13, 'Giày Saucony Endorphin', 240000, 'Giày chạy bộ nhẹ và êm', 'endorphin.jpg', 0, '2023-09-07', '2023-09-17', 65),
+    (7, 5, 15, 14, 'Giày New Balance 990', 260000, 'Giày chạy bộ với công nghệ đệm tốt nhất', 'nb990.jpg', 1, '2023-09-08', '2023-09-18', 90),
+    (8, 1, 16, 15, 'Giày Vans Old Skool', 170000, 'Giày Vans với thiết kế cổ điển', 'vansoldskool.jpg', 1, '2023-09-09', '2023-09-19', 50),
+    (9, 5, 14, 16, 'Giày Reebok Classic', 200000, 'Giày thể thao cổ điển với kiểu dáng đẹp', 'reebokclassic.jpg', 1, '2023-09-10', '2023-09-20', 40),
+    (10, 1, 15, 13, 'Giày Nike Zoom', 230000, 'Giày thể thao nhẹ và linh hoạt', 'nikezoom.jpg', 1, '2023-09-11', '2023-09-21', 85),
+    (11, 5, 16, 17, 'Giày Timberland Boot', 350000, 'Giày bốt da chắc chắn cho mùa đông', 'timberlandboot.jpg', 0, '2023-09-12', '2023-09-22', 30),
+    (6, 1, 14, 14, 'Giày Adidas NMD', 260000, 'Giày Adidas với phong cách trẻ trung', 'nmd.jpg', 1, '2023-09-13', '2023-09-23', 60),
+    (7, 5, 15, 15, 'Giày Balenciaga Triple S', 500000, 'Giày Balenciaga nổi bật với kiểu dáng độc đáo', 'balenciaga.jpg', 1, '2023-09-14', '2023-09-24', 25),
+    (8, 1, 16, 16, 'Giày Nike React Element', 270000, 'Giày thể thao với công nghệ đệm React của Nike', 'reactelement.jpg', 1, '2023-09-15', '2023-09-25', 55),
+    (9, 5, 14, 13, 'Giày Hoka One One Clifton', 290000, 'Giày chạy bộ với đệm mềm mại và êm ái', 'hoka.jpg', 1, '2023-09-16', '2023-09-26', 45),
+    (10, 1, 15, 14, 'Giày Saucony Triumph', 320000, 'Giày chạy bộ với công nghệ đệm tối ưu', 'triumph.jpg', 1, '2023-09-17', '2023-09-27', 70),
+    (11, 5, 16, 15, 'Giày Under Armour HOVR', 280000, 'Giày chạy bộ Under Armour với công nghệ đệm HOVR', 'hovr.jpg', 0, '2023-09-18', '2023-09-28', 80),
+    (6, 1, 14, 17, 'Giày Jordan 1 Retro', 450000, 'Giày bóng rổ Jordan với phong cách cổ điển', 'jordan1.jpg', 1, '2023-09-19', '2023-09-29', 35),
+    (7, 5, 15, 16, 'Giày Fila Disruptor', 150000, 'Giày thể thao Fila với kiểu dáng retro', 'disruptor.jpg', 1, '2023-09-20', '2023-09-30', 90);

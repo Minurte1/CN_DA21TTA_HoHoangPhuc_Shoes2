@@ -45,7 +45,7 @@ const SanPhamManager = () => {
     tenSanPham: "",
     gia: "",
     moTaSanPham: "",
-    hinhAnhSanPham: null,
+    images: null,
     trangThaiSanPham: 1,
     soLuongSanPham: "",
   });
@@ -106,9 +106,8 @@ const SanPhamManager = () => {
       gia: product ? product.GIA : "",
       moTaSanPham: product ? product.MO_TA_SAN_PHAM : "",
       soLuongSanPham: product ? product.SO_LUONG_SANPHAM : "",
-      hinhAnhSanPham: product ? product.HINH_ANH_SANPHAM : "",
+      images: product ? product.HINH_ANH_SANPHAM : "",
       trangThaiSanPham: product ? product.TRANG_THAI_SANPHAM : 1,
-      trangThaiSanPham: product ? product.SO_LUONG_SANPHAM : 1,
     });
     setOpenDialog(true);
   };
@@ -124,7 +123,7 @@ const SanPhamManager = () => {
       tenSanPham: "",
       gia: "",
       moTaSanPham: "",
-      hinhAnhSanPham: "",
+      images: "",
       trangThaiSanPham: 1,
       soLuongSanPham: "",
     });
@@ -188,7 +187,7 @@ const SanPhamManager = () => {
   const handleFileChange = (e) => {
     setFormData((prevData) => ({
       ...prevData,
-      hinhAnhSanPham: e.target.files[0], // Store the file object
+      images: e.target.files[0], // Store the file object
     }));
   };
   console.log(`${api}/images/`);
@@ -219,8 +218,9 @@ const SanPhamManager = () => {
               <TableCell sx={{ color: "#c9d1d9" }}>Tên sản phẩm</TableCell>
               <TableCell sx={{ color: "#c9d1d9" }}>Giá tiền</TableCell>
               <TableCell sx={{ color: "#c9d1d9" }}>Mô tả</TableCell>
-              <TableCell sx={{ color: "#c9d1d9" }}>Hình ảnh</TableCell>
+              <TableCell sx={{ color: "#c9d1d9" }}>Hình ảnh</TableCell>{" "}
               <TableCell sx={{ color: "#c9d1d9" }}>Trạng thái</TableCell>
+              <TableCell sx={{ color: "#c9d1d9" }}>Số lượng</TableCell>
               <TableCell sx={{ color: "#c9d1d9" }}>
                 Ngày thêm vào hệ thống
               </TableCell>
@@ -243,7 +243,7 @@ const SanPhamManager = () => {
                 <TableCell sx={{ color: "#c9d1d9" }}>
                   {product.TEN_CHAT_LIEU_}
                 </TableCell>
-                <TableCell sx={{ color: "#c9d1d9" }}>
+                <TableCell sx={{ color: "#1976d2" }}>
                   {product.TEN_SAN_PHAM}
                 </TableCell>
                 <TableCell sx={{ color: "#c9d1d9" }}>
@@ -262,11 +262,15 @@ const SanPhamManager = () => {
                     width="50"
                   />
                 </TableCell>{" "}
-                <TableCell sx={{ color: "#c9d1d9" }}>
-                  {product.TRANG_THAI_SANPHAM == 1
+                <TableCell
+                  sx={{
+                    color: product.TRANG_THAI_SANPHAM === 1 ? "#73ec8b" : "red",
+                  }}
+                >
+                  {product.TRANG_THAI_SANPHAM === 1
                     ? "Đang hoạt động"
                     : "Ngưng hoạt động"}
-                </TableCell>{" "}
+                </TableCell>
                 <TableCell sx={{ color: "#c9d1d9" }}>
                   {product.SO_LUONG_SANPHAM}
                 </TableCell>
@@ -308,6 +312,7 @@ const SanPhamManager = () => {
               labelId="thuong-hieu-label"
               id="idThuongHieu"
               name="idThuongHieu"
+              label="Thương hiệu"
               value={formData.idThuongHieu}
               onChange={handleChange}
               fullWidth
@@ -328,6 +333,7 @@ const SanPhamManager = () => {
               labelId="thuong-hieu-label"
               id="idDanhMuc"
               name="idDanhMuc"
+              label="Thể loại"
               value={formData.idDanhMuc}
               onChange={handleChange}
               fullWidth
@@ -343,11 +349,12 @@ const SanPhamManager = () => {
             </Select>
           </FormControl>{" "}
           <FormControl fullWidth margin="dense">
-            <InputLabel id="thuong-hieu-label">Thể loại</InputLabel>
+            <InputLabel id="thuong-hieu-label">Giày dành cho</InputLabel>
             <Select
               labelId="thuong-hieu-label"
               id="gioiTinhId"
               name="gioiTinhId"
+              label="Giày dành cho"
               value={formData.gioiTinhId}
               onChange={handleChange}
               fullWidth
@@ -368,6 +375,7 @@ const SanPhamManager = () => {
               labelId="thuong-hieu-label"
               id="chatLieuId"
               name="chatLieuId"
+              label="Thể loại"
               value={formData.chatLieuId}
               onChange={handleChange}
               fullWidth
@@ -430,8 +438,8 @@ const SanPhamManager = () => {
               defaultValue={formData.trangThaiSanPham}
               onChange={handleChange}
             >
-              <MenuItem value="1">Đang hoạt động</MenuItem>
-              <MenuItem value="0">Ngưng hoạt động</MenuItem>
+              <MenuItem value={1}>Đang sử dụng</MenuItem>
+              <MenuItem value={0}>Ngưng sử dụng</MenuItem>
             </Select>{" "}
           </FormControl>
           <TextField
@@ -439,7 +447,10 @@ const SanPhamManager = () => {
             label="Hình ảnh sản phẩm"
             type="file"
             fullWidth
-            name="hinhAnhSanPham"
+            name="images"
+            InputLabelProps={{
+              shrink: true,
+            }}
             onChange={handleFileChange}
           />
         </DialogContent>
