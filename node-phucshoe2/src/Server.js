@@ -32,6 +32,7 @@ const theLoaiRoute = require("./routers/sanPhamRouters/categoryRouter/loaiDanhMu
 const mauSacRoute = require("./routers/sanPhamRouters/categoryRouter/mauSacRouter.js");
 const mucDichSuDungRoute = require("./routers/sanPhamRouters/categoryRouter/mucDichSuDungRouter.js");
 const phongCachRoute = require("./routers/sanPhamRouters/categoryRouter/phongCachRouter.js");
+const thuongHieuRoute = require("./routers/sanPhamRouters/categoryRouter/thuonghieuRouter.js");
 app.use("/", userRoute);
 app.use("/chat-lieu/", chatLieuRoute);
 app.use("/gioi-tinh/", gioiTinhRoute);
@@ -40,9 +41,7 @@ app.use("/loai-danh-muc/", theLoaiRoute);
 app.use("/mau-sac/", mauSacRoute);
 app.use("/muc-dich-su-dung", mucDichSuDungRoute);
 app.use("/phong-cach", phongCachRoute);
-// app.use("/", (req, res) => {
-//   res.send("helloworld");
-// });
+app.use("/thuong-hieu", thuongHieuRoute);
 
 const configViewEngine = require("./config/viewEngine");
 configViewEngine(app);
