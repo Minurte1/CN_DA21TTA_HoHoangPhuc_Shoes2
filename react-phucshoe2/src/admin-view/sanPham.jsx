@@ -27,7 +27,7 @@ import { Add, Edit, Delete } from "@mui/icons-material";
 import axios from "axios";
 
 const api = process.env.REACT_APP_URL_SERVER;
-
+const imageUrl = process.env.IMAGE_URL;
 const SanPhamManager = () => {
   const [products, setProducts] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
@@ -45,7 +45,7 @@ const SanPhamManager = () => {
     tenSanPham: "",
     gia: "",
     moTaSanPham: "",
-    hinhAnhSanPham: "",
+    hinhAnhSanPham: null,
     trangThaiSanPham: 1,
     soLuongSanPham: "",
   });
@@ -131,16 +131,33 @@ const SanPhamManager = () => {
 
   const handleSave = async () => {
     try {
+      const formDataToSend = new FormData();
+
+      // Append each field in formData to formDataToSend
+      Object.keys(formData).forEach((key) => {
+        formDataToSend.append(key, formData[key]);
+      });
+
       if (currentProduct) {
         // Update product
         await axios.put(
           `${api}/san-pham/${currentProduct.ID_SAN_PHAM}`,
-          formData
+          formDataToSend,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
         );
       } else {
         // Create new product
-        await axios.post(`${api}/san-pham`, formData);
+        await axios.post(`${api}/san-pham`, formDataToSend, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
       }
+
       fetchProducts();
       handleCloseDialog();
     } catch (error) {
@@ -157,13 +174,23 @@ const SanPhamManager = () => {
     }
   };
 
+  // Handle change for all fields
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
 
+  // Separate handler for file input
+  const handleFileChange = (e) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      hinhAnhSanPham: e.target.files[0], // Store the file object
+    }));
+  };
+  console.log(products);
   return (
     <Container>
       <Box sx={{ width: "100%", textAlign: "left", mt: 4 }}>
@@ -220,7 +247,7 @@ const SanPhamManager = () => {
                 </TableCell>
                 <TableCell>
                   <img
-                    src={product.HINH_ANH_SANPHAM}
+                    src={`${imageUrl}/${product.HINH_ANH_SANPHAM}`}
                     alt="Product"
                     width="50"
                   />
@@ -398,8 +425,7 @@ const SanPhamManager = () => {
             type="file"
             fullWidth
             name="hinhAnhSanPham"
-            value={formData.hinhAnhSanPham}
-            onChange={handleChange}
+            onChange={handleFileChange}
           />
         </DialogContent>
         <DialogActions>

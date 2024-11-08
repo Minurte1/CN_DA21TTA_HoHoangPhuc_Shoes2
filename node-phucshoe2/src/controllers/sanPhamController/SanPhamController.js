@@ -1,4 +1,5 @@
 const connection = require("../../config/database.js");
+const path = require("path");
 
 // Lấy danh sách sản phẩm
 const getSAN_PHAM = async (req, res) => {
@@ -30,11 +31,15 @@ const createSAN_PHAM = async (req, res) => {
       tenSanPham,
       gia,
       moTaSanPham,
-      hinhAnhSanPham,
       trangThaiSanPham,
       soLuongSanPham,
     } = req.body;
+
     const ngayTaoSanPham = new Date();
+
+    // Get the image file path (if an image was uploaded)
+    const hinhAnhSanPham = req.file ? path.basename(req.file.path) : null;
+
     const [results] = await connection.execute(
       "INSERT INTO SAN_PHAM (ID_THUONG_HIEU, ID_DANH_MUC, GIOI_TINH_ID, CHAT_LIEU_ID_, TEN_SAN_PHAM, GIA, MO_TA_SAN_PHAM, HINH_ANH_SANPHAM, TRANG_THAI_SANPHAM, NGAY_TAO_SANPHAM, NGAY_CAP_NHAT_SANPHAM, SO_LUONG_SANPHAM) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
       [
@@ -45,13 +50,14 @@ const createSAN_PHAM = async (req, res) => {
         tenSanPham,
         gia,
         moTaSanPham,
-        hinhAnhSanPham,
+        hinhAnhSanPham, // Store the path to the image
         trangThaiSanPham,
         ngayTaoSanPham,
         ngayTaoSanPham,
         soLuongSanPham,
-      ] // Số lượng sản phẩm mặc định là 0
+      ]
     );
+
     return res.status(201).json({
       EM: "Thêm sản phẩm thành công",
       EC: 1,
@@ -68,6 +74,7 @@ const createSAN_PHAM = async (req, res) => {
 };
 
 // Cập nhật sản phẩm
+
 const updateSAN_PHAM = async (req, res) => {
   try {
     const { id } = req.params;
@@ -77,9 +84,15 @@ const updateSAN_PHAM = async (req, res) => {
     );
 
     if (results.length > 0) {
-      const ngayCapNhatSanPham = new Date(); // Lấy ngày hiện tại
+      const ngayCapNhatSanPham = new Date();
+
+      // Check if there is an uploaded image, and extract the filename
+      const hinhAnhSanPham = req.file
+        ? path.basename(req.file.path)
+        : req.body.hinhAnhSanPham;
+
       await connection.execute(
-        "UPDATE san_pham SET ID_THUONG_HIEU = ?, ID_DANH_MUC = ?, GIOI_TINH_ID = ?, CHAT_LIEU_ID = ?, TEN_SAN_PHAM = ?, GIA = ?, MO_TA_SAN_PHAM = ?, HINH_ANH_SANPHAM = ?, TRANG_THAI_SANPHAM = ?, NGAY_CAP_NHAT_SANPHAM = ? ,SO_LUONG_SANPHAM = ? WHERE ID_SAN_PHAM = ?",
+        "UPDATE san_pham SET ID_THUONG_HIEU = ?, ID_DANH_MUC = ?, GIOI_TINH_ID = ?, CHAT_LIEU_ID = ?, TEN_SAN_PHAM = ?, GIA = ?, MO_TA_SAN_PHAM = ?, HINH_ANH_SANPHAM = ?, TRANG_THAI_SANPHAM = ?, NGAY_CAP_NHAT_SANPHAM = ?, SO_LUONG_SANPHAM = ? WHERE ID_SAN_PHAM = ?",
         [
           req.body.idThuongHieu,
           req.body.idDanhMuc,
@@ -88,7 +101,7 @@ const updateSAN_PHAM = async (req, res) => {
           req.body.tenSanPham,
           req.body.gia,
           req.body.moTaSanPham,
-          req.body.hinhAnhSanPham,
+          hinhAnhSanPham, // Use the new filename if an image was uploaded, otherwise retain the existing one
           req.body.trangThaiSanPham,
           ngayCapNhatSanPham,
           req.body.soLuongSanPham,

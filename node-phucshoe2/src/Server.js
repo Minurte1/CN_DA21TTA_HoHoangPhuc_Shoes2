@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+const path = require("path");
 const cors = require("cors");
 require("dotenv").config();
 const port = process.env.PORT;
@@ -16,7 +17,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 app.use(cookieParser());
-
+app.use("/images", express.static(path.join(__dirname, "src/public/images")));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.urlencoded({ extended: false }));
