@@ -4,7 +4,22 @@ const path = require("path");
 // Lấy danh sách sản phẩm
 const getSAN_PHAM = async (req, res) => {
   try {
-    const [results] = await connection.execute("SELECT * FROM `SAN_PHAM`");
+    const [results] = await connection.execute(`
+      SELECT 
+        sp.ID_SAN_PHAM, sp.ID_THUONG_HIEU, sp.ID_DANH_MUC, sp.GIOI_TINH_ID, sp.CHAT_LIEU_ID_,
+        sp.TEN_SAN_PHAM, sp.GIA, sp.MO_TA_SAN_PHAM, sp.HINH_ANH_SANPHAM, sp.TRANG_THAI_SANPHAM, 
+        sp.NGAY_TAO_SANPHAM, sp.NGAY_CAP_NHAT_SANPHAM, sp.SO_LUONG_SANPHAM,
+        gt.TEN_GIOI_TINH,
+        dm.TEN_DANH_MUC, dm.MO_TA_LOAI_DANH_MUC,
+        cl.TEN_CHAT_LIEU_, cl.MO_TA_CHAT_LIEU,
+        th.TEN_THUONG_HIEU
+      FROM SAN_PHAM sp
+      LEFT JOIN GIOI_TINH gt ON sp.GIOI_TINH_ID = gt.GIOI_TINH_ID
+      LEFT JOIN LOAI_DANH_MUC dm ON sp.ID_DANH_MUC = dm.ID_DANH_MUC
+      LEFT JOIN CHAT_LIEU cl ON sp.CHAT_LIEU_ID_ = cl.CHAT_LIEU_ID_
+      LEFT JOIN THUONG_HIEU th ON sp.ID_THUONG_HIEU = th.ID_THUONG_HIEU
+    `);
+
     return res.status(200).json({
       EM: "Xem thông tin sản phẩm thành công",
       EC: 1,
@@ -79,7 +94,7 @@ const updateSAN_PHAM = async (req, res) => {
   try {
     const { id } = req.params;
     const [results] = await connection.execute(
-      "SELECT * FROM san_pham WHERE ID_SAN_PHAM = ?",
+      "SELECT * FROM SAN_PHAM WHERE ID_SAN_PHAM = ?",
       [id]
     );
 
@@ -92,7 +107,7 @@ const updateSAN_PHAM = async (req, res) => {
         : req.body.hinhAnhSanPham;
 
       await connection.execute(
-        "UPDATE san_pham SET ID_THUONG_HIEU = ?, ID_DANH_MUC = ?, GIOI_TINH_ID = ?, CHAT_LIEU_ID = ?, TEN_SAN_PHAM = ?, GIA = ?, MO_TA_SAN_PHAM = ?, HINH_ANH_SANPHAM = ?, TRANG_THAI_SANPHAM = ?, NGAY_CAP_NHAT_SANPHAM = ?, SO_LUONG_SANPHAM = ? WHERE ID_SAN_PHAM = ?",
+        "UPDATE SAN_PHAM SET ID_THUONG_HIEU = ?, ID_DANH_MUC = ?, GIOI_TINH_ID = ?, CHAT_LIEU_ID_ = ?, TEN_SAN_PHAM = ?, GIA = ?, MO_TA_SAN_PHAM = ?, HINH_ANH_SANPHAM = ?, TRANG_THAI_SANPHAM = ?, NGAY_CAP_NHAT_SANPHAM = ?, SO_LUONG_SANPHAM = ? WHERE ID_SAN_PHAM = ?",
         [
           req.body.idThuongHieu,
           req.body.idDanhMuc,
@@ -135,12 +150,12 @@ const deleteSAN_PHAM = async (req, res) => {
   const { id } = req.params;
   try {
     const [results] = await connection.execute(
-      "SELECT * FROM san_pham WHERE ID_SAN_PHAM = ?",
+      "SELECT * FROM SAN_PHAM WHERE ID_SAN_PHAM = ?",
       [id]
     );
 
     if (results.length > 0) {
-      await connection.execute("DELETE FROM san_pham WHERE ID_SAN_PHAM = ?", [
+      await connection.execute("DELETE FROM SAN_PHAM WHERE ID_SAN_PHAM = ?", [
         id,
       ]);
       return res.status(200).json({

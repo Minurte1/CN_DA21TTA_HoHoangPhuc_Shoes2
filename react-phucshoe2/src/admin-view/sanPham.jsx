@@ -27,7 +27,7 @@ import { Add, Edit, Delete } from "@mui/icons-material";
 import axios from "axios";
 
 const api = process.env.REACT_APP_URL_SERVER;
-const imageUrl = process.env.IMAGE_URL;
+
 const SanPhamManager = () => {
   const [products, setProducts] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
@@ -101,10 +101,11 @@ const SanPhamManager = () => {
       idThuongHieu: product ? product.ID_THUONG_HIEU : "",
       idDanhMuc: product ? product.ID_DANH_MUC : "",
       gioiTinhId: product ? product.GIOI_TINH_ID : "",
-      chatLieuId: product ? product.CHAT_LIEU_ID : "",
+      chatLieuId: product ? product.CHAT_LIEU_ID_ : "",
       tenSanPham: product ? product.TEN_SAN_PHAM : "",
       gia: product ? product.GIA : "",
       moTaSanPham: product ? product.MO_TA_SAN_PHAM : "",
+      soLuongSanPham: product ? product.SO_LUONG_SANPHAM : "",
       hinhAnhSanPham: product ? product.HINH_ANH_SANPHAM : "",
       trangThaiSanPham: product ? product.TRANG_THAI_SANPHAM : 1,
       trangThaiSanPham: product ? product.SO_LUONG_SANPHAM : 1,
@@ -190,7 +191,7 @@ const SanPhamManager = () => {
       hinhAnhSanPham: e.target.files[0], // Store the file object
     }));
   };
-  console.log(products);
+  console.log(`${api}/images/`);
   return (
     <Container>
       <Box sx={{ width: "100%", textAlign: "left", mt: 4 }}>
@@ -214,6 +215,7 @@ const SanPhamManager = () => {
               <TableCell sx={{ color: "#c9d1d9" }}>ID</TableCell>
               <TableCell sx={{ color: "#c9d1d9" }}>Thương hiệu</TableCell>
               <TableCell sx={{ color: "#c9d1d9" }}>Thể loại</TableCell>
+              <TableCell sx={{ color: "#c9d1d9" }}>Chất liệu</TableCell>
               <TableCell sx={{ color: "#c9d1d9" }}>Tên sản phẩm</TableCell>
               <TableCell sx={{ color: "#c9d1d9" }}>Giá tiền</TableCell>
               <TableCell sx={{ color: "#c9d1d9" }}>Mô tả</TableCell>
@@ -233,27 +235,35 @@ const SanPhamManager = () => {
                   {product.ID_SAN_PHAM}
                 </TableCell>
                 <TableCell sx={{ color: "#c9d1d9" }}>
-                  {product.ID_THUONG_HIEU}
+                  {product.TEN_THUONG_HIEU}
                 </TableCell>
                 <TableCell sx={{ color: "#c9d1d9" }}>
-                  {product.ID_DANH_MUC}
+                  {product.TEN_DANH_MUC}
+                </TableCell>{" "}
+                <TableCell sx={{ color: "#c9d1d9" }}>
+                  {product.TEN_CHAT_LIEU_}
                 </TableCell>
                 <TableCell sx={{ color: "#c9d1d9" }}>
                   {product.TEN_SAN_PHAM}
                 </TableCell>
-                <TableCell sx={{ color: "#c9d1d9" }}>{product.GIA}</TableCell>
+                <TableCell sx={{ color: "#c9d1d9" }}>
+                  {product.GIA.toLocaleString("vi-VN", {
+                    style: "currency",
+                    currency: "VND",
+                  })}
+                </TableCell>
                 <TableCell sx={{ color: "#c9d1d9" }}>
                   {product.MO_TA_SAN_PHAM}
                 </TableCell>
                 <TableCell>
                   <img
-                    src={`${imageUrl}/${product.HINH_ANH_SANPHAM}`}
+                    src={`${api}/images/${product.HINH_ANH_SANPHAM}`}
                     alt="Product"
                     width="50"
                   />
                 </TableCell>{" "}
                 <TableCell sx={{ color: "#c9d1d9" }}>
-                  {product.TRANG_THAI_SANPHAM === 1
+                  {product.TRANG_THAI_SANPHAM == 1
                     ? "Đang hoạt động"
                     : "Ngưng hoạt động"}
                 </TableCell>{" "}
@@ -408,17 +418,22 @@ const SanPhamManager = () => {
             name="soLuongSanPham"
             value={formData.soLuongSanPham}
             onChange={handleChange}
-          />
-          <Select
-            fullWidth
-            label="Trạng thái"
-            name="trangThaiSanPham"
-            value={formData.trangThaiSanPham}
-            onChange={handleChange}
-          >
-            <MenuItem value={1}>Đang hoạt động</MenuItem>
-            <MenuItem value={0}>Ngưng hoạt động</MenuItem>
-          </Select>{" "}
+          />{" "}
+          <FormControl fullWidth margin="dense">
+            {" "}
+            <InputLabel id="thuong-hieu-label">Trạng thái </InputLabel>
+            <Select
+              fullWidth
+              label="Trạng thái"
+              name="trangThaiSanPham"
+              value={formData.trangThaiSanPham}
+              defaultValue={formData.trangThaiSanPham}
+              onChange={handleChange}
+            >
+              <MenuItem value="1">Đang hoạt động</MenuItem>
+              <MenuItem value="0">Ngưng hoạt động</MenuItem>
+            </Select>{" "}
+          </FormControl>
           <TextField
             margin="dense"
             label="Hình ảnh sản phẩm"
