@@ -20,6 +20,25 @@ const getMUC_DICH_SU_DUNG = async (req, res) => {
     });
   }
 };
+const getMUC_DICH_SU_DUNG_Use = async (req, res) => {
+  try {
+    const [results] = await connection.execute(
+      "SELECT * FROM `MUC_DICH_SU_DUNG` where TRANG_THAI_MUC_DICH_SU_DUNG = 1"
+    );
+    return res.status(200).json({
+      EM: "Xem thông tin mục đích sử dụng thành công",
+      EC: 1,
+      DT: results,
+    });
+  } catch (error) {
+    console.error("Error getting muc dich su dung:", error);
+    return res.status(500).json({
+      EM: "Có lỗi xảy ra khi lấy thông tin",
+      EC: 0,
+      DT: [],
+    });
+  }
+};
 
 // Tạo mục đích sử dụng mới
 const createMUC_DICH_SU_DUNG = async (req, res) => {
@@ -124,4 +143,5 @@ module.exports = {
   createMUC_DICH_SU_DUNG,
   updateMUC_DICH_SU_DUNG,
   deleteMUC_DICH_SU_DUNG,
+  getMUC_DICH_SU_DUNG_Use,
 };

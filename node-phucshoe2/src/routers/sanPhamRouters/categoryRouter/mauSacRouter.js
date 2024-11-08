@@ -5,15 +5,12 @@ const {
   createDanhSachMauSac,
   updateDanhSachMauSac,
   deleteDanhSachMauSac,
+  getDanhSachMauSac_Use,
 } = require("../../../controllers/sanPhamController/categoryController/mauSacController");
-router.get("/", getDanhSachMauSac);
 
-// Thêm mới màu sắc
+router.get("/use/", getDanhSachMauSac);
+router.get("/", getDanhSachMauSac_Use);
 router.post("/", createDanhSachMauSac);
-
-// Cập nhật màu sắc
 router.put("/:id", updateDanhSachMauSac);
-
-// Xóa màu sắc
 router.delete("/:id", deleteDanhSachMauSac);
 module.exports = router;

@@ -8,9 +8,9 @@ const {
   deleteSAN_PHAM,
 } = require("../../controllers/sanPhamController/SanPhamController");
 // Định nghĩa các route
-router.get("/san-pham", getSAN_PHAM);
-router.post("/san-pham", createSAN_PHAM);
-router.put("/san-pham/:id", updateSAN_PHAM);
-router.delete("/san-pham/:id", deleteSAN_PHAM);
+router.get("/", getSAN_PHAM);
+router.post("/", createSAN_PHAM);
+router.put("/:id", updateSAN_PHAM);
+router.delete("/:id", deleteSAN_PHAM);
 
 module.exports = router;

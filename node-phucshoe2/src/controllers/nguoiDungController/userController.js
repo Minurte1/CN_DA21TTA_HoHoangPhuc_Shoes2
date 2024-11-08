@@ -166,7 +166,7 @@ const loginUserGoogle = async (req, res) => {
           AVATAR: user.AVATAR,
         },
         JWT_SECRET,
-        { expiresIn: "2h" }
+        { expiresIn: "5h" }
       );
       // Kiểm tra nếu role = -1, không cho phép đăng nhập
       if (user.role === -1) {
@@ -224,7 +224,7 @@ const loginUserGoogle = async (req, res) => {
           AVATAR: user.AVATAR,
         },
         JWT_SECRET,
-        { expiresIn: "2h" }
+        { expiresIn: "5h" }
       );
 
       return res.status(200).json({

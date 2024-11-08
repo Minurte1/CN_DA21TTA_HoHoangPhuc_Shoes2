@@ -20,7 +20,25 @@ const getGIOI_TINH = async (req, res) => {
     });
   }
 };
-
+const getGIOI_TINH_Use = async (req, res) => {
+  try {
+    const [results] = await connection.execute(
+      "SELECT * FROM `GIOI_TINH` where TRANG_THAI_GIOI_TINH = 1"
+    );
+    return res.status(200).json({
+      EM: "Xem thông tin giới tính thành công",
+      EC: 1,
+      DT: results,
+    });
+  } catch (error) {
+    console.error("Error getting gioi tinh:", error);
+    return res.status(500).json({
+      EM: "Có lỗi xảy ra khi lấy thông tin",
+      EC: 0,
+      DT: [],
+    });
+  }
+};
 // Tạo giới tính mới
 const createGIOI_TINH = async (req, res) => {
   try {
@@ -123,4 +141,5 @@ module.exports = {
   createGIOI_TINH,
   updateGIOI_TINH,
   deleteGIOI_TINH,
+  getGIOI_TINH_Use,
 };

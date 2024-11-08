@@ -18,6 +18,25 @@ const getPHONG_CACH = async (req, res) => {
     });
   }
 };
+const getPHONG_CACH_Use = async (req, res) => {
+  try {
+    const [results] = await connection.execute(
+      "SELECT * FROM `PHONG_CACH` where TRANG_THAI_PHONG_CACH = 1"
+    );
+    return res.status(200).json({
+      EM: "Xem thông tin phong cách thành công",
+      EC: 1,
+      DT: results,
+    });
+  } catch (error) {
+    console.error("Error getting phong cach:", error);
+    return res.status(500).json({
+      EM: "Có lỗi xảy ra khi lấy thông tin",
+      EC: 0,
+      DT: [],
+    });
+  }
+};
 
 // Tạo phong cách mới
 const createPHONG_CACH = async (req, res) => {
@@ -122,4 +141,5 @@ module.exports = {
   createPHONG_CACH,
   updatePHONG_CACH,
   deletePHONG_CACH,
+  getPHONG_CACH_Use,
 };

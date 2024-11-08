@@ -20,6 +20,25 @@ const getKICH_CO = async (req, res) => {
     });
   }
 };
+const getKICH_CO_Use = async (req, res) => {
+  try {
+    const [results] = await connection.execute(
+      "SELECT * FROM `KICH_CO` where TRANG_THAI_KICH_CO = 1"
+    );
+    return res.status(200).json({
+      EM: "Xem thông tin kích cỡ thành công",
+      EC: 1,
+      DT: results,
+    });
+  } catch (error) {
+    console.error("Error getting kich co:", error);
+    return res.status(500).json({
+      EM: "Có lỗi xảy ra khi lấy thông tin",
+      EC: 0,
+      DT: [],
+    });
+  }
+};
 
 // Tạo kích cỡ mới
 const createKICH_CO = async (req, res) => {
@@ -123,4 +142,5 @@ module.exports = {
   createKICH_CO,
   updateKICH_CO,
   deleteKICH_CO,
+  getKICH_CO_Use,
 };

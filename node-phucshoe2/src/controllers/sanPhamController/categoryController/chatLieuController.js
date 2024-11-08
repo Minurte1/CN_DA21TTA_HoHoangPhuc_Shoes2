@@ -26,7 +26,27 @@ const getCHAT_LIEU = async (req, res) => {
     });
   }
 };
-
+// Lấy danh sách chất liệu
+const getCHAT_LIEU_Use = async (req, res) => {
+  try {
+    // Sắp xếp theo UPDATE_CHAT_LIEU, mới nhất lên đầu
+    const [results] = await connection.execute(
+      "SELECT * FROM `CHAT_LIEU` where TRANG_THAI_CHAT_LIEU = 1 ORDER BY `UPDATE_CHAT_LIEU` DESC"
+    );
+    return res.status(200).json({
+      EM: "Xem thông tin chất liệu thành công",
+      EC: 1,
+      DT: results,
+    });
+  } catch (error) {
+    console.error("Error getting chat lieu:", error);
+    return res.status(500).json({
+      EM: "Có lỗi xảy ra khi lấy thông tin",
+      EC: 0,
+      DT: [],
+    });
+  }
+};
 // Tạo chất liệu mới
 
 const createCHAT_LIEU = async (req, res) => {
@@ -142,6 +162,7 @@ const deleteCHAT_LIEU = async (req, res) => {
 
 module.exports = {
   getCHAT_LIEU,
+  getCHAT_LIEU_Use,
   createCHAT_LIEU,
   updateCHAT_LIEU,
   deleteCHAT_LIEU,

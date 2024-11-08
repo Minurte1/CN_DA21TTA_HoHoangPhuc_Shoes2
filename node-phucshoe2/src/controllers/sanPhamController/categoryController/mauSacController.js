@@ -12,6 +12,19 @@ const getDanhSachMauSac = async (req, res) => {
     res.status(500).json({ EM: "Lỗi hệ thống", EC: -1 });
   }
 };
+const getDanhSachMauSac_Use = async (req, res) => {
+  try {
+    const [results] = await connection.execute(
+      "SELECT * FROM `MAU_SAC` where TRANG_THAI_MAU_SAC = 1"
+    );
+    res
+      .status(200)
+      .json({ EM: "Lấy danh sách màu sắc thành công", EC: 1, DT: results });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ EM: "Lỗi hệ thống", EC: -1 });
+  }
+};
 
 // Thêm mới màu sắc
 const createDanhSachMauSac = async (req, res) => {
@@ -74,4 +87,5 @@ module.exports = {
   createDanhSachMauSac,
   updateDanhSachMauSac,
   deleteDanhSachMauSac,
+  getDanhSachMauSac_Use,
 };

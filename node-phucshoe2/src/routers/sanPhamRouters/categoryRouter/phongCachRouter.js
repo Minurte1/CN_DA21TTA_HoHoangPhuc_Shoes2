@@ -5,7 +5,9 @@ const {
   createPHONG_CACH,
   updatePHONG_CACH,
   deletePHONG_CACH,
+  getPHONG_CACH_Use,
 } = require("../../../controllers/sanPhamController/categoryController/phongCachController");
+router.get("/use/", getPHONG_CACH_Use);
 router.get("/", getPHONG_CACH);
 router.post("/", createPHONG_CACH);
 router.put("/:id", updatePHONG_CACH);

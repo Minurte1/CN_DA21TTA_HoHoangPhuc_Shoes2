@@ -18,6 +18,25 @@ const getTHUONG_HIEU = async (req, res) => {
     });
   }
 };
+const getTHUONG_HIEU_Use = async (req, res) => {
+  try {
+    const [results] = await connection.execute(
+      "SELECT * FROM `THUONG_HIEU` WHERE `TRANG_THAI_THUONG_HIEU` = 1"
+    );
+    return res.status(200).json({
+      EM: "Xem thông tin thương hiệu thành công",
+      EC: 1,
+      DT: results,
+    });
+  } catch (error) {
+    console.error("Error getting thuong hieu:", error);
+    return res.status(500).json({
+      EM: "Có lỗi xảy ra khi lấy thông tin",
+      EC: 0,
+      DT: [],
+    });
+  }
+};
 
 // Tạo thương hiệu mới
 const createTHUONG_HIEU = async (req, res) => {
@@ -122,4 +141,5 @@ module.exports = {
   createTHUONG_HIEU,
   updateTHUONG_HIEU,
   deleteTHUONG_HIEU,
+  getTHUONG_HIEU_Use,
 };

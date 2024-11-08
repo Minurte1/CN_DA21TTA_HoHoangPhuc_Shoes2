@@ -21,6 +21,25 @@ const getLOAI_DANH_MUC = async (req, res) => {
     });
   }
 };
+const getLOAI_DANH_MUC_Use = async (req, res) => {
+  try {
+    const [results] = await connection.execute(
+      "SELECT * FROM `LOAI_DANH_MUC` WHERE `TRANG_THAI_DANHMUC` = 1 ORDER BY `UPDATE_DANH_MUC` DESC"
+    );
+    return res.status(200).json({
+      EM: "Lấy danh sách loại danh mục thành công",
+      EC: 1,
+      DT: results,
+    });
+  } catch (error) {
+    console.error("Error getting LOAI_DANH_MUC:", error);
+    return res.status(500).json({
+      EM: "Có lỗi xảy ra khi lấy danh sách loại danh mục",
+      EC: 0,
+      DT: [],
+    });
+  }
+};
 
 // Tạo LOAI_DANH_MUC mới
 const createLOAI_DANH_MUC = async (req, res) => {
@@ -144,4 +163,5 @@ module.exports = {
   createLOAI_DANH_MUC,
   updateLOAI_DANH_MUC,
   deleteLOAI_DANH_MUC,
+  getLOAI_DANH_MUC_Use,
 };

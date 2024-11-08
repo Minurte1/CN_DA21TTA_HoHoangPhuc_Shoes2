@@ -10,6 +10,7 @@ import MauSacManager from "./pages/quanLySanPham/category/mauSac";
 import MucDichSuDungManager from "./pages/quanLySanPham/category/mucDichSuDung";
 import PhongCachManager from "./pages/quanLySanPham/category/phongCach";
 import ThuongHieuManager from "./pages/quanLySanPham/category/thuongHieu";
+import SanPhamManager from "./sanPham";
 
 // import QuanLySanPham from "./pages/QuanLySanPham";
 // import TuongTacNguoiDung from "./pages/TuongTacNguoiDung";
@@ -29,8 +30,8 @@ const RouterAdmin = () => {
       element: <DanhSachNguoiDungAdmin />,
     },
     {
-      path: "/them-san-pham",
-      element: <DanhSachNguoiDungAdmin />,
+      path: "/san-pham/them-san-pham",
+      element: <SanPhamManager />,
     },
     {
       path: "/san-pham/danh-muc/chat-lieu",

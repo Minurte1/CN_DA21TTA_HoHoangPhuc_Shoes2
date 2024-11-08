@@ -186,7 +186,7 @@ const NavBarAdmin = () => {
                 <ListItem
                   button
                   component={Link}
-                  to="/admin/san-pham/add"
+                  to="/admin/san-pham/them-san-pham"
                   sx={{ pl: 4, color: "#f0f6fc" }}
                 >
                   <ListItemText primary="Thêm sản phẩm" />
