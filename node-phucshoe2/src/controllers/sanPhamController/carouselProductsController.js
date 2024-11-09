@@ -105,9 +105,10 @@ const createCAROUSEL_PRODUCT = async (req, res) => {
 
   try {
     const [results] = await connection.execute(
-      `INSERT INTO CAROUSEL_PRODUCTS ( HINH_ANH_NEN_CAROUSEL, HINH_ANH_ICON_CAROUSEL, MO_TA_CAROUSEL, TRANG_THAI_CAROUSEL)
-       VALUES ( ?, ?, ?, ?)`,
+      `INSERT INTO CAROUSEL_PRODUCTS (ID_SAN_PHAM, HINH_ANH_NEN_CAROUSEL, HINH_ANH_ICON_CAROUSEL, MO_TA_CAROUSEL, TRANG_THAI_CAROUSEL)
+       VALUES (?, ?, ?, ?, ?)`,
       [
+        ID_SAN_PHAM,
         hinhAnhNenCarousel,
         hinhAnhIconCarousel,
         MO_TA_CAROUSEL,
@@ -132,26 +133,61 @@ const createCAROUSEL_PRODUCT = async (req, res) => {
 
 const updateCAROUSEL_PRODUCT = async (req, res) => {
   const { id } = req.params;
-  const { MO_TA_CAROUSEL, TRANG_THAI_CAROUSEL } = req.body;
+  const { ID_SAN_PHAM, MO_TA_CAROUSEL, TRANG_THAI_CAROUSEL } = req.body;
 
-  // Đảm bảo req.files là một mảng
   const files = req.files || [];
-  const hinhAnhNenCarousel = files[0] ? files[0].filename : null; // Lấy tên ảnh nền từ file đầu tiên
-  const hinhAnhIconCarousel = files[1] ? files[1].filename : null; // Lấy tên ảnh icon từ file thứ hai
+  const hinhAnhNenCarousel = files[0] ? files[0].filename : null;
+  const hinhAnhIconCarousel = files[1] ? files[1].filename : null;
+
+  const updateFields = [];
+  const updateValues = [];
+
+  if (ID_SAN_PHAM) {
+    updateFields.push("ID_SAN_PHAM = ?");
+    updateValues.push(ID_SAN_PHAM);
+  }
+
+  if (hinhAnhNenCarousel) {
+    updateFields.push("HINH_ANH_NEN_CAROUSEL = ?");
+    updateValues.push(hinhAnhNenCarousel);
+  }
+
+  if (hinhAnhIconCarousel) {
+    updateFields.push("HINH_ANH_ICON_CAROUSEL = ?");
+    updateValues.push(hinhAnhIconCarousel);
+  }
+
+  if (MO_TA_CAROUSEL) {
+    updateFields.push("MO_TA_CAROUSEL = ?");
+    updateValues.push(MO_TA_CAROUSEL);
+  }
+
+  if (TRANG_THAI_CAROUSEL !== undefined) {
+    updateFields.push("TRANG_THAI_CAROUSEL = ?");
+    updateValues.push(TRANG_THAI_CAROUSEL);
+  }
+
+  if (updateFields.length === 0) {
+    return res.status(400).json({
+      EM: "Không có dữ liệu nào để cập nhật",
+      EC: 0,
+      DT: [],
+    });
+  }
+
+  // Thêm cập nhật thời gian trực tiếp trong câu lệnh SQL
+  updateFields.push("NGAY_CAP_NHAT_CAROUSEL = CURRENT_TIMESTAMP");
+
+  const updateQuery = `
+    UPDATE CAROUSEL_PRODUCTS
+    SET ${updateFields.join(", ")}
+    WHERE ID_CAROUSEL = ?
+  `;
+
+  updateValues.push(id); // Thêm ID_CAROUSEL vào mảng updateValues cho điều kiện WHERE
 
   try {
-    const [results] = await connection.execute(
-      `UPDATE CAROUSEL_PRODUCTS
-       SET HINH_ANH_NEN_CAROUSEL = ?, HINH_ANH_ICON_CAROUSEL = ?, MO_TA_CAROUSEL = ?, TRANG_THAI_CAROUSEL = ?, NGAY_CAP_NHAT_CAROUSEL = CURRENT_TIMESTAMP
-       WHERE ID_CAROUSEL = ?`,
-      [
-        hinhAnhNenCarousel,
-        hinhAnhIconCarousel,
-        MO_TA_CAROUSEL,
-        TRANG_THAI_CAROUSEL,
-        id,
-      ]
-    );
+    const [results] = await connection.execute(updateQuery, updateValues);
 
     if (results.affectedRows === 0) {
       return res.status(404).json({

@@ -91,7 +91,7 @@ const CarouselManager = () => {
 
   const handleSave = async () => {
     const formData = new FormData();
-
+    formData.append("ID_SAN_PHAM", idSanPham);
     formData.append("MO_TA_CAROUSEL", moTaCarousel);
     formData.append("TRANG_THAI_CAROUSEL", trangThaiCarousel);
 
