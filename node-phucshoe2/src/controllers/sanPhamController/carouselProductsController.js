@@ -9,6 +9,33 @@ const getCAROUSEL_PRODUCTS = async (req, res) => {
           sp.TEN_SAN_PHAM
         FROM CAROUSEL_PRODUCTS cp
         LEFT JOIN SAN_PHAM sp ON cp.ID_SAN_PHAM = sp.ID_SAN_PHAM
+        ORDER BY cp.NGAY_TAO_CAROUSEL DESC
+    
+      `);
+
+    return res.status(200).json({
+      EM: "Xem thông tin carousel thành công",
+      EC: 1,
+      DT: results,
+    });
+  } catch (error) {
+    console.error("Error getting carousel products:", error);
+    return res.status(500).json({
+      EM: "Có lỗi xảy ra khi lấy thông tin carousel",
+      EC: 0,
+      DT: [],
+    });
+  }
+};
+const getCAROUSEL_7PRODUCTS = async (req, res) => {
+  try {
+    const [results] = await connection.execute(`
+        SELECT 
+          cp.ID_CAROUSEL, cp.ID_SAN_PHAM, cp.HINH_ANH_NEN_CAROUSEL, cp.HINH_ANH_ICON_CAROUSEL, 
+          cp.MO_TA_CAROUSEL, cp.TRANG_THAI_CAROUSEL, cp.NGAY_TAO_CAROUSEL, cp.NGAY_CAP_NHAT_CAROUSEL,
+          sp.TEN_SAN_PHAM
+        FROM CAROUSEL_PRODUCTS cp
+        LEFT JOIN SAN_PHAM sp ON cp.ID_SAN_PHAM = sp.ID_SAN_PHAM
         WHERE cp.TRANG_THAI_CAROUSEL = 1
         ORDER BY cp.NGAY_TAO_CAROUSEL DESC
         LIMIT 7
@@ -69,25 +96,20 @@ const getCAROUSEL_PRODUCT_BY_ID = async (req, res) => {
 };
 
 const createCAROUSEL_PRODUCT = async (req, res) => {
-  const {
-    ID_SAN_PHAM,
-    HINH_ANH_NEN_CAROUSEL,
-    HINH_ANH_ICON_CAROUSEL,
-    MO_TA_CAROUSEL,
-    TRANG_THAI_CAROUSEL,
-  } = req.body;
-  const images = req.file ? path.basename(req.file.path) : null;
+  const { ID_SAN_PHAM, MO_TA_CAROUSEL, TRANG_THAI_CAROUSEL } = req.body;
+
+  // Đảm bảo rằng req.files là một mảng
+  const files = req.files || [];
+  const hinhAnhNenCarousel = files[0] ? files[0].filename : null; // Lấy tên ảnh nền từ file đầu tiên
+  const hinhAnhIconCarousel = files[1] ? files[1].filename : null; // Lấy tên ảnh icon từ file thứ hai
 
   try {
     const [results] = await connection.execute(
-      `
-        INSERT INTO CAROUSEL_PRODUCTS (ID_SAN_PHAM, HINH_ANH_NEN_CAROUSEL, HINH_ANH_ICON_CAROUSEL, MO_TA_CAROUSEL, TRANG_THAI_CAROUSEL)
-        VALUES (?, ?, ?, ?, ?)
-      `,
+      `INSERT INTO CAROUSEL_PRODUCTS ( HINH_ANH_NEN_CAROUSEL, HINH_ANH_ICON_CAROUSEL, MO_TA_CAROUSEL, TRANG_THAI_CAROUSEL)
+       VALUES ( ?, ?, ?, ?)`,
       [
-        ID_SAN_PHAM,
-        HINH_ANH_NEN_CAROUSEL,
-        HINH_ANH_ICON_CAROUSEL,
+        hinhAnhNenCarousel,
+        hinhAnhIconCarousel,
         MO_TA_CAROUSEL,
         TRANG_THAI_CAROUSEL,
       ]
@@ -110,22 +132,21 @@ const createCAROUSEL_PRODUCT = async (req, res) => {
 
 const updateCAROUSEL_PRODUCT = async (req, res) => {
   const { id } = req.params;
-  const {
-    HINH_ANH_NEN_CAROUSEL,
-    HINH_ANH_ICON_CAROUSEL,
-    MO_TA_CAROUSEL,
-    TRANG_THAI_CAROUSEL,
-  } = req.body;
+  const { MO_TA_CAROUSEL, TRANG_THAI_CAROUSEL } = req.body;
+
+  // Đảm bảo req.files là một mảng
+  const files = req.files || [];
+  const hinhAnhNenCarousel = files[0] ? files[0].filename : null; // Lấy tên ảnh nền từ file đầu tiên
+  const hinhAnhIconCarousel = files[1] ? files[1].filename : null; // Lấy tên ảnh icon từ file thứ hai
+
   try {
     const [results] = await connection.execute(
-      `
-        UPDATE CAROUSEL_PRODUCTS
-        SET HINH_ANH_NEN_CAROUSEL = ?, HINH_ANH_ICON_CAROUSEL = ?, MO_TA_CAROUSEL = ?, TRANG_THAI_CAROUSEL = ?, NGAY_CAP_NHAT_CAROUSEL = CURRENT_TIMESTAMP
-        WHERE ID_CAROUSEL = ?
-      `,
+      `UPDATE CAROUSEL_PRODUCTS
+       SET HINH_ANH_NEN_CAROUSEL = ?, HINH_ANH_ICON_CAROUSEL = ?, MO_TA_CAROUSEL = ?, TRANG_THAI_CAROUSEL = ?, NGAY_CAP_NHAT_CAROUSEL = CURRENT_TIMESTAMP
+       WHERE ID_CAROUSEL = ?`,
       [
-        HINH_ANH_NEN_CAROUSEL,
-        HINH_ANH_ICON_CAROUSEL,
+        hinhAnhNenCarousel,
+        hinhAnhIconCarousel,
         MO_TA_CAROUSEL,
         TRANG_THAI_CAROUSEL,
         id,
@@ -190,6 +211,7 @@ const deleteCAROUSEL_PRODUCT = async (req, res) => {
 
 module.exports = {
   getCAROUSEL_PRODUCTS,
+  getCAROUSEL_7PRODUCTS,
   getCAROUSEL_PRODUCT_BY_ID,
   createCAROUSEL_PRODUCT,
   updateCAROUSEL_PRODUCT,

@@ -190,6 +190,14 @@ const NavBarAdmin = () => {
                   sx={{ pl: 4, color: "#f0f6fc" }}
                 >
                   <ListItemText primary="Thêm sản phẩm" />
+                </ListItem>{" "}
+                <ListItem
+                  button
+                  component={Link}
+                  to="/admin/san-pham/carousel-product"
+                  sx={{ pl: 4, color: "#f0f6fc" }}
+                >
+                  <ListItemText primary="Carousel Sản Phẩm" />
                 </ListItem>
                 <ListItem
                   button

@@ -7,12 +7,15 @@ const {
   createCAROUSEL_PRODUCT,
   updateCAROUSEL_PRODUCT,
   deleteCAROUSEL_PRODUCT,
-} = require("../../controllers/sanPhamController/carouselProducts");
+  getCAROUSEL_7PRODUCTS,
+} = require("../../controllers/sanPhamController/carouselProductsController");
 const uploads = require("../../config/multerConfig");
 // Định nghĩa các route
 router.get("/", getCAROUSEL_PRODUCTS);
-router.post("/", uploads.single("images"), createCAROUSEL_PRODUCT);
-router.put("/:id", uploads.single("images"), updateCAROUSEL_PRODUCT);
+router.get("/use", getCAROUSEL_7PRODUCTS);
+router.post("/", uploads.array("images", 2), createCAROUSEL_PRODUCT);
+router.put("/:id", uploads.array("images", 2), updateCAROUSEL_PRODUCT);
+
 router.delete("/:id", deleteCAROUSEL_PRODUCT);
 
 module.exports = router;

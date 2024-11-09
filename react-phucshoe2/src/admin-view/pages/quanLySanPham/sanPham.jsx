@@ -255,7 +255,8 @@ const SanPhamManager = () => {
         >
           Add Product
         </Button>
-      </Box>{" "}
+      </Box>
+
       {/* Filter Products */}
       <FilterShoes
         thuongHieu={thuongHieu}
