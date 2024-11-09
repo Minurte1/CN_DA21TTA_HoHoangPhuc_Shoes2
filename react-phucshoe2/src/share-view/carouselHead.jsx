@@ -123,7 +123,10 @@ const CarouselHead = ({ carouselProducts }) => {
                   variant="body1"
                   sx={{ mt: 1, mb: 2 }}
                 >
-                  {products.GIA}
+                  {new Intl.NumberFormat("vi-VN", {
+                    style: "currency",
+                    currency: "VND",
+                  }).format(products.GIA)}
                 </Typography>
               </React.Fragment>
             ) : null
@@ -147,7 +150,7 @@ const CarouselHead = ({ carouselProducts }) => {
                 borderRadius: "14px",
               }}
             >
-              Play Now
+              Mua Ngay
             </Button>
 
             <Button
@@ -166,7 +169,7 @@ const CarouselHead = ({ carouselProducts }) => {
               <AddCircleOutlineIcon
                 sx={{ marginRight: "10px", fontSize: "18px" }}
               />{" "}
-              Add to Wishlist
+              Thêm vào giỏ hàng
             </Button>
           </Box>
         </Box>
