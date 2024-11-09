@@ -205,8 +205,41 @@ const SanPhamManager = () => {
         >
           Add Product
         </Button>
-      </Box>
-
+      </Box>{" "}
+      <Box sx={{ width: "100%", textAlign: "left", mt: 4 }}>
+        <Button
+          variant="outlined"
+          startIcon={<Add />}
+          onClick={() => handleOpenDialog()}
+          sx={{ marginBottom: 2, backgroundColor: "#fff", color: "black" }}
+        >
+          Lọc theo màu sắc
+        </Button>{" "}
+        <Button
+          variant="outlined"
+          startIcon={<Add />}
+          onClick={() => handleOpenDialog()}
+          sx={{ marginBottom: 2, backgroundColor: "#fff", color: "black" }}
+        >
+          Lọc theo thương hiệu
+        </Button>{" "}
+        <Button
+          variant="outlined"
+          startIcon={<Add />}
+          onClick={() => handleOpenDialog()}
+          sx={{ marginBottom: 2, backgroundColor: "#fff", color: "black" }}
+        >
+          Lọc theo chất liệu
+        </Button>{" "}
+        <Button
+          variant="outlined"
+          startIcon={<Add />}
+          onClick={() => handleOpenDialog()}
+          sx={{ marginBottom: 2, backgroundColor: "#fff", color: "black" }}
+        >
+          Lọc theo trạng thái
+        </Button>
+      </Box>{" "}
       <TableContainer component={Paper} sx={{ backgroundColor: "#101014" }}>
         <Table>
           <TableHead>
@@ -299,7 +332,6 @@ const SanPhamManager = () => {
           </TableBody>
         </Table>
       </TableContainer>
-
       {/* Dialog for Adding/Editing Product */}
       <Dialog open={openDialog} onClose={handleCloseDialog}>
         <DialogTitle>
