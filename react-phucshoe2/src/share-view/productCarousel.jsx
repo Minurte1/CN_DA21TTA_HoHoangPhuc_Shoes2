@@ -24,171 +24,175 @@ const ProductCarousel = ({ products, api }) => {
   }, [products]);
 
   const nextSlide = () => {
-    if (currentIndex < productLength - 1) {
-      setCurrentIndex((prevIndex) => prevIndex + 1);
-      setDisable(true);
+    if (currentIndex + 5 < productLength) {
+      setCurrentIndex((prevIndex) => prevIndex + 5);
+    } else {
+      setCurrentIndex(productLength - (productLength % 5)); // Đảm bảo không vượt quá
     }
   };
 
   const prevSlide = () => {
-    if (currentIndex > 0) {
-      setCurrentIndex((prevIndex) => prevIndex - 1);
-      setDisable(false);
+    if (currentIndex - 5 >= 0) {
+      setCurrentIndex((prevIndex) => prevIndex - 5);
+    } else {
+      setCurrentIndex(0); // Đảm bảo không đi lùi quá đầu
     }
   };
-  console.log("products", products);
+
+  useEffect(() => {
+    // Nếu đã đến sản phẩm cuối, vô hiệu hóa nút next
+    setDisable(currentIndex + 5 >= productLength);
+  }, [currentIndex, productLength]);
+
   return (
-    <>
-      <div
-        className="container-product-carousel mt-4 mb-4"
-        style={{ width: "100%" }}
+    <div
+      className="container-product-carousel mt-4 mb-4"
+      style={{ width: "100%" }}
+    >
+      <IconButton
+        onClick={prevSlide}
+        disabled={currentIndex === 0} // Vô hiệu hóa nếu đang ở đầu danh sách
+        sx={{
+          position: "absolute",
+          right: "0",
+          marginRight: "90px",
+          top: "0%",
+          transform: "translateY(-50%)",
+          zIndex: 1,
+          backgroundColor: "#444447",
+          width: "30px",
+          color: "#fff", // Màu chữ
+          height: "30px",
+          "&:hover": {
+            backgroundColor: "#636366", // Màu khi hover
+          },
+        }}
       >
-        <IconButton
-          onClick={prevSlide}
-          disabled={currentIndex === 0} // Vô hiệu hóa nếu đang ở đầu danh sách
-          sx={{
-            position: "absolute",
-            right: "0",
-            marginRight: "90px",
-            top: "0%",
-            transform: "translateY(-50%)",
-            zIndex: 1,
-            backgroundColor: "#444447",
-            width: "30px",
-            color: "#fff", // Màu chữ
-            height: "30px",
-            "&:hover": {
-              backgroundColor: "#636366", // Màu khi hover
-            },
-          }}
-        >
-          <ArrowBackIosNewIcon sx={{ fontSize: "15px", color: "#fff" }} />
-        </IconButton>
+        <ArrowBackIosNewIcon sx={{ fontSize: "15px", color: "#fff" }} />
+      </IconButton>
 
-        <IconButton
-          onClick={nextSlide}
-          disabled={disable} // Sửa điều kiện kiểm tra
-          sx={{
-            position: "absolute",
-            // left: { xs: "0", sm: "0", md: "0", lg: "0" }, // Đặt bên trái cho màn hình nhỏ
-            right: 0,
-            top: "0%",
-            transform: "translateY(-50%)",
-            zIndex: 1,
-            marginRight: "40px",
-            backgroundColor: "#343437", // Màu nền
-            color: "#fff", // Màu chữ
-            borderRadius: "50%", // Bo tròn để tạo hình tròn
-            backgroundColor: "#444447",
-            width: "30px",
-            height: "30px",
-            "&:hover": {
-              backgroundColor: "#636366", // Màu khi hover
-            },
-          }}
-        >
-          <ArrowForwardIosIcon sx={{ fontSize: "15px", color: "#fff" }} />
-        </IconButton>
-        <Typography
-          variant="h6"
-          sx={{
-            textAlign: "left",
-            color: "#fff",
-            cursor: "pointer",
-            display: "inline-flex", // Thay đổi cách hiển thị để mũi tên nằm cạnh chữ
-            alignItems: "center", // Căn giữa chữ và mũi tên theo chiều dọc
-            "&:hover .arrow-icon": {
-              marginLeft: "15px", // Di chuyển mũi tên sang trái 10px khi hover
-              transition: "margin-left 0.3s ease", // Hiệu ứng chuyển tiếp
-            },
-          }}
-        >
-          Discover Something New{" "}
-          <ArrowForwardIosIcon
-            className="arrow-icon"
-            sx={{ fontSize: "19px", color: "#fff", marginLeft: "10px" }}
-          />
-        </Typography>
+      <IconButton
+        onClick={nextSlide}
+        disabled={disable} // Vô hiệu hóa nếu đã đến cuối danh sách
+        sx={{
+          position: "absolute",
+          right: 0,
+          top: "0%",
+          transform: "translateY(-50%)",
+          zIndex: 1,
+          marginRight: "40px",
+          backgroundColor: "#343437", // Màu nền
+          color: "#fff", // Màu chữ
+          borderRadius: "50%", // Bo tròn để tạo hình tròn
+          backgroundColor: "#444447",
+          width: "30px",
+          height: "30px",
+          "&:hover": {
+            backgroundColor: "#636366", // Màu khi hover
+          },
+        }}
+      >
+        <ArrowForwardIosIcon sx={{ fontSize: "15px", color: "#fff" }} />
+      </IconButton>
 
+      <Typography
+        variant="h6"
+        sx={{
+          textAlign: "left",
+          color: "#fff",
+          cursor: "pointer",
+          display: "inline-flex", // Thay đổi cách hiển thị để mũi tên nằm cạnh chữ
+          alignItems: "center", // Căn giữa chữ và mũi tên theo chiều dọc
+          "&:hover .arrow-icon": {
+            marginLeft: "15px", // Di chuyển mũi tên sang trái 10px khi hover
+            transition: "margin-left 0.3s ease", // Hiệu ứng chuyển tiếp
+          },
+        }}
+      >
+        Discover Something New{" "}
+        <ArrowForwardIosIcon
+          className="arrow-icon"
+          sx={{ fontSize: "19px", color: "#fff", marginLeft: "10px" }}
+        />
+      </Typography>
+
+      <Box
+        sx={{
+          display: "flex",
+          overflow: "hidden",
+          padding: "20px 0",
+          position: "relative",
+        }}
+      >
         <Box
           sx={{
             display: "flex",
-            overflow: "hidden",
-            padding: "20px 0",
-            position: "relative",
+            transition: "transform 0.5s ease",
+            transform: `translateX(-${(currentIndex * 100) / 5}%)`,
+            width: `100%`, // Mỗi lần chuyển 5 sản phẩm
           }}
         >
-          <Box
-            sx={{
-              display: "flex",
-              transition: "transform 0.5s ease",
-              transform: `translateX(-${currentIndex * 100}%)`,
-              width: `${productLength * 100}%`,
-            }}
-          >
-            {products && products.length > 0 ? (
-              products.map((product, index) => (
-                <Card
-                  key={index}
+          {products && products.length > 0 ? (
+            products.map((product, index) => (
+              <Card
+                key={index}
+                sx={{
+                  backgroundColor: "#101014",
+                  color: "#fff",
+                  padding: 1,
+                  flexShrink: 0,
+                  cursor: "pointer",
+                  width: { xs: "100%", sm: "30%", md: "260px", lg: "260px" },
+                  transition: "background-color 0.3s ease, transform 0.3s ease",
+                  "&:hover": {
+                    backgroundColor: "#181818",
+                    filter: "brightness(1.1)",
+                  },
+                }}
+              >
+                <CardMedia
+                  component="img"
+                  image={`${api}/images/${product.HINH_ANH_SANPHAM}`}
+                  alt={product.title}
                   sx={{
-                    backgroundColor: "#101014",
-                    color: "#fff",
-                    padding: 1,
-                    flexShrink: 0,
-                    cursor: "pointer",
-                    width: { xs: "100%", sm: "30%", md: "260px", lg: "260px" },
-                    transition:
-                      "background-color 0.3s ease, transform 0.3s ease",
-                    "&:hover": {
-                      backgroundColor: "#181818",
-                      filter: "brightness(1.1)",
+                    height: {
+                      xs: "260px",
+                      sm: "260px",
+                      md: "260px",
+                      lg: "260px",
                     },
+                    objectFit: "contain",
+                    borderRadius: "15px",
+                    transition: "filter 0.3s ease",
                   }}
-                >
-                  <CardMedia
-                    component="img"
-                    image={`${api}/images/${product.HINH_ANH_SANPHAM}`}
-                    alt={product.title}
+                />
+                <CardContent sx={{ ml: 2 }}>
+                  <Typography variant="body2" sx={{ textAlign: "left" }}>
+                    {product.TEN_SAN_PHAM}
+                  </Typography>
+                  <Typography
+                    variant="caption"
                     sx={{
-                      height: {
-                        xs: "260px",
-                        sm: "260px",
-                        md: "260px",
-                        lg: "260px",
-                      },
-                      objectFit: "contain",
-                      borderRadius: "15px",
-                      transition: "filter 0.3s ease",
+                      textAlign: "left",
+                      display: "block",
+                      marginTop: "4px",
                     }}
-                  />
-                  <CardContent sx={{ ml: 2 }}>
-                    <Typography variant="body2" sx={{ textAlign: "left" }}>
-                      {product.TEN_SAN_PHAM}
-                    </Typography>
-                    <Typography
-                      variant="caption"
-                      sx={{
-                        textAlign: "left",
-                        display: "block",
-                        marginTop: "4px",
-                      }}
-                    >
-                      {product.GIA
-                        ? `${product.GIA.toLocaleString("vi-VN")}đ`
-                        : "Giá không có sẵn"}
-                    </Typography>
-                  </CardContent>
-                </Card>
-              ))
-            ) : (
-              <Typography variant="body2" sx={{ textAlign: "center" }}>
-                Không có sản phẩm nào
-              </Typography>
-            )}
-          </Box>
+                  >
+                    {product.GIA
+                      ? `${product.GIA.toLocaleString("vi-VN")}đ`
+                      : "Giá không có sẵn"}
+                  </Typography>
+                </CardContent>
+              </Card>
+            ))
+          ) : (
+            <Typography variant="body2" sx={{ textAlign: "center" }}>
+              Không có sản phẩm nào
+            </Typography>
+          )}
         </Box>
-      </div>
-    </>
+      </Box>
+    </div>
   );
 };
 
