@@ -1,3 +1,6 @@
+import React, { useEffect, useState } from "react";
+
+import axios from "axios";
 import ProductCarousel from "../../share-view/productCarousel";
 import "../css-page/home.css";
 
@@ -12,8 +15,24 @@ import {
   CardContent,
   Button,
 } from "@mui/material";
+const api = process.env.REACT_APP_URL_SERVER;
 
 const Home = () => {
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+  const fetchProducts = async () => {
+    try {
+      const response = await axios.get(`${api}/san-pham`);
+      if (response.data.EC === 1) {
+        setProducts(response.data.DT);
+      }
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
+  };
   const topSellers = [
     {
       title: "EA SPORTS FC™ 25 Standard...",
@@ -136,7 +155,7 @@ const Home = () => {
         {" "}
         <div className="home">
           <CarouselHead />
-          <ProductCarousel />{" "}
+          <ProductCarousel products={products} api={api} />
           <Box
             sx={{
               padding: 3,

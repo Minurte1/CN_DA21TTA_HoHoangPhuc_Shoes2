@@ -43,6 +43,8 @@ const FilterShoes = ({
           onChange={(e) => setSelectedThuongHieu(e.target.value)}
           sx={{ color: "#c9d1d9" }}
         >
+          {" "}
+          <MenuItem value="">Xem tất cả</MenuItem>
           {thuongHieu.map((thuongHieuItem) => (
             <MenuItem
               key={thuongHieuItem.ID_THUONG_HIEU}
@@ -67,6 +69,8 @@ const FilterShoes = ({
           sx={{ color: "#c9d1d9" }}
           label="Icon Chất liệu"
         >
+          {" "}
+          <MenuItem value="">Xem tất cả</MenuItem>
           {chatLieu.map((chatLieuItem) => (
             <MenuItem
               key={chatLieuItem.CHAT_LIEU_ID_}
@@ -91,6 +95,8 @@ const FilterShoes = ({
           onChange={(e) => setSelectedTrangThai(e.target.value)}
           sx={{ color: "#c9d1d9" }}
         >
+          {" "}
+          <MenuItem value="">Xem tất cả</MenuItem>
           <MenuItem value={1}>Đang hoạt động</MenuItem>
           <MenuItem value={0}>Ngưng hoạt động</MenuItem>
         </Select>

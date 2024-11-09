@@ -11,84 +11,22 @@ import {
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import "./css/productCarousel.css";
-const ProductCarousel = () => {
-  const fakeProducts = [
-    {
-      title: "G.I. Joe: Wrath of Cobra",
-      thumbnail:
-        "https://cdn1.epicgames.com/spt-assets/db072d8ba2e44017b45abb915f058267/gi-joe-wrath-of-cobra-1nfti.jpg?resize=1&w=360&h=480&quality=medium",
-      price: 150000, // Giá tiền giả
-    },
-    {
-      title: "G.I. Joe: Return of Cobra",
-      thumbnail:
-        "https://cdn1.epicgames.com/spt-assets/db072d8ba2e44017b45abb915f058267/gi-joe-wrath-of-cobra-1nfti.jpg?resize=1&w=360&h=480&quality=medium",
-      price: 200000, // Giá tiền giả
-    },
-    {
-      title: "G.I. Joe: Cobra Strikes",
-      thumbnail:
-        "https://cdn1.epicgames.com/spt-assets/db072d8ba2e44017b45abb915f058267/gi-joe-wrath-of-cobra-1nfti.jpg?resize=1&w=360&h=480&quality=medium",
-      price: 180000, // Giá tiền giả
-    },
-    {
-      title: "G.I. Joe: Cobra Reborn",
-      thumbnail:
-        "https://cdn1.epicgames.com/spt-assets/db072d8ba2e44017b45abb915f058267/gi-joe-wrath-of-cobra-1nfti.jpg?resize=1&w=360&h=480&quality=medium",
-      price: 220000, // Giá tiền giả
-    },
-    {
-      title: "G.I. Joe: The Rise of Cobra",
-      thumbnail:
-        "https://cdn1.epicgames.com/spt-assets/db072d8ba2e44017b45abb915f058267/gi-joe-wrath-of-cobra-1nfti.jpg?resize=1&w=360&h=480&quality=medium",
-      price: 175000, // Giá tiền giả
-    },
-    {
-      title: "G.I. Joe: Revenge of Cobra",
-      thumbnail:
-        "https://cdn1.epicgames.com/spt-assets/db072d8ba2e44017b45abb915f058267/gi-joe-wrath-of-cobra-1nfti.jpg?resize=1&w=360&h=480&quality=medium",
-      price: 190000, // Giá tiền giả
-    },
-    {
-      title: "G.I. Joe: Battle of Cobra",
-      thumbnail:
-        "https://cdn1.epicgames.com/spt-assets/db072d8ba2e44017b45abb915f058267/gi-joe-wrath-of-cobra-1nfti.jpg?resize=1&w=360&h=480&quality=medium",
-      price: 210000, // Giá tiền giả
-    },
-    {
-      title: "G.I. Joe: The Rise of Cobra",
-      thumbnail:
-        "https://cdn1.epicgames.com/spt-assets/db072d8ba2e44017b45abb915f058267/gi-joe-wrath-of-cobra-1nfti.jpg?resize=1&w=360&h=480&quality=medium",
-      price: 175000, // Giá tiền giả
-    },
-    {
-      title: "G.I. Joe: Revenge of Cobra",
-      thumbnail:
-        "https://cdn1.epicgames.com/spt-assets/db072d8ba2e44017b45abb915f058267/gi-joe-wrath-of-cobra-1nfti.jpg?resize=1&w=360&h=480&quality=medium",
-      price: 190000, // Giá tiền giả
-    },
-    {
-      title: "G.I. Joe: Battle of Cobra",
-      thumbnail:
-        "https://cdn1.epicgames.com/spt-assets/db072d8ba2e44017b45abb915f058267/gi-joe-wrath-of-cobra-1nfti.jpg?resize=1&w=360&h=480&quality=medium",
-      price: 210000, // Giá tiền giả
-    },
-  ];
+
+const ProductCarousel = ({ products, api }) => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [productLength, setProductLength] = useState(0);
+  const [disable, setDisable] = useState(false);
 
   useEffect(() => {
-    setProductLength(fakeProducts.length);
-  }, []);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [productLength, setProductLength] = useState("");
-  const [disable, setDisable] = useState(false);
+    if (Array.isArray(products) && products.length > 0) {
+      setProductLength(products.length);
+    }
+  }, [products]);
+
   const nextSlide = () => {
-    if (currentIndex < productLength) {
+    if (currentIndex < productLength - 1) {
       setCurrentIndex((prevIndex) => prevIndex + 1);
       setDisable(true);
-    }
-    if (currentIndex > productLength) {
-      setProductLength(productLength - 4);
-      setDisable(false);
     }
   };
 
@@ -97,15 +35,14 @@ const ProductCarousel = () => {
       setCurrentIndex((prevIndex) => prevIndex - 1);
       setDisable(false);
     }
-    if (currentIndex > productLength) {
-      setProductLength(productLength + 4);
-      setDisable(false);
-    }
   };
-
+  console.log("products", products);
   return (
     <>
-      <div className="container-product-carousel mt-4 mb-4">
+      <div
+        className="container-product-carousel mt-4 mb-4"
+        style={{ width: "100%" }}
+      >
         <IconButton
           onClick={prevSlide}
           disabled={currentIndex === 0} // Vô hiệu hóa nếu đang ở đầu danh sách
@@ -186,62 +123,68 @@ const ProductCarousel = () => {
               display: "flex",
               transition: "transform 0.5s ease",
               transform: `translateX(-${currentIndex * 100}%)`,
-              width: `${fakeProducts.length * 100}%`,
+              width: `${productLength * 100}%`,
             }}
           >
-            {fakeProducts.map((product, index) => (
-              <Card
-                key={index}
-                sx={{
-                  backgroundColor: "#101014",
-                  color: "#fff",
-                  padding: 1,
-                  flexShrink: 0,
-                  cursor: "pointer",
-                  width: { xs: "100%", sm: "30%", md: "33.33%", lg: "20%" }, // Responsive width
-                  transition: "background-color 0.3s ease, transform 0.3s ease", // Thêm hiệu ứng chuyển tiếp
-                  "&:hover": {
-                    backgroundColor: "#181818", // Sáng hơn khi hover
-                    filter: "brightness(1.1)", // Làm sáng hơn khi hover
-                  },
-                }}
-              >
-                <CardMedia
-                  component="img"
-                  image={product.thumbnail}
-                  alt={product.title}
+            {products && products.length > 0 ? (
+              products.map((product, index) => (
+                <Card
+                  key={index}
                   sx={{
-                    height: {
-                      xs: "260px",
-                      sm: "260px",
-                      md: "auto",
-                      lg: "auto",
+                    backgroundColor: "#101014",
+                    color: "#fff",
+                    padding: 1,
+                    flexShrink: 0,
+                    cursor: "pointer",
+                    width: { xs: "100%", sm: "30%", md: "260px", lg: "260px" },
+                    transition:
+                      "background-color 0.3s ease, transform 0.3s ease",
+                    "&:hover": {
+                      backgroundColor: "#181818",
+                      filter: "brightness(1.1)",
                     },
-                    objectFit: "contain",
-                    borderRadius: "15px",
-                    transition: "filter 0.3s ease", // Thêm hiệu ứng chuyển tiếp cho hình ảnh
                   }}
-                  className="card-image" // Thêm lớp CSS cho hình ảnh
-                />
-                <CardContent sx={{ ml: 2 }}>
-                  <Typography variant="body2" sx={{ textAlign: "left" }}>
-                    {product.title}
-                  </Typography>
-                  <Typography
-                    variant="caption"
+                >
+                  <CardMedia
+                    component="img"
+                    image={`${api}/images/${product.HINH_ANH_SANPHAM}`}
+                    alt={product.title}
                     sx={{
-                      textAlign: "left",
-                      display: "block",
-                      marginTop: "4px",
+                      height: {
+                        xs: "260px",
+                        sm: "260px",
+                        md: "260px",
+                        lg: "260px",
+                      },
+                      objectFit: "contain",
+                      borderRadius: "15px",
+                      transition: "filter 0.3s ease",
                     }}
-                  >
-                    {product.price
-                      ? `${product.price.toLocaleString("vi-VN")}đ`
-                      : "Giá không có sẵn"}
-                  </Typography>
-                </CardContent>
-              </Card>
-            ))}
+                  />
+                  <CardContent sx={{ ml: 2 }}>
+                    <Typography variant="body2" sx={{ textAlign: "left" }}>
+                      {product.TEN_SAN_PHAM}
+                    </Typography>
+                    <Typography
+                      variant="caption"
+                      sx={{
+                        textAlign: "left",
+                        display: "block",
+                        marginTop: "4px",
+                      }}
+                    >
+                      {product.GIA
+                        ? `${product.GIA.toLocaleString("vi-VN")}đ`
+                        : "Giá không có sẵn"}
+                    </Typography>
+                  </CardContent>
+                </Card>
+              ))
+            ) : (
+              <Typography variant="body2" sx={{ textAlign: "center" }}>
+                Không có sản phẩm nào
+              </Typography>
+            )}
           </Box>
         </Box>
       </div>
