@@ -20,15 +20,27 @@ const api = process.env.REACT_APP_URL_SERVER;
 const Home = () => {
   const [products, setProducts] = useState([]);
   const [last2Products, setLast2Products] = useState([]);
+  const [carouselProducts, setCarouselProducts] = useState([]);
   useEffect(() => {
     fetchProducts();
     fetchLast2products();
+    fetchCarouselProducts();
   }, []);
   const fetchProducts = async () => {
     try {
       const response = await axios.get(`${api}/san-pham/use/nu`);
       if (response.data.EC === 1) {
         setProducts(response.data.DT);
+      }
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
+  };
+  const fetchCarouselProducts = async () => {
+    try {
+      const response = await axios.get(`${api}/carousel-products/use`);
+      if (response.data.EC === 1) {
+        setCarouselProducts(response.data.DT);
       }
     } catch (error) {
       console.error("Error fetching products:", error);
@@ -143,30 +155,13 @@ const Home = () => {
         "https://cdn1.epicgames.com/spt-assets/667c480e8d0a41dc87b1fcdd8d491dc5/3-minutes-to-midnight-4k58r.jpg?resize=1&w=360&h=480&quality=medium",
     },
   ];
-  const games = [
-    {
-      title: "EA SPORTS WRC",
-      description:
-        "The EA SPORTS WRC 2024 Season Expansion brings new locations, vehicles, liveries, and much more.",
-      price: "₫699,000",
-      thumbnail:
-        "https://cdn2.unrealengine.com/egs-disney-speedstorm-season-10-breaker-1920x1080-e8cea26d074f.jpg?resize=1&w=854&h=480&quality=medium", // Thay đổi thành link thực tế
-    },
-    {
-      title: "Disney Speedstorm - Season 10",
-      description:
-        "Racers Jack Skellington, Sally, Oogie Boogie, and Dr. Finkelstein are revving up to take you on a monstrous race!",
-      price: "Play For Free",
-      thumbnail:
-        "https://cdn2.unrealengine.com/egs-wrc24-update-breaker-1920x1080-83a107186dca.jpg?resize=1&w=854&h=480&quality=medium", // Thay đổi thành link thực tế
-    },
-  ];
+
   return (
     <>
       <div className="container-home">
         {" "}
         <div className="home">
-          <CarouselHead />
+          <CarouselHead carouselProducts={carouselProducts} api={api} />
           <ProductCarousel products={products} api={api} />
           <Box
             sx={{
