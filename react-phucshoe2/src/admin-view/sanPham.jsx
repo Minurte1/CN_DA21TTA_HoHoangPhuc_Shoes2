@@ -25,6 +25,7 @@ import {
 import moment from "moment";
 import { Add, Edit, Delete } from "@mui/icons-material";
 import axios from "axios";
+import FilterShoes from "./pages/quanLySanPham/component/FilterShoe";
 
 const api = process.env.REACT_APP_URL_SERVER;
 
@@ -190,7 +191,77 @@ const SanPhamManager = () => {
       images: e.target.files[0], // Store the file object
     }));
   };
-  console.log(`${api}/images/`);
+
+  // filter products
+  const [selectedMauSac, setSelectedMauSac] = useState("");
+  const [selectedThuongHieu, setSelectedThuongHieu] = useState("");
+  const [selectedChatLieu, setSelectedChatLieu] = useState("");
+  const [selectedTrangThai, setSelectedTrangThai] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const [filteredProducts, setFilteredProducts] = useState(products);
+
+  const handleSearchChange = (e) => {
+    const term = e.target.value;
+    setSearchTerm(term);
+
+    // Nếu không có từ khóa tìm kiếm, khôi phục lại tất cả sản phẩm
+    if (term === "") {
+      setFilteredProducts(products);
+    } else {
+      // Lọc sản phẩm theo từ khóa tìm kiếm
+      const filtered = products.filter((product) =>
+        product.TEN_SAN_PHAM.toLowerCase().includes(term.toLowerCase())
+      );
+      setFilteredProducts(filtered);
+    }
+  };
+
+  useEffect(() => {
+    const applyFilters = () => {
+      let updatedProducts = products;
+
+      if (selectedMauSac) {
+        updatedProducts = updatedProducts.filter(
+          (product) => product.mauSac === selectedMauSac
+        );
+      }
+      if (selectedThuongHieu) {
+        updatedProducts = updatedProducts.filter(
+          (product) => product.ID_THUONG_HIEU === selectedThuongHieu
+        );
+      }
+      if (selectedChatLieu) {
+        updatedProducts = updatedProducts.filter(
+          (product) => product.CHAT_LIEU_ID_ === selectedChatLieu
+        );
+      }
+      if (selectedTrangThai !== "") {
+        updatedProducts = updatedProducts.filter(
+          (product) => product.TRANG_THAI_SANPHAM === selectedTrangThai
+        );
+      }
+
+      // Nếu có từ khóa tìm kiếm, lọc lại
+      if (searchTerm) {
+        updatedProducts = updatedProducts.filter((product) =>
+          product.TEN_SAN_PHAM.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+      }
+
+      setFilteredProducts(updatedProducts);
+    };
+
+    applyFilters();
+  }, [
+    selectedMauSac,
+    selectedThuongHieu,
+    selectedChatLieu,
+    selectedTrangThai,
+    searchTerm, // Thêm searchTerm vào dependency array
+    products,
+  ]);
+
   return (
     <Container>
       <Box sx={{ width: "100%", textAlign: "left", mt: 4 }}>
@@ -206,40 +277,18 @@ const SanPhamManager = () => {
           Add Product
         </Button>
       </Box>{" "}
-      <Box sx={{ width: "100%", textAlign: "left", mt: 4 }}>
-        <Button
-          variant="outlined"
-          startIcon={<Add />}
-          onClick={() => handleOpenDialog()}
-          sx={{ marginBottom: 2, backgroundColor: "#fff", color: "black" }}
-        >
-          Lọc theo màu sắc
-        </Button>{" "}
-        <Button
-          variant="outlined"
-          startIcon={<Add />}
-          onClick={() => handleOpenDialog()}
-          sx={{ marginBottom: 2, backgroundColor: "#fff", color: "black" }}
-        >
-          Lọc theo thương hiệu
-        </Button>{" "}
-        <Button
-          variant="outlined"
-          startIcon={<Add />}
-          onClick={() => handleOpenDialog()}
-          sx={{ marginBottom: 2, backgroundColor: "#fff", color: "black" }}
-        >
-          Lọc theo chất liệu
-        </Button>{" "}
-        <Button
-          variant="outlined"
-          startIcon={<Add />}
-          onClick={() => handleOpenDialog()}
-          sx={{ marginBottom: 2, backgroundColor: "#fff", color: "black" }}
-        >
-          Lọc theo trạng thái
-        </Button>
-      </Box>{" "}
+      <FilterShoes
+        thuongHieu={thuongHieu}
+        chatLieu={chatLieu}
+        selectedThuongHieu={selectedThuongHieu}
+        selectedChatLieu={selectedChatLieu}
+        selectedTrangThai={selectedTrangThai}
+        setSelectedTrangThai={setSelectedTrangThai}
+        setSelectedChatLieu={setSelectedChatLieu}
+        setSelectedThuongHieu={setSelectedThuongHieu}
+        searchTerm={searchTerm}
+        handleSearchChange={handleSearchChange}
+      />
       <TableContainer component={Paper} sx={{ backgroundColor: "#101014" }}>
         <Table>
           <TableHead>
@@ -262,7 +311,7 @@ const SanPhamManager = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {products.map((product) => (
+            {filteredProducts.map((product) => (
               <TableRow key={product.ID_SAN_PHAM}>
                 <TableCell sx={{ color: "#c9d1d9" }}>
                   {product.ID_SAN_PHAM}
