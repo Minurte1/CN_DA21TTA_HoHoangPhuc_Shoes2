@@ -1,5 +1,3 @@
-const express = require("express");
-const router = express.Router();
 const connection = require("../config/old.js");
 
 // Lấy danh sách kích cỡ

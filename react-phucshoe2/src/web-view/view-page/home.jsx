@@ -19,13 +19,14 @@ const api = process.env.REACT_APP_URL_SERVER;
 
 const Home = () => {
   const [products, setProducts] = useState([]);
-
+  const [last2Products, setLast2Products] = useState([]);
   useEffect(() => {
     fetchProducts();
+    fetchLast2products();
   }, []);
   const fetchProducts = async () => {
     try {
-      const response = await axios.get(`${api}/san-pham`);
+      const response = await axios.get(`${api}/san-pham/use/nu`);
       if (response.data.EC === 1) {
         setProducts(response.data.DT);
       }
@@ -33,6 +34,17 @@ const Home = () => {
       console.error("Error fetching products:", error);
     }
   };
+  const fetchLast2products = async () => {
+    try {
+      const response = await axios.get(`${api}/san-pham/use/last2products`);
+      if (response.data.EC === 1) {
+        setLast2Products(response.data.DT);
+      }
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
+  };
+  console.log("products", products);
   const topSellers = [
     {
       title: "EA SPORTS FC™ 25 Standard...",
@@ -163,21 +175,25 @@ const Home = () => {
             }}
           >
             <Grid container spacing={2}>
-              {games.map((game, index) => (
+              {last2Products.map((product, index) => (
                 <Grid item xs={12} sm={6} md={6} key={index}>
                   <Card
                     sx={{
                       backgroundColor: "#202020",
                       color: "#fff",
                       textAlign: "left",
+                      width: "100%",
+                      height: "800px",
                     }}
                   >
                     <CardContent sx={{ padding: 2 }}>
                       <img
-                        src={game.thumbnail}
-                        alt={game.title}
+                        src={`${api}/images/${product.HINH_ANH_SANPHAM}`}
+                        alt={product.HINH_ANH_SANPHAM}
                         style={{
                           width: "100%",
+                          height: "600px",
+                          objectFit: "cover", // Đảm bảo hình ảnh không bị méo, sẽ crop nếu cần
                           borderRadius: "8px",
                           marginBottom: 2,
                           transition: "filter 0.3s ease", // Thêm hiệu ứng chuyển tiếp
@@ -185,18 +201,22 @@ const Home = () => {
                         className="game-thumbnail" // Thêm lớp CSS cho hình ảnh
                       />
                       <Typography variant="h6" sx={{ marginBottom: 1 }}>
-                        {game.title}
+                        {product.TEN_SAN_PHAM}
                       </Typography>
                       <Typography
                         variant="body2"
                         sx={{ marginBottom: 1, opacity: 0.7 }}
                       >
-                        {game.description}
+                        {product.MO_TA_SAN_PHAM}
                       </Typography>
 
                       <Typography variant="h6" sx={{ marginBottom: 2 }}>
-                        {game.price}
+                        {new Intl.NumberFormat("vi-VN", {
+                          style: "currency",
+                          currency: "VND",
+                        }).format(product.GIA)}
                       </Typography>
+
                       <Button
                         variant="contained"
                         sx={{
@@ -208,7 +228,7 @@ const Home = () => {
                           },
                         }}
                       >
-                        Play For Free
+                        Mua Ngay
                       </Button>
                     </CardContent>
                   </Card>
@@ -217,7 +237,7 @@ const Home = () => {
             </Grid>
           </Box>
           <CartProduct />
-          <ProductCarousel />
+          <ProductCarousel products={products} api={api} />
           <Box
             sx={{
               backgroundColor: "#101014",
