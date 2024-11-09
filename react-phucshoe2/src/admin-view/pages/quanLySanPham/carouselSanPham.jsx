@@ -19,9 +19,13 @@ import {
   Box,
   Select,
   MenuItem,
+  FormControl,
+  InputLabel,
+  InputAdornment,
+  Autocomplete,
 } from "@mui/material";
 import moment from "moment";
-import { Add, Edit, Delete } from "@mui/icons-material";
+import { Add, Edit, Delete, Search } from "@mui/icons-material";
 import axios from "axios";
 
 const api = process.env.REACT_APP_URL_SERVER;
@@ -35,11 +39,22 @@ const CarouselManager = () => {
   const [hinhAnhIconCarousel, setHinhAnhIconCarousel] = useState("");
   const [moTaCarousel, setMoTaCarousel] = useState("");
   const [trangThaiCarousel, setTrangThaiCarousel] = useState(1); // Mặc định
-
+  const [products, setProducts] = useState([]);
   useEffect(() => {
     fetchCarouselProducts();
+    fetchProducts();
   }, []);
 
+  const fetchProducts = async () => {
+    try {
+      const response = await axios.get(`${api}/san-pham`);
+      if (response.data.EC === 1) {
+        setProducts(response.data.DT);
+      }
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
+  };
   const fetchCarouselProducts = async () => {
     try {
       const response = await axios.get(`${api}/carousel-products`); // Update with your API endpoint
@@ -127,7 +142,18 @@ const CarouselManager = () => {
       console.error("Error deleting carousel product:", error);
     }
   };
+  const [searchTerm, setSearchTerm] = useState(""); // State to track search input
 
+  const [filteredProducts, setFilteredProducts] = useState(products);
+
+  // Lọc sản phẩm theo từ khóa tìm kiếm
+  useEffect(() => {
+    setFilteredProducts(
+      products.filter((product) =>
+        product.TEN_SAN_PHAM.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    );
+  }, [searchTerm, products]);
   return (
     <Container>
       <Box sx={{ width: "100%", textAlign: "left", mt: 4 }}>
@@ -225,6 +251,58 @@ const CarouselManager = () => {
           {currentCarouselProduct ? "Sửa Carousel" : "Thêm Carousel"}
         </DialogTitle>
         <DialogContent>
+          <FormControl fullWidth margin="dense">
+            <Autocomplete
+              id="chatLieuId"
+              value={
+                filteredProducts.find(
+                  (product) => product.ID_SAN_PHAM === idSanPham
+                ) || null
+              } // Kiểm tra và gán giá trị mặc định đúng
+              onChange={
+                (e, newValue) => setIdSanPham(newValue?.ID_SAN_PHAM || "") // Cập nhật idSanPham khi thay đổi lựa chọn
+              }
+              options={filteredProducts}
+              getOptionLabel={(option) => option.TEN_SAN_PHAM || ""}
+              isOptionEqualToValue={(option, value) =>
+                option.ID_SAN_PHAM === value
+              }
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  placeholder="Tìm kiếm sản phẩm..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  InputProps={{
+                    ...params.InputProps,
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <Search />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              )}
+              filterOptions={(options, state) =>
+                options.filter((option) =>
+                  option.TEN_SAN_PHAM.toLowerCase().includes(
+                    searchTerm.toLowerCase()
+                  )
+                )
+              }
+            />
+          </FormControl>
+
+          {/* <TextField
+            autoFocus
+            margin="dense"
+            label="ID Sản phẩm"
+            type="text"
+            fullWidth
+            variant="outlined"
+            value={idSanPham}
+            onChange={(e) => setIdSanPham(e.target.value)}
+          /> */}
           <TextField
             margin="dense"
             label="Hình ảnh nền"
@@ -239,7 +317,6 @@ const CarouselManager = () => {
               accept: "image/*", // Chỉ cho phép chọn hình ảnh
             }}
           />
-
           <TextField
             margin="dense"
             label="Hình ảnh icon"
@@ -254,7 +331,6 @@ const CarouselManager = () => {
               accept: "image/*", // Chỉ cho phép chọn hình ảnh
             }}
           />
-
           <TextField
             margin="dense"
             label="Mô tả"
