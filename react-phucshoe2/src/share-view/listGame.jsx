@@ -2,7 +2,7 @@ import React from "react";
 import { Box, Typography, Card, CardContent } from "@mui/material";
 import "./css/listGame.css";
 // Component ListGame nhận vào title và items
-const ListGame = ({ title, items }) => (
+const ListGame = ({ title, items, api }) => (
   <Box>
     <Typography
       variant="h6"
@@ -36,8 +36,8 @@ const ListGame = ({ title, items }) => (
         >
           <CardContent sx={{ display: "flex", alignItems: "center" }}>
             <img
-              src={item.thumbnail}
-              alt={item.title}
+              src={`${api}/images/${item.HINH_ANH_SANPHAM}`}
+              alt={item.TEN_SAN_PHAM}
               style={{
                 width: "50px",
                 height: "75px",
@@ -48,10 +48,13 @@ const ListGame = ({ title, items }) => (
             />
             <Box sx={{ marginLeft: 2, flexGrow: 1 }}>
               <Typography variant="body2" noWrap>
-                {item.title}
+                {item.TEN_SAN_PHAM}
               </Typography>
               <Typography variant="caption" sx={{ color: "#bbb" }}>
-                {item.price || item.date}
+                {new Intl.NumberFormat("vi-VN", {
+                  style: "currency",
+                  currency: "VND",
+                }).format(item.GIA)}
               </Typography>
             </Box>
           </CardContent>

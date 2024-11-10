@@ -102,7 +102,41 @@ const getSAN_PHAM_Use_Nu = async (req, res) => {
     });
   }
 };
+const getSAN_PHAM_Use_TreEm = async (req, res) => {
+  try {
+    const [results] = await connection.execute(`
+      SELECT 
+        sp.ID_SAN_PHAM, sp.ID_THUONG_HIEU, sp.ID_DANH_MUC, sp.GIOI_TINH_ID, sp.CHAT_LIEU_ID_,
+        sp.TEN_SAN_PHAM, sp.GIA, sp.MO_TA_SAN_PHAM, sp.HINH_ANH_SANPHAM, sp.TRANG_THAI_SANPHAM, 
+        sp.NGAY_TAO_SANPHAM, sp.NGAY_CAP_NHAT_SANPHAM, sp.SO_LUONG_SANPHAM,
+        gt.TEN_GIOI_TINH,
+        dm.TEN_DANH_MUC, dm.MO_TA_LOAI_DANH_MUC,
+        cl.TEN_CHAT_LIEU_, cl.MO_TA_CHAT_LIEU,
+        th.TEN_THUONG_HIEU
+      FROM SAN_PHAM sp
+      LEFT JOIN GIOI_TINH gt ON sp.GIOI_TINH_ID = gt.GIOI_TINH_ID
+      LEFT JOIN LOAI_DANH_MUC dm ON sp.ID_DANH_MUC = dm.ID_DANH_MUC
+      LEFT JOIN CHAT_LIEU cl ON sp.CHAT_LIEU_ID_ = cl.CHAT_LIEU_ID_
+      LEFT JOIN THUONG_HIEU th ON sp.ID_THUONG_HIEU = th.ID_THUONG_HIEU
+      WHERE sp.TRANG_THAI_SANPHAM = 1
+      AND gt.TEN_GIOI_TINH = 'Trẻ em' ORDER BY sp.NGAY_TAO_SANPHAM DESC  -- Sắp xếp sản phẩm theo ngày tạo giảm dần
+      LIMIT 4 -- Lấy 2 sản phẩm mới nhất  -- Điều kiện phân loại theo giới tính là "Nữ"
+    `);
 
+    return res.status(200).json({
+      EM: "Xem thông tin sản phẩm thành công",
+      EC: 1,
+      DT: results,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      EM: "Có lỗi xảy ra khi lấy thông tin",
+      EC: 0,
+      DT: [],
+    });
+  }
+};
 //lấy 2 sản phẩm mới thêm vào
 const getLatest2Products = async (req, res) => {
   try {
@@ -134,6 +168,135 @@ const getLatest2Products = async (req, res) => {
     console.error(error);
     return res.status(500).json({
       EM: "Có lỗi xảy ra khi lấy thông tin",
+      EC: 0,
+      DT: [],
+    });
+  }
+};
+const get_5CheapestProdcts = async (req, res) => {
+  try {
+    const [results] = await connection.execute(`
+      SELECT 
+        sp.ID_SAN_PHAM, sp.ID_THUONG_HIEU, sp.ID_DANH_MUC, sp.GIOI_TINH_ID, sp.CHAT_LIEU_ID_,
+        sp.TEN_SAN_PHAM, sp.GIA, sp.MO_TA_SAN_PHAM, sp.HINH_ANH_SANPHAM, sp.TRANG_THAI_SANPHAM, 
+        sp.NGAY_TAO_SANPHAM, sp.NGAY_CAP_NHAT_SANPHAM, sp.SO_LUONG_SANPHAM,
+        gt.TEN_GIOI_TINH,
+        dm.TEN_DANH_MUC, dm.MO_TA_LOAI_DANH_MUC,
+        cl.TEN_CHAT_LIEU_, cl.MO_TA_CHAT_LIEU,
+        th.TEN_THUONG_HIEU
+      FROM SAN_PHAM sp
+      LEFT JOIN GIOI_TINH gt ON sp.GIOI_TINH_ID = gt.GIOI_TINH_ID
+      LEFT JOIN LOAI_DANH_MUC dm ON sp.ID_DANH_MUC = dm.ID_DANH_MUC
+      LEFT JOIN CHAT_LIEU cl ON sp.CHAT_LIEU_ID_ = cl.CHAT_LIEU_ID_
+      LEFT JOIN THUONG_HIEU th ON sp.ID_THUONG_HIEU = th.ID_THUONG_HIEU
+      WHERE sp.TRANG_THAI_SANPHAM = 1
+      ORDER BY sp.GIA ASC
+      LIMIT 5
+    `);
+
+    return res.status(200).json({
+      EM: "Xem 5 sản phẩm giá rẻ nhất thành công",
+      EC: 1,
+      DT: results,
+    });
+  } catch (error) {
+    console.error("Error getting cheapest san pham:", error);
+    return res.status(500).json({
+      EM: "Có lỗi xảy ra khi lấy thông tin sản phẩm giá rẻ nhất",
+      EC: 0,
+      DT: [],
+    });
+  }
+};
+
+const getTop5BestSellingProducts = async (req, res) => {
+  try {
+    const [results] = await connection.execute(`
+      SELECT 
+        sp.ID_SAN_PHAM, sp.ID_THUONG_HIEU, sp.ID_DANH_MUC, sp.GIOI_TINH_ID, sp.CHAT_LIEU_ID_,
+        sp.TEN_SAN_PHAM, sp.GIA, sp.MO_TA_SAN_PHAM, sp.HINH_ANH_SANPHAM, sp.TRANG_THAI_SANPHAM, 
+        sp.NGAY_TAO_SANPHAM, sp.NGAY_CAP_NHAT_SANPHAM, sp.SO_LUONG_SANPHAM,
+        gt.TEN_GIOI_TINH,
+        dm.TEN_DANH_MUC, dm.MO_TA_LOAI_DANH_MUC,
+        cl.TEN_CHAT_LIEU_, cl.MO_TA_CHAT_LIEU,
+        th.TEN_THUONG_HIEU,
+        SUM(cthd.SO_LUONG_SP) AS total_sold
+      FROM SAN_PHAM sp
+      LEFT JOIN CHI_TIET_HOA_DON cthd ON sp.ID_SAN_PHAM = cthd.ID_SAN_PHAM
+      LEFT JOIN GIOI_TINH gt ON sp.GIOI_TINH_ID = gt.GIOI_TINH_ID
+      LEFT JOIN LOAI_DANH_MUC dm ON sp.ID_DANH_MUC = dm.ID_DANH_MUC
+      LEFT JOIN CHAT_LIEU cl ON sp.CHAT_LIEU_ID_ = cl.CHAT_LIEU_ID_
+      LEFT JOIN THUONG_HIEU th ON sp.ID_THUONG_HIEU = th.ID_THUONG_HIEU
+      WHERE sp.TRANG_THAI_SANPHAM = 1
+      GROUP BY sp.ID_SAN_PHAM
+      ORDER BY total_sold DESC
+      LIMIT 5
+    `);
+
+    return res.status(200).json({
+      EM: "Xem 5 sản phẩm bán chạy nhất thành công",
+      EC: 1,
+      DT: results,
+    });
+  } catch (error) {
+    console.error("Error getting best-selling products:", error);
+    return res.status(500).json({
+      EM: "Có lỗi xảy ra khi lấy thông tin sản phẩm bán chạy nhất",
+      EC: 0,
+      DT: [],
+    });
+  }
+};
+// Lấy 5 sản phẩm được người ta yêu thích nhiều nhất
+const get5TopFavoriteProducts = async (req, res) => {
+  try {
+    const [results] = await connection.execute(`
+      SELECT 
+        sp.ID_SAN_PHAM, sp.TEN_SAN_PHAM, sp.GIA, sp.HINH_ANH_SANPHAM,
+        COUNT(yt.ID_YEU_THICH) AS favorite_count
+      FROM SAN_PHAM sp
+      LEFT JOIN YEU_THICH yt ON sp.ID_SAN_PHAM = yt.ID_SAN_PHAM
+      WHERE sp.TRANG_THAI_SANPHAM = 1
+      GROUP BY sp.ID_SAN_PHAM
+      ORDER BY favorite_count DESC
+      LIMIT 5
+    `);
+
+    return res.status(200).json({
+      EM: "Xem thông tin sản phẩm được yêu thích nhất thành công",
+      EC: 1,
+      DT: results,
+    });
+  } catch (error) {
+    console.error("Error getting favorite products:", error);
+    return res.status(500).json({
+      EM: "Có lỗi xảy ra khi lấy thông tin sản phẩm yêu thích",
+      EC: 0,
+      DT: [],
+    });
+  }
+};
+// Lấy 5 sản phẩm có giá tiền cao nhất
+const getTopExpensiveProducts = async (req, res) => {
+  try {
+    const [results] = await connection.execute(`
+      SELECT 
+        sp.ID_SAN_PHAM, sp.TEN_SAN_PHAM, sp.GIA, sp.HINH_ANH_SANPHAM, sp.MO_TA_SAN_PHAM
+      FROM SAN_PHAM sp
+      WHERE sp.TRANG_THAI_SANPHAM = 1
+      ORDER BY sp.GIA DESC
+      LIMIT 5
+    `);
+
+    return res.status(200).json({
+      EM: "Xem thông tin sản phẩm có giá cao nhất thành công",
+      EC: 1,
+      DT: results,
+    });
+  } catch (error) {
+    console.error("Error getting top expensive products:", error);
+    return res.status(500).json({
+      EM: "Có lỗi xảy ra khi lấy thông tin sản phẩm",
       EC: 0,
       DT: [],
     });
@@ -291,4 +454,9 @@ module.exports = {
   getSAN_PHAM_Use,
   getSAN_PHAM_Use_Nu,
   getLatest2Products,
+  getSAN_PHAM_Use_TreEm,
+  get_5CheapestProdcts,
+  getTop5BestSellingProducts,
+  get5TopFavoriteProducts,
+  getTopExpensiveProducts,
 };

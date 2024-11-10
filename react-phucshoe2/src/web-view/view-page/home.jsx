@@ -18,143 +18,62 @@ import {
 const api = process.env.REACT_APP_URL_SERVER;
 
 const Home = () => {
-  const [products, setProducts] = useState([]);
+  const [nuProducts, setNuProducts] = useState([]);
   const [last2Products, setLast2Products] = useState([]);
   const [carouselProducts, setCarouselProducts] = useState([]);
+  const [treEmProducts, setTreEmProducts] = useState([]);
+  const [bestSellingProducts, setBestSellingProducts] = useState([]);
+  const [bestFavorite, setBestFavorite] = useState([]);
+  const [bestExpensive, setBestExpensive] = useState([]);
   useEffect(() => {
-    fetchProducts();
-    fetchLast2products();
-    fetchCarouselProducts();
+    fetchAllProducts();
   }, []);
-  const fetchProducts = async () => {
-    try {
-      const response = await axios.get(`${api}/san-pham/use/nu`);
-      if (response.data.EC === 1) {
-        setProducts(response.data.DT);
-      }
-    } catch (error) {
-      console.error("Error fetching products:", error);
-    }
-  };
-  const fetchCarouselProducts = async () => {
-    try {
-      const response = await axios.get(`${api}/carousel-products/use`);
-      if (response.data.EC === 1) {
-        setCarouselProducts(response.data.DT);
-      }
-    } catch (error) {
-      console.error("Error fetching products:", error);
-    }
-  };
-  const fetchLast2products = async () => {
-    try {
-      const response = await axios.get(`${api}/san-pham/use/last2products`);
-      if (response.data.EC === 1) {
-        setLast2Products(response.data.DT);
-      }
-    } catch (error) {
-      console.error("Error fetching products:", error);
-    }
-  };
-  console.log("products", products);
-  const topSellers = [
-    {
-      title: "EA SPORTS FC™ 25 Standard...",
-      price: "₫1,299,000",
-      thumbnail:
-        "https://cdn1.epicgames.com/spt-assets/667c480e8d0a41dc87b1fcdd8d491dc5/3-minutes-to-midnight-4k58r.jpg?resize=1&w=360&h=480&quality=medium",
-    },
-    {
-      title: "EA SPORTS FC™ 25 Standard...",
-      price: "₫1,299,000",
-      thumbnail:
-        "https://cdn1.epicgames.com/spt-assets/667c480e8d0a41dc87b1fcdd8d491dc5/3-minutes-to-midnight-4k58r.jpg?resize=1&w=360&h=480&quality=medium",
-    },
-    {
-      title: "EA SPORTS FC™ 25 Standard...",
-      price: "₫1,299,000",
-      thumbnail:
-        "https://cdn1.epicgames.com/spt-assets/667c480e8d0a41dc87b1fcdd8d491dc5/3-minutes-to-midnight-4k58r.jpg?resize=1&w=360&h=480&quality=medium",
-    },
-    {
-      title: "EA SPORTS FC™ 25 Standard...",
-      price: "₫1,299,000",
-      thumbnail:
-        "https://cdn1.epicgames.com/spt-assets/667c480e8d0a41dc87b1fcdd8d491dc5/3-minutes-to-midnight-4k58r.jpg?resize=1&w=360&h=480&quality=medium",
-    },
-    {
-      title: "EA SPORTS FC™ 25 Standard...",
-      price: "₫1,299,000",
-      thumbnail:
-        "https://cdn1.epicgames.com/spt-assets/667c480e8d0a41dc87b1fcdd8d491dc5/3-minutes-to-midnight-4k58r.jpg?resize=1&w=360&h=480&quality=medium",
-    },
-  ];
 
-  const mostPlayed = [
-    {
-      title: "EA SPORTS FC™ 25 Standard...",
-      price: "₫1,299,000",
-      thumbnail:
-        "https://cdn1.epicgames.com/spt-assets/667c480e8d0a41dc87b1fcdd8d491dc5/3-minutes-to-midnight-4k58r.jpg?resize=1&w=360&h=480&quality=medium",
-    },
-    {
-      title: "EA SPORTS FC™ 25 Standard...",
-      price: "₫1,299,000",
-      thumbnail:
-        "https://cdn1.epicgames.com/spt-assets/667c480e8d0a41dc87b1fcdd8d491dc5/3-minutes-to-midnight-4k58r.jpg?resize=1&w=360&h=480&quality=medium",
-    },
-    {
-      title: "EA SPORTS FC™ 25 Standard...",
-      price: "₫1,299,000",
-      thumbnail:
-        "https://cdn1.epicgames.com/spt-assets/667c480e8d0a41dc87b1fcdd8d491dc5/3-minutes-to-midnight-4k58r.jpg?resize=1&w=360&h=480&quality=medium",
-    },
-    {
-      title: "EA SPORTS FC™ 25 Standard...",
-      price: "₫1,299,000",
-      thumbnail:
-        "https://cdn1.epicgames.com/spt-assets/667c480e8d0a41dc87b1fcdd8d491dc5/3-minutes-to-midnight-4k58r.jpg?resize=1&w=360&h=480&quality=medium",
-    },
-    {
-      title: "EA SPORTS FC™ 25 Standard...",
-      price: "₫1,299,000",
-      thumbnail:
-        "https://cdn1.epicgames.com/spt-assets/667c480e8d0a41dc87b1fcdd8d491dc5/3-minutes-to-midnight-4k58r.jpg?resize=1&w=360&h=480&quality=medium",
-    },
-  ];
+  const fetchAllProducts = async () => {
+    try {
+      const [
+        nuResponse,
+        last2Response,
+        carouselResponse,
+        treEmResponse,
+        bestSellingResponse,
+        bestFavoriteResponse,
+        bestExpensiveResponse,
+      ] = await Promise.all([
+        axios.get(`${api}/san-pham/use/nu`),
+        axios.get(`${api}/san-pham/use/last2products`),
+        axios.get(`${api}/carousel-products/use`),
+        axios.get(`${api}/san-pham/use/tre-em`),
+        axios.get(`${api}/san-pham/use/5best-selling`),
+        axios.get(`${api}/san-pham/use/5best-favorite`),
+        axios.get(`${api}/san-pham/use/5best-expensive`),
+      ]);
 
-  const upcomingWishlisted = [
-    {
-      title: "EA SPORTS FC™ 25 Standard...",
-      price: "₫1,299,000",
-      thumbnail:
-        "https://cdn1.epicgames.com/spt-assets/667c480e8d0a41dc87b1fcdd8d491dc5/3-minutes-to-midnight-4k58r.jpg?resize=1&w=360&h=480&quality=medium",
-    },
-    {
-      title: "EA SPORTS FC™ 25 Standard...",
-      price: "₫1,299,000",
-      thumbnail:
-        "https://cdn1.epicgames.com/spt-assets/667c480e8d0a41dc87b1fcdd8d491dc5/3-minutes-to-midnight-4k58r.jpg?resize=1&w=360&h=480&quality=medium",
-    },
-    {
-      title: "EA SPORTS FC™ 25 Standard...",
-      price: "₫1,299,000",
-      thumbnail:
-        "https://cdn1.epicgames.com/spt-assets/667c480e8d0a41dc87b1fcdd8d491dc5/3-minutes-to-midnight-4k58r.jpg?resize=1&w=360&h=480&quality=medium",
-    },
-    {
-      title: "EA SPORTS FC™ 25 Standard...",
-      price: "₫1,299,000",
-      thumbnail:
-        "https://cdn1.epicgames.com/spt-assets/667c480e8d0a41dc87b1fcdd8d491dc5/3-minutes-to-midnight-4k58r.jpg?resize=1&w=360&h=480&quality=medium",
-    },
-    {
-      title: "EA SPORTS FC™ 25 Standard...",
-      price: "₫1,299,000",
-      thumbnail:
-        "https://cdn1.epicgames.com/spt-assets/667c480e8d0a41dc87b1fcdd8d491dc5/3-minutes-to-midnight-4k58r.jpg?resize=1&w=360&h=480&quality=medium",
-    },
-  ];
+      if (nuResponse.data.EC === 1) {
+        setNuProducts(nuResponse.data.DT);
+      }
+      if (last2Response.data.EC === 1) {
+        setLast2Products(last2Response.data.DT);
+      }
+      if (carouselResponse.data.EC === 1) {
+        setCarouselProducts(carouselResponse.data.DT);
+      }
+      if (treEmResponse.data.EC === 1) {
+        setTreEmProducts(treEmResponse.data.DT);
+      }
+      if (bestSellingResponse.data.EC === 1) {
+        setBestSellingProducts(bestSellingResponse.data.DT);
+      }
+      if (bestFavoriteResponse.data.EC === 1) {
+        setBestFavorite(bestFavoriteResponse.data.DT);
+      }
+      if (bestExpensiveResponse.data.EC === 1) {
+        setBestExpensive(bestExpensiveResponse.data.DT);
+      }
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
+  };
 
   return (
     <>
@@ -162,7 +81,7 @@ const Home = () => {
         {" "}
         <div className="home">
           <CarouselHead carouselProducts={carouselProducts} api={api} />
-          <ProductCarousel products={products} api={api} />
+          <ProductCarousel products={nuProducts} api={api} />
           <Box
             sx={{
               padding: 3,
@@ -231,8 +150,8 @@ const Home = () => {
               ))}
             </Grid>
           </Box>
-          <CartProduct />
-          <ProductCarousel products={products} api={api} />
+          <CartProduct products={treEmProducts} api={api} />
+          <ProductCarousel products={nuProducts} api={api} />
           <Box
             sx={{
               backgroundColor: "#101014",
@@ -243,16 +162,24 @@ const Home = () => {
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6} md={4}>
                 {" "}
-                {/* 12 cột trên di động, 6 cột trên thiết bị nhỏ, 4 cột trên thiết bị lớn */}
-                <ListGame title="Top Sellers" items={topSellers} />
+                <ListGame
+                  title="Bán chạy nhất"
+                  api={api}
+                  items={bestSellingProducts}
+                />
               </Grid>
               <Grid item xs={12} sm={6} md={4}>
-                <ListGame title="Most Played" items={mostPlayed} />
+                <ListGame
+                  title="Có giá trị cao nhất"
+                  api={api}
+                  items={bestExpensive}
+                />
               </Grid>
               <Grid item xs={12} sm={6} md={4}>
                 <ListGame
                   title="Top Upcoming Wishlisted"
-                  items={upcomingWishlisted}
+                  items={bestFavorite}
+                  api={api}
                 />
               </Grid>
             </Grid>
