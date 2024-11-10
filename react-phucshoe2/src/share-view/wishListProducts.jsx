@@ -109,7 +109,6 @@ const WishlistProducts = () => {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Fetch data from the API
   useEffect(() => {
     axios
       .get("http://localhost:3002/san-pham/use/wishlist-user/3")
