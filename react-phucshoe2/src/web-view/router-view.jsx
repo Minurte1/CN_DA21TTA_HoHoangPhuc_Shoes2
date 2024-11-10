@@ -6,6 +6,8 @@ import Home from "./view-page/home.jsx";
 import SelectShoe from "./view-page/selectShoe.jsx";
 import PaymentMoMo from "./component-view/thanhToanMoMo.jsx";
 import CheckOutMoMo from "./component-view/checkOutMoMo.jsx";
+import Cart from "../share-view/cartProduct.jsx";
+import WishlistProducts from "../share-view/wishListProducts.jsx";
 
 const RouterView = () => {
   const element = useRoutes([
@@ -28,6 +30,14 @@ const RouterView = () => {
     {
       path: "/pay",
       element: <PaymentMoMo />,
+    },
+    {
+      path: "/cart",
+      element: <Cart />,
+    },
+    {
+      path: "/wish-list",
+      element: <WishlistProducts />,
     },
     {
       path: "/checkout",
