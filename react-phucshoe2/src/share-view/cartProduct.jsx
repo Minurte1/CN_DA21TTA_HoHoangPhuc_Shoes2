@@ -1,15 +1,19 @@
-import React from "react";
-import {
-  Box,
-  Button,
-  Divider,
-  Typography,
-  Card,
-  CardContent,
-  Grid,
-} from "@mui/material";
+import React, { useState, useEffect } from "react";
+import { Box, Button, Divider, Typography, Card, Grid } from "@mui/material";
 
-const CartItem = ({ name, price, rating, tags, isFree }) => (
+const api = process.env.REACT_APP_URL_SERVER;
+
+const CartItem = ({
+  name,
+  price,
+  description,
+  gender,
+  category,
+  material,
+  brand,
+  quantityInCart,
+  image,
+}) => (
   <Card
     sx={{
       mb: 2,
@@ -21,27 +25,34 @@ const CartItem = ({ name, price, rating, tags, isFree }) => (
   >
     <Box sx={{ display: "flex", alignItems: "center" }}>
       <img
-        src="https://via.placeholder.com/100"
+        src={`${api}/images/${image}`} // Đây là cách giả lập ảnh cho sản phẩm
         alt={`${name} thumbnail`}
-        style={{ marginRight: 16 }}
+        style={{ marginRight: 16, width: "80px", borderRadius: "13px" }}
       />
       <Box>
         <Typography variant="h6" color="white">
           {name}
         </Typography>
         <Typography variant="body2" color="gray">
-          {rating}
+          {description}
         </Typography>
         <Typography variant="body2" color="gray">
-          {tags}
+          {category} | {material} | {gender} | {brand}
         </Typography>
       </Box>
     </Box>
     <Box sx={{ textAlign: "right" }}>
-      <Typography variant="h6" color="white">
-        {isFree ? "Free" : `${price} ₲`}
+      <Typography color="white">
+        {new Intl.NumberFormat("vi-VN", {
+          style: "currency",
+          currency: "VND",
+        }).format(price)}
       </Typography>
-      <Button variant="text" color="primary">
+
+      <Typography variant="body2" color="gray">
+        Số lượng trong giỏ: {quantityInCart}
+      </Typography>
+      <Button variant="text" color="error">
         Remove
       </Button>
     </Box>
@@ -51,63 +62,96 @@ const CartItem = ({ name, price, rating, tags, isFree }) => (
 const CartSummary = ({ subtotal }) => (
   <Box sx={{ backgroundColor: "#202024", p: 2, borderRadius: 2 }}>
     <Typography variant="h6" color="white">
-      Games and Apps Summary
+      Cart Summary
     </Typography>
     <Divider sx={{ my: 1, backgroundColor: "#555" }} />
-    <Typography color="white">Price: {subtotal} ₲</Typography>
+    <Typography color="white">
+      Price:{" "}
+      {new Intl.NumberFormat("vi-VN", {
+        style: "currency",
+        currency: "VND",
+      }).format(subtotal)}
+    </Typography>
+
     <Typography color="white">Taxes: Calculated at Checkout</Typography>
     <Divider sx={{ my: 1, backgroundColor: "#555" }} />
     <Button
       variant="contained"
       sx={{
         borderRadius: "14px",
-
         backgroundColor: "#26bbff",
         color: "#101014",
         fontWeight: "600",
         fontSize: "12px",
         "&:hover": {
-          backgroundColor: "#3ccaff", // Màu sáng hơn khi hover
+          backgroundColor: "#3ccaff",
         },
       }}
       fullWidth
     >
-      Check Out
+      Thanh toán
     </Button>
   </Box>
 );
 
 const Cart = () => {
-  const items = [
-    {
-      name: "Game Title",
-      price: 261000,
-      rating: "12+",
-      tags: "Horror, Mild Swearing",
-      isFree: false,
-    },
-    {
-      name: "Blade of God X",
-      price: 0,
-      rating: "12+",
-      tags: "Moderate Violence",
-      isFree: true,
-    },
-  ];
+  const [items, setItems] = useState([]);
+  const [subtotal, setSubtotal] = useState(0);
 
-  const subtotal = items.reduce(
-    (acc, item) => acc + (item.isFree ? 0 : item.price),
-    0
-  );
+  // Hàm gọi API để lấy giỏ hàng
+  useEffect(() => {
+    const fetchCartItems = async () => {
+      try {
+        const response = await fetch(
+          "http://localhost:3002/san-pham/use/cart-user/3"
+        );
+        const data = await response.json();
+        if (data.EC === 1) {
+          setItems(data.DT);
+          // Tính tổng giá trị giỏ hàng
+          const total = data.DT.reduce(
+            (acc, item) => acc + item.GIA * item.SO_LUONG_GIOHANG,
+            0
+          );
+          setSubtotal(total);
+        } else {
+          console.error("Error fetching cart items:", data.EM);
+        }
+      } catch (error) {
+        console.error("Error fetching cart items:", error);
+      }
+    };
+
+    fetchCartItems();
+  }, []);
 
   return (
-    <Grid container spacing={2} sx={{ p: 4, backgroundColor: "#121212" }}>
-      <Grid item xs={12} md={8}>
+    <Grid
+      container
+      spacing={2}
+      sx={{
+        p: 4,
+        backgroundColor: "#121212",
+        justifyContent: "center",
+      }}
+    >
+      <Grid item xs={12} sm={12} md={7} lg={7} xl={8}>
         {items.map((item, index) => (
-          <CartItem key={index} {...item} />
+          <CartItem
+            key={index}
+            name={item.TEN_SAN_PHAM}
+            price={item.GIA}
+            description={item.MO_TA_SAN_PHAM}
+            gender={item.TEN_GIOI_TINH}
+            category={item.TEN_DANH_MUC}
+            material={item.TEN_CHAT_LIEU_}
+            brand={item.TEN_THUONG_HIEU}
+            quantityInCart={item.SO_LUONG_GIOHANG}
+            image={item.HINH_ANH_SANPHAM}
+          />
         ))}
       </Grid>
-      <Grid item xs={12} md={4}>
+      <Grid item xs={12} sm={12} md={4} lg={3.5} xl={4}>
         <CartSummary subtotal={subtotal} />
       </Grid>
     </Grid>

@@ -356,6 +356,60 @@ const getCartProductsByUser = async (req, res) => {
     });
   }
 };
+// Lấy tất cả sản phẩm trong yêu thích của 1 người dùng
+const getFavoriteProductsByUser = async (req, res) => {
+  const userId = req.params.id; // Lấy userId từ tham số URL
+
+  try {
+    const [results] = await connection.execute(
+      `
+      SELECT 
+        yt.ID_SAN_PHAM, yt.NGAY_YEU_THICH,
+        sp.TEN_SAN_PHAM, 
+        sp.GIA, 
+        sp.HINH_ANH_SANPHAM, 
+        sp.MO_TA_SAN_PHAM,
+        sp.TRANG_THAI_SANPHAM, 
+        sp.SO_LUONG_SANPHAM, 
+        gt.TEN_GIOI_TINH,
+        dm.TEN_DANH_MUC,
+        cl.TEN_CHAT_LIEU_,
+        th.TEN_THUONG_HIEU
+        
+      FROM YEU_THICH yt
+      JOIN SAN_PHAM sp ON yt.ID_SAN_PHAM = sp.ID_SAN_PHAM
+      LEFT JOIN GIOI_TINH gt ON sp.GIOI_TINH_ID = gt.GIOI_TINH_ID
+      LEFT JOIN LOAI_DANH_MUC dm ON sp.ID_DANH_MUC = dm.ID_DANH_MUC
+      LEFT JOIN CHAT_LIEU cl ON sp.CHAT_LIEU_ID_ = cl.CHAT_LIEU_ID_
+      LEFT JOIN THUONG_HIEU th ON sp.ID_THUONG_HIEU = th.ID_THUONG_HIEU
+      WHERE yt.ID_NGUOI_DUNG = ? AND sp.TRANG_THAI_SANPHAM = 1
+      ORDER BY yt.NGAY_YEU_THICH DESC -- Sắp xếp theo ngày yêu thích mới nhất
+    `,
+      [userId]
+    );
+
+    if (results.length === 0) {
+      return res.status(404).json({
+        EM: "Không có sản phẩm yêu thích cho người dùng hoặc sản phẩm không tồn tại",
+        EC: 0,
+        DT: [],
+      });
+    }
+
+    return res.status(200).json({
+      EM: "Lấy thông tin sản phẩm yêu thích thành công",
+      EC: 1,
+      DT: results,
+    });
+  } catch (error) {
+    console.error("Error getting favorite products:", error);
+    return res.status(500).json({
+      EM: "Có lỗi xảy ra khi lấy sản phẩm yêu thích",
+      EC: 0,
+      DT: [],
+    });
+  }
+};
 
 // Tạo sản phẩm mới
 const createSAN_PHAM = async (req, res) => {
@@ -514,4 +568,5 @@ module.exports = {
   get5TopFavoriteProducts,
   getTopExpensiveProducts,
   getCartProductsByUser,
+  getFavoriteProductsByUser,
 };
