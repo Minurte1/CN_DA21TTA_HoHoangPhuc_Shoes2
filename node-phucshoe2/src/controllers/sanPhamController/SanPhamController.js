@@ -302,6 +302,60 @@ const getTopExpensiveProducts = async (req, res) => {
     });
   }
 };
+// Lấy tất cả sản phẩm trong giỏ hàng của 1 người dùng
+const getCartProductsByUser = async (req, res) => {
+  const userId = req.params.id; // Lấy userId từ tham số URL
+
+  try {
+    const [results] = await connection.execute(
+      `
+      SELECT 
+        cth.ID_SAN_PHAM, 
+        sp.TEN_SAN_PHAM, 
+        sp.GIA, 
+        sp.HINH_ANH_SANPHAM, 
+        sp.MO_TA_SAN_PHAM,
+        sp.TRANG_THAI_SANPHAM, 
+        sp.SO_LUONG_SANPHAM, 
+        gt.TEN_GIOI_TINH,
+        dm.TEN_DANH_MUC,
+        cl.TEN_CHAT_LIEU_,
+        th.TEN_THUONG_HIEU,
+        cth.SO_LUONG_GIOHANG,
+        cth.NGAY_CAP_NHAT_GIOHANG
+      FROM GIO_HANG cth
+      JOIN SAN_PHAM sp ON cth.ID_SAN_PHAM = sp.ID_SAN_PHAM
+      LEFT JOIN GIOI_TINH gt ON sp.GIOI_TINH_ID = gt.GIOI_TINH_ID
+      LEFT JOIN LOAI_DANH_MUC dm ON sp.ID_DANH_MUC = dm.ID_DANH_MUC
+      LEFT JOIN CHAT_LIEU cl ON sp.CHAT_LIEU_ID_ = cl.CHAT_LIEU_ID_
+      LEFT JOIN THUONG_HIEU th ON sp.ID_THUONG_HIEU = th.ID_THUONG_HIEU
+      WHERE cth.ID_NGUOI_DUNG = ? AND sp.TRANG_THAI_SANPHAM = 1
+    `,
+      [userId]
+    );
+
+    if (results.length === 0) {
+      return res.status(404).json({
+        EM: "Giỏ hàng của người dùng trống hoặc không tồn tại",
+        EC: 0,
+        DT: [],
+      });
+    }
+
+    return res.status(200).json({
+      EM: "Lấy thông tin giỏ hàng thành công",
+      EC: 1,
+      DT: results,
+    });
+  } catch (error) {
+    console.error("Error getting cart products:", error);
+    return res.status(500).json({
+      EM: "Có lỗi xảy ra khi lấy giỏ hàng",
+      EC: 0,
+      DT: [],
+    });
+  }
+};
 
 // Tạo sản phẩm mới
 const createSAN_PHAM = async (req, res) => {
@@ -459,4 +513,5 @@ module.exports = {
   getTop5BestSellingProducts,
   get5TopFavoriteProducts,
   getTopExpensiveProducts,
+  getCartProductsByUser,
 };

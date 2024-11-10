@@ -13,6 +13,7 @@ const {
   getTop5BestSellingProducts,
   get5TopFavoriteProducts,
   getTopExpensiveProducts,
+  getCartProductsByUser,
 } = require("../../controllers/sanPhamController/SanPhamController");
 const uploads = require("../../config/multerConfig");
 // Định nghĩa các route
@@ -24,6 +25,7 @@ router.get("/use/5best-selling", getTop5BestSellingProducts);
 router.get("/use/5best-expensive", getTopExpensiveProducts);
 router.get("/use/last2products", getLatest2Products);
 router.get("/use/5best-favorite", get5TopFavoriteProducts);
+router.get("/use/cart-user/:id", getCartProductsByUser);
 
 router.post("/", uploads.single("images"), createSAN_PHAM);
 router.put("/:id", uploads.single("images"), updateSAN_PHAM);
