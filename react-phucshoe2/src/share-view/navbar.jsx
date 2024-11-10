@@ -13,12 +13,15 @@ import {
 import SearchIcon from "@mui/icons-material/Search";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useTheme } from "@mui/material/styles";
-
+import { Link as RouterLink, useLocation } from "react-router-dom";
 const Navbar = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [isFixed, setIsFixed] = useState(false); // State để điều khiển vị trí
+  const location = useLocation();
+
+  const isActive = (path) => location.pathname === path;
 
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -30,21 +33,101 @@ const Navbar = () => {
 
   const menuItems = (
     <>
-      <Typography variant="body1" component="div" sx={{ mx: 2 }}>
-        Discover
-      </Typography>
-      <Typography variant="body1" component="div" sx={{ mx: 2 }}>
-        Browse
-      </Typography>
-      <Typography variant="body1" component="div" sx={{ mx: 2 }}>
-        News
-      </Typography>
-      <Typography variant="body1" component="div" sx={{ mx: 2 }}>
-        Wishlist
-      </Typography>
-      <Typography variant="body1" component="div" sx={{ mx: 2 }}>
-        Cart
-      </Typography>
+      <Box
+        sx={{ display: "flex", justifyContent: "space-between", width: "100%" }}
+      >
+        {/* Left-aligned items */}
+        <Box sx={{ display: "flex" }}>
+          <Box component={RouterLink} to="/" sx={{ textDecoration: "none" }}>
+            <Typography
+              variant="body1"
+              component="div"
+              sx={{
+                mx: 2,
+                cursor: "pointer",
+                color: isActive("/") ? "#3ccaff" : "#fff",
+              }}
+            >
+              Discover
+            </Typography>
+          </Box>
+
+          <Box
+            component={RouterLink}
+            to="/browse"
+            sx={{ textDecoration: "none" }}
+          >
+            <Typography
+              variant="body1"
+              component="div"
+              sx={{
+                mx: 2,
+                cursor: "pointer",
+                color: isActive("/browse") ? "#3ccaff" : "#fff",
+              }}
+            >
+              Browse
+            </Typography>
+          </Box>
+
+          <Box
+            component={RouterLink}
+            to="/news"
+            sx={{ textDecoration: "none" }}
+          >
+            <Typography
+              variant="body1"
+              component="div"
+              sx={{
+                mx: 2,
+                cursor: "pointer",
+                color: isActive("/news") ? "#3ccaff" : "#fff",
+              }}
+            >
+              News
+            </Typography>
+          </Box>
+        </Box>
+
+        {/* Right-aligned items */}
+        <Box sx={{ display: "flex" }}>
+          <Box
+            component={RouterLink}
+            to="/wishlist"
+            sx={{ textDecoration: "none" }}
+          >
+            <Typography
+              variant="body1"
+              component="div"
+              sx={{
+                mx: 2,
+                cursor: "pointer",
+                color: isActive("/wishlist") ? "#3ccaff" : "#fff",
+              }}
+            >
+              Wishlist
+            </Typography>
+          </Box>
+
+          <Box
+            component={RouterLink}
+            to="/cart"
+            sx={{ textDecoration: "none" }}
+          >
+            <Typography
+              variant="body1"
+              component="div"
+              sx={{
+                mx: 2,
+                cursor: "pointer",
+                color: isActive("/cart") ? "#3ccaff" : "#fff",
+              }}
+            >
+              Cart
+            </Typography>
+          </Box>
+        </Box>
+      </Box>
     </>
   );
 

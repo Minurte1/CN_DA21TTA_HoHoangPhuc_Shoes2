@@ -36,7 +36,7 @@ const RouterView = () => {
       element: <Cart />,
     },
     {
-      path: "/wish-list",
+      path: "/wishlist",
       element: <WishlistProducts />,
     },
     {

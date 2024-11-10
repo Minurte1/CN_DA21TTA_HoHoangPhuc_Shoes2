@@ -14,7 +14,7 @@ import AccountCircle from "@mui/icons-material/AccountCircle";
 import LanguageIcon from "@mui/icons-material/Language";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useTheme } from "@mui/material/styles";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, Link as RouterLink, useNavigate } from "react-router-dom";
 import logo from "../public/logo/iconlogo.png";
 import Cookies from "js-cookie";
 
@@ -363,17 +363,27 @@ const Header = () => {
           style={{
             height: 50,
             marginRight: 16,
+
             filter: "drop-shadow(1px 4px 3.5px rgb(38, 187, 255))",
           }}
         />
-
-        <Typography
-          variant="h6"
-          component="div"
-          sx={{ flexGrow: 1, display: { xs: "none", sm: "block" } }}
+        <Box
+          component={RouterLink}
+          to="/"
+          sx={{ textDecoration: "none", color: "#fff", flexGrow: 1 }}
         >
-          {t.store}
-        </Typography>
+          <Typography
+            variant="h6"
+            component="div"
+            sx={{
+              display: { xs: "none", sm: "block" },
+              textAlign: "left",
+              paddingLeft: 6,
+            }}
+          >
+            {t.store}
+          </Typography>
+        </Box>
         {isMobile ? (
           <>
             <IconButton

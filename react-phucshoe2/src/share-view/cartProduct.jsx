@@ -1,5 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { Box, Button, Divider, Typography, Card, Grid } from "@mui/material";
+import {
+  Box,
+  Button,
+  Divider,
+  Typography,
+  Card,
+  Grid,
+  FormControl,
+  Select,
+  MenuItem,
+  Switch,
+} from "@mui/material";
 
 const api = process.env.REACT_APP_URL_SERVER;
 
@@ -135,6 +146,30 @@ const Cart = () => {
         justifyContent: "center",
       }}
     >
+      {" "}
+      <Grid item xs={12}>
+        <Box sx={{ textAlign: "left", paddingLeft: 2 }}>
+          {" "}
+          <Typography variant="h4" color="white">
+            My Cart
+          </Typography>
+        </Box>
+
+        <Box sx={{ display: "flex", alignItems: "center", mt: 2, mb: 2 }}>
+          <Switch defaultChecked color="primary" />
+          <Typography variant="body2" color="white">
+            Sort by:{" "}
+          </Typography>
+          <FormControl sx={{ ml: 1, minWidth: 120 }}>
+            <Select sx={{ color: "#c9d1d9" }} defaultValue="Newest">
+              <MenuItem value="Newest">Newest</MenuItem>
+              <MenuItem value="On Sale">On Sale</MenuItem>
+              <MenuItem value="Popular">Popular</MenuItem>
+            </Select>
+          </FormControl>
+        </Box>
+        <Divider sx={{ backgroundColor: "#555", mb: 2 }} />
+      </Grid>
       <Grid item xs={12} sm={12} md={7} lg={7} xl={8}>
         {items.map((item, index) => (
           <CartItem
