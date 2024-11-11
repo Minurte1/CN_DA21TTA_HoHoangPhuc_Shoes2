@@ -13,6 +13,8 @@ import {
   Switch,
 } from "@mui/material";
 import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 const api = process.env.REACT_APP_URL_SERVER;
 const WishlistItem = ({
   name,
@@ -61,9 +63,20 @@ const WishlistItem = ({
           currency: "VND",
         }).format(price)}
       </Typography>
-      <Button variant="text" color="primary">
+      <Button
+        variant="text"
+        sx={{
+          color: "#c9d1d9",
+          textTransform: "none",
+          mr: 2,
+          "&:hover": {
+            color: "#fffff", // Change text color on hover
+          },
+        }}
+      >
         Remove
       </Button>
+
       <Button
         variant="contained"
         sx={{
@@ -108,25 +121,40 @@ const WishlistFilters = () => (
 const WishlistProducts = () => {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  const { isAuthenticated, userInfo } = useSelector((state) => state.auth);
+  const navigate = useNavigate();
   useEffect(() => {
-    axios
-      .get("http://localhost:3002/san-pham/use/wishlist-user/3")
-      .then((response) => {
+    if (!isAuthenticated || !userInfo) {
+      // Redirect to login if the user is not authenticated or if userInfo is missing
+      navigate("/login");
+      return;
+    }
+
+    const fetchWishlistItems = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:3002/san-pham/use/wishlist-user/${userInfo.ID_NGUOI_DUNG}`
+        );
         const sortedItems = response.data.DT.sort(
           (a, b) => new Date(b.NGAY_YEU_THICH) - new Date(a.NGAY_YEU_THICH)
         );
         setItems(sortedItems);
-        setLoading(false);
-      })
-      .catch((error) => {
+      } catch (error) {
         console.error("Error fetching wishlist data:", error);
+      } finally {
         setLoading(false);
-      });
-  }, []);
+      }
+    };
+
+    fetchWishlistItems();
+  }, [isAuthenticated, userInfo, navigate]);
 
   return (
-    <Grid container spacing={2} sx={{ p: 4, backgroundColor: "#121212" }}>
+    <Grid
+      container
+      spacing={2}
+      sx={{ p: 4, backgroundColor: "#121212", justifyContent: "center" }}
+    >
       <Grid item xs={12}>
         <Typography variant="h4" color="white">
           My Wishlist
@@ -146,7 +174,7 @@ const WishlistProducts = () => {
         </Box>
         <Divider sx={{ backgroundColor: "#555", mb: 2 }} />
       </Grid>
-      <Grid item xs={12} md={8}>
+      <Grid item xs={12} md={7} lg={7}>
         {loading ? (
           <Typography color="white">Loading...</Typography>
         ) : (
