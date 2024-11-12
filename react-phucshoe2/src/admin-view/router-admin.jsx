@@ -70,6 +70,10 @@ const RouterAdmin = () => {
       path: "/san-pham/danh-muc/thuong-hieu",
       element: <ThuongHieuManager />,
     },
+    {
+      path: "/thanh-toan/them-thanh-toan",
+      element: <ThuongHieuManager />,
+    },
     // {
     //   path: "/san-pham",
     //   element: <QuanLySanPham />,

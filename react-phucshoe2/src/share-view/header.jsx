@@ -15,7 +15,7 @@ import LanguageIcon from "@mui/icons-material/Language";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useTheme } from "@mui/material/styles";
 import { Link, Link as RouterLink, useNavigate } from "react-router-dom";
-import logo from "../public/logo/iconlogo.png";
+import logo from "../public/logo/favicon.png";
 import Cookies from "js-cookie";
 
 import axiosInstance from "../authentication/axiosInstance";
@@ -363,8 +363,9 @@ const Header = () => {
           style={{
             height: 50,
             marginRight: 16,
+            borderRadius: "20px",
 
-            filter: "drop-shadow(1px 4px 3.5px rgb(38, 187, 255))",
+            // filter: "drop-shadow(1px 4px 3.5px rgb(38, 187, 255))",
           }}
         />
         <Box

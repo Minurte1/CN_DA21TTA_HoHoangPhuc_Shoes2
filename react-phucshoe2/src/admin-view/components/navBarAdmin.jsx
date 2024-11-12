@@ -339,6 +339,14 @@ const NavBarAdmin = () => {
                   sx={{ pl: 4, color: "#f0f6fc" }}
                 >
                   <ListItemText primary="Lịch sử đơn hàng" />
+                </ListItem>{" "}
+                <ListItem
+                  button
+                  component={Link}
+                  to="/admin/don-hang/history"
+                  sx={{ pl: 4, color: "#f0f6fc" }}
+                >
+                  <ListItemText primary="Phương Thức Thanh Toán" />
                 </ListItem>
               </List>
             </Collapse>
