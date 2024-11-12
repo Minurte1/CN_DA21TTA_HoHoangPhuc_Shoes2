@@ -65,7 +65,7 @@ const createTHUONG_HIEU = async (req, res) => {
 // Cập nhật thương hiệu
 const updateTHUONG_HIEU = async (req, res) => {
   const { id } = req.params;
-  const { tenThuongHieu } = req.body.brandData;
+  const { tenThuongHieu, trangThaiThuongHieu } = req.body.brandData;
   try {
     const [results] = await connection.execute(
       "SELECT * FROM THUONG_HIEU WHERE ID_THUONG_HIEU = ?",
@@ -75,8 +75,8 @@ const updateTHUONG_HIEU = async (req, res) => {
     if (results.length > 0) {
       const updateThuongHieu = new Date();
       await connection.execute(
-        "UPDATE THUONG_HIEU SET TEN_THUONG_HIEU = ?, UPDATE_THUONG_HIEU = ? WHERE ID_THUONG_HIEU = ?",
-        [tenThuongHieu, updateThuongHieu, id]
+        "UPDATE THUONG_HIEU SET TEN_THUONG_HIEU = ?, UPDATE_THUONG_HIEU = ? ,TRANG_THAI_THUONG_HIEU =?  WHERE ID_THUONG_HIEU = ?",
+        [tenThuongHieu, updateThuongHieu, trangThaiThuongHieu, id]
       );
       return res.status(200).json({
         EM: "Cập nhật thương hiệu thành công",

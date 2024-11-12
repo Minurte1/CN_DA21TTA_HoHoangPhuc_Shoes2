@@ -7,7 +7,7 @@ import axios from "axios";
 import { GoogleLogin, useGoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode"; // Import jwtDecode trực tiếp thay vì từ jwt-decode
 import axiosInstance from "../../authentication/axiosInstance";
-import logo from "../../public/logo/iconlogo.png";
+import logo from "../../public/logo/favicon.png";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -118,9 +118,9 @@ const LoginPage = () => {
           alt="Epic Games Logo"
           style={{
             marginBottom: 20,
-            maxWidth: "80px",
+            maxWidth: "60px",
             height: "auto",
-            filter: "drop-shadow(1px 4px 3.5px rgb(38, 187, 255,0.9))",
+            // filter: "drop-shadow(1px 4px 3.5px rgb(38, 187, 255,0.9))",
           }}
         />
 

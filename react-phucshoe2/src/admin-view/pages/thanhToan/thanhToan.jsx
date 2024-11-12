@@ -106,7 +106,7 @@ const ThanhToanManager = () => {
           gutterBottom
           sx={{ textAlign: "left" }}
         >
-          PHƯƠNG THỨC THANH TOÁN
+          Phương Thức Thanh Toán
         </Typography>
         <Button
           variant="outlined"
@@ -127,7 +127,7 @@ const ThanhToanManager = () => {
           <TableHead>
             <TableRow>
               <TableCell sx={{ color: "#c9d1d9" }}>ID</TableCell>
-              <TableCell sx={{ color: "#c9d1d9" }}>Phương thức</TableCell>
+              <TableCell sx={{ color: "#c9d1d9" }}>Thương thức</TableCell>
               <TableCell sx={{ color: "#c9d1d9" }}>Trạng Thái</TableCell>
               <TableCell sx={{ color: "#c9d1d9" }}>Ngày thanh toán</TableCell>
               <TableCell sx={{ color: "#c9d1d9" }}>Actions</TableCell>
@@ -139,12 +139,18 @@ const ThanhToanManager = () => {
                 <TableCell sx={{ color: "#c9d1d9" }}>
                   {method.ID_THANH_TOAN}
                 </TableCell>
-                <TableCell sx={{ color: "#c9d1d9" }}>
+                <TableCell sx={{ color: "#e6edf3", fontWeight: "bold" }}>
                   {method.PHUONG_THUC_THANH_TOAN}
                 </TableCell>
-                <TableCell sx={{ color: "#c9d1d9" }}>
-                  {method.TRANG_THAI_THANH_TOAN === 1
-                    ? "Hoạt động"
+
+                <TableCell
+                  sx={{
+                    color:
+                      method.TRANG_THAI_THANH_TOAN === "1" ? "#73ec8b" : "red",
+                  }}
+                >
+                  {method.TRANG_THAI_THANH_TOAN === "1"
+                    ? "Đang hoạt động"
                     : "Ngưng hoạt động"}
                 </TableCell>
                 <TableCell sx={{ color: "#c9d1d9" }}>
@@ -196,7 +202,7 @@ const ThanhToanManager = () => {
             value={trangThaiThanhToan}
             onChange={(e) => setTrangThaiThanhToan(e.target.value)}
           >
-            <MenuItem value={1}>Hoạt động</MenuItem>
+            <MenuItem value={1}>Đang hoạt động</MenuItem>
             <MenuItem value={0}>Ngưng hoạt động</MenuItem>
           </Select>
         </DialogContent>

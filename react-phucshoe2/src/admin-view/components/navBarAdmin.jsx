@@ -343,7 +343,7 @@ const NavBarAdmin = () => {
                 <ListItem
                   button
                   component={Link}
-                  to="/admin/don-hang/history"
+                  to="/admin/thanh-toan/them-thanh-toan"
                   sx={{ pl: 4, color: "#f0f6fc" }}
                 >
                   <ListItemText primary="Phương Thức Thanh Toán" />

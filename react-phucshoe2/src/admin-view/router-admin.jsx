@@ -12,6 +12,7 @@ import PhongCachManager from "./pages/quanLySanPham/category/phongCach";
 import ThuongHieuManager from "./pages/quanLySanPham/category/thuongHieu";
 import SanPhamManager from "./pages/quanLySanPham/sanPham";
 import CarouselManager from "./pages/quanLySanPham/carouselSanPham";
+import ThanhToanManager from "./pages/thanhToan/thanhToan";
 
 // import QuanLySanPham from "./pages/QuanLySanPham";
 // import TuongTacNguoiDung from "./pages/TuongTacNguoiDung";
@@ -72,7 +73,7 @@ const RouterAdmin = () => {
     },
     {
       path: "/thanh-toan/them-thanh-toan",
-      element: <ThuongHieuManager />,
+      element: <ThanhToanManager />,
     },
     // {
     //   path: "/san-pham",

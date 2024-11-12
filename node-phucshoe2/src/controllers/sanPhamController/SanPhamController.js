@@ -17,7 +17,7 @@ const getSAN_PHAM = async (req, res) => {
       LEFT JOIN GIOI_TINH gt ON sp.GIOI_TINH_ID = gt.GIOI_TINH_ID
       LEFT JOIN LOAI_DANH_MUC dm ON sp.ID_DANH_MUC = dm.ID_DANH_MUC
       LEFT JOIN CHAT_LIEU cl ON sp.CHAT_LIEU_ID_ = cl.CHAT_LIEU_ID_
-      LEFT JOIN THUONG_HIEU th ON sp.ID_THUONG_HIEU = th.ID_THUONG_HIEU
+      LEFT JOIN THUONG_HIEU th ON sp.ID_THUONG_HIEU = th.ID_THUONG_HIEU ORDER BY sp.NGAY_TAO_SANPHAM DESC
     `);
 
     return res.status(200).json({
@@ -424,13 +424,15 @@ const createSAN_PHAM = async (req, res) => {
       moTaSanPham,
       trangThaiSanPham,
       soLuongSanPham,
+      option,
+
+      phongCachId,
+      mauSacId,
+      mucDichSuDungId,
+      kichCoId,
     } = req.body;
-
     const ngayTaoSanPham = new Date();
-
-    // Get the image file path (if an image was uploaded)
     const images = req.file ? path.basename(req.file.path) : null;
-
     const [results] = await connection.execute(
       "INSERT INTO SAN_PHAM (ID_THUONG_HIEU, ID_DANH_MUC, GIOI_TINH_ID, CHAT_LIEU_ID_, TEN_SAN_PHAM, GIA, MO_TA_SAN_PHAM, HINH_ANH_SANPHAM, TRANG_THAI_SANPHAM, NGAY_TAO_SANPHAM, NGAY_CAP_NHAT_SANPHAM, SO_LUONG_SANPHAM) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
       [
@@ -441,14 +443,50 @@ const createSAN_PHAM = async (req, res) => {
         tenSanPham,
         gia,
         moTaSanPham,
-        images, // Store the path to the image
+        images,
         trangThaiSanPham,
         ngayTaoSanPham,
         ngayTaoSanPham,
         soLuongSanPham,
       ]
     );
+    const newProductId = results.insertId;
+    console.log("option value:", option);
 
+    // Kiểm tra nếu option là boolean false
+    if (option === false) {
+      console.log("Điều kiện true khi option là false");
+      // Tiến hành xử lý khi option là false
+    } else {
+      console.log("option không phải là false");
+    }
+
+    if (option) {
+      console.log("newProductId", newProductId);
+      // Insert vào bảng PHONG_CACH_SAN_PHAM
+      await connection.execute(
+        "INSERT INTO PHONG_CACH_SAN_PHAM (ID_SAN_PHAM, ID_PHUONG_CACH) VALUES (?, ?)",
+        [newProductId, phongCachId]
+      );
+
+      // Insert vào bảng MAU_SAC_SAN_PHAM
+      await connection.execute(
+        "INSERT INTO MAU_SAC_SAN_PHAM (ID_SAN_PHAM, MAU_SAC_ID) VALUES (?, ?)",
+        [newProductId, mauSacId]
+      );
+
+      // Insert vào bảng MUC_DICH_SU_DUNG_SAN_PHAM
+      await connection.execute(
+        "INSERT INTO MUC_DICH_SU_DUNG_SAN_PHAM (ID_SAN_PHAM, ID_MUC_DICH_SU_DUNG) VALUES (?, ?)",
+        [newProductId, mucDichSuDungId]
+      );
+
+      // Insert vào bảng CO_KICH_CO
+      await connection.execute(
+        "INSERT INTO CO_KICH_CO (ID_SAN_PHAM, ID_KICH_CO) VALUES (?, ?)",
+        [newProductId, kichCoId]
+      );
+    }
     return res.status(201).json({
       EM: "Thêm sản phẩm thành công",
       EC: 1,

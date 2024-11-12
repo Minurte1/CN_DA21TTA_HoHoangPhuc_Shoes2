@@ -12,10 +12,21 @@ const SanPhamManager = () => {
   const [products, setProducts] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
   const [currentProduct, setCurrentProduct] = useState(null);
+
+  // ----------------------------------------------
   const [thuongHieu, setThuongHieu] = useState([]);
   const [danhMuc, setDanhMuc] = useState([]);
   const [chatLieu, setChatLieu] = useState([]);
   const [gioiTinh, setGioiTinh] = useState([]);
+
+  // ----------------------------------------------
+  const [phongCach, setPhongCach] = useState([]);
+  const [mauSac, setMauSac] = useState([]);
+  const [mucDichSuDung, setMucDichSuDung] = useState([]);
+  const [kichCo, setKichCo] = useState([]);
+
+  // ----------------------------------------------
+  const [option, setOption] = useState(true);
 
   const [formData, setFormData] = useState({
     idThuongHieu: "",
@@ -28,6 +39,13 @@ const SanPhamManager = () => {
     images: null,
     trangThaiSanPham: 1,
     soLuongSanPham: "",
+
+    phongCachId: "",
+    mauSacId: "",
+    mucDichSuDungId: "",
+    kichCoId: "",
+
+    optionFormData: true,
   });
 
   useEffect(() => {
@@ -51,11 +69,20 @@ const SanPhamManager = () => {
         danhMucResponse,
         chatLieuResponse,
         gioiTinhResponse,
+        phongCachResponse,
+        mauSacResponse,
+        mucDichSuDungResponse,
+        kichCoResponse,
       ] = await Promise.all([
         axios.get(`${api}/thuong-hieu/use`),
         axios.get(`${api}/loai-danh-muc/use`),
         axios.get(`${api}/chat-lieu/use`),
         axios.get(`${api}/gioi-tinh/use`),
+
+        axios.get(`${api}/phong-cach/use`),
+        axios.get(`${api}/mau-sac/use`),
+        axios.get(`${api}/muc-dich-su-dung/use`),
+        axios.get(`${api}/kich-co/use`),
       ]);
 
       if (thuongHieuResponse.data.EC === 1) {
@@ -69,6 +96,18 @@ const SanPhamManager = () => {
       }
       if (gioiTinhResponse.data.EC === 1) {
         setGioiTinh(gioiTinhResponse.data.DT);
+      }
+      if (phongCachResponse.data.EC === 1) {
+        setPhongCach(phongCachResponse.data.DT);
+      }
+      if (mauSacResponse.data.EC === 1) {
+        setMauSac(mauSacResponse.data.DT);
+      }
+      if (mucDichSuDungResponse.data.EC === 1) {
+        setMucDichSuDung(mucDichSuDungResponse.data.DT);
+      }
+      if (kichCoResponse.data.EC === 1) {
+        setKichCo(kichCoResponse.data.DT);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -88,6 +127,11 @@ const SanPhamManager = () => {
       soLuongSanPham: product ? product.SO_LUONG_SANPHAM : "",
       images: product ? product.HINH_ANH_SANPHAM : "",
       trangThaiSanPham: product ? product.TRANG_THAI_SANPHAM : 1,
+
+      phongCachId: product ? product.ID_PHUONG_CACH : "",
+      mauSacId: product ? product.MAU_SAC_ID : "",
+      mucDichSuDungId: product ? product.ID_MUC_DICH_SU_DUNG : "",
+      kichCoId: product ? product.ID_KICH_CO : "",
     });
     setOpenDialog(true);
   };
@@ -103,9 +147,14 @@ const SanPhamManager = () => {
       tenSanPham: "",
       gia: "",
       moTaSanPham: "",
-      images: "",
+      images: null,
       trangThaiSanPham: 1,
       soLuongSanPham: "",
+
+      phongCachId: "",
+      mauSacId: "",
+      mucDichSuDungId: "",
+      kichCoId: "",
     });
   };
 
@@ -117,6 +166,8 @@ const SanPhamManager = () => {
       Object.keys(formData).forEach((key) => {
         formDataToSend.append(key, formData[key]);
       });
+      // Add option value to formDataToSend
+      formDataToSend.append("option", option);
 
       if (currentProduct) {
         // Update product
@@ -285,11 +336,20 @@ const SanPhamManager = () => {
         handleChange={handleChange}
         handleSave={handleSave}
         handleFileChange={handleFileChange}
+        //
         formData={formData}
+        //
         thuongHieu={thuongHieu}
         danhMuc={danhMuc}
         gioiTinh={gioiTinh}
         chatLieu={chatLieu}
+        //
+        phongCach={phongCach}
+        mauSac={mauSac}
+        mucDichSuDung={mucDichSuDung}
+        kichCo={kichCo}
+        setOption={setOption}
+        option={option}
       />
     </Container>
   );
