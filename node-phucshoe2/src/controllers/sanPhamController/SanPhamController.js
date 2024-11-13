@@ -1,4 +1,6 @@
 const connection = require("../../config/database.js");
+
+const fs = require("fs");
 const path = require("path");
 
 // Lấy danh sách sản phẩm
@@ -558,18 +560,59 @@ const updateSAN_PHAM = async (req, res) => {
 };
 
 // Xóa sản phẩm
+
 const deleteSAN_PHAM = async (req, res) => {
   const { id } = req.params;
   try {
+    // Bước 1: Lấy thông tin sản phẩm để lấy tên hình ảnh
     const [results] = await connection.execute(
-      "SELECT * FROM SAN_PHAM WHERE ID_SAN_PHAM = ?",
+      "SELECT HINH_ANH_SANPHAM FROM SAN_PHAM WHERE ID_SAN_PHAM = ?",
       [id]
     );
 
+    // Kiểm tra xem sản phẩm có tồn tại hay không
     if (results.length > 0) {
+      const imageName = results[0].HINH_ANH_SANPHAM; // Tên hình ảnh sản phẩm
+
+      if (imageName) {
+        // Bước 2: Xóa hình ảnh khỏi thư mục lưu trữ
+        const imagePath = path.resolve(
+          __dirname,
+          "../../public/images",
+          imageName
+        );
+
+        fs.unlink(imagePath, (err) => {
+          if (err) {
+            console.error("Lỗi khi xóa hình ảnh:", err);
+          } else {
+            console.log("Đã xóa hình ảnh:", imagePath);
+          }
+        });
+      }
+
+      // Xóa tất cả các bản ghi liên quan từ các bảng phụ thuộc
+      await connection.execute(
+        "DELETE FROM PHONG_CACH_SAN_PHAM WHERE ID_SAN_PHAM = ?",
+        [id]
+      );
+      await connection.execute(
+        "DELETE FROM MAU_SAC_SAN_PHAM WHERE ID_SAN_PHAM = ?",
+        [id]
+      );
+      await connection.execute(
+        "DELETE FROM MUC_DICH_SU_DUNG_SAN_PHAM WHERE ID_SAN_PHAM = ?",
+        [id]
+      );
+      await connection.execute("DELETE FROM CO_KICH_CO WHERE ID_SAN_PHAM = ?", [
+        id,
+      ]);
+
+      // Bước 3: Xóa sản phẩm khỏi cơ sở dữ liệu
       await connection.execute("DELETE FROM SAN_PHAM WHERE ID_SAN_PHAM = ?", [
         id,
       ]);
+
       return res.status(200).json({
         EM: "Xóa sản phẩm thành công",
         EC: 1,
