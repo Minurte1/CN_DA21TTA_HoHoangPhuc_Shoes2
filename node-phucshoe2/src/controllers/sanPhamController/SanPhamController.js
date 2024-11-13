@@ -14,12 +14,34 @@ const getSAN_PHAM = async (req, res) => {
         gt.TEN_GIOI_TINH,
         dm.TEN_DANH_MUC, dm.MO_TA_LOAI_DANH_MUC,
         cl.TEN_CHAT_LIEU_, cl.MO_TA_CHAT_LIEU,
-        th.TEN_THUONG_HIEU
+        th.TEN_THUONG_HIEU,
+        
+        -- Additional fields from PHONG_CACH, MAU_SAC, MUC_DICH_SU_DUNG, and KICH_CO tables
+        pc.ID_PHUONG_CACH, pc.TEN_PHONG_CACH, pc.CREATED_PHONG_CACH, pc.UPDATE_PHONG_CACH, pc.TRANG_THAI_PHONG_CACH,
+        ms.MAU_SAC_ID, ms.TEN_MAU_SAC, ms.CREATE_MAU_SAC, ms.UPDATE_MAU_SAC, ms.TRANG_THAI_MAU_SAC,
+        mdsd.ID_MUC_DICH_SU_DUNG, mdsd.TEN_MUC_DICH_SU_DUNG, mdsd.CREATE_MUC_DICH_SU_DUNG, mdsd.UPDATE_MUC_DICH_SU_DUNG, mdsd.TRANG_THAI_MUC_DICH_SU_DUNG,
+        kc.ID_KICH_CO, kc.KICH_CO, kc.TRANG_THAI_KICH_CO, kc.CREATED_KICH_CO, kc.UPDATE_KICH_CO
+
       FROM SAN_PHAM sp
       LEFT JOIN GIOI_TINH gt ON sp.GIOI_TINH_ID = gt.GIOI_TINH_ID
       LEFT JOIN LOAI_DANH_MUC dm ON sp.ID_DANH_MUC = dm.ID_DANH_MUC
       LEFT JOIN CHAT_LIEU cl ON sp.CHAT_LIEU_ID_ = cl.CHAT_LIEU_ID_
-      LEFT JOIN THUONG_HIEU th ON sp.ID_THUONG_HIEU = th.ID_THUONG_HIEU ORDER BY sp.NGAY_TAO_SANPHAM DESC
+      LEFT JOIN THUONG_HIEU th ON sp.ID_THUONG_HIEU = th.ID_THUONG_HIEU
+
+      -- Joins to retrieve additional details
+      LEFT JOIN PHONG_CACH_SAN_PHAM pcs ON sp.ID_SAN_PHAM = pcs.ID_SAN_PHAM
+      LEFT JOIN PHONG_CACH pc ON pcs.ID_PHUONG_CACH = pc.ID_PHUONG_CACH
+      
+      LEFT JOIN MAU_SAC_SAN_PHAM mss ON sp.ID_SAN_PHAM = mss.ID_SAN_PHAM
+      LEFT JOIN MAU_SAC ms ON mss.MAU_SAC_ID = ms.MAU_SAC_ID
+
+      LEFT JOIN MUC_DICH_SU_DUNG_SAN_PHAM mdsds ON sp.ID_SAN_PHAM = mdsds.ID_SAN_PHAM
+      LEFT JOIN MUC_DICH_SU_DUNG mdsd ON mdsds.ID_MUC_DICH_SU_DUNG = mdsd.ID_MUC_DICH_SU_DUNG
+
+      LEFT JOIN CO_KICH_CO ckc ON sp.ID_SAN_PHAM = ckc.ID_SAN_PHAM
+      LEFT JOIN KICH_CO kc ON ckc.ID_KICH_CO = kc.ID_KICH_CO
+
+      ORDER BY sp.NGAY_TAO_SANPHAM DESC
     `);
 
     return res.status(200).json({
@@ -36,6 +58,7 @@ const getSAN_PHAM = async (req, res) => {
     });
   }
 };
+
 const getSAN_PHAM_Use = async (req, res) => {
   try {
     const [results] = await connection.execute(`
@@ -46,12 +69,33 @@ const getSAN_PHAM_Use = async (req, res) => {
         gt.TEN_GIOI_TINH,
         dm.TEN_DANH_MUC, dm.MO_TA_LOAI_DANH_MUC,
         cl.TEN_CHAT_LIEU_, cl.MO_TA_CHAT_LIEU,
-        th.TEN_THUONG_HIEU
+        th.TEN_THUONG_HIEU,
+
+        -- Additional fields from PHONG_CACH, MAU_SAC, MUC_DICH_SU_DUNG, and KICH_CO tables
+        pc.ID_PHUONG_CACH, pc.TEN_PHONG_CACH, pc.CREATED_PHONG_CACH, pc.UPDATE_PHONG_CACH, pc.TRANG_THAI_PHONG_CACH,
+        ms.MAU_SAC_ID, ms.TEN_MAU_SAC, ms.CREATE_MAU_SAC, ms.UPDATE_MAU_SAC, ms.TRANG_THAI_MAU_SAC,
+        mdsd.ID_MUC_DICH_SU_DUNG, mdsd.TEN_MUC_DICH_SU_DUNG, mdsd.CREATE_MUC_DICH_SU_DUNG, mdsd.UPDATE_MUC_DICH_SU_DUNG, mdsd.TRANG_THAI_MUC_DICH_SU_DUNG,
+        kc.ID_KICH_CO, kc.KICH_CO, kc.TRANG_THAI_KICH_CO, kc.CREATED_KICH_CO, kc.UPDATE_KICH_CO
+
       FROM SAN_PHAM sp
       LEFT JOIN GIOI_TINH gt ON sp.GIOI_TINH_ID = gt.GIOI_TINH_ID
       LEFT JOIN LOAI_DANH_MUC dm ON sp.ID_DANH_MUC = dm.ID_DANH_MUC
       LEFT JOIN CHAT_LIEU cl ON sp.CHAT_LIEU_ID_ = cl.CHAT_LIEU_ID_
       LEFT JOIN THUONG_HIEU th ON sp.ID_THUONG_HIEU = th.ID_THUONG_HIEU
+
+      -- Joins to retrieve additional details
+      LEFT JOIN PHONG_CACH_SAN_PHAM pcs ON sp.ID_SAN_PHAM = pcs.ID_SAN_PHAM
+      LEFT JOIN PHONG_CACH pc ON pcs.ID_PHUONG_CACH = pc.ID_PHUONG_CACH
+      
+      LEFT JOIN MAU_SAC_SAN_PHAM mss ON sp.ID_SAN_PHAM = mss.ID_SAN_PHAM
+      LEFT JOIN MAU_SAC ms ON mss.MAU_SAC_ID = ms.MAU_SAC_ID
+
+      LEFT JOIN MUC_DICH_SU_DUNG_SAN_PHAM mdsds ON sp.ID_SAN_PHAM = mdsds.ID_SAN_PHAM
+      LEFT JOIN MUC_DICH_SU_DUNG mdsd ON mdsds.ID_MUC_DICH_SU_DUNG = mdsd.ID_MUC_DICH_SU_DUNG
+
+      LEFT JOIN CO_KICH_CO ckc ON sp.ID_SAN_PHAM = ckc.ID_SAN_PHAM
+      LEFT JOIN KICH_CO kc ON ckc.ID_KICH_CO = kc.ID_KICH_CO
+
       WHERE sp.TRANG_THAI_SANPHAM = 1
     `);
 
@@ -69,6 +113,7 @@ const getSAN_PHAM_Use = async (req, res) => {
     });
   }
 };
+
 //lấy tất cả sản phẩm ĐANG HOẠT ĐỘNG = NỮ
 const getSAN_PHAM_Use_Nu = async (req, res) => {
   try {
@@ -505,38 +550,84 @@ const createSAN_PHAM = async (req, res) => {
 };
 
 // Cập nhật sản phẩm
-
 const updateSAN_PHAM = async (req, res) => {
   try {
     const { id } = req.params;
+    const {
+      idThuongHieu,
+      idDanhMuc,
+      gioiTinhId,
+      chatLieuId,
+      tenSanPham,
+      gia,
+      moTaSanPham,
+      trangThaiSanPham,
+      soLuongSanPham,
+      option,
+      phongCachId,
+      mauSacId,
+      mucDichSuDungId,
+      kichCoId,
+    } = req.body;
+
+    const ngayCapNhatSanPham = new Date();
+
+    // Lấy hình ảnh nếu có tải lên mới, nếu không thì giữ hình ảnh cũ
+    const images = req.file ? path.basename(req.file.path) : req.body.images;
+
+    // Kiểm tra sản phẩm có tồn tại hay không
     const [results] = await connection.execute(
       "SELECT * FROM SAN_PHAM WHERE ID_SAN_PHAM = ?",
       [id]
     );
 
     if (results.length > 0) {
-      const ngayCapNhatSanPham = new Date();
-
-      // Check if there is an uploaded image, and extract the filename
-      const images = req.file ? path.basename(req.file.path) : req.body.images;
-
+      // Cập nhật bảng SAN_PHAM
       await connection.execute(
         "UPDATE SAN_PHAM SET ID_THUONG_HIEU = ?, ID_DANH_MUC = ?, GIOI_TINH_ID = ?, CHAT_LIEU_ID_ = ?, TEN_SAN_PHAM = ?, GIA = ?, MO_TA_SAN_PHAM = ?, HINH_ANH_SANPHAM = ?, TRANG_THAI_SANPHAM = ?, NGAY_CAP_NHAT_SANPHAM = ?, SO_LUONG_SANPHAM = ? WHERE ID_SAN_PHAM = ?",
         [
-          req.body.idThuongHieu,
-          req.body.idDanhMuc,
-          req.body.gioiTinhId,
-          req.body.chatLieuId,
-          req.body.tenSanPham,
-          req.body.gia,
-          req.body.moTaSanPham,
-          images, // Use the new filename if an image was uploaded, otherwise retain the existing one
-          req.body.trangThaiSanPham,
+          idThuongHieu,
+          idDanhMuc,
+          gioiTinhId,
+          chatLieuId,
+          tenSanPham,
+          gia,
+          moTaSanPham,
+          images,
+          trangThaiSanPham,
           ngayCapNhatSanPham,
-          req.body.soLuongSanPham,
+          soLuongSanPham,
           id,
         ]
       );
+
+      // Nếu option là true, cập nhật các bảng liên kết
+      if (option) {
+        // Cập nhật bảng PHONG_CACH_SAN_PHAM
+        await connection.execute(
+          "REPLACE INTO PHONG_CACH_SAN_PHAM (ID_SAN_PHAM, ID_PHUONG_CACH) VALUES (?, ?)",
+          [id, phongCachId]
+        );
+
+        // Cập nhật bảng MAU_SAC_SAN_PHAM
+        await connection.execute(
+          "REPLACE INTO MAU_SAC_SAN_PHAM (ID_SAN_PHAM, MAU_SAC_ID) VALUES (?, ?)",
+          [id, mauSacId]
+        );
+
+        // Cập nhật bảng MUC_DICH_SU_DUNG_SAN_PHAM
+        await connection.execute(
+          "REPLACE INTO MUC_DICH_SU_DUNG_SAN_PHAM (ID_SAN_PHAM, ID_MUC_DICH_SU_DUNG) VALUES (?, ?)",
+          [id, mucDichSuDungId]
+        );
+
+        // Cập nhật bảng CO_KICH_CO
+        await connection.execute(
+          "REPLACE INTO CO_KICH_CO (ID_SAN_PHAM, ID_KICH_CO) VALUES (?, ?)",
+          [id, kichCoId]
+        );
+      }
+
       return res.status(200).json({
         EM: "Cập nhật sản phẩm thành công",
         EC: 1,
@@ -558,7 +649,6 @@ const updateSAN_PHAM = async (req, res) => {
     });
   }
 };
-
 // Xóa sản phẩm
 
 const deleteSAN_PHAM = async (req, res) => {

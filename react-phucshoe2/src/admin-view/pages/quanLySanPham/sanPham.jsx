@@ -223,10 +223,15 @@ const SanPhamManager = () => {
   };
 
   // filter products
-  const [selectedMauSac, setSelectedMauSac] = useState("");
+
   const [selectedThuongHieu, setSelectedThuongHieu] = useState("");
   const [selectedChatLieu, setSelectedChatLieu] = useState("");
   const [selectedTrangThai, setSelectedTrangThai] = useState("");
+
+  const [selectMucDichSuDung, setSelectMucDichSuDung] = useState("");
+  const [selectPhongCach, setSelectPhongCach] = useState("");
+  const [selectKichCo, setSelectKichCo] = useState("");
+  const [selectedMauSac, setSelectedMauSac] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
 
   const [filteredProducts, setFilteredProducts] = useState(products);
@@ -250,10 +255,29 @@ const SanPhamManager = () => {
   useEffect(() => {
     const applyFilters = () => {
       let updatedProducts = products;
-
+      if (selectMucDichSuDung) {
+        updatedProducts = updatedProducts.filter(
+          (product) => product.ID_MUC_DICH_SU_DUNG === selectMucDichSuDung
+        );
+      }
+      if (selectMucDichSuDung) {
+        updatedProducts = updatedProducts.filter(
+          (product) => product.ID_MUC_DICH_SU_DUNG === selectMucDichSuDung
+        );
+      }
+      if (selectPhongCach) {
+        updatedProducts = updatedProducts.filter(
+          (product) => product.ID_PHUONG_CACH === selectPhongCach
+        );
+      }
+      if (selectKichCo) {
+        updatedProducts = updatedProducts.filter(
+          (product) => product.ID_KICH_CO === selectKichCo
+        );
+      }
       if (selectedMauSac) {
         updatedProducts = updatedProducts.filter(
-          (product) => product.mauSac === selectedMauSac
+          (product) => product.MAU_SAC_ID === selectedMauSac
         );
       }
       if (selectedThuongHieu) {
@@ -284,12 +308,15 @@ const SanPhamManager = () => {
 
     applyFilters();
   }, [
-    selectedMauSac,
     selectedThuongHieu,
     selectedChatLieu,
     selectedTrangThai,
     searchTerm, // Thêm searchTerm vào dependency array
     products,
+    selectKichCo,
+    selectPhongCach,
+    selectMucDichSuDung,
+    selectedMauSac,
   ]);
 
   return (
@@ -312,14 +339,32 @@ const SanPhamManager = () => {
       <FilterShoes
         thuongHieu={thuongHieu}
         chatLieu={chatLieu}
+        //
         selectedThuongHieu={selectedThuongHieu}
         selectedChatLieu={selectedChatLieu}
         selectedTrangThai={selectedTrangThai}
+        //
+        selectedMauSac={selectedMauSac}
+        selectKichCo={selectKichCo}
+        selectPhongCach={selectPhongCach}
+        selectMucDichSuDung={selectMucDichSuDung}
+        //
         setSelectedTrangThai={setSelectedTrangThai}
         setSelectedChatLieu={setSelectedChatLieu}
         setSelectedThuongHieu={setSelectedThuongHieu}
+        //
+        setSelectedMauSac={setSelectedMauSac}
+        setSelectPhongCach={setSelectPhongCach}
+        setSelectMucDichSuDung={setSelectMucDichSuDung}
+        setSelectKichCo={setSelectKichCo}
+        //
         searchTerm={searchTerm}
         handleSearchChange={handleSearchChange}
+        //
+        phongCach={phongCach}
+        mauSac={mauSac}
+        mucDichSuDung={mucDichSuDung}
+        kichCo={kichCo}
       />
       {/* Show Products */}
       <TableShoes
