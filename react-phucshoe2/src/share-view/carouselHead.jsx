@@ -11,6 +11,9 @@ import {
 } from "@mui/material";
 import "./css/carouselHead.css";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
 const api = process.env.REACT_APP_URL_SERVER;
 
 const CarouselHead = ({ carouselProducts }) => {
@@ -18,7 +21,8 @@ const CarouselHead = ({ carouselProducts }) => {
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const [isSelected, setIsSelected] = useState(""); // State để theo dõi trạng thái nhấp
   const [animateLogo, setAnimateLogo] = useState(false); // State để quản lý animation logo
-
+  const { isAuthenticated, userInfo } = useSelector((state) => state.auth);
+  const navigate = useNavigate();
   // State to manage the current main image
   const [mainImage, setMainImage] = useState("");
   useEffect(() => {
@@ -42,6 +46,30 @@ const CarouselHead = ({ carouselProducts }) => {
     (product) => product.HINH_ANH_NEN_CAROUSEL === mainImage
   );
   console.log("selectedProduct", selectedProduct);
+  const handleBuyProduct = (id) => {
+    navigate(`/selectShoe/${id}`);
+  }; // Hàm xử lý sự kiện khi nhấn nút
+  const handleAddToCart = async () => {
+    try {
+      // Thay đổi các giá trị này theo dữ liệu của bạn
+      const payload = {
+        ID_SAN_PHAM: selectedProduct.ID_SAN_PHAM,
+        ID_NGUOI_DUNG: userInfo.ID_NGUOI_DUNG, // ID người dùng
+
+        NGAY_CAP_NHAT_GIOHANG: new Date().toISOString(),
+      };
+
+      const response = await axios.post(`${api}/gio-hang/`, payload);
+
+      if (response.data.EC === 1) {
+        console.log(response.data.EM); // Thêm vào giỏ hàng thành công
+      } else {
+        console.log("Lỗi:", response.data.EM); // Xử lý lỗi nếu có
+      }
+    } catch (error) {
+      console.error("Lỗi hệ thống:", error);
+    }
+  };
   return (
     <Box
       sx={{
@@ -141,6 +169,7 @@ const CarouselHead = ({ carouselProducts }) => {
             <Button
               className="component-game-btn-play"
               variant="contained"
+              onClick={() => handleBuyProduct(selectedProduct.ID_SAN_PHAM)}
               sx={{
                 zIndex: 2,
                 backgroundColor: "white",
@@ -152,23 +181,23 @@ const CarouselHead = ({ carouselProducts }) => {
             >
               Mua Ngay
             </Button>
-
             <Button
               variant="text"
               fullWidth
+              onClick={handleAddToCart}
               sx={{
                 zIndex: 2,
                 color: "white",
                 borderRadius: "14px",
-                backgroundColor: "transparent", // Màu nền mặc định
+                backgroundColor: "transparent",
                 "&:hover": {
-                  backgroundColor: "rgba(255, 255, 255, 0.1)", // Nền trắng nhẹ khi hover
+                  backgroundColor: "rgba(255, 255, 255, 0.1)",
                 },
               }}
             >
               <AddCircleOutlineIcon
                 sx={{ marginRight: "10px", fontSize: "18px" }}
-              />{" "}
+              />
               Thêm vào giỏ hàng
             </Button>
           </Box>

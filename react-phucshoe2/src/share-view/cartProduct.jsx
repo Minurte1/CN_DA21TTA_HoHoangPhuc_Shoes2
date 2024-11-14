@@ -29,30 +29,66 @@ const CartItem = ({
   brand,
   quantityInCart,
   image,
-  onQuantityChange, // Function passed to handle quantity updates
+  onQuantityChange,
+  userId,
 }) => {
   const [quantity, setQuantity] = useState(quantityInCart);
 
   const handleQuantityChange = async (newQuantity) => {
     try {
-      if (newQuantity < 1) return; // Prevents the quantity from going below 1
+      if (newQuantity < 1) return; // Prevents quantity from going below 1
 
-      const response = await axios.put(
-        `http://localhost:3002/san-pham/cart/update-quantity`,
-        {
-          itemId: id,
-          newQuantity,
+      if (newQuantity > quantity) {
+        // Tăng số lượng
+        const response = await axios.post(`${api}/gio-hang/add-single`, {
+          userId: userId,
+          productId: id,
+          updateDate: new Date().toISOString(),
+        });
+
+        if (response.data.EC === 1) {
+          setQuantity(newQuantity);
+          onQuantityChange(id, newQuantity);
+        } else {
+          console.error("Error adding quantity:", response.data.EM);
         }
-      );
+      } else if (newQuantity < quantity) {
+        // Giảm số lượng
+        const response = await axios.post(`${api}/gio-hang/remove-single`, {
+          userId: userId,
+          productId: id,
+        });
 
-      if (response.data.success) {
-        setQuantity(newQuantity); // Update UI on successful response
-        onQuantityChange(id, newQuantity); // Update parent component/cart total
-      } else {
-        console.error("Error updating quantity:", response.data.message);
+        if (response.data.EC === 1) {
+          setQuantity(newQuantity);
+          onQuantityChange(id, newQuantity);
+        } else {
+          console.error("Error removing quantity:", response.data.EM);
+        }
       }
     } catch (error) {
       console.error("Error updating quantity:", error);
+    }
+  };
+  console.log("id", id);
+  const handleRemoveProduct = async () => {
+    try {
+      while (quantity > 0) {
+        const response = await axios.post(`${api}/gio-hang/remove-single`, {
+          userId: userId,
+          productId: id,
+        });
+
+        if (response.data.EC === 1) {
+          setQuantity(quantity - 1);
+          onQuantityChange(id, quantity - 1);
+        } else {
+          console.error("Error removing product:", response.data.EM);
+          break;
+        }
+      }
+    } catch (error) {
+      console.error("Error removing product completely:", error);
     }
   };
 
@@ -104,14 +140,13 @@ const CartItem = ({
             justifyContent: "right",
           }}
         >
-          {" "}
           <IconButton
             sx={{ color: "#d32a28" }}
             size="small"
             onClick={() => handleQuantityChange(quantity - 1)}
           >
             <Remove />
-          </IconButton>{" "}
+          </IconButton>
           <Typography variant="body1" color="white">
             {quantity}
           </Typography>
@@ -121,14 +156,14 @@ const CartItem = ({
             onClick={() => handleQuantityChange(quantity + 1)}
           >
             <Add />
-          </IconButton>{" "}
+          </IconButton>
         </Box>
 
         <Button
           sx={{ mt: 2 }}
           variant="text"
           color="error"
-          onClick={() => handleQuantityChange(0)}
+          onClick={handleRemoveProduct}
         >
           Remove
         </Button>
@@ -188,7 +223,7 @@ const Cart = () => {
     const fetchCartItems = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3002/san-pham/use/cart-user/${userInfo.ID_NGUOI_DUNG}`
+          `${api}/gio-hang/use/cart-user/${userInfo.ID_NGUOI_DUNG}`
         );
         const data = await response.json();
         if (data.EC === 1) {
@@ -255,8 +290,10 @@ const Cart = () => {
             category={item.TEN_DANH_MUC}
             material={item.TEN_CHAT_LIEU_}
             brand={item.TEN_THUONG_HIEU}
-            quantityInCart={item.SO_LUONG_GIOHANG}
+            quantityInCart={item.TONG_SO_LUONG}
             image={item.HINH_ANH_SANPHAM}
+            userId={userInfo.ID_NGUOI_DUNG}
+            id={item.ID_SAN_PHAM}
           />
         ))}
       </Grid>

@@ -37,6 +37,7 @@ const thuongHieuRoute = require("./routers/sanPhamRouters/categoryRouter/thuongh
 const sanPhamRoute = require("./routers/sanPhamRouters/SanPhamRouter.js");
 const carouselProductsRoute = require("./routers/sanPhamRouters/carouselProductsRoute.js");
 const thanhToanRoute = require("./routers/thanhToanRouter/thanhToanRouter.js");
+const gioHangRoute = require("./routers/tuongTacUserRouter/gioHangRouter.js");
 app.use("/", userRoute);
 app.use("/chat-lieu/", chatLieuRoute);
 app.use("/gioi-tinh/", gioiTinhRoute);
@@ -49,6 +50,7 @@ app.use("/thuong-hieu", thuongHieuRoute);
 app.use("/san-pham", sanPhamRoute);
 app.use("/carousel-products", carouselProductsRoute);
 app.use("/thanh-toan/", thanhToanRoute);
+app.use("/gio-hang/", gioHangRoute);
 
 const configViewEngine = require("./config/viewEngine");
 configViewEngine(app);
