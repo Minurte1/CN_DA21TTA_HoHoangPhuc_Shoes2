@@ -6,9 +6,11 @@ const {
   createTHANH_TOAN,
   updateTHANH_TOAN,
   deleteTHANH_TOAN,
+  getTHANH_TOAN_Use,
 } = require("../../controllers/thanhToanController/thanhToanController.js");
 
 router.get("/", getTHANH_TOAN);
+router.get("/use", getTHANH_TOAN_Use);
 router.post("/", createTHANH_TOAN);
 router.put("/:id", updateTHANH_TOAN);
 router.delete("/:id", deleteTHANH_TOAN);

@@ -26,12 +26,11 @@ import axios from "axios";
 
 const api = process.env.REACT_APP_URL_SERVER;
 const ThanhToanManager = () => {
-  const [paymentMethods, setPaymentMethods] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
   const [currentMethod, setCurrentMethod] = useState(null);
   const [phuongThucThanhToan, setPhuongThucThanhToan] = useState("");
   const [trangThaiThanhToan, setTrangThaiThanhToan] = useState(1); // Default active
-
+  const [paymentMethods, setPaymentMethods] = useState([]);
   useEffect(() => {
     fetchPaymentMethods();
   }, []);

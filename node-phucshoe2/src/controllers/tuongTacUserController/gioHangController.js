@@ -122,28 +122,68 @@ const getCartProductsByUser = async (req, res) => {
     const [results] = await connection.execute(
       `
       SELECT 
-        cth.ID_SAN_PHAM, 
-        sp.TEN_SAN_PHAM, 
-        sp.GIA, 
-        sp.HINH_ANH_SANPHAM, 
-        sp.MO_TA_SAN_PHAM,
-        sp.TRANG_THAI_SANPHAM, 
-        sp.SO_LUONG_SANPHAM, 
-        gt.TEN_GIOI_TINH,
-        dm.TEN_DANH_MUC,
-        cl.TEN_CHAT_LIEU_,
-        th.TEN_THUONG_HIEU,
-    
-        COUNT(*) AS TONG_SO_LUONG,  -- Đếm số lượng của sản phẩm
-        MAX(cth.NGAY_CAP_NHAT_GIOHANG) AS NGAY_CAP_NHAT_GIOHANG -- Ngày cập nhật mới nhất
-      FROM GIO_HANG cth
-      JOIN SAN_PHAM sp ON cth.ID_SAN_PHAM = sp.ID_SAN_PHAM
-      LEFT JOIN GIOI_TINH gt ON sp.GIOI_TINH_ID = gt.GIOI_TINH_ID
-      LEFT JOIN LOAI_DANH_MUC dm ON sp.ID_DANH_MUC = dm.ID_DANH_MUC
-      LEFT JOIN CHAT_LIEU cl ON sp.CHAT_LIEU_ID_ = cl.CHAT_LIEU_ID_
-      LEFT JOIN THUONG_HIEU th ON sp.ID_THUONG_HIEU = th.ID_THUONG_HIEU
-      WHERE cth.ID_NGUOI_DUNG = ? AND sp.TRANG_THAI_SANPHAM = 1
-      GROUP BY cth.ID_SAN_PHAM -- Gộp theo ID_SAN_PHAM để đếm số lượng
+  cth.ID_SAN_PHAM, 
+  sp.TEN_SAN_PHAM, 
+  sp.GIA, 
+  sp.HINH_ANH_SANPHAM, 
+  sp.MO_TA_SAN_PHAM,
+  sp.TRANG_THAI_SANPHAM, 
+  sp.SO_LUONG_SANPHAM, 
+  gt.TEN_GIOI_TINH,
+  dm.TEN_DANH_MUC,
+  cl.TEN_CHAT_LIEU_,
+  th.TEN_THUONG_HIEU,
+  COUNT(*) AS TONG_SO_LUONG,  -- Đếm số lượng của sản phẩm
+  MAX(cth.NGAY_CAP_NHAT_GIOHANG) AS NGAY_CAP_NHAT_GIOHANG, -- Ngày cập nhật mới nhất
+
+  -- Lấy thông tin từ các bảng PHONG_CACH, MAU_SAC, MUC_DICH_SU_DUNG, và KICH_CO
+  MAX(pc.ID_PHUONG_CACH) AS ID_PHUONG_CACH, 
+  MAX(pc.TEN_PHONG_CACH) AS TEN_PHONG_CACH, 
+  MAX(pc.CREATED_PHONG_CACH) AS CREATED_PHONG_CACH,
+  MAX(pc.UPDATE_PHONG_CACH) AS UPDATE_PHONG_CACH,
+  MAX(pc.TRANG_THAI_PHONG_CACH) AS TRANG_THAI_PHONG_CACH,
+
+  MAX(ms.MAU_SAC_ID) AS MAU_SAC_ID,
+  MAX(ms.TEN_MAU_SAC) AS TEN_MAU_SAC,
+  MAX(ms.CREATE_MAU_SAC) AS CREATE_MAU_SAC,
+  MAX(ms.UPDATE_MAU_SAC) AS UPDATE_MAU_SAC,
+  MAX(ms.TRANG_THAI_MAU_SAC) AS TRANG_THAI_MAU_SAC,
+
+  MAX(md.ID_MUC_DICH_SU_DUNG) AS ID_MUC_DICH_SU_DUNG,
+  MAX(md.TEN_MUC_DICH_SU_DUNG) AS TEN_MUC_DICH_SU_DUNG,
+  MAX(md.CREATE_MUC_DICH_SU_DUNG) AS CREATE_MUC_DICH_SU_DUNG,
+  MAX(md.UPDATE_MUC_DICH_SU_DUNG) AS UPDATE_MUC_DICH_SU_DUNG,
+  MAX(md.TRANG_THAI_MUC_DICH_SU_DUNG) AS TRANG_THAI_MUC_DICH_SU_DUNG,
+
+  MAX(kc.ID_KICH_CO) AS ID_KICH_CO,
+  MAX(kc.KICH_CO) AS KICH_CO,
+  MAX(kc.TRANG_THAI_KICH_CO) AS TRANG_THAI_KICH_CO,
+  MAX(kc.CREATED_KICH_CO) AS CREATED_KICH_CO,
+  MAX(kc.UPDATE_KICH_CO) AS UPDATE_KICH_CO
+
+FROM GIO_HANG cth
+JOIN SAN_PHAM sp ON cth.ID_SAN_PHAM = sp.ID_SAN_PHAM
+LEFT JOIN GIOI_TINH gt ON sp.GIOI_TINH_ID = gt.GIOI_TINH_ID
+LEFT JOIN LOAI_DANH_MUC dm ON sp.ID_DANH_MUC = dm.ID_DANH_MUC
+LEFT JOIN CHAT_LIEU cl ON sp.CHAT_LIEU_ID_ = cl.CHAT_LIEU_ID_
+LEFT JOIN THUONG_HIEU th ON sp.ID_THUONG_HIEU = th.ID_THUONG_HIEU
+
+-- Kết nối với các bảng PHONG_CACH, MAU_SAC, MUC_DICH_SU_DUNG, và KICH_CO qua các bảng kết nối
+LEFT JOIN PHONG_CACH_SAN_PHAM pcsp ON sp.ID_SAN_PHAM = pcsp.ID_SAN_PHAM
+LEFT JOIN PHONG_CACH pc ON pcsp.ID_PHUONG_CACH = pc.ID_PHUONG_CACH
+
+LEFT JOIN MAU_SAC_SAN_PHAM mssp ON sp.ID_SAN_PHAM = mssp.ID_SAN_PHAM
+LEFT JOIN MAU_SAC ms ON mssp.MAU_SAC_ID = ms.MAU_SAC_ID
+
+LEFT JOIN MUC_DICH_SU_DUNG_SAN_PHAM mdssp ON sp.ID_SAN_PHAM = mdssp.ID_SAN_PHAM
+LEFT JOIN MUC_DICH_SU_DUNG md ON mdssp.ID_MUC_DICH_SU_DUNG = md.ID_MUC_DICH_SU_DUNG
+
+LEFT JOIN CO_KICH_CO ck ON sp.ID_SAN_PHAM = ck.ID_SAN_PHAM
+LEFT JOIN KICH_CO kc ON ck.ID_KICH_CO = kc.ID_KICH_CO
+
+WHERE cth.ID_NGUOI_DUNG = ? AND sp.TRANG_THAI_SANPHAM = 1
+GROUP BY cth.ID_SAN_PHAM
+
     `,
       [userId]
     );
@@ -156,10 +196,16 @@ const getCartProductsByUser = async (req, res) => {
       });
     }
 
+    // Tính tổng số tiền
+    const totalAmount = results.reduce((total, item) => {
+      return total + item.GIA * item.TONG_SO_LUONG;
+    }, 0);
+
     return res.status(200).json({
       EM: "Lấy thông tin giỏ hàng thành công",
       EC: 1,
       DT: results,
+      TOTAL_AMOUNT: totalAmount, // Trả về tổng số tiền
     });
   } catch (error) {
     console.error("Error getting cart products:", error);
@@ -170,6 +216,7 @@ const getCartProductsByUser = async (req, res) => {
     });
   }
 };
+
 module.exports = {
   getGioHang,
   createGioHang,

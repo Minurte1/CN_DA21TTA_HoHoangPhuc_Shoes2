@@ -11,7 +11,11 @@ import {
   MenuItem,
   Switch,
   IconButton,
+  InputLabel,
 } from "@mui/material";
+
+import { Payments } from "@mui/icons-material";
+
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -31,6 +35,12 @@ const CartItem = ({
   image,
   onQuantityChange,
   userId,
+  fetchCartItems,
+
+  color,
+  phongCach,
+  mucDich,
+  kichCo,
 }) => {
   const [quantity, setQuantity] = useState(quantityInCart);
 
@@ -47,6 +57,7 @@ const CartItem = ({
         });
 
         if (response.data.EC === 1) {
+          fetchCartItems();
           setQuantity(newQuantity);
           onQuantityChange(id, newQuantity);
         } else {
@@ -60,6 +71,7 @@ const CartItem = ({
         });
 
         if (response.data.EC === 1) {
+          fetchCartItems();
           setQuantity(newQuantity);
           onQuantityChange(id, newQuantity);
         } else {
@@ -80,6 +92,7 @@ const CartItem = ({
         });
 
         if (response.data.EC === 1) {
+          fetchCartItems();
           setQuantity(quantity - 1);
           onQuantityChange(id, quantity - 1);
         } else {
@@ -117,6 +130,18 @@ const CartItem = ({
           </Typography>
           <Typography variant="body2" color="gray">
             {category} | {material} | {gender} | {brand}
+          </Typography>
+          <Typography variant="body2" color="gray">
+            {color}
+          </Typography>
+          <Typography variant="body2" color="gray">
+            Kích cỡ: {kichCo}
+          </Typography>
+          <Typography variant="body2" color="gray">
+            {mucDich}
+          </Typography>
+          <Typography variant="body2" color="gray">
+            Phong cách: {phongCach}
           </Typography>
         </Box>
       </Box>
@@ -172,21 +197,48 @@ const CartItem = ({
   );
 };
 
-const CartSummary = ({ subtotal }) => (
+const CartSummary = ({
+  subtotal,
+  tongTienCart,
+  paymentMethods,
+  selectPhuongThucThanhToan,
+  setSelectPhuongThucThanhToan,
+}) => (
   <Box sx={{ backgroundColor: "#202024", p: 2, borderRadius: 2 }}>
     <Typography variant="h6" color="white">
-      Cart Summary
+      Giỏ hàng
     </Typography>
     <Divider sx={{ my: 1, backgroundColor: "#555" }} />
     <Typography color="white">
-      Price:{" "}
       {new Intl.NumberFormat("vi-VN", {
         style: "currency",
         currency: "VND",
-      }).format(subtotal)}
+      }).format(tongTienCart)}
     </Typography>
-
-    <Typography color="white">Taxes: Calculated at Checkout</Typography>
+    <Typography color="white">Các hình thức thanh toán</Typography>{" "}
+    {/* Trạng thái */}
+    <FormControl sx={{ mb: 2, minWidth: 300, mt: 2 }}>
+      <InputLabel
+        sx={{ display: "flex", alignItems: "center", color: "#c9d1d9" }}
+      >
+        <Payments sx={{ mr: 1 }} />
+        Phương thức thanh toán
+      </InputLabel>
+      <Select
+        value={selectPhuongThucThanhToan}
+        label="Icon Phương thức thanh toán"
+        onChange={(e) => setSelectPhuongThucThanhToan(e.target.value)}
+        sx={{ color: "#c9d1d9" }}
+      >
+        {" "}
+        <MenuItem value="">Xem tất cả</MenuItem>
+        {paymentMethods.map((item) => (
+          <MenuItem key={item.ID_THANH_TOAN} value={item.ID_THANH_TOAN}>
+            {item.PHUONG_THUC_THANH_TOAN}
+          </MenuItem>
+        ))}
+      </Select>
+    </FormControl>
     <Divider sx={{ my: 1, backgroundColor: "#555" }} />
     <Button
       variant="contained"
@@ -211,6 +263,9 @@ const Cart = () => {
   const [items, setItems] = useState([]);
   const [subtotal, setSubtotal] = useState(0);
   const { isAuthenticated, userInfo } = useSelector((state) => state.auth);
+  const [tongTienCart, setTongTienCart] = useState("");
+  const [selectPhuongThucThanhToan, setSelectPhuongThucThanhToan] =
+    useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -220,31 +275,48 @@ const Cart = () => {
       return;
     }
 
-    const fetchCartItems = async () => {
-      try {
-        const response = await fetch(
-          `${api}/gio-hang/use/cart-user/${userInfo.ID_NGUOI_DUNG}`
-        );
-        const data = await response.json();
-        if (data.EC === 1) {
-          setItems(data.DT);
-          // Calculate the total cart value
-          const total = data.DT.reduce(
-            (acc, item) => acc + item.GIA * item.SO_LUONG_GIOHANG,
-            0
-          );
-          setSubtotal(total);
-        } else {
-          console.error("Error fetching cart items:", data.EM);
-        }
-      } catch (error) {
-        console.error("Error fetching cart items:", error);
-      }
-    };
-
     fetchCartItems();
   }, [isAuthenticated, userInfo, navigate]);
+  const fetchCartItems = async () => {
+    try {
+      const response = await fetch(
+        `${api}/gio-hang/use/cart-user/${userInfo.ID_NGUOI_DUNG}`
+      );
+      const data = await response.json();
 
+      if (data.EC === 1) {
+        setTongTienCart(data.TOTAL_AMOUNT);
+        setItems(data.DT);
+        // Calculate the total cart value
+        const total = data.DT.reduce(
+          (acc, item) => acc + item.GIA * item.SO_LUONG_GIOHANG,
+          0
+        );
+        setSubtotal(total);
+      } else {
+        console.error("Error fetching cart items:", data.EM);
+      }
+    } catch (error) {
+      console.error("Error fetching cart items:", error);
+    }
+  };
+
+  const [paymentMethods, setPaymentMethods] = useState([]);
+  useEffect(() => {
+    fetchPaymentMethods();
+  }, []);
+
+  const fetchPaymentMethods = async () => {
+    try {
+      const response = await axios.get(`${api}/thanh-toan/use`);
+      if (response.data.EC === 1) {
+        setPaymentMethods(response.data.DT);
+      }
+    } catch (error) {
+      console.error("Error fetching payment methods:", error);
+    }
+  };
+  console.log("paymentMethods", paymentMethods);
   return (
     <Grid
       container
@@ -294,11 +366,23 @@ const Cart = () => {
             image={item.HINH_ANH_SANPHAM}
             userId={userInfo.ID_NGUOI_DUNG}
             id={item.ID_SAN_PHAM}
+            fetchCartItems={fetchCartItems}
+            color={item.TEN_MAU_SAC}
+            phongCach={item.TEN_PHONG_CACH}
+            mucDich={item.TEN_MUC_DICH_SU_DUNG}
+            kichCo={item.KICH_CO}
           />
         ))}
       </Grid>
       <Grid item xs={12} sm={12} md={4} lg={3.5} xl={4}>
-        <CartSummary subtotal={subtotal} />
+        <CartSummary
+          subtotal={subtotal}
+          tongTienCart={tongTienCart}
+          paymentMethods={paymentMethods}
+          //
+          selectPhuongThucThanhToan={selectPhuongThucThanhToan}
+          setSelectPhuongThucThanhToan={setSelectPhuongThucThanhToan}
+        />
       </Grid>
     </Grid>
   );

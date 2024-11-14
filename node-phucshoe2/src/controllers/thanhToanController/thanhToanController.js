@@ -19,6 +19,25 @@ const getTHANH_TOAN = async (req, res) => {
   }
 };
 
+const getTHANH_TOAN_Use = async (req, res) => {
+  try {
+    const [results] = await connection.execute(
+      "SELECT * FROM `THANH_TOAN` where TRANG_THAI_THANH_TOAN = 1"
+    );
+    return res.status(200).json({
+      EM: "Xem thông tin thành công",
+      EC: 1,
+      DT: results,
+    });
+  } catch (error) {
+    console.error("Error getting thanh toan:", error);
+    return res.status(500).json({
+      EM: "Có lỗi xảy ra khi lấy thông tin",
+      EC: 0,
+      DT: [],
+    });
+  }
+};
 // Tạo phương thức thanh toán mới
 const createTHANH_TOAN = async (req, res) => {
   const { phuongThucThanhToan, trangThaiThanhToan } = req.body;
@@ -122,4 +141,5 @@ module.exports = {
   createTHANH_TOAN,
   updateTHANH_TOAN,
   deleteTHANH_TOAN,
+  getTHANH_TOAN_Use,
 };
