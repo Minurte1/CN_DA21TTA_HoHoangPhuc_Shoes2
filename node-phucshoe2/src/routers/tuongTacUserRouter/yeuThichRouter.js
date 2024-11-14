@@ -7,9 +7,9 @@ const {
   getYEU_THICH_By_IdUser,
 } = require("../../controllers/tuongTacUserController/yeuThichController");
 // Định nghĩa các route
-router.get("/yeu-thich", getYEU_THICH);
-router.get("/yeu-thich/:id", getYEU_THICH_By_IdUser);
-router.post("/yeu-thich", createYEU_THICH);
-router.delete("/yeu-thich", deleteYEU_THICH);
+router.get("", getYEU_THICH);
+router.get("/:id", getYEU_THICH_By_IdUser);
+router.post("/", createYEU_THICH);
+router.delete("/", deleteYEU_THICH);
 
 module.exports = router;

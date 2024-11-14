@@ -7,10 +7,12 @@ import {
   CardMedia,
   IconButton,
   Grid,
+  Tooltip,
 } from "@mui/material";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
+import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import { useDispatch, useSelector } from "react-redux";
 import "./css/productCarousel.css";
 import { useNavigate } from "react-router-dom";
@@ -79,7 +81,32 @@ const ProductCarousel = ({ title, products, api }) => {
     } catch (error) {
       console.error("Lỗi hệ thống:", error);
     }
+  }; // Hàm handleAddToWish
+  const handleAddToWish = async (product) => {
+    if (!isAuthenticated) {
+      // Nếu người dùng chưa đăng nhập, chuyển hướng đến trang đăng nhập
+      navigate("/login");
+      return; // Dừng hàm nếu chưa đăng nhập
+    }
+
+    try {
+      const payload = {
+        idSanPham: product.ID_SAN_PHAM,
+        idNguoiDung: userInfo.ID_NGUOI_DUNG, // ID người dùng
+      };
+
+      const response = await axios.post(`${api}/yeu-thich/`, payload);
+
+      if (response.data.EC === 1) {
+        console.log(response.data.EM); // Thêm vào yêu thích thành công
+      } else {
+        console.log("Lỗi:", response.data.EM); // Xử lý lỗi nếu có
+      }
+    } catch (error) {
+      console.error("Lỗi hệ thống:", error);
+    }
   };
+
   return (
     <div
       className="container-product-carousel mt-4 mb-4"
@@ -188,27 +215,28 @@ const ProductCarousel = ({ title, products, api }) => {
                 }}
                 onClick={() => handleBuyProduct(product.ID_SAN_PHAM)}
               >
-                {/* Icon thêm vào giỏ hàng */}
-                <AddShoppingCartIcon
-                  sx={{
-                    position: "absolute", // Đặt icon ở góc trên bên phải
-                    top: 8,
-                    right: 8,
-                    color: "#fff", // Màu icon
-                    backgroundColor: "rgba(0, 0, 0, 0.5)", // Màu nền bán trong suốt để làm nổi bật icon
-                    borderRadius: "50%", // Tạo hình tròn cho icon
-                    padding: "4px", // Để tạo khoảng cách xung quanh icon
-                    cursor: "pointer",
-                    "&:hover": {
-                      backgroundColor: "#555", // Màu nền khi hover
-                    },
-                  }}
-                  onClick={(e) => {
-                    e.stopPropagation(); // Ngừng sự kiện click lên card khi nhấn vào icon
-                    handleAddToCart(product); // Gọi hàm thêm vào giỏ hàng
-                  }}
-                />
-
+                <Tooltip title="Add to Wish" arrow>
+                  <ControlPointIcon
+                    sx={{
+                      position: "absolute", // Đặt icon ở góc trên bên phải
+                      top: 8,
+                      right: 8,
+                      color: "#101014", // Màu icon
+                      borderRadius: "50%", // Tạo hình tròn cho icon
+                      margin: "8px",
+                      fontSize: "20px",
+                      cursor: "pointer",
+                      transition: "transform 0.3s ease", // Thêm hiệu ứng chuyển động khi hover
+                      "&:hover": {
+                        transform: "scale(1.2)", // Phóng to icon khi hover
+                      },
+                    }}
+                    onClick={(e) => {
+                      e.stopPropagation(); // Ngừng sự kiện click lên card khi nhấn vào icon
+                      handleAddToWish(product); // Gọi hàm thêm vào giỏ hàng
+                    }}
+                  />
+                </Tooltip>
                 <CardMedia
                   component="img"
                   image={`${api}/images/${product.HINH_ANH_SANPHAM}`}
@@ -233,14 +261,29 @@ const ProductCarousel = ({ title, products, api }) => {
                     variant="caption"
                     sx={{
                       textAlign: "left",
-                      display: "block",
+                      display: "flex",
                       marginTop: "4px",
+                      justifyContent: "space-between",
                     }}
                   >
                     {product.GIA
                       ? `${product.GIA.toLocaleString("vi-VN")}đ`
-                      : "Giá không có sẵn"}
-                  </Typography>
+                      : "Giá không có sẵn"}{" "}
+                    <Tooltip title="Add to cart" arrow>
+                      <AddShoppingCartIcon
+                        sx={{
+                          cursor: "pointer",
+                          "&:hover": {
+                            color: "#555", // Màu nền khi hover
+                          },
+                        }}
+                        onClick={(e) => {
+                          e.stopPropagation(); // Ngừng sự kiện click lên card khi nhấn vào icon
+                          handleAddToCart(product); // Gọi hàm thêm vào giỏ hàng
+                        }}
+                      />
+                    </Tooltip>
+                  </Typography>{" "}
                 </CardContent>
               </Card>
             ))

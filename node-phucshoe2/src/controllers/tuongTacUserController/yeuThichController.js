@@ -50,25 +50,29 @@ const createYEU_THICH = async (req, res) => {
     );
 
     if (results.length > 0) {
-      return {
+      return res.status(400).json({
         EM: "Sản phẩm đã được thêm vào danh sách yêu thích",
         EC: 0,
         DT: [],
-      };
+      });
     } else {
       const [results1] = await connection.execute(
         "INSERT INTO YEU_THICH (ID_SAN_PHAM, ID_NGUOI_DUNG) VALUES (?, ?)",
         [idSanPham, idNguoiDung]
       );
-      return {
+      return res.status(201).json({
         EM: "Thêm sản phẩm vào danh sách yêu thích thành công",
         EC: 1,
         DT: results1,
-      };
+      });
     }
   } catch (error) {
     console.error("Error creating yeu thich:", error);
-    throw error;
+    return res.status(500).json({
+      EM: "Có lỗi xảy ra khi thêm sản phẩm vào danh sách yêu thích",
+      EC: 0,
+      DT: [],
+    });
   }
 };
 
@@ -86,25 +90,25 @@ const deleteYEU_THICH = async (req, res) => {
         "DELETE FROM YEU_THICH WHERE ID_SAN_PHAM = ? AND ID_NGUOI_DUNG = ?",
         [idSanPham, idNguoiDung]
       );
-      return {
+      return res.status(200).json({
         EM: "Xóa sản phẩm khỏi danh sách yêu thích thành công",
         EC: 1,
         DT: [],
-      };
+      });
     } else {
-      return {
+      return res.status(404).json({
         EM: "Không tìm thấy sản phẩm trong danh sách yêu thích",
         EC: 0,
         DT: [],
-      };
+      });
     }
   } catch (error) {
     console.error("Error deleting yeu thich:", error);
-    return {
+    return res.status(500).json({
       EM: "Có lỗi xảy ra khi xóa sản phẩm khỏi danh sách yêu thích",
       EC: 0,
       DT: [],
-    };
+    });
   }
 };
 
