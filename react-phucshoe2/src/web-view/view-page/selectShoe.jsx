@@ -1,54 +1,61 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Container, Grid, Box, Button, Typography } from "@mui/material";
-
 import StarIcon from "@mui/icons-material/Star";
+import { useParams } from "react-router-dom";
+import axios from "axios"; // Make sure to import axios
+const api = process.env.REACT_APP_URL_SERVER;
 
 const SelectShoe = () => {
+  const { id } = useParams();
+  const [product, setProduct] = useState(null); // Initialize as null to handle loading state
+  console.log("idProduct", id);
+
+  useEffect(() => {
+    if (id) {
+      fetchProduct(id);
+    }
+  }, [id]);
+
+  const fetchProduct = async (id) => {
+    try {
+      const response = await axios.get(`${api}/san-pham/use/${id}`);
+      if (response.data.EC === 1) {
+        setProduct(response.data.DT); // Set product data
+      }
+    } catch (error) {
+      console.error("Error fetching product:", error);
+    }
+  };
+
+  if (!product) {
+    return <div>Loading...</div>; // Add a loading state
+  }
+
   return (
     <Container maxWidth="lg" className="container-select-game">
       <Grid container spacing={2}>
         <Grid item xs={12} sm={6} md={6}>
-          <Box
-            sx={{
-              textAlign: "left",
-              borderRadius: 1,
-            }}
-          >
+          <Box sx={{ textAlign: "left", borderRadius: 1 }}>
             <Typography variant="h4" sx={{ fontWeight: "600", color: "#fff" }}>
-              {" "}
-              The Forever Winter
+              {product.TEN_SAN_PHAM} {/* Product Name */}
             </Typography>
           </Box>
         </Grid>
       </Grid>
+
       <Grid container spacing={2}>
         <Grid item xs={12} sm={6} md={6}>
           <Box
             sx={{
               textAlign: "left",
               borderRadius: 1,
-
               display: "flex",
               alignItems: "center",
             }}
-          >
-            {/* Vòng lặp render số sao rating */}
-            {Array.from({ length: 5 }).map((_, index) => (
-              <StarIcon key={index} sx={{ color: "#fff", fontSize: 15 }} />
-            ))}
-            <span
-              style={{
-                marginLeft: "10px",
-                opacity: "0.7",
-                color: "#fff",
-                fontSize: 15,
-              }}
-            >
-              Great Boss Battles
-            </span>
-          </Box>
-        </Grid>{" "}
-      </Grid>{" "}
+          ></Box>
+        </Grid>
+      </Grid>
+
       <Grid container spacing={2}>
         <Grid item xs={12} sm={6} md={8} lg={8}>
           <Box
@@ -60,11 +67,11 @@ const SelectShoe = () => {
             }}
           >
             <img
-              src="https://cdn2.unrealengine.com/en-egs-red-dead-redemption-carousel-desktop-1920x1080-765cbfad6449.jpg?resize=1&w=1280&h=720&quality=medium"
-              alt="Red Dead Redemption"
-              style={{ maxWidth: "100%", height: "auto", borderRadius: "13px" }}
+              src={`${api}/images/${product.HINH_ANH_SANPHAM}`} // Dynamic image path
+              alt={product.TEN_SAN_PHAM}
+              style={{ maxWidth: "70%", height: "auto", borderRadius: "13px" }}
             />
-          </Box>
+          </Box>{" "}
           <Box
             sx={{
               textAlign: "left",
@@ -75,14 +82,92 @@ const SelectShoe = () => {
             }}
           >
             <Typography sx={{ color: "#fff" }}>
-              {" "}
-              The Forever Winter is a co-op tactical survival horror shooter
-              where you and your squad must loot the dead to survive under the
-              shadow of terrifying and gargantuan war machines locked in a
-              never-ending conflict.
+              Mô tả: {product.MO_TA_SAN_PHAM} {/* Product Description */}
             </Typography>
-          </Box>
+          </Box>{" "}
+          <Box
+            sx={{
+              textAlign: "left",
+              borderRadius: 1,
+              display: "flex",
+              alignItems: "center",
+              mt: 2,
+            }}
+          >
+            <Typography sx={{ color: "#fff" }}>
+              Đối tượng phù hợp nhất: {product.TEN_GIOI_TINH}{" "}
+              {/* Product Description */}
+            </Typography>
+          </Box>{" "}
+          <Box
+            sx={{
+              textAlign: "left",
+              borderRadius: 1,
+              display: "flex",
+              alignItems: "center",
+              mt: 2,
+            }}
+          >
+            <Typography sx={{ color: "#fff" }}>
+              Kích cỡ: {product.KICH_CO} {/* Product Description */}
+            </Typography>
+          </Box>{" "}
+          <Box
+            sx={{
+              textAlign: "left",
+              borderRadius: 1,
+              display: "flex",
+              alignItems: "center",
+              mt: 2,
+            }}
+          >
+            <Typography sx={{ color: "#fff" }}>
+              Phong cách: {product.TEN_PHONG_CACH} {/* Product Description */}
+            </Typography>
+          </Box>{" "}
+          <Box
+            sx={{
+              textAlign: "left",
+              borderRadius: 1,
+              display: "flex",
+              alignItems: "center",
+              mt: 2,
+            }}
+          >
+            <Typography sx={{ color: "#fff" }}>
+              Thương hiệu: {product.TEN_THUONG_HIEU} {/* Product Description */}
+            </Typography>
+          </Box>{" "}
+          <Box
+            sx={{
+              textAlign: "left",
+              borderRadius: 1,
+              display: "flex",
+              alignItems: "center",
+              mt: 2,
+            }}
+          >
+            <Typography sx={{ color: "#fff" }}>
+              Mô tả chất liệu: {product.MO_TA_CHAT_LIEU}{" "}
+              {/* Product Description */}
+            </Typography>
+          </Box>{" "}
+          <Box
+            sx={{
+              textAlign: "left",
+              borderRadius: 1,
+              display: "flex",
+              alignItems: "center",
+              mt: 2,
+            }}
+          >
+            <Typography sx={{ color: "#fff" }}>
+              Mô tả thể loại: {product.MO_TA_LOAI_DANH_MUC}{" "}
+              {/* Product Description */}
+            </Typography>
+          </Box>{" "}
         </Grid>
+
         <Grid item xs={12} sm={6} md={4} lg={4}>
           <Box
             sx={{
@@ -95,19 +180,24 @@ const SelectShoe = () => {
               flexDirection: "column",
               gap: 2,
               position: "sticky",
-              top: 20, // Khoảng cách từ trên xuống
+              top: 20,
             }}
           >
             <Typography variant="h6" sx={{ mb: 1 }}>
-              FOREVER WINTER
+              {product.TEN_SAN_PHAM}
             </Typography>
             <Box>
-              <Typography variant="body2">18+</Typography>
+              <Typography variant="body2">
+                Size: {product.KICH_CO || "N/A"}
+              </Typography>
               <Typography variant="caption" sx={{ color: "#ccc" }}>
-                Extreme Violence
+                Chất liệu: {product.TEN_CHAT_LIEU_ || "N/A"} {/* Material */}
               </Typography>
             </Box>
-            <Typography variant="h6">₫313,000</Typography>
+            <Typography variant="h6">
+              {product.GIA.toLocaleString()} VND
+            </Typography>{" "}
+            {/* Price */}
             <Button
               variant="contained"
               sx={{
@@ -119,7 +209,7 @@ const SelectShoe = () => {
                 fontWeight: "600",
                 fontSize: "12px",
                 "&:hover": {
-                  backgroundColor: "#3ccaff", // Màu sáng hơn khi hover
+                  backgroundColor: "#3ccaff",
                 },
               }}
               fullWidth
@@ -136,36 +226,18 @@ const SelectShoe = () => {
                 fontWeight: "600",
                 fontSize: "12px",
                 "&:hover": {
-                  backgroundColor: "#4b4b4e", // Màu sáng hơn khi hover
+                  backgroundColor: "#4b4b4e",
                 },
               }}
               fullWidth
             >
               Add To Cart
             </Button>
-            <Button
-              sx={{
-                borderRadius: "14px",
-                paddingTop: "13px",
-                paddingBottom: "13px",
-                backgroundColor: "#343437",
-                color: "#fff",
-                fontWeight: "600",
-                fontSize: "12px",
-                "&:hover": {
-                  backgroundColor: "#4b4b4e", // Màu sáng hơn khi hover
-                },
-              }}
-              fullWidth
-            >
-              Add to Wishlist
-            </Button>
-
             <Box>
               <Typography
                 variant="body2"
                 sx={{
-                  borderBottom: "1px solid rgba(204, 204, 204, 0.5)", // Thay đổi ở đây
+                  borderBottom: "1px solid rgba(204, 204, 204, 0.5)",
                   paddingTop: 3,
                   paddingBottom: 1,
                 }}
@@ -175,7 +247,7 @@ const SelectShoe = () => {
               <Typography
                 variant="body2"
                 sx={{
-                  borderBottom: "1px solid rgba(204, 204, 204, 0.5)", // Thay đổi ở đây
+                  borderBottom: "1px solid rgba(204, 204, 204, 0.5)",
                   paddingTop: 3,
                   paddingBottom: 1,
                 }}
@@ -185,7 +257,7 @@ const SelectShoe = () => {
               <Typography
                 variant="body2"
                 sx={{
-                  borderBottom: "1px solid rgba(204, 204, 204, 0.5)", // Thay đổi ở đây
+                  borderBottom: "1px solid rgba(204, 204, 204, 0.5)",
                   paddingTop: 3,
                   paddingBottom: 1,
                 }}
@@ -195,7 +267,7 @@ const SelectShoe = () => {
               <Typography
                 variant="body2"
                 sx={{
-                  borderBottom: "1px solid rgba(204, 204, 204, 0.5)", // Thay đổi ở đây
+                  borderBottom: "1px solid rgba(204, 204, 204, 0.5)",
                   paddingTop: 3,
                   paddingBottom: 1,
                 }}
@@ -205,22 +277,13 @@ const SelectShoe = () => {
               <Typography
                 variant="body2"
                 sx={{
-                  borderBottom: "1px solid rgba(204, 204, 204, 0.5)", // Thay đổi ở đây
+                  borderBottom: "1px solid rgba(204, 204, 204, 0.5)",
                   paddingTop: 3,
                   paddingBottom: 1,
                 }}
               >
-                Release Date: 09/25/24
-              </Typography>
-              <Typography
-                variant="body2"
-                sx={{
-                  borderBottom: "1px solid rgba(204, 204, 204, 0.5)", // Thay đổi ở đây
-                  paddingTop: 3,
-                  paddingBottom: 1,
-                }}
-              >
-                Platform: Windows
+                Release Date:{" "}
+                {new Date(product.NGAY_TAO_SANPHAM).toLocaleDateString()}
               </Typography>
             </Box>
           </Box>

@@ -10,13 +10,18 @@ import {
 } from "@mui/material";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
+import { useDispatch, useSelector } from "react-redux";
 import "./css/productCarousel.css";
-
-const ProductCarousel = ({ products, api }) => {
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { setTotalCart } from "../redux/authSlice";
+const ProductCarousel = ({ title, products, api }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [productLength, setProductLength] = useState(0);
   const [disable, setDisable] = useState(false);
-
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   useEffect(() => {
     if (Array.isArray(products) && products.length > 0) {
       setProductLength(products.length);
@@ -43,7 +48,38 @@ const ProductCarousel = ({ products, api }) => {
     // Nếu đã đến sản phẩm cuối, vô hiệu hóa nút next
     setDisable(currentIndex + 5 >= productLength);
   }, [currentIndex, productLength]);
+  const handleBuyProduct = (id) => {
+    navigate(`/selectShoe/${id}`);
+  };
 
+  const { isAuthenticated, userInfo } = useSelector((state) => state.auth);
+  const handleAddToCart = async (product) => {
+    if (!isAuthenticated) {
+      // Nếu chưa, chuyển hướng đến trang đăng nhập
+      navigate("/login"); // Đảm bảo '/login' là đường dẫn đúng tới trang đăng nhập của bạn
+      return; // Dừng hàm nếu chưa đăng nhập
+    }
+
+    try {
+      const payload = {
+        ID_SAN_PHAM: product.ID_SAN_PHAM,
+        ID_NGUOI_DUNG: userInfo.ID_NGUOI_DUNG, // ID người dùng
+        NGAY_CAP_NHAT_GIOHANG: new Date().toISOString(),
+      };
+
+      const response = await axios.post(`${api}/gio-hang/`, payload);
+
+      if (response.data.EC === 1) {
+        dispatch(setTotalCart(response.data.totalQuantity));
+
+        console.log(response.data.EM); // Thêm vào giỏ hàng thành công
+      } else {
+        console.log("Lỗi:", response.data.EM); // Xử lý lỗi nếu có
+      }
+    } catch (error) {
+      console.error("Lỗi hệ thống:", error);
+    }
+  };
   return (
     <div
       className="container-product-carousel mt-4 mb-4"
@@ -109,7 +145,7 @@ const ProductCarousel = ({ products, api }) => {
           },
         }}
       >
-        Discover Something New{" "}
+        {title}
         <ArrowForwardIosIcon
           className="arrow-icon"
           sx={{ fontSize: "19px", color: "#fff", marginLeft: "10px" }}
@@ -144,12 +180,35 @@ const ProductCarousel = ({ products, api }) => {
                   cursor: "pointer",
                   width: { xs: "100%", sm: "30%", md: "260px", lg: "260px" },
                   transition: "background-color 0.3s ease, transform 0.3s ease",
+                  position: "relative", // Đặt relative để đặt icon ở góc trên bên phải
                   "&:hover": {
                     backgroundColor: "#181818",
                     filter: "brightness(1.1)",
                   },
                 }}
+                onClick={() => handleBuyProduct(product.ID_SAN_PHAM)}
               >
+                {/* Icon thêm vào giỏ hàng */}
+                <AddShoppingCartIcon
+                  sx={{
+                    position: "absolute", // Đặt icon ở góc trên bên phải
+                    top: 8,
+                    right: 8,
+                    color: "#fff", // Màu icon
+                    backgroundColor: "rgba(0, 0, 0, 0.5)", // Màu nền bán trong suốt để làm nổi bật icon
+                    borderRadius: "50%", // Tạo hình tròn cho icon
+                    padding: "4px", // Để tạo khoảng cách xung quanh icon
+                    cursor: "pointer",
+                    "&:hover": {
+                      backgroundColor: "#555", // Màu nền khi hover
+                    },
+                  }}
+                  onClick={(e) => {
+                    e.stopPropagation(); // Ngừng sự kiện click lên card khi nhấn vào icon
+                    handleAddToCart(product); // Gọi hàm thêm vào giỏ hàng
+                  }}
+                />
+
                 <CardMedia
                   component="img"
                   image={`${api}/images/${product.HINH_ANH_SANPHAM}`}

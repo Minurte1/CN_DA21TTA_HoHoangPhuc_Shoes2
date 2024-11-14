@@ -27,13 +27,29 @@ const createGioHang = async (req, res) => {
   );
 
   try {
+    // Bước 1: Thêm sản phẩm vào giỏ hàng
     const [results] = await connection.execute(
       "INSERT INTO `GIO_HANG` (ID_SAN_PHAM, ID_NGUOI_DUNG, NGAY_CAP_NHAT_GIOHANG) VALUES (?, ?, ?)",
       [ID_SAN_PHAM, ID_NGUOI_DUNG, formattedDate]
     );
-    res
-      .status(201)
-      .json({ EM: "Thêm vào giỏ hàng thành công", EC: 1, DT: results });
+
+    // Bước 2: Tính tổng số lượng sản phẩm trong giỏ hàng của người dùng
+    const [totalResults] = await connection.execute(
+      `SELECT COUNT(ID_SAN_PHAM) AS totalQuantity
+       FROM GIO_HANG
+       WHERE ID_NGUOI_DUNG = ?`,
+      [ID_NGUOI_DUNG]
+    );
+
+    // Bước 3: Trả về phản hồi với tổng số sản phẩm trong giỏ hàng
+    const totalQuantity = totalResults[0].totalQuantity;
+
+    res.status(201).json({
+      EM: "Thêm vào giỏ hàng thành công",
+      EC: 1,
+      DT: results,
+      totalQuantity: totalQuantity, // Trả về tổng số sản phẩm trong giỏ hàng
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ EM: "Lỗi hệ thống", EC: -1 });
@@ -206,7 +222,16 @@ GROUP BY cth.ID_SAN_PHAM
         DT: [],
       });
     }
+    // Bước 2: Tính tổng số lượng sản phẩm trong giỏ hàng của người dùng
+    const [totalResults] = await connection.execute(
+      `SELECT COUNT(ID_SAN_PHAM) AS totalQuantity
+       FROM GIO_HANG
+       WHERE ID_NGUOI_DUNG = ?`,
+      [userId]
+    );
 
+    // Bước 3: Trả về phản hồi với tổng số sản phẩm trong giỏ hàng
+    const totalQuantity = totalResults[0].totalQuantity;
     // Tính tổng số tiền
     const totalAmount = results.reduce((total, item) => {
       return total + item.GIA * item.TONG_SO_LUONG;
@@ -217,6 +242,7 @@ GROUP BY cth.ID_SAN_PHAM
       EC: 1,
       DT: results,
       TOTAL_AMOUNT: totalAmount, // Trả về tổng số tiền
+      totalQuantity,
     });
   } catch (error) {
     console.error("Error getting cart products:", error);
@@ -228,6 +254,44 @@ GROUP BY cth.ID_SAN_PHAM
   }
 };
 
+// tổng số lượng sản phẩm của 1 người dùng trong giỏ hàng
+const getCartTotalQuantity = async (req, res) => {
+  const userId = req.params.id; // Lấy ID người dùng từ tham số đường dẫn
+
+  try {
+    // Truy vấn số lượng sản phẩm trong giỏ hàng của người dùng
+    const [results] = await connection.execute(
+      `
+      SELECT COUNT(ID_SAN_PHAM) AS totalQuantity
+      FROM GIO_HANG
+      WHERE ID_NGUOI_DUNG = ?
+      `,
+      [userId]
+    );
+
+    if (results.length > 0) {
+      return res.status(200).json({
+        EM: "Lấy tổng số lượng sản phẩm trong giỏ hàng thành công",
+        EC: 1,
+        DT: results[0].totalQuantity, // Trả về tổng số lượng sản phẩm
+      });
+    } else {
+      return res.status(404).json({
+        EM: "Không tìm thấy giỏ hàng của người dùng",
+        EC: 0,
+        DT: 0, // Nếu không có sản phẩm, trả về 0
+      });
+    }
+  } catch (error) {
+    console.error("Error getting total cart quantity:", error);
+    return res.status(500).json({
+      EM: "Có lỗi xảy ra khi lấy tổng số lượng sản phẩm",
+      EC: 0,
+      DT: 0,
+    });
+  }
+};
+
 module.exports = {
   getGioHang,
   createGioHang,
@@ -235,4 +299,5 @@ module.exports = {
   removeSingleProductFromCart,
   deleteGioHang,
   getCartProductsByUser,
+  getCartTotalQuantity,
 };

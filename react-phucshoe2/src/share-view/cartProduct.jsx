@@ -18,10 +18,11 @@ import { Payments } from "@mui/icons-material";
 
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import { Add, Remove } from "@mui/icons-material";
-const api = process.env.REACT_APP_URL_SERVER;
 
+import { Add, Remove } from "@mui/icons-material";
+import axios from "axios";
+import { setTotalCart } from "../redux/authSlice";
+const api = process.env.REACT_APP_URL_SERVER;
 const CartItem = ({
   id, // Assuming each item has a unique id
   name,
@@ -267,7 +268,7 @@ const Cart = () => {
   const [selectPhuongThucThanhToan, setSelectPhuongThucThanhToan] =
     useState("");
   const navigate = useNavigate();
-
+  const dispatch = useDispatch();
   useEffect(() => {
     if (!isAuthenticated || !userInfo) {
       // Redirect to login if user is not authenticated or userInfo is missing
@@ -285,6 +286,7 @@ const Cart = () => {
       const data = await response.json();
 
       if (data.EC === 1) {
+        dispatch(setTotalCart(data.totalQuantity));
         setTongTienCart(data.TOTAL_AMOUNT);
         setItems(data.DT);
         // Calculate the total cart value
@@ -316,7 +318,7 @@ const Cart = () => {
       console.error("Error fetching payment methods:", error);
     }
   };
-  console.log("paymentMethods", paymentMethods);
+
   return (
     <Grid
       container

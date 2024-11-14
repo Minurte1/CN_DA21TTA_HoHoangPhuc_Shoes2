@@ -29,8 +29,11 @@ const authSlice = createSlice({
     setUserInfo: (state, action) => {
       state.userInfo = action.payload;
     },
+    setTotalCart: (state, action) => {
+      state.totalCart = action.payload;
+    },
   },
 });
 
-export const { login, logout, setUserInfo } = authSlice.actions;
+export const { login, logout, setUserInfo, setTotalCart } = authSlice.actions;
 export default authSlice.reducer;

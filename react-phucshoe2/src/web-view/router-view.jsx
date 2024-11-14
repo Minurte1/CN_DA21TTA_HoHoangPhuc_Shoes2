@@ -44,7 +44,7 @@ const RouterView = () => {
       element: <CheckOutMoMo />,
     },
     {
-      path: "/selectShoe/*",
+      path: "/selectShoe/:id",
       element: <SelectShoe />,
     },
 

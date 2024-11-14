@@ -9,19 +9,47 @@ import {
   Menu,
   MenuItem,
   useMediaQuery,
+  Badge,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useTheme } from "@mui/material/styles";
 import { Link as RouterLink, useLocation } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
+import { setTotalCart } from "../redux/authSlice";
+
+const api = process.env.REACT_APP_URL_SERVER;
 const Navbar = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [isFixed, setIsFixed] = useState(false); // State để điều khiển vị trí
   const location = useLocation();
-
+  const dispatch = useDispatch();
   const isActive = (path) => location.pathname === path;
+  const { isAuthenticated, userInfo, totalCart } = useSelector(
+    (state) => state.auth
+  );
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      fetchTotalCart();
+    }
+  }, [userInfo, dispatch]);
+
+  const fetchTotalCart = async () => {
+    try {
+      const response = await axios.get(
+        `${api}/gio-hang/total-quantity/${userInfo.ID_NGUOI_DUNG}`
+      );
+      if (response.data.EC === 1) {
+        dispatch(setTotalCart(response.data.DT));
+      }
+    } catch (error) {
+      console.error("Error fetching payment methods:", error);
+    }
+  };
 
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -89,7 +117,6 @@ const Navbar = () => {
           </Box>
         </Box>
 
-        {/* Right-aligned items */}
         <Box sx={{ display: "flex" }}>
           <Box
             component={RouterLink}
@@ -123,7 +150,9 @@ const Navbar = () => {
                 color: isActive("/cart") ? "#3ccaff" : "#fff",
               }}
             >
-              Cart
+              <Badge badgeContent={totalCart} color="secondary">
+                Cart
+              </Badge>
             </Typography>
           </Box>
         </Box>

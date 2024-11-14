@@ -14,6 +14,7 @@ import {
   Card,
   CardContent,
   Button,
+  CircularProgress,
 } from "@mui/material";
 const api = process.env.REACT_APP_URL_SERVER;
 
@@ -25,12 +26,15 @@ const Home = () => {
   const [bestSellingProducts, setBestSellingProducts] = useState([]);
   const [bestFavorite, setBestFavorite] = useState([]);
   const [bestExpensive, setBestExpensive] = useState([]);
+  const [loading, setLoading] = useState(true); // State loading
+
   useEffect(() => {
     fetchAllProducts();
   }, []);
 
   const fetchAllProducts = async () => {
     try {
+      setLoading(true);
       const [
         nuResponse,
         last2Response,
@@ -49,6 +53,7 @@ const Home = () => {
         axios.get(`${api}/san-pham/use/5best-expensive`),
       ]);
 
+      // Cập nhật dữ liệu và set loading = false sau khi nhận được kết quả
       if (nuResponse.data.EC === 1) {
         setNuProducts(nuResponse.data.DT);
       }
@@ -70,18 +75,35 @@ const Home = () => {
       if (bestExpensiveResponse.data.EC === 1) {
         setBestExpensive(bestExpensiveResponse.data.DT);
       }
+
+      // Đặt loading = false khi đã lấy dữ liệu xong
+      setLoading(false);
     } catch (error) {
       console.error("Error fetching products:", error);
+
+      setLoading(false);
     }
   };
-
+  if (loading) {
+    return (
+      <div
+        style={{ display: "flex", justifyContent: "center", padding: "20px" }}
+      >
+        <CircularProgress />
+      </div>
+    );
+  }
   return (
     <>
       <div className="container-home">
         {" "}
         <div className="home">
           <CarouselHead carouselProducts={carouselProducts} api={api} />
-          <ProductCarousel products={nuProducts} api={api} />
+          <ProductCarousel
+            title="Sản phẩm dành cho nữ"
+            products={nuProducts}
+            api={api}
+          />
           <Box
             sx={{
               padding: 3,
@@ -161,26 +183,33 @@ const Home = () => {
           >
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6} md={4}>
-                {" "}
-                <ListGame
-                  title="Bán chạy nhất"
-                  api={api}
-                  items={bestSellingProducts}
-                />
+                {bestSellingProducts && bestSellingProducts.length > 0 && (
+                  <ListGame
+                    title="Bán chạy nhất"
+                    api={api}
+                    items={bestSellingProducts}
+                  />
+                )}
               </Grid>
+
               <Grid item xs={12} sm={6} md={4}>
-                <ListGame
-                  title="Có giá trị cao nhất"
-                  api={api}
-                  items={bestExpensive}
-                />
+                {bestExpensive && bestExpensive.length > 0 && (
+                  <ListGame
+                    title="Có giá trị cao nhất"
+                    api={api}
+                    items={bestExpensive}
+                  />
+                )}
               </Grid>
+
               <Grid item xs={12} sm={6} md={4}>
-                <ListGame
-                  title="Top Upcoming Wishlisted"
-                  items={bestFavorite}
-                  api={api}
-                />
+                {bestFavorite && bestFavorite.length > 0 ? (
+                  <ListGame
+                    title="Top Upcoming Wishlisted"
+                    items={bestFavorite}
+                    api={api}
+                  />
+                ) : null}
               </Grid>
             </Grid>
           </Box>{" "}

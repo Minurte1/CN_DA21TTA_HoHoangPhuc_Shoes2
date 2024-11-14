@@ -14,6 +14,7 @@ import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
+import { setTotalCart } from "../redux/authSlice";
 const api = process.env.REACT_APP_URL_SERVER;
 
 const CarouselHead = ({ carouselProducts }) => {
@@ -21,10 +22,11 @@ const CarouselHead = ({ carouselProducts }) => {
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const [isSelected, setIsSelected] = useState(""); // State để theo dõi trạng thái nhấp
   const [animateLogo, setAnimateLogo] = useState(false); // State để quản lý animation logo
-  const { isAuthenticated, userInfo } = useSelector((state) => state.auth);
+
   const navigate = useNavigate();
   // State to manage the current main image
   const [mainImage, setMainImage] = useState("");
+  const dispatch = useDispatch();
   useEffect(() => {
     // Kiểm tra nếu có sản phẩm trong carouselProducts thì lấy hình ảnh đầu tiên
     if (carouselProducts && carouselProducts.length > 0) {
@@ -48,20 +50,28 @@ const CarouselHead = ({ carouselProducts }) => {
   console.log("selectedProduct", selectedProduct);
   const handleBuyProduct = (id) => {
     navigate(`/selectShoe/${id}`);
-  }; // Hàm xử lý sự kiện khi nhấn nút
+  };
+  const { isAuthenticated, userInfo } = useSelector((state) => state.auth);
   const handleAddToCart = async () => {
+    // Kiểm tra xem người dùng đã đăng nhập chưa
+    if (!isAuthenticated) {
+      // Nếu chưa, chuyển hướng đến trang đăng nhập
+      navigate("/login"); // Đảm bảo '/login' là đường dẫn đúng tới trang đăng nhập của bạn
+      return; // Dừng hàm nếu chưa đăng nhập
+    }
+
     try {
-      // Thay đổi các giá trị này theo dữ liệu của bạn
+      // Nếu đã đăng nhập, thực hiện logic thêm vào giỏ hàng
       const payload = {
         ID_SAN_PHAM: selectedProduct.ID_SAN_PHAM,
         ID_NGUOI_DUNG: userInfo.ID_NGUOI_DUNG, // ID người dùng
-
         NGAY_CAP_NHAT_GIOHANG: new Date().toISOString(),
       };
 
       const response = await axios.post(`${api}/gio-hang/`, payload);
 
       if (response.data.EC === 1) {
+        dispatch(setTotalCart(response.data.totalQuantity));
         console.log(response.data.EM); // Thêm vào giỏ hàng thành công
       } else {
         console.log("Lỗi:", response.data.EM); // Xử lý lỗi nếu có
