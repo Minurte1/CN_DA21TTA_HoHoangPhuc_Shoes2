@@ -96,14 +96,24 @@ const addSingleProductToCart = async (req, res) => {
   }
 };
 
-// 4. Xóa sản phẩm khỏi giỏ hàng
+// Xóa một loại sản phẩm khỏi giỏ hàng của người dùng
 const deleteGioHang = async (req, res) => {
-  const { id } = req.params;
+  const { userId, productId } = req.body; // Lấy userId và productId từ tham số URL
+
   try {
     const [results] = await connection.execute(
-      "DELETE FROM `GIO_HANG` WHERE ID_GIO_HANG = ?",
-      [id]
+      "DELETE FROM `GIO_HANG` WHERE ID_NGUOI_DUNG = ? AND ID_SAN_PHAM = ?",
+      [userId, productId]
     );
+
+    // Kiểm tra xem có bản ghi nào bị xóa không
+    if (results.affectedRows === 0) {
+      return res.status(404).json({
+        EM: "Sản phẩm không tồn tại trong giỏ hàng của người dùng",
+        EC: 0,
+      });
+    }
+
     res.status(200).json({
       EM: "Xóa sản phẩm khỏi giỏ hàng thành công",
       EC: 1,
@@ -114,6 +124,7 @@ const deleteGioHang = async (req, res) => {
     res.status(500).json({ EM: "Lỗi hệ thống", EC: -1 });
   }
 };
+
 // Lấy tất cả sản phẩm trong giỏ hàng của 1 người dùng
 const getCartProductsByUser = async (req, res) => {
   const userId = req.params.id; // Lấy userId từ tham số URL

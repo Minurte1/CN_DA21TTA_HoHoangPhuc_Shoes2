@@ -86,7 +86,7 @@ const CartItem = ({
   const handleRemoveProduct = async () => {
     try {
       while (quantity > 0) {
-        const response = await axios.post(`${api}/gio-hang/remove-single`, {
+        const response = await axios.post(`${api}/gio-hang/remove-products`, {
           userId: userId,
           productId: id,
         });
