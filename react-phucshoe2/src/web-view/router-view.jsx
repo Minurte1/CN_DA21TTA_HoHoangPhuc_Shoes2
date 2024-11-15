@@ -8,12 +8,17 @@ import PaymentMoMo from "./component-view/thanhToanMoMo.jsx";
 import CheckOutMoMo from "./component-view/checkOutMoMo.jsx";
 import Cart from "../share-view/cartProduct.jsx";
 import WishlistProducts from "../share-view/wishListProducts.jsx";
+import BrowseProduct from "./view-page/browseShoes.jsx";
 
 const RouterView = () => {
   const element = useRoutes([
     {
       path: "/",
       element: <Home />,
+    },
+    {
+      path: "/browse",
+      element: <BrowseProduct />,
     },
     {
       path: "/login",
