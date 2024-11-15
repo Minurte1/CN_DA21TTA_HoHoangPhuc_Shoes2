@@ -8,10 +8,48 @@ import {
   Button,
   Grid,
 } from "@mui/material";
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import { useNavigate } from "react-router-dom";
+const CartProduct = ({ title, products, api }) => {
+  const navigate = useNavigate();
+  const handleBuyProduct = (id) => {
+    navigate(`/selectShoe/${id}`);
+  };
 
-const CartProduct = ({ products, api }) => {
   return (
     <Box sx={{ padding: "20px", width: "100%" }}>
+      {" "}
+      <Box
+        sx={{
+          padding: "20px",
+          width: "100%",
+          display: "flex",
+          justifyContent: "left",
+          alignItems: "center",
+        }}
+      >
+        {" "}
+        <Typography
+          variant="h6"
+          sx={{
+            textAlign: "left",
+            color: "#fff",
+            cursor: "pointer",
+            display: "inline-flex", // Thay đổi cách hiển thị để mũi tên nằm cạnh chữ
+            alignItems: "center", // Căn giữa chữ và mũi tên theo chiều dọc
+            "&:hover .arrow-icon": {
+              marginLeft: "15px", // Di chuyển mũi tên sang trái 10px khi hover
+              transition: "margin-left 0.3s ease", // Hiệu ứng chuyển tiếp
+            },
+          }}
+        >
+          {title}
+          <ArrowForwardIosIcon
+            className="arrow-icon"
+            sx={{ fontSize: "19px", color: "#fff", marginLeft: "10px" }}
+          />
+        </Typography>
+      </Box>
       <Grid container spacing={2} justifyContent="flex-start">
         {products && products.length > 0 ? (
           products.map((product, index) => {
@@ -26,6 +64,7 @@ const CartProduct = ({ products, api }) => {
             return (
               <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
                 <Card
+                  onClick={() => handleBuyProduct(product.ID_SAN_PHAM)}
                   sx={{
                     height: "auto",
                     backgroundColor: "#101014",

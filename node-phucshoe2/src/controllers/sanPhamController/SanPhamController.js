@@ -214,6 +214,41 @@ const getSAN_PHAM_Use_Nu = async (req, res) => {
     });
   }
 };
+
+const getSAN_PHAM_Use_Nam = async (req, res) => {
+  try {
+    const [results] = await connection.execute(`
+      SELECT 
+        sp.ID_SAN_PHAM, sp.ID_THUONG_HIEU, sp.ID_DANH_MUC, sp.GIOI_TINH_ID, sp.CHAT_LIEU_ID_,
+        sp.TEN_SAN_PHAM, sp.GIA, sp.MO_TA_SAN_PHAM, sp.HINH_ANH_SANPHAM, sp.TRANG_THAI_SANPHAM, 
+        sp.NGAY_TAO_SANPHAM, sp.NGAY_CAP_NHAT_SANPHAM, sp.SO_LUONG_SANPHAM,
+        gt.TEN_GIOI_TINH,
+        dm.TEN_DANH_MUC, dm.MO_TA_LOAI_DANH_MUC,
+        cl.TEN_CHAT_LIEU_, cl.MO_TA_CHAT_LIEU,
+        th.TEN_THUONG_HIEU
+      FROM SAN_PHAM sp
+      LEFT JOIN GIOI_TINH gt ON sp.GIOI_TINH_ID = gt.GIOI_TINH_ID
+      LEFT JOIN LOAI_DANH_MUC dm ON sp.ID_DANH_MUC = dm.ID_DANH_MUC
+      LEFT JOIN CHAT_LIEU cl ON sp.CHAT_LIEU_ID_ = cl.CHAT_LIEU_ID_
+      LEFT JOIN THUONG_HIEU th ON sp.ID_THUONG_HIEU = th.ID_THUONG_HIEU
+      WHERE sp.TRANG_THAI_SANPHAM = 1
+      AND gt.TEN_GIOI_TINH = 'Nam'  -- Điều kiện phân loại theo giới tính là "Nữ"
+    `);
+
+    return res.status(200).json({
+      EM: "Xem thông tin sản phẩm thành công",
+      EC: 1,
+      DT: results,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      EM: "Có lỗi xảy ra khi lấy thông tin",
+      EC: 0,
+      DT: [],
+    });
+  }
+};
 const getSAN_PHAM_Use_TreEm = async (req, res) => {
   try {
     const [results] = await connection.execute(`
@@ -753,4 +788,5 @@ module.exports = {
 
   getFavoriteProductsByUser,
   getSAN_PHAM_Use_ById,
+  getSAN_PHAM_Use_Nam,
 };

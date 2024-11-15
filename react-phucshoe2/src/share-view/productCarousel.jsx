@@ -18,6 +18,7 @@ import "./css/productCarousel.css";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { setTotalCart } from "../redux/authSlice";
+import { enqueueSnackbar } from "notistack";
 const ProductCarousel = ({ title, products, api }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [productLength, setProductLength] = useState(0);
@@ -72,14 +73,17 @@ const ProductCarousel = ({ title, products, api }) => {
       const response = await axios.post(`${api}/gio-hang/`, payload);
 
       if (response.data.EC === 1) {
+        enqueueSnackbar(response.data.EM);
         dispatch(setTotalCart(response.data.totalQuantity));
 
         console.log(response.data.EM); // Thêm vào giỏ hàng thành công
       } else {
         console.log("Lỗi:", response.data.EM); // Xử lý lỗi nếu có
+        enqueueSnackbar(response.data.EM);
       }
     } catch (error) {
       console.error("Lỗi hệ thống:", error);
+      enqueueSnackbar(error.response.data.EM);
     }
   }; // Hàm handleAddToWish
   const handleAddToWish = async (product) => {
@@ -98,12 +102,15 @@ const ProductCarousel = ({ title, products, api }) => {
       const response = await axios.post(`${api}/yeu-thich/`, payload);
 
       if (response.data.EC === 1) {
+        enqueueSnackbar(response.data.EM);
         console.log(response.data.EM); // Thêm vào yêu thích thành công
       } else {
         console.log("Lỗi:", response.data.EM); // Xử lý lỗi nếu có
+        enqueueSnackbar(response.data.EM);
       }
     } catch (error) {
       console.error("Lỗi hệ thống:", error);
+      enqueueSnackbar(error.response.data.EM);
     }
   };
 
@@ -157,7 +164,6 @@ const ProductCarousel = ({ title, products, api }) => {
       >
         <ArrowForwardIosIcon sx={{ fontSize: "15px", color: "#fff" }} />
       </IconButton>
-
       <Typography
         variant="h6"
         sx={{
@@ -178,7 +184,6 @@ const ProductCarousel = ({ title, products, api }) => {
           sx={{ fontSize: "19px", color: "#fff", marginLeft: "10px" }}
         />
       </Typography>
-
       <Box
         sx={{
           display: "flex",

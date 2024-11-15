@@ -16,10 +16,12 @@ import {
   Button,
   CircularProgress,
 } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 const api = process.env.REACT_APP_URL_SERVER;
 
 const Home = () => {
   const [nuProducts, setNuProducts] = useState([]);
+  const [namProducts, setNamProducts] = useState([]);
   const [last2Products, setLast2Products] = useState([]);
   const [carouselProducts, setCarouselProducts] = useState([]);
   const [treEmProducts, setTreEmProducts] = useState([]);
@@ -27,7 +29,7 @@ const Home = () => {
   const [bestFavorite, setBestFavorite] = useState([]);
   const [bestExpensive, setBestExpensive] = useState([]);
   const [loading, setLoading] = useState(true); // State loading
-
+  const navigate = useNavigate();
   useEffect(() => {
     fetchAllProducts();
   }, []);
@@ -40,6 +42,7 @@ const Home = () => {
         last2Response,
         carouselResponse,
         treEmResponse,
+        namResponse,
         bestSellingResponse,
         bestFavoriteResponse,
         bestExpensiveResponse,
@@ -48,6 +51,7 @@ const Home = () => {
         axios.get(`${api}/san-pham/use/last2products`),
         axios.get(`${api}/carousel-products/use`),
         axios.get(`${api}/san-pham/use/tre-em`),
+        axios.get(`${api}/san-pham/use/nam`),
         axios.get(`${api}/san-pham/use/5best-selling`),
         axios.get(`${api}/san-pham/use/5best-favorite`),
         axios.get(`${api}/san-pham/use/5best-expensive`),
@@ -56,6 +60,9 @@ const Home = () => {
       // Cập nhật dữ liệu và set loading = false sau khi nhận được kết quả
       if (nuResponse.data.EC === 1) {
         setNuProducts(nuResponse.data.DT);
+      }
+      if (namResponse.data.EC === 1) {
+        setNamProducts(namResponse.data.DT);
       }
       if (last2Response.data.EC === 1) {
         setLast2Products(last2Response.data.DT);
@@ -84,6 +91,10 @@ const Home = () => {
       setLoading(false);
     }
   };
+  const handleBuyProduct = (id) => {
+    navigate(`/selectShoe/${id}`);
+  };
+
   if (loading) {
     return (
       <div
@@ -154,6 +165,7 @@ const Home = () => {
                       </Typography>
 
                       <Button
+                        onClick={() => handleBuyProduct(product.ID_SAN_PHAM)}
                         variant="contained"
                         sx={{
                           backgroundColor: "#343437",
@@ -172,8 +184,16 @@ const Home = () => {
               ))}
             </Grid>
           </Box>
-          <CartProduct products={treEmProducts} api={api} />
-          <ProductCarousel products={nuProducts} api={api} />
+          <CartProduct
+            title="Giày cho trẻ em"
+            products={treEmProducts}
+            api={api}
+          />
+          <ProductCarousel
+            title="Giày dành cho nam"
+            products={namProducts}
+            api={api}
+          />
           <Box
             sx={{
               backgroundColor: "#101014",
@@ -213,7 +233,7 @@ const Home = () => {
               </Grid>
             </Grid>
           </Box>{" "}
-          <CartProduct />{" "}
+          {/* <CartProduct />{" "} */}
         </div>
       </div>
     </>

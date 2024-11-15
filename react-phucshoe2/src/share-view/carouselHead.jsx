@@ -15,6 +15,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { setTotalCart } from "../redux/authSlice";
+import { enqueueSnackbar } from "notistack";
 const api = process.env.REACT_APP_URL_SERVER;
 
 const CarouselHead = ({ carouselProducts }) => {
@@ -72,12 +73,14 @@ const CarouselHead = ({ carouselProducts }) => {
 
       if (response.data.EC === 1) {
         dispatch(setTotalCart(response.data.totalQuantity));
-        console.log(response.data.EM); // Thêm vào giỏ hàng thành công
+        enqueueSnackbar(response.data.EM); // Thêm vào giỏ hàng thành công
       } else {
         console.log("Lỗi:", response.data.EM); // Xử lý lỗi nếu có
+        enqueueSnackbar(response.data.EM);
       }
     } catch (error) {
       console.error("Lỗi hệ thống:", error);
+      enqueueSnackbar(error.response.data.EM);
     }
   };
   return (

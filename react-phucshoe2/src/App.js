@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { SnackbarProvider } from "notistack";
 import "./App.css";
 
 import Header from "./share-view/header";
@@ -19,18 +20,27 @@ import { Grid } from "@mui/material";
 function App() {
   return (
     <div className="App">
-      <Router>
-        <Routes>
-          <Route path="/*" element={<MainLayout />} />
+      <SnackbarProvider
+        maxSnack={3}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "left",
+        }}
+        autoHideDuration={2000}
+      >
+        <Router>
+          <Routes>
+            <Route path="/*" element={<MainLayout />} />
 
-          <Route
-            path="/admin/*"
-            element={<GuardRoute element={AdminLayout} />}
-          />
-          <Route path="/profile/*" element={<RouterUser />} />
-          {/* <Route path="/admin/*" element={<RouterAdmin />} /> */}
-        </Routes>
-      </Router>
+            <Route
+              path="/admin/*"
+              element={<GuardRoute element={AdminLayout} />}
+            />
+            <Route path="/profile/*" element={<RouterUser />} />
+            {/* <Route path="/admin/*" element={<RouterAdmin />} /> */}
+          </Routes>
+        </Router>{" "}
+      </SnackbarProvider>
     </div>
   );
 }

@@ -1,14 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { Container, Grid, Box, Button, Typography } from "@mui/material";
 import StarIcon from "@mui/icons-material/Star";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios"; // Make sure to import axios
+import { useSelector, useDispatch } from "react-redux";
+import { enqueueSnackbar } from "notistack";
+import { setTotalCart } from "../../redux/authSlice";
 const api = process.env.REACT_APP_URL_SERVER;
 
 const SelectShoe = () => {
   const { id } = useParams();
   const [product, setProduct] = useState(null); // Initialize as null to handle loading state
-  console.log("idProduct", id);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (id) {
@@ -27,6 +31,64 @@ const SelectShoe = () => {
     }
   };
 
+  const { isAuthenticated, userInfo } = useSelector((state) => state.auth);
+  const handleAddToCart = async () => {
+    if (!isAuthenticated) {
+      // Nếu chưa, chuyển hướng đến trang đăng nhập
+      navigate("/login"); // Đảm bảo '/login' là đường dẫn đúng tới trang đăng nhập của bạn
+      return; // Dừng hàm nếu chưa đăng nhập
+    }
+
+    try {
+      const payload = {
+        ID_SAN_PHAM: id,
+        ID_NGUOI_DUNG: userInfo.ID_NGUOI_DUNG, // ID người dùng
+        NGAY_CAP_NHAT_GIOHANG: new Date().toISOString(),
+      };
+
+      const response = await axios.post(`${api}/gio-hang/`, payload);
+
+      if (response.data.EC === 1) {
+        enqueueSnackbar(response.data.EM);
+        dispatch(setTotalCart(response.data.totalQuantity));
+
+        console.log(response.data.EM); // Thêm vào giỏ hàng thành công
+      } else {
+        console.log("Lỗi:", response.data.EM); // Xử lý lỗi nếu có
+        enqueueSnackbar(response.data.EM);
+      }
+    } catch (error) {
+      console.error("Lỗi hệ thống:", error);
+      enqueueSnackbar(error.response.data.EM);
+    }
+  }; // Hàm handleAddToWish
+  const handleAddToWish = async (product) => {
+    if (!isAuthenticated) {
+      // Nếu người dùng chưa đăng nhập, chuyển hướng đến trang đăng nhập
+      navigate("/login");
+      return; // Dừng hàm nếu chưa đăng nhập
+    }
+
+    try {
+      const payload = {
+        idSanPham: id,
+        idNguoiDung: userInfo.ID_NGUOI_DUNG, // ID người dùng
+      };
+
+      const response = await axios.post(`${api}/yeu-thich/`, payload);
+
+      if (response.data.EC === 1) {
+        enqueueSnackbar(response.data.EM);
+        console.log(response.data.EM); // Thêm vào yêu thích thành công
+      } else {
+        console.log("Lỗi:", response.data.EM); // Xử lý lỗi nếu có
+        enqueueSnackbar(response.data.EM);
+      }
+    } catch (error) {
+      console.error("Lỗi hệ thống:", error);
+      enqueueSnackbar(error.response.data.EM);
+    }
+  };
   if (!product) {
     return <div>Loading...</div>; // Add a loading state
   }
@@ -215,8 +277,27 @@ const SelectShoe = () => {
               fullWidth
             >
               Buy Now
+            </Button>{" "}
+            <Button
+              onClick={() => handleAddToWish()}
+              sx={{
+                borderRadius: "14px",
+                paddingTop: "13px",
+                paddingBottom: "13px",
+                backgroundColor: "#343437",
+                color: "#fff",
+                fontWeight: "600",
+                fontSize: "12px",
+                "&:hover": {
+                  backgroundColor: "#4b4b4e",
+                },
+              }}
+              fullWidth
+            >
+              Add To Wish
             </Button>
             <Button
+              onClick={() => handleAddToCart()}
               sx={{
                 borderRadius: "14px",
                 paddingTop: "13px",
