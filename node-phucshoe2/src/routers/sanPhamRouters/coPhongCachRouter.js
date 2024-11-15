@@ -1,6 +1,5 @@
 const express = require("express");
 const router = express.Router();
-const connection = require("../config/old.js");
 
 const {
   getPHONG_CACH_SAN_PHAM,
