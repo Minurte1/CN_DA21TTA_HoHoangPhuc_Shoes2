@@ -1,6 +1,9 @@
-const pool = require("../../config/database"); // Đảm bảo `connection` được import từ tệp kết nối cơ sở dữ liệu của bạn
+const pool = require("../../config/database"); // Đảm bảo `pool` được import từ tệp kết nối cơ sở dữ liệu của bạn
 const jwt = require("jsonwebtoken");
 const JWT_SECRET = process.env.JWT_SECRET;
+const fs = require("fs");
+const path = require("path");
+
 const getAllUser_Admin = async (req, res) => {
   try {
     // Check if the user already exists in the database
@@ -21,27 +24,18 @@ const getAllUser_Admin = async (req, res) => {
     });
   }
 };
-const infoUserById = async (req, res) => {
-  const { ID_NGUOI_DUNG } = req.body;
-
-  if (!ID_NGUOI_DUNG) {
-    return res.status(401).json({
-      EM: "ID_NGUOI_DUNG is missing",
-      EC: 0,
-      DT: [],
-    });
-  }
-
+const getUser_ById = async (req, res) => {
   try {
+    const { id } = req.params;
     // Check if the user already exists in the database
 
     const [rows] = await pool.query(
-      "SELECT * FROM NGUOI_DUNG WHERE ID_NGUOI_DUNG = ?",
-      [ID_NGUOI_DUNG]
+      "SELECT * FROM NGUOI_DUNG where ID_NGUOI_DUNG =? ",
+      [id]
     );
-    const results = rows[0];
+    const results = rows;
     return res.status(200).json({
-      EM: "Lấy thông tin người dùng thành công",
+      EM: "Lấy thông tin tất cả người dùng thành công",
       EC: 1,
       DT: results,
     });
@@ -54,6 +48,7 @@ const infoUserById = async (req, res) => {
     });
   }
 };
+
 // ---------------------------------------------- updateUserById
 const updateUserById_Admin = async (req, res) => {
   const {
@@ -318,12 +313,53 @@ const logoutUser = (req, res) => {
   res.clearCookie("accessToken");
   return res.status(200).json({ message: "Đăng xuất thành công" });
 };
+// API thay đổi avatar
+const updateAvatarController = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { avatar } = req.body;
+    const ngayCapNhat = new Date();
+    const avatarFile = req.file ? path.basename(req.file.path) : avatar;
+    const [results] = await pool.execute(
+      "SELECT * FROM NGUOI_DUNG WHERE ID_NGUOI_DUNG = ?",
+      [id]
+    );
+    console.log("id user =>", id);
+    if (results.length > 0) {
+      const [results] = await pool.execute(
+        "UPDATE NGUOI_DUNG SET NGAY_CAP_NHAT_USER = ? , AVATAR = ? WHERE ID_NGUOI_DUNG = ?",
+        [ngayCapNhat, avatarFile, id]
+      );
+
+      return res.status(200).json({
+        EM: "Cập nhật avatar thành công",
+        EC: 1,
+        DT: [],
+      });
+    } else {
+      return res.status(404).json({
+        EM: "Không tìm thấy người dùng",
+        EC: 0,
+        DT: [],
+      });
+    }
+  } catch (error) {
+    console.error("Error updating avatar:", error);
+    return res.status(500).json({
+      EM: "Có lỗi xảy ra khi cập nhật avatar",
+      EC: 0,
+      DT: [],
+    });
+  }
+};
 
 module.exports = {
   loginUserGoogle,
   verifyAdmin,
   logoutUser,
-  infoUserById,
+
   updateUserById_Admin,
   getAllUser_Admin,
+  updateAvatarController,
+  getUser_ById,
 };

@@ -1,0 +1,96 @@
+
+
+
+
+
+get https://vn-public-apis.fpo.vn/provinces/getAll?limit=-1   			     -> lấy tất các tỉnh 
+
+
+ "data": [
+            {
+                "_id": "60eaaa6f1173335842c355c9",
+                "name": "Càng Long",
+                "type": "huyen",
+                "slug": "cang-long",
+                "name_with_type": "Huyện Càng Long",
+                "path": "Càng Long, Trà Vinh",
+                "path_with_type": "Huyện Càng Long, Tỉnh Trà Vinh",
+                "code": "844",
+                "parent_code": "84",
+                "isDeleted": false
+            },
+            {
+                "_id": "60eaaa6f1173335842c355ca",
+                "name": "Cầu Kè",
+                "type": "huyen",
+                "slug": "cau-ke",
+                "name_with_type": "Huyện Cầu Kè",
+                "path": "Cầu Kè, Trà Vinh",
+                "path_with_type": "Huyện Cầu Kè, Tỉnh Trà Vinh",
+                "code": "845",
+                "parent_code": "84",
+                "isDeleted": false
+            },
+
+
+	]
+
+get https://vn-public-apis.fpo.vn/districts/getByProvince?provinceCode=84&limit=-1   -> lấy tất cả huyện theo id tỉnh là 84
+
+
+
+ "data": [
+            {
+                "_id": "60eaaa6f1173335842c35663",
+                "name": "An Giang",
+                "slug": "an-giang",
+                "type": "tinh",
+                "name_with_type": "Tỉnh An Giang",
+                "code": "89",
+                "isDeleted": false
+            },
+            {
+                "_id": "60eaaa6f1173335842c3565b",
+                "name": "Bà Rịa - Vũng Tàu",
+                "slug": "ba-ria---vung-tau",
+                "type": "tinh",
+                "name_with_type": "Tỉnh Bà Rịa - Vũng Tàu",
+                "code": "77",
+                "isDeleted": false
+            }
+]
+
+
+
+
+
+
+get https://vn-public-apis.fpo.vn/wards/getByDistrict?districtCode=712&limit=-1      -> lấy tất cả phường xã theo id huyện là 712
+
+
+
+  "data": [
+            {
+                "_id": "60eaaa721173335842c36bfd",
+                "name": "An Trường",
+                "type": "xa",
+                "slug": "an-truong",
+                "name_with_type": "Xã An Trường",
+                "path": "An Trường, Càng Long, Trà Vinh",
+                "path_with_type": "Xã An Trường, Huyện Càng Long, Tỉnh Trà Vinh",
+                "code": "29275",
+                "parent_code": "844",
+                "isDeleted": false
+            },
+            {
+                "_id": "60eaaa721173335842c36bfc",
+                "name": "An Trường A",
+                "type": "xa",
+                "slug": "an-truong-a",
+                "name_with_type": "Xã An Trường A",
+                "path": "An Trường A, Càng Long, Trà Vinh",
+                "path_with_type": "Xã An Trường A, Huyện Càng Long, Tỉnh Trà Vinh",
+                "code": "29272",
+                "parent_code": "844",
+                "isDeleted": false
+            }]

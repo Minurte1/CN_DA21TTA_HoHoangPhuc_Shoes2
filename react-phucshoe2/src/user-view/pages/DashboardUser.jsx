@@ -1,27 +1,91 @@
-import React from "react";
-import {
-  Box,
-  Container,
-  Typography,
-  TextField,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
-  Button,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Divider,
-} from "@mui/material";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import EmailIcon from "@mui/icons-material/Email";
-import PaymentIcon from "@mui/icons-material/Payment";
-import LockIcon from "@mui/icons-material/Lock";
-import StarIcon from "@mui/icons-material/Star";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Box, Container, Typography, TextField, Button } from "@mui/material";
+
+import { Link, useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { enqueueSnackbar } from "notistack";
+import axios from "axios";
+import { setTotalCart } from "../../redux/authSlice";
+import AddressSelector from "../components/addressUser";
+import AvatarChanger from "../components/avatarUser";
+import moment from "moment";
+
+const api = process.env.REACT_APP_URL_SERVER;
+
 const UserProfile = () => {
+  const { isAuthenticated, userInfo } = useSelector((state) => state.auth);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [currentAvatar, setCurrentAvatar] = useState("");
+  const [dataUser, setDataUser] = useState(null);
+
+  const [selectedProvince, setSelectedProvince] = useState(null);
+  const [selectedDistrict, setSelectedDistrict] = useState(null);
+  const [selectedWards, setSelectedWards] = useState(null);
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate("/login");
+      return;
+    }
+    fetchDataUser();
+  }, []);
+  const fetchDataUser = async () => {
+    if (!isAuthenticated) {
+      navigate("/login");
+      return;
+    }
+
+    try {
+      const response = await axios.get(`${api}/user/${userInfo.ID_NGUOI_DUNG}`);
+      if (response.data.EC === 1) {
+        setDataUser(response.data.DT[0]);
+        setCurrentAvatar(response.data.DT[0].AVATAR);
+      }
+    } catch (error) {
+      console.error("Lỗi hệ thống:", error);
+      enqueueSnackbar(error.response.data.EM);
+    }
+  };
+  // Hàm callback để cập nhật avatar mới từ AvatarChanger
+  const handleAvatarChange = (newAvatar) => {
+    setCurrentAvatar(URL.createObjectURL(newAvatar));
+  };
+
+  const handleProfileUpdate = async () => {
+    const updatedData = {
+      email: dataUser.EMAIL,
+      fullName: dataUser.HO_TEN,
+      phoneNumber: dataUser.SDT,
+      birthDate: dataUser.NGAY_SINH,
+      role: dataUser.VAI_TRO,
+      status: dataUser.TRANG_THAI,
+      updatedAt: dataUser.NGAY_CAP_NHAT,
+      createdAt: dataUser.NGAY_TAO,
+    };
+
+    try {
+      const response = await axios.put(
+        `${api}/user/${userInfo.ID_NGUOI_DUNG}`,
+        updatedData
+      );
+
+      if (response.data.EC === 1) {
+        enqueueSnackbar("Thông tin đã được cập nhật thành công", {
+          variant: "success",
+        });
+        setDataUser(response.data.DT[0]);
+      } else {
+        enqueueSnackbar(response.data.EM, { variant: "error" });
+      }
+    } catch (error) {
+      console.error("Lỗi hệ thống:", error);
+      enqueueSnackbar("Lỗi hệ thống, vui lòng thử lại", { variant: "error" });
+    }
+  };
+  const formattedDate = moment(dataUser?.NGAY_TAO_USER).format(
+    "YYYY-MM-DD HH:mm:ss"
+  );
+
   return (
     <Box
       display="flex"
@@ -39,12 +103,11 @@ const UserProfile = () => {
           color: "#fff", // Màu chữ
         }}
       >
-        <Typography variant="h5" gutterBottom>
-          Account Settings
-        </Typography>
-        <Typography variant="subtitle1" gutterBottom>
-          Manage your account’s details.
-        </Typography>
+        <AvatarChanger
+          userId={userInfo.ID_NGUOI_DUNG}
+          currentAvatar={`${api}/images/${currentAvatar}`}
+          onAvatarChange={handleAvatarChange}
+        />
 
         <Box
           display="flex"
@@ -53,9 +116,13 @@ const UserProfile = () => {
           mb={4}
         >
           <TextField
-            label="Address Line 2"
+            label="Email"
             variant="outlined"
             fullWidth
+            value={dataUser?.EMAIL || ""} // Đảm bảo giá trị mặc định là chuỗi rỗng nếu không có dataUser hoặc EMAIL
+            onChange={(e) =>
+              setDataUser({ ...dataUser, EMAIL: e.target.value })
+            }
             InputProps={{
               style: { color: "#fff" }, // Màu chữ trong TextField
             }}
@@ -63,21 +130,25 @@ const UserProfile = () => {
               style: { color: "#fff" }, // Màu chữ nhãn
             }}
             sx={{
+              backgroundColor: "#151b23", // Màu nền của input
+              "& .MuiInputLabel-root": { color: "#f0ffff" }, // Màu chữ của label
+              "& .MuiInputBase-input": { color: "#f0ffff" }, // Màu chữ của input
               "& .MuiOutlinedInput-root": {
-                "& fieldset": {
-                  borderColor: "#3d444d", // Màu viền
-                  backgroundColor: "#151b23",
-                },
-                "&:hover fieldset": {
-                  borderColor: "#3d444d", // Màu viền khi hover
-                },
+                "& fieldset": { borderColor: "#3d444d" }, // Màu viền
+              },
+              "& .MuiInputBase-root": {
+                borderRadius: "4px", // Làm tròn góc nếu muốn
               },
             }}
-          />
+          />{" "}
           <TextField
-            label="Address Line 2"
+            label="Họ và tên"
             variant="outlined"
             fullWidth
+            value={dataUser?.HO_TEN || ""} // Đảm bảo giá trị mặc định là chuỗi rỗng nếu không có dataUser hoặc EMAIL
+            onChange={(e) =>
+              setDataUser({ ...dataUser, HO_TEN: e.target.value })
+            }
             InputProps={{
               style: { color: "#fff" }, // Màu chữ trong TextField
             }}
@@ -85,66 +156,32 @@ const UserProfile = () => {
               style: { color: "#fff" }, // Màu chữ nhãn
             }}
             sx={{
+              backgroundColor: "#151b23", // Màu nền của input
+              "& .MuiInputLabel-root": { color: "#f0ffff" }, // Màu chữ của label
+              "& .MuiInputBase-input": { color: "#f0ffff" }, // Màu chữ của input
               "& .MuiOutlinedInput-root": {
-                "& fieldset": {
-                  borderColor: "#3d444d", // Màu viền
-                  backgroundColor: "#151b23",
-                },
-                "&:hover fieldset": {
-                  borderColor: "#3d444d", // Màu viền khi hover
-                },
+                "& fieldset": { borderColor: "#3d444d" }, // Màu viền
+              },
+              "& .MuiInputBase-root": {
+                borderRadius: "4px", // Làm tròn góc nếu muốn
               },
               ml: 2,
             }}
           />
         </Box>
-
-        <FormControl
-          fullWidth
-          variant="outlined"
-          style={{ marginBottom: "20px" }}
+        <Box
+          display="flex"
+          alignItems="center"
+          justifyContent="space-between"
+          mb={4}
         >
-          <InputLabel style={{ color: "#fff" }}>
-            Preferred Communication Language
-          </InputLabel>
-          <Select
-            defaultValue="English"
-            sx={{
-              color: "#fff", // Màu chữ
-              "& .MuiOutlinedInput-notchedOutline": {
-                borderColor: "#3d444d", // Màu viền
-              },
-              "&:hover .MuiOutlinedInput-notchedOutline": {
-                borderColor: "#3d444d", // Màu viền khi hover
-              },
-              "& .MuiSelect-icon": {
-                color: "#fff", // Màu icon
-              },
-              backgroundColor: "#151b23",
-            }}
-          >
-            <MenuItem value="English">English</MenuItem>
-            <MenuItem value="Vietnamese">Vietnamese</MenuItem>
-          </Select>
-          <Typography
-            variant="caption"
-            style={{ marginTop: "5px", color: "#fff" }}
-          >
-            Choose your preferred language for emails from Epic Games.
-          </Typography>
-        </FormControl>
-
-        <Typography
-          variant="h6"
-          style={{ marginBottom: "20px", color: "#fff" }}
-        >
-          Personal Details
-        </Typography>
-        <Box display="flex" gap={2} mb={4}>
           <TextField
-            label="First Name"
+            label="Số điện thoại"
             variant="outlined"
-            defaultValue="P***c"
+            value={dataUser?.SO_DIEN_THOAI || ""} // Đảm bảo giá trị mặc định là chuỗi rỗng nếu không có dataUser hoặc EMAIL
+            onChange={(e) =>
+              setDataUser({ ...dataUser, SO_DIEN_THOAI: e.target.value })
+            }
             fullWidth
             InputProps={{
               style: { color: "#fff" }, // Màu chữ trong TextField
@@ -153,20 +190,108 @@ const UserProfile = () => {
               style: { color: "#fff" }, // Màu chữ nhãn
             }}
             sx={{
+              backgroundColor: "#151b23", // Màu nền của input
+              "& .MuiInputLabel-root": { color: "#f0ffff" }, // Màu chữ của label
+              "& .MuiInputBase-input": { color: "#f0ffff" }, // Màu chữ của input
               "& .MuiOutlinedInput-root": {
-                "& fieldset": {
-                  borderColor: "#3d444d", // Màu viền
-                  backgroundColor: "#151b23",
-                },
-                "&:hover fieldset": {
-                  borderColor: "#3d444d", // Màu viền khi hover
-                },
+                "& fieldset": { borderColor: "#3d444d" }, // Màu viền
+              },
+              "& .MuiInputBase-root": {
+                borderRadius: "4px", // Làm tròn góc nếu muốn
+              },
+            }}
+          />{" "}
+          <TextField
+            label="Ngày sinh"
+            variant="outlined"
+            value={dataUser?.NGAY_SINH || ""} // Đảm bảo giá trị mặc định là chuỗi rỗng nếu không có dataUser hoặc EMAIL
+            onChange={(e) =>
+              setDataUser({ ...dataUser, NGAY_SINH: e.target.value })
+            }
+            fullWidth
+            InputProps={{
+              style: { color: "#fff" }, // Màu chữ trong TextField
+            }}
+            InputLabelProps={{
+              style: { color: "#fff" }, // Màu chữ nhãn
+            }}
+            sx={{
+              backgroundColor: "#151b23", // Màu nền của input
+              "& .MuiInputLabel-root": { color: "#f0ffff" }, // Màu chữ của label
+              "& .MuiInputBase-input": { color: "#f0ffff" }, // Màu chữ của input
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": { borderColor: "#3d444d" }, // Màu viền
+              },
+              "& .MuiInputBase-root": {
+                borderRadius: "4px", // Làm tròn góc nếu muốn
+              },
+              ml: 2,
+            }}
+          />
+        </Box>
+        <AddressSelector
+          selectedProvince={selectedProvince}
+          selectedDistrict={selectedDistrict}
+          selectedWards={selectedWards}
+          //
+          setSelectedProvince={setSelectedProvince}
+          setSelectedDistrict={setSelectedDistrict}
+          setSelectedWards={setSelectedWards}
+        />
+
+        {/* ----------------Các thông tin khác --------------------------- */}
+
+        <Typography
+          variant="h6"
+          style={{ marginBottom: "20px", color: "#fff", marginTop: "8px" }}
+        >
+          Các thông tin khác
+        </Typography>
+        <Box display="flex" gap={2} mb={4}>
+          <TextField
+            label="Vai trò"
+            variant="outlined"
+            value={
+              dataUser?.VAI_TRO === "1"
+                ? "Admin"
+                : dataUser?.VAI_TRO === "0"
+                ? "Người dùng bình thường"
+                : dataUser?.VAI_TRO === "1.5"
+                ? "Người dùng cấp cao"
+                : "Chưa xác định"
+            }
+            defaultValue="9"
+            fullWidth
+            InputProps={{
+              style: { color: "#fff" }, // Màu chữ trong TextField
+            }}
+            InputLabelProps={{
+              style: { color: "#fff" }, // Màu chữ nhãn
+            }}
+            sx={{
+              backgroundColor: "#151b23", // Màu nền của input
+              "& .MuiInputLabel-root": { color: "#f0ffff" }, // Màu chữ của label
+              "& .MuiInputBase-input": { color: "#f0ffff" }, // Màu chữ của input
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": { borderColor: "#3d444d" }, // Màu viền
+              },
+              "& .MuiInputBase-root": {
+                borderRadius: "4px", // Làm tròn góc nếu muốn
               },
             }}
           />
           <TextField
-            label="Last Name"
+            label="Trạng thái tài khoản"
             variant="outlined"
+            value={
+              dataUser?.TRANG_THAI_USER === "1"
+                ? "Đang hoạt động"
+                : dataUser?.TRANG_THAI_USER === "0"
+                ? "Ngưng hoạt động"
+                : dataUser?.TRANG_THAI_USER === "1.5"
+                ? "Bị Hạn chế"
+                : "Chưa xác định"
+            }
             defaultValue="H***g"
             fullWidth
             InputProps={{
@@ -176,29 +301,24 @@ const UserProfile = () => {
               style: { color: "#fff" }, // Màu chữ nhãn
             }}
             sx={{
+              backgroundColor: "#151b23", // Màu nền của input
+              "& .MuiInputLabel-root": { color: "#f0ffff" }, // Màu chữ của label
+              "& .MuiInputBase-input": { color: "#f0ffff" }, // Màu chữ của input
               "& .MuiOutlinedInput-root": {
-                "& fieldset": {
-                  borderColor: "#3d444d", // Màu viền
-                  backgroundColor: "#151b23",
-                },
-                "&:hover fieldset": {
-                  borderColor: "#3d444d", // Màu viền khi hover
-                },
+                "& fieldset": { borderColor: "#3d444d" }, // Màu viền
+              },
+              "& .MuiInputBase-root": {
+                borderRadius: "4px", // Làm tròn góc nếu muốn
               },
             }}
           />
         </Box>
 
-        <Typography
-          variant="h6"
-          style={{ marginBottom: "20px", color: "#fff" }}
-        >
-          Address
-        </Typography>
         <Box display="flex" gap={2} mb={2}>
           <TextField
-            label="Address Line 1"
+            label="Ngày cập nhật tài khoản"
             variant="outlined"
+            value={dataUser?.NGAY_CAP_NHAT_USER || ""} // Đảm bảo giá trị mặc định là chuỗi rỗng nếu không có dataUser hoặc EMAIL
             fullWidth
             InputProps={{
               style: { color: "#fff" }, // Màu chữ trong TextField
@@ -207,21 +327,23 @@ const UserProfile = () => {
               style: { color: "#fff" }, // Màu chữ nhãn
             }}
             sx={{
+              backgroundColor: "#151b23", // Màu nền của input
+              "& .MuiInputLabel-root": { color: "#f0ffff" }, // Màu chữ của label
+              "& .MuiInputBase-input": { color: "#f0ffff" }, // Màu chữ của input
               "& .MuiOutlinedInput-root": {
-                "& fieldset": {
-                  borderColor: "#3d444d", // Màu viền
-                  backgroundColor: "#151b23",
-                },
-                "&:hover fieldset": {
-                  borderColor: "#3d444d", // Màu viền khi hover
-                },
+                "& fieldset": { borderColor: "#3d444d" }, // Màu viền
+              },
+              "& .MuiInputBase-root": {
+                borderRadius: "4px", // Làm tròn góc nếu muốn
               },
             }}
           />
+
           <TextField
-            label="Address Line 2"
+            label="Ngày tạo tài khoản"
             variant="outlined"
             fullWidth
+            value={formattedDate || ""} // Hiển thị ngày đã được định dạng // Đảm bảo giá trị mặc định là chuỗi rỗng nếu không có dataUser hoặc EMAIL
             InputProps={{
               style: { color: "#fff" }, // Màu chữ trong TextField
             }}
@@ -229,129 +351,14 @@ const UserProfile = () => {
               style: { color: "#fff" }, // Màu chữ nhãn
             }}
             sx={{
+              backgroundColor: "#151b23", // Màu nền của input
+              "& .MuiInputLabel-root": { color: "#f0ffff" }, // Màu chữ của label
+              "& .MuiInputBase-input": { color: "#f0ffff" }, // Màu chữ của input
               "& .MuiOutlinedInput-root": {
-                "& fieldset": {
-                  borderColor: "#3d444d", // Màu viền
-                  backgroundColor: "#151b23",
-                },
-                "&:hover fieldset": {
-                  borderColor: "#3d444d", // Màu viền khi hover
-                },
+                "& fieldset": { borderColor: "#3d444d" }, // Màu viền
               },
-            }}
-          />{" "}
-          <TextField
-            label="Address Line 2"
-            variant="outlined"
-            fullWidth
-            InputProps={{
-              style: { color: "#fff" }, // Màu chữ trong TextField
-            }}
-            InputLabelProps={{
-              style: { color: "#fff" }, // Màu chữ nhãn
-            }}
-            sx={{
-              "& .MuiOutlinedInput-root": {
-                "& fieldset": {
-                  borderColor: "#3d444d", // Màu viền
-                  backgroundColor: "#151b23",
-                },
-                "&:hover fieldset": {
-                  borderColor: "#3d444d", // Màu viền khi hover
-                },
-              },
-            }}
-          />
-        </Box>
-        <Box display="flex" gap={2} mb={2}>
-          <TextField
-            label="City"
-            variant="outlined"
-            fullWidth
-            InputProps={{
-              style: { color: "#fff" }, // Màu chữ trong TextField
-            }}
-            InputLabelProps={{
-              style: { color: "#fff" }, // Màu chữ nhãn
-            }}
-            sx={{
-              "& .MuiOutlinedInput-root": {
-                "& fieldset": {
-                  borderColor: "#3d444d", // Màu viền
-                  backgroundColor: "#151b23",
-                },
-                "&:hover fieldset": {
-                  borderColor: "#3d444d", // Màu viền khi hover
-                },
-              },
-            }}
-          />
-          <TextField
-            label="State/Province"
-            variant="outlined"
-            fullWidth
-            InputProps={{
-              style: { color: "#fff" }, // Màu chữ trong TextField
-            }}
-            InputLabelProps={{
-              style: { color: "#fff" }, // Màu chữ nhãn
-            }}
-            sx={{
-              "& .MuiOutlinedInput-root": {
-                "& fieldset": {
-                  borderColor: "#3d444d", // Màu viền
-                  backgroundColor: "#151b23",
-                },
-                "&:hover fieldset": {
-                  borderColor: "#3d444d", // Màu viền khi hover
-                },
-              },
-            }}
-          />
-        </Box>
-        <Box display="flex" gap={2} mb={4}>
-          <TextField
-            label="Postal Code"
-            variant="outlined"
-            fullWidth
-            InputProps={{
-              style: { color: "#fff" }, // Màu chữ trong TextField
-            }}
-            InputLabelProps={{
-              style: { color: "#fff" }, // Màu chữ nhãn
-            }}
-            sx={{
-              "& .MuiOutlinedInput-root": {
-                "& fieldset": {
-                  borderColor: "#3d444d", // Màu viền
-                  backgroundColor: "#151b23",
-                },
-                "&:hover fieldset": {
-                  borderColor: "#3d444d", // Màu viền khi hover
-                },
-              },
-            }}
-          />
-          <TextField
-            label="Country"
-            variant="outlined"
-            defaultValue="Vietnam"
-            fullWidth
-            InputProps={{
-              style: { color: "#fff" }, // Màu chữ trong TextField
-            }}
-            InputLabelProps={{
-              style: { color: "#fff" }, // Màu chữ nhãn
-            }}
-            sx={{
-              "& .MuiOutlinedInput-root": {
-                "& fieldset": {
-                  borderColor: "#3d444d", // Màu viền
-                  backgroundColor: "#151b23",
-                },
-                "&:hover fieldset": {
-                  borderColor: "#3d444d", // Màu viền khi hover
-                },
+              "& .MuiInputBase-root": {
+                borderRadius: "4px", // Làm tròn góc nếu muốn
               },
             }}
           />
@@ -360,7 +367,8 @@ const UserProfile = () => {
         <Button
           variant="contained"
           color="primary"
-          style={{ marginTop: "20px", backgroundColor: "#26bbff" }} // Đặt màu nền cho button
+          style={{ marginTop: "20px", backgroundColor: "#26bbff" }}
+          onClick={handleProfileUpdate} // Gọi hàm cập nhật thông tin
         >
           Save Changes
         </Button>

@@ -86,7 +86,7 @@ const ProductCarousel = ({ title, products, api }) => {
       console.error("Lỗi hệ thống:", error);
       enqueueSnackbar(error.response.data.EM);
     }
-  }; // Hàm handleAddToWish
+  };
   const handleAddToWish = async (product) => {
     if (!isAuthenticated) {
       // Nếu người dùng chưa đăng nhập, chuyển hướng đến trang đăng nhập
