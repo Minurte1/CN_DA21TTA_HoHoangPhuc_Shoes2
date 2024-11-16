@@ -51,6 +51,7 @@ const ProductCarousel = ({ title, products, api }) => {
     // Nếu đã đến sản phẩm cuối, vô hiệu hóa nút next
     setDisable(currentIndex + 5 >= productLength);
   }, [currentIndex, productLength]);
+
   const handleBuyProduct = (id) => {
     navigate(`/selectShoe/${id}`);
   };

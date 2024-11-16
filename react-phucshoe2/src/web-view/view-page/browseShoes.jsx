@@ -12,15 +12,20 @@ import {
   Drawer,
   IconButton,
   Box,
+  Pagination,
+  Tooltip,
 } from "@mui/material";
-import { FilterList } from "@mui/icons-material";
+import { FilterList, AddShoppingCart, ControlPoint } from "@mui/icons-material";
 import axios from "axios";
 import ProductCarousel from "../../share-view/productCarousel";
 import FilterShoes from "../../admin-view/pages/quanLySanPham/component/FilterShoe";
+import { useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { setTotalCart } from "../../redux/authSlice";
+import { enqueueSnackbar } from "notistack";
 const api = process.env.REACT_APP_URL_SERVER;
 
 const BrowseProduct = () => {
-  const [filter, setFilter] = useState("");
   const [mobileOpen, setMobileOpen] = useState(false);
   const [products, setProducts] = useState([]);
 
@@ -34,6 +39,8 @@ const BrowseProduct = () => {
   const [mauSac, setMauSac] = useState([]);
   const [mucDichSuDung, setMucDichSuDung] = useState([]);
   const [kichCo, setKichCo] = useState([]);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     fetchProduct();
@@ -102,10 +109,71 @@ const BrowseProduct = () => {
       console.error("Error fetching data:", error);
     }
   };
-  const handleFilterChange = (event) => {
-    setFilter(event.target.value);
+
+  const handleBuyProduct = (id) => {
+    navigate(`/selectShoe/${id}`);
   };
 
+  const { isAuthenticated, userInfo } = useSelector((state) => state.auth);
+  const handleAddToCart = async (product) => {
+    if (!isAuthenticated) {
+      // Nếu chưa, chuyển hướng đến trang đăng nhập
+      navigate("/login"); // Đảm bảo '/login' là đường dẫn đúng tới trang đăng nhập của bạn
+      return; // Dừng hàm nếu chưa đăng nhập
+    }
+
+    try {
+      const payload = {
+        ID_SAN_PHAM: product.ID_SAN_PHAM,
+        ID_NGUOI_DUNG: userInfo.ID_NGUOI_DUNG, // ID người dùng
+        NGAY_CAP_NHAT_GIOHANG: new Date().toISOString(),
+      };
+
+      const response = await axios.post(`${api}/gio-hang/`, payload);
+
+      if (response.data.EC === 1) {
+        enqueueSnackbar(response.data.EM);
+        dispatch(setTotalCart(response.data.totalQuantity));
+
+        console.log(response.data.EM); // Thêm vào giỏ hàng thành công
+      } else {
+        console.log("Lỗi:", response.data.EM); // Xử lý lỗi nếu có
+        enqueueSnackbar(response.data.EM);
+      }
+    } catch (error) {
+      console.error("Lỗi hệ thống:", error);
+      enqueueSnackbar(error.response.data.EM);
+    }
+  }; // Hàm handleAddToWish
+  const handleAddToWish = async (product) => {
+    if (!isAuthenticated) {
+      // Nếu người dùng chưa đăng nhập, chuyển hướng đến trang đăng nhập
+      navigate("/login");
+      return; // Dừng hàm nếu chưa đăng nhập
+    }
+
+    try {
+      const payload = {
+        idSanPham: product.ID_SAN_PHAM,
+        idNguoiDung: userInfo.ID_NGUOI_DUNG, // ID người dùng
+      };
+
+      const response = await axios.post(`${api}/yeu-thich/`, payload);
+
+      if (response.data.EC === 1) {
+        enqueueSnackbar(response.data.EM);
+        console.log(response.data.EM); // Thêm vào yêu thích thành công
+      } else {
+        console.log("Lỗi:", response.data.EM); // Xử lý lỗi nếu có
+        enqueueSnackbar(response.data.EM);
+      }
+    } catch (error) {
+      console.error("Lỗi hệ thống:", error);
+      enqueueSnackbar(error.response.data.EM);
+    }
+  };
+
+  //filter products
   const [selectedThuongHieu, setSelectedThuongHieu] = useState("");
   const [selectedChatLieu, setSelectedChatLieu] = useState("");
   const [selectedTrangThai, setSelectedTrangThai] = useState("");
@@ -117,6 +185,8 @@ const BrowseProduct = () => {
   const [searchTerm, setSearchTerm] = useState("");
 
   const [filteredProducts, setFilteredProducts] = useState(products);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 16; // Số sản phẩm hiển thị mỗi trang
 
   const handleSearchChange = (e) => {
     const term = e.target.value;
@@ -200,6 +270,13 @@ const BrowseProduct = () => {
     selectMucDichSuDung,
     selectedMauSac,
   ]);
+  const currentProducts = filteredProducts.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+  const handlePageChange = (event, value) => {
+    setCurrentPage(value);
+  };
 
   return (
     <>
@@ -212,28 +289,110 @@ const BrowseProduct = () => {
           <Grid container spacing={2} sx={{ flexGrow: 1 }}>
             {/* Product Grid */}
             <Grid item xs={12} sm={9} container spacing={2}>
-              {filteredProducts.map((product, index) => (
+              {currentProducts.map((product, index) => (
                 <Grid item xs={12} sm={6} md={3} key={index}>
-                  <Card>
+                  <Card
+                    sx={{ position: "relative", cursor: "pointer" }}
+                    onClick={() => handleBuyProduct(product.ID_SAN_PHAM)}
+                  >
+                    {" "}
+                    {/* Đảm bảo Card có position: relative */}
+                    <Tooltip title="Add to Wish" arrow>
+                      <ControlPoint
+                        sx={{
+                          position: "absolute", // Đặt icon ở góc trên bên phải
+                          top: 8,
+                          right: 8,
+                          color: "#101014", // Màu icon
+                          borderRadius: "50%", // Tạo hình tròn cho icon
+                          margin: "8px",
+                          zIndex: 1,
+                          fontSize: "22px",
+                          cursor: "pointer",
+                          transition: "transform 0.3s ease",
+                          "&:hover": {
+                            transform: "scale(1.2)",
+                          },
+                        }}
+                        onClick={(e) => {
+                          e.stopPropagation(); // Ngừng sự kiện click lên card khi nhấn vào icon
+                          handleAddToWish(product); // Gọi hàm thêm vào giỏ hàng
+                        }}
+                      />
+                    </Tooltip>
                     <CardMedia
                       component="img"
-                      height="140"
                       image={`${api}/images/${product.HINH_ANH_SANPHAM}`}
                       alt={product.TEN_SAN_PHAM}
                       sx={{
-                        objectFit: "contain", // Đảm bảo toàn bộ hình ảnh được hiển thị
-                        display: "block", // Đặt display là block
-                        margin: "0 auto", // Căn giữa hình ảnh theo chiều ngang
+                        height: {
+                          xs: "210px",
+                          sm: "210px",
+                          md: "210px",
+                          lg: "210px",
+                        },
+                        objectFit: "contain",
+                        borderRadius: "15px",
+                        transition: "filter 0.3s ease",
                       }}
                     />
-
                     <CardContent>
-                      <Typography gutterBottom variant="h6" component="div">
+                      <Typography
+                        gutterBottom
+                        variant="h6"
+                        component="div"
+                        sx={{
+                          whiteSpace: "nowrap", // Đảm bảo văn bản không xuống dòng
+                          overflow: "hidden", // Ẩn phần văn bản vượt quá chiều rộng
+                          textOverflow: "ellipsis", // Thêm dấu "..." khi văn bản bị cắt bớt
+                        }}
+                      >
                         {product.TEN_SAN_PHAM}
                       </Typography>
-                      <Typography variant="body2" color="text.secondary">
+
+                      <Typography
+                        gutterBottom
+                        variant="h6"
+                        component="div"
+                        sx={{
+                          whiteSpace: "nowrap", // Đảm bảo văn bản không xuống dòng
+                          overflow: "hidden", // Ẩn phần văn bản vượt quá chiều rộng
+                          textOverflow: "ellipsis", // Thêm dấu "..." khi văn bản bị cắt bớt
+                        }}
+                      >
+                        {`${product.GIA.toLocaleString("vi-VN")}đ`}
+                        {product.KICH_CO ? ` - Size: ${product.KICH_CO}` : ``}
+                      </Typography>
+
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        sx={{
+                          whiteSpace: "nowrap", // Đảm bảo văn bản không xuống dòng
+                          overflow: "hidden", // Ẩn phần văn bản vượt quá chiều rộng
+                          textOverflow: "ellipsis", // Thêm dấu "..." khi văn bản bị cắt bớt
+                        }}
+                      >
                         {product.MO_TA_SAN_PHAM}
                       </Typography>
+
+                      <Tooltip title="Add to cart" arrow>
+                        <AddShoppingCart
+                          sx={{
+                            cursor: "pointer",
+                            mt: 2,
+                            transition: "transform 0.3s ease",
+                            "&:hover": {
+                              color: "#555",
+                              transform: "scale(1.2)",
+                            },
+                          }}
+                          onClick={(e) => {
+                            e.stopPropagation(); // Ngừng sự kiện click lên card khi nhấn vào icon
+                            handleAddToCart(product); // Gọi hàm thêm vào giỏ hàng
+                          }}
+                        />
+                      </Tooltip>
                     </CardContent>
                   </Card>
                 </Grid>
@@ -272,6 +431,8 @@ const BrowseProduct = () => {
                 mauSac={mauSac}
                 mucDichSuDung={mucDichSuDung}
                 kichCo={kichCo}
+                //
+                offStatus={true}
               />
             </Grid>
 
@@ -286,12 +447,7 @@ const BrowseProduct = () => {
                 display: { xs: "block", sm: "none" },
                 "& .MuiDrawer-paper": { boxSizing: "border-box", width: 240 },
               }}
-            >
-              {/* <SidebarFilter
-                filter={filter}
-                onFilterChange={handleFilterChange}
-              /> */}
-            </Drawer>
+            ></Drawer>
           </Grid>
 
           {/* Mobile Filter Button */}
@@ -310,46 +466,33 @@ const BrowseProduct = () => {
             <FilterList />
           </IconButton>
         </div>
+        <Pagination
+          count={Math.ceil(filteredProducts.length / itemsPerPage)} // Tổng số trang
+          page={currentPage}
+          onChange={handlePageChange}
+          sx={{
+            marginTop: 4,
+            display: "flex",
+            justifyContent: "center",
+            ".MuiPagination-ul": {
+              borderRadius: "8px", // Bo góc
+              padding: "4px 8px", // Khoảng cách bên trong
+            },
+            ".MuiPaginationItem-root": {
+              color: "#c9d1d9", // Màu chữ đen
+              fontWeight: "bold", // Chữ đậm
+            },
+            ".Mui-selected": {
+              color: "#ffffff", // Màu chữ trắng
+            },
+            ".MuiPaginationItem-ellipsis": {
+              color: "#999999", // Màu cho dấu "..."
+            },
+          }}
+        />
       </Box>
     </>
   );
 };
-
-// Sidebar filter component
-// const SidebarFilter = ({ filter, onFilterChange }) => (
-//   <div style={{ padding: "20px" }}>
-//     {/* Filter Products */}
-//     <FilterShoes
-//       thuongHieu={thuongHieu}
-//       chatLieu={chatLieu}
-//       //
-//       selectedThuongHieu={selectedThuongHieu}
-//       selectedChatLieu={selectedChatLieu}
-//       selectedTrangThai={selectedTrangThai}
-//       //
-//       selectedMauSac={selectedMauSac}
-//       selectKichCo={selectKichCo}
-//       selectPhongCach={selectPhongCach}
-//       selectMucDichSuDung={selectMucDichSuDung}
-//       //
-//       setSelectedTrangThai={setSelectedTrangThai}
-//       setSelectedChatLieu={setSelectedChatLieu}
-//       setSelectedThuongHieu={setSelectedThuongHieu}
-//       //
-//       setSelectedMauSac={setSelectedMauSac}
-//       setSelectPhongCach={setSelectPhongCach}
-//       setSelectMucDichSuDung={setSelectMucDichSuDung}
-//       setSelectKichCo={setSelectKichCo}
-//       //
-//       searchTerm={searchTerm}
-//       handleSearchChange={handleSearchChange}
-//       //
-//       phongCach={phongCach}
-//       mauSac={mauSac}
-//       mucDichSuDung={mucDichSuDung}
-//       kichCo={kichCo}
-//     />
-//   </div>
-// );
 
 export default BrowseProduct;

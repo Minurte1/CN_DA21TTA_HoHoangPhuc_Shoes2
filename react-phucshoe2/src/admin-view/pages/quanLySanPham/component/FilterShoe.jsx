@@ -47,6 +47,9 @@ const FilterShoes = ({
   mauSac,
   mucDichSuDung,
   kichCo,
+
+  //
+  offStatus,
 }) => {
   return (
     <>
@@ -139,24 +142,31 @@ const FilterShoes = ({
         </FormControl>
 
         {/* Trạng thái */}
-        <FormControl sx={{ mb: 2, width: 250, ml: 2 }}>
-          <InputLabel
-            sx={{ display: "flex", alignItems: "center", color: "#c9d1d9" }}
-          >
-            <ToggleOn sx={{ mr: 1 }} /> Trạng thái
-          </InputLabel>
-          <Select
-            value={selectedTrangThai}
-            label="Icon Trạng thái"
-            onChange={(e) => setSelectedTrangThai(e.target.value)}
-            sx={{ color: "#c9d1d9" }}
-          >
+        {!offStatus ? (
+          <>
             {" "}
-            <MenuItem value="">Xem tất cả</MenuItem>
-            <MenuItem value={1}>Đang hoạt động</MenuItem>
-            <MenuItem value={0}>Ngưng hoạt động</MenuItem>
-          </Select>
-        </FormControl>
+            <FormControl sx={{ mb: 2, width: 250, ml: 2 }}>
+              <InputLabel
+                sx={{ display: "flex", alignItems: "center", color: "#c9d1d9" }}
+              >
+                <ToggleOn sx={{ mr: 1 }} /> Trạng thái
+              </InputLabel>
+              <Select
+                value={selectedTrangThai}
+                label="Icon Trạng thái"
+                onChange={(e) => setSelectedTrangThai(e.target.value)}
+                sx={{ color: "#c9d1d9" }}
+              >
+                {" "}
+                <MenuItem value="">Xem tất cả</MenuItem>
+                <MenuItem value={1}>Đang hoạt động</MenuItem>
+                <MenuItem value={0}>Ngưng hoạt động</MenuItem>
+              </Select>
+            </FormControl>{" "}
+          </>
+        ) : (
+          <></>
+        )}
       </Box>{" "}
       <Box sx={{ width: "100%", textAlign: "left" }}>
         {/* Thương hiệu */}
