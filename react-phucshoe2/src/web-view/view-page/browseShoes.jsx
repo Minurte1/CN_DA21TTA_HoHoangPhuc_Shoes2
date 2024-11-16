@@ -16,14 +16,28 @@ import {
 import { FilterList } from "@mui/icons-material";
 import axios from "axios";
 import ProductCarousel from "../../share-view/productCarousel";
+import FilterShoes from "../../admin-view/pages/quanLySanPham/component/FilterShoe";
 const api = process.env.REACT_APP_URL_SERVER;
 
 const BrowseProduct = () => {
   const [filter, setFilter] = useState("");
   const [mobileOpen, setMobileOpen] = useState(false);
   const [products, setProducts] = useState([]);
+
+  const [thuongHieu, setThuongHieu] = useState([]);
+  const [danhMuc, setDanhMuc] = useState([]);
+  const [chatLieu, setChatLieu] = useState([]);
+  const [gioiTinh, setGioiTinh] = useState([]);
+
+  // ----------------------------------------------
+  const [phongCach, setPhongCach] = useState([]);
+  const [mauSac, setMauSac] = useState([]);
+  const [mucDichSuDung, setMucDichSuDung] = useState([]);
+  const [kichCo, setKichCo] = useState([]);
+
   useEffect(() => {
     fetchProduct();
+    fetchData();
   }, []);
 
   const fetchProduct = async (id) => {
@@ -37,13 +51,155 @@ const BrowseProduct = () => {
     }
   };
 
+  const fetchData = async () => {
+    try {
+      const [
+        thuongHieuResponse,
+        danhMucResponse,
+        chatLieuResponse,
+        gioiTinhResponse,
+        phongCachResponse,
+        mauSacResponse,
+        mucDichSuDungResponse,
+        kichCoResponse,
+      ] = await Promise.all([
+        axios.get(`${api}/thuong-hieu/use`),
+        axios.get(`${api}/loai-danh-muc/use`),
+        axios.get(`${api}/chat-lieu/use`),
+        axios.get(`${api}/gioi-tinh/use`),
+
+        axios.get(`${api}/phong-cach/use`),
+        axios.get(`${api}/mau-sac/use`),
+        axios.get(`${api}/muc-dich-su-dung/use`),
+        axios.get(`${api}/kich-co/use`),
+      ]);
+
+      if (thuongHieuResponse.data.EC === 1) {
+        setThuongHieu(thuongHieuResponse.data.DT);
+      }
+      if (danhMucResponse.data.EC === 1) {
+        setDanhMuc(danhMucResponse.data.DT);
+      }
+      if (chatLieuResponse.data.EC === 1) {
+        setChatLieu(chatLieuResponse.data.DT);
+      }
+      if (gioiTinhResponse.data.EC === 1) {
+        setGioiTinh(gioiTinhResponse.data.DT);
+      }
+      if (phongCachResponse.data.EC === 1) {
+        setPhongCach(phongCachResponse.data.DT);
+      }
+      if (mauSacResponse.data.EC === 1) {
+        setMauSac(mauSacResponse.data.DT);
+      }
+      if (mucDichSuDungResponse.data.EC === 1) {
+        setMucDichSuDung(mucDichSuDungResponse.data.DT);
+      }
+      if (kichCoResponse.data.EC === 1) {
+        setKichCo(kichCoResponse.data.DT);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
   const handleFilterChange = (event) => {
     setFilter(event.target.value);
   };
 
-  const filteredProducts = products.filter((product) =>
-    filter ? product.category === filter : true
-  );
+  const [selectedThuongHieu, setSelectedThuongHieu] = useState("");
+  const [selectedChatLieu, setSelectedChatLieu] = useState("");
+  const [selectedTrangThai, setSelectedTrangThai] = useState("");
+
+  const [selectMucDichSuDung, setSelectMucDichSuDung] = useState("");
+  const [selectPhongCach, setSelectPhongCach] = useState("");
+  const [selectKichCo, setSelectKichCo] = useState("");
+  const [selectedMauSac, setSelectedMauSac] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const [filteredProducts, setFilteredProducts] = useState(products);
+
+  const handleSearchChange = (e) => {
+    const term = e.target.value;
+    setSearchTerm(term);
+
+    // Nếu không có từ khóa tìm kiếm, khôi phục lại tất cả sản phẩm
+    if (term === "") {
+      setFilteredProducts(products);
+    } else {
+      // Lọc sản phẩm theo từ khóa tìm kiếm
+      const filtered = products.filter((product) =>
+        product.TEN_SAN_PHAM.toLowerCase().includes(term.toLowerCase())
+      );
+      setFilteredProducts(filtered);
+    }
+  };
+
+  useEffect(() => {
+    const applyFilters = () => {
+      let updatedProducts = products;
+      if (selectMucDichSuDung) {
+        updatedProducts = updatedProducts.filter(
+          (product) => product.ID_MUC_DICH_SU_DUNG === selectMucDichSuDung
+        );
+      }
+      if (selectMucDichSuDung) {
+        updatedProducts = updatedProducts.filter(
+          (product) => product.ID_MUC_DICH_SU_DUNG === selectMucDichSuDung
+        );
+      }
+      if (selectPhongCach) {
+        updatedProducts = updatedProducts.filter(
+          (product) => product.ID_PHUONG_CACH === selectPhongCach
+        );
+      }
+      if (selectKichCo) {
+        updatedProducts = updatedProducts.filter(
+          (product) => product.ID_KICH_CO === selectKichCo
+        );
+      }
+      if (selectedMauSac) {
+        updatedProducts = updatedProducts.filter(
+          (product) => product.MAU_SAC_ID === selectedMauSac
+        );
+      }
+      if (selectedThuongHieu) {
+        updatedProducts = updatedProducts.filter(
+          (product) => product.ID_THUONG_HIEU === selectedThuongHieu
+        );
+      }
+      if (selectedChatLieu) {
+        updatedProducts = updatedProducts.filter(
+          (product) => product.CHAT_LIEU_ID_ === selectedChatLieu
+        );
+      }
+      if (selectedTrangThai !== "") {
+        updatedProducts = updatedProducts.filter(
+          (product) => product.TRANG_THAI_SANPHAM === selectedTrangThai
+        );
+      }
+
+      // Nếu có từ khóa tìm kiếm, lọc lại
+      if (searchTerm) {
+        updatedProducts = updatedProducts.filter((product) =>
+          product.TEN_SAN_PHAM.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+      }
+
+      setFilteredProducts(updatedProducts);
+    };
+
+    applyFilters();
+  }, [
+    selectedThuongHieu,
+    selectedChatLieu,
+    selectedTrangThai,
+    searchTerm, // Thêm searchTerm vào dependency array
+    products,
+    selectKichCo,
+    selectPhongCach,
+    selectMucDichSuDung,
+    selectedMauSac,
+  ]);
 
   return (
     <>
@@ -86,9 +242,36 @@ const BrowseProduct = () => {
 
             {/* Desktop Filter Sidebar on Right */}
             <Grid item xs={12} sm={3} display={{ xs: "none", sm: "block" }}>
-              <SidebarFilter
-                filter={filter}
-                onFilterChange={handleFilterChange}
+              {/* Filter Products */}
+              <FilterShoes
+                thuongHieu={thuongHieu}
+                chatLieu={chatLieu}
+                //
+                selectedThuongHieu={selectedThuongHieu}
+                selectedChatLieu={selectedChatLieu}
+                selectedTrangThai={selectedTrangThai}
+                //
+                selectedMauSac={selectedMauSac}
+                selectKichCo={selectKichCo}
+                selectPhongCach={selectPhongCach}
+                selectMucDichSuDung={selectMucDichSuDung}
+                //
+                setSelectedTrangThai={setSelectedTrangThai}
+                setSelectedChatLieu={setSelectedChatLieu}
+                setSelectedThuongHieu={setSelectedThuongHieu}
+                //
+                setSelectedMauSac={setSelectedMauSac}
+                setSelectPhongCach={setSelectPhongCach}
+                setSelectMucDichSuDung={setSelectMucDichSuDung}
+                setSelectKichCo={setSelectKichCo}
+                //
+                searchTerm={searchTerm}
+                handleSearchChange={handleSearchChange}
+                //
+                phongCach={phongCach}
+                mauSac={mauSac}
+                mucDichSuDung={mucDichSuDung}
+                kichCo={kichCo}
               />
             </Grid>
 
@@ -104,10 +287,10 @@ const BrowseProduct = () => {
                 "& .MuiDrawer-paper": { boxSizing: "border-box", width: 240 },
               }}
             >
-              <SidebarFilter
+              {/* <SidebarFilter
                 filter={filter}
                 onFilterChange={handleFilterChange}
-              />
+              /> */}
             </Drawer>
           </Grid>
 
@@ -133,18 +316,40 @@ const BrowseProduct = () => {
 };
 
 // Sidebar filter component
-const SidebarFilter = ({ filter, onFilterChange }) => (
-  <div style={{ padding: "20px" }}>
-    <FormControl fullWidth>
-      <InputLabel>Category</InputLabel>
-      <Select value={filter} onChange={onFilterChange}>
-        <MenuItem value="">All</MenuItem>
-        <MenuItem value="new">New Release</MenuItem>
-        <MenuItem value="popular">Popular</MenuItem>
-        <MenuItem value="free">Free</MenuItem>
-      </Select>
-    </FormControl>
-  </div>
-);
+// const SidebarFilter = ({ filter, onFilterChange }) => (
+//   <div style={{ padding: "20px" }}>
+//     {/* Filter Products */}
+//     <FilterShoes
+//       thuongHieu={thuongHieu}
+//       chatLieu={chatLieu}
+//       //
+//       selectedThuongHieu={selectedThuongHieu}
+//       selectedChatLieu={selectedChatLieu}
+//       selectedTrangThai={selectedTrangThai}
+//       //
+//       selectedMauSac={selectedMauSac}
+//       selectKichCo={selectKichCo}
+//       selectPhongCach={selectPhongCach}
+//       selectMucDichSuDung={selectMucDichSuDung}
+//       //
+//       setSelectedTrangThai={setSelectedTrangThai}
+//       setSelectedChatLieu={setSelectedChatLieu}
+//       setSelectedThuongHieu={setSelectedThuongHieu}
+//       //
+//       setSelectedMauSac={setSelectedMauSac}
+//       setSelectPhongCach={setSelectPhongCach}
+//       setSelectMucDichSuDung={setSelectMucDichSuDung}
+//       setSelectKichCo={setSelectKichCo}
+//       //
+//       searchTerm={searchTerm}
+//       handleSearchChange={handleSearchChange}
+//       //
+//       phongCach={phongCach}
+//       mauSac={mauSac}
+//       mucDichSuDung={mucDichSuDung}
+//       kichCo={kichCo}
+//     />
+//   </div>
+// );
 
 export default BrowseProduct;

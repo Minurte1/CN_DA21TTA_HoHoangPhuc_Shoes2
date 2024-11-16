@@ -52,80 +52,8 @@ const FilterShoes = ({
     <>
       {" "}
       <Box sx={{ width: "100%", textAlign: "left", mt: 4 }}>
-        {/* Thương hiệu */}
-        <FormControl sx={{ mb: 2, minWidth: 200 }}>
-          <InputLabel
-            sx={{ display: "flex", alignItems: "center", color: "#c9d1d9" }}
-          >
-            <Apartment sx={{ mr: 1 }} /> Thương hiệu
-          </InputLabel>
-          <Select
-            value={selectedThuongHieu}
-            label="Apart Thương hiệu"
-            onChange={(e) => setSelectedThuongHieu(e.target.value)}
-            sx={{ color: "#c9d1d9" }}
-          >
-            {" "}
-            <MenuItem value="">Xem tất cả</MenuItem>
-            {thuongHieu.map((thuongHieuItem) => (
-              <MenuItem
-                key={thuongHieuItem.ID_THUONG_HIEU}
-                value={thuongHieuItem.ID_THUONG_HIEU}
-              >
-                {thuongHieuItem.TEN_THUONG_HIEU}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-
-        {/* Chất liệu */}
-        <FormControl sx={{ mb: 2, minWidth: 200, ml: 2 }}>
-          <InputLabel
-            sx={{ display: "flex", alignItems: "center", color: "#c9d1d9" }}
-          >
-            <FormatListBulleted sx={{ mr: 1 }} /> Chất liệu
-          </InputLabel>
-          <Select
-            value={selectedChatLieu}
-            onChange={(e) => setSelectedChatLieu(e.target.value)}
-            sx={{ color: "#c9d1d9" }}
-            label="Icon Chất liệu"
-          >
-            {" "}
-            <MenuItem value="">Xem tất cả</MenuItem>
-            {chatLieu.map((chatLieuItem) => (
-              <MenuItem
-                key={chatLieuItem.CHAT_LIEU_ID_}
-                value={chatLieuItem.CHAT_LIEU_ID_}
-              >
-                {chatLieuItem.TEN_CHAT_LIEU_}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-
-        {/* Trạng thái */}
-        <FormControl sx={{ mb: 2, minWidth: 200, ml: 2 }}>
-          <InputLabel
-            sx={{ display: "flex", alignItems: "center", color: "#c9d1d9" }}
-          >
-            <ToggleOn sx={{ mr: 1 }} /> Trạng thái
-          </InputLabel>
-          <Select
-            value={selectedTrangThai}
-            label="Icon Trạng thái"
-            onChange={(e) => setSelectedTrangThai(e.target.value)}
-            sx={{ color: "#c9d1d9" }}
-          >
-            {" "}
-            <MenuItem value="">Xem tất cả</MenuItem>
-            <MenuItem value={1}>Đang hoạt động</MenuItem>
-            <MenuItem value={0}>Ngưng hoạt động</MenuItem>
-          </Select>
-        </FormControl>
-
         {/* Tìm kiếm tên sản phẩm */}
-        <FormControl sx={{ mb: 2, minWidth: 200, ml: 2 }}>
+        <FormControl sx={{ mb: 2, width: 250, ml: 2 }}>
           <TextField
             value={searchTerm}
             label="Tìm kiếm tên sản phẩm"
@@ -158,10 +86,81 @@ const FilterShoes = ({
             }}
           />
         </FormControl>
+        {/* Thương hiệu */}
+        <FormControl sx={{ mb: 2, width: 250, ml: 2 }}>
+          <InputLabel
+            sx={{ display: "flex", alignItems: "center", color: "#c9d1d9" }}
+          >
+            <Apartment sx={{ mr: 1 }} /> Thương hiệu
+          </InputLabel>
+          <Select
+            value={selectedThuongHieu}
+            label="Apart Thương hiệu"
+            onChange={(e) => setSelectedThuongHieu(e.target.value)}
+            sx={{ color: "#c9d1d9" }}
+          >
+            {" "}
+            <MenuItem value="">Xem tất cả</MenuItem>
+            {thuongHieu.map((thuongHieuItem) => (
+              <MenuItem
+                key={thuongHieuItem.ID_THUONG_HIEU}
+                value={thuongHieuItem.ID_THUONG_HIEU}
+              >
+                {thuongHieuItem.TEN_THUONG_HIEU}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+
+        {/* Chất liệu */}
+        <FormControl sx={{ mb: 2, width: 250, ml: 2 }}>
+          <InputLabel
+            sx={{ display: "flex", alignItems: "center", color: "#c9d1d9" }}
+          >
+            <FormatListBulleted sx={{ mr: 1 }} /> Chất liệu
+          </InputLabel>
+          <Select
+            value={selectedChatLieu}
+            onChange={(e) => setSelectedChatLieu(e.target.value)}
+            sx={{ color: "#c9d1d9" }}
+            label="Icon Chất liệu"
+          >
+            {" "}
+            <MenuItem value="">Xem tất cả</MenuItem>
+            {chatLieu.map((chatLieuItem) => (
+              <MenuItem
+                key={chatLieuItem.CHAT_LIEU_ID_}
+                value={chatLieuItem.CHAT_LIEU_ID_}
+              >
+                {chatLieuItem.TEN_CHAT_LIEU_}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+
+        {/* Trạng thái */}
+        <FormControl sx={{ mb: 2, width: 250, ml: 2 }}>
+          <InputLabel
+            sx={{ display: "flex", alignItems: "center", color: "#c9d1d9" }}
+          >
+            <ToggleOn sx={{ mr: 1 }} /> Trạng thái
+          </InputLabel>
+          <Select
+            value={selectedTrangThai}
+            label="Icon Trạng thái"
+            onChange={(e) => setSelectedTrangThai(e.target.value)}
+            sx={{ color: "#c9d1d9" }}
+          >
+            {" "}
+            <MenuItem value="">Xem tất cả</MenuItem>
+            <MenuItem value={1}>Đang hoạt động</MenuItem>
+            <MenuItem value={0}>Ngưng hoạt động</MenuItem>
+          </Select>
+        </FormControl>
       </Box>{" "}
       <Box sx={{ width: "100%", textAlign: "left" }}>
         {/* Thương hiệu */}
-        <FormControl sx={{ mb: 2, minWidth: 200 }}>
+        <FormControl sx={{ mb: 2, width: 250, ml: 2 }}>
           <InputLabel
             sx={{ display: "flex", alignItems: "center", color: "#c9d1d9" }}
           >
@@ -184,7 +183,7 @@ const FilterShoes = ({
         </FormControl>
 
         {/* Chất liệu */}
-        <FormControl sx={{ mb: 2, minWidth: 200, ml: 2 }}>
+        <FormControl sx={{ mb: 2, width: 250, ml: 2 }}>
           <InputLabel
             sx={{ display: "flex", alignItems: "center", color: "#c9d1d9" }}
           >
@@ -210,7 +209,7 @@ const FilterShoes = ({
         </FormControl>
 
         {/* Trạng thái */}
-        <FormControl sx={{ mb: 2, minWidth: 200, ml: 2 }}>
+        <FormControl sx={{ mb: 2, width: 250, ml: 2 }}>
           <InputLabel
             sx={{ display: "flex", alignItems: "center", color: "#c9d1d9" }}
           >
@@ -232,7 +231,7 @@ const FilterShoes = ({
         </FormControl>
 
         {/* Trạng thái */}
-        <FormControl sx={{ mb: 2, minWidth: 200, ml: 2 }}>
+        <FormControl sx={{ mb: 2, width: 250, ml: 2 }}>
           <InputLabel
             sx={{ display: "flex", alignItems: "center", color: "#c9d1d9" }}
           >
