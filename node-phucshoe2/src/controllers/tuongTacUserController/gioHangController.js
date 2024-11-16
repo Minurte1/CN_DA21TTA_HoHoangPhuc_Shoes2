@@ -218,7 +218,7 @@ GROUP BY cth.ID_SAN_PHAM
     if (results.length === 0) {
       return res.status(404).json({
         EM: "Giỏ hàng của người dùng trống hoặc không tồn tại",
-        EC: 0,
+        EC: 2,
         DT: [],
       });
     }

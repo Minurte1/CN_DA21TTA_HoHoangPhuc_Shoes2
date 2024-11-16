@@ -211,10 +211,17 @@ const CartSummary = ({
     </Typography>
     <Divider sx={{ my: 1, backgroundColor: "#555" }} />
     <Typography color="white">
-      {new Intl.NumberFormat("vi-VN", {
-        style: "currency",
-        currency: "VND",
-      }).format(tongTienCart)}
+      {tongTienCart ? (
+        <>
+          {" "}
+          {new Intl.NumberFormat("vi-VN", {
+            style: "currency",
+            currency: "VND",
+          }).format(tongTienCart)}
+        </>
+      ) : (
+        <>0đ</>
+      )}
     </Typography>
     <Typography color="white">Các hình thức thanh toán</Typography>{" "}
     {/* Trạng thái */}
@@ -285,19 +292,20 @@ const Cart = () => {
       );
       const data = await response.json();
 
-      if (data.EC === 1) {
-        dispatch(setTotalCart(data.totalQuantity));
-        setTongTienCart(data.TOTAL_AMOUNT);
-        setItems(data.DT);
-        // Calculate the total cart value
-        const total = data.DT.reduce(
-          (acc, item) => acc + item.GIA * item.SO_LUONG_GIOHANG,
-          0
-        );
-        setSubtotal(total);
-      } else {
-        console.error("Error fetching cart items:", data.EM);
-      }
+      // if (data.EC === 1) {
+      dispatch(setTotalCart(data.totalQuantity));
+      setTongTienCart(data.TOTAL_AMOUNT);
+      setItems(data.DT);
+      // Calculate the total cart value
+      const total = data.DT.reduce(
+        (acc, item) => acc + item.GIA * item.SO_LUONG_GIOHANG,
+        0
+      );
+
+      setSubtotal(total);
+      // } else {
+      //   console.error("Error fetching cart items:", data.EM);
+      // }
     } catch (error) {
       console.error("Error fetching cart items:", error);
     }
