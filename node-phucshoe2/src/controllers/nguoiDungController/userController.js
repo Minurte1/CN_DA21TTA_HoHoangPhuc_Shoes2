@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const JWT_SECRET = process.env.JWT_SECRET;
 const fs = require("fs");
 const path = require("path");
+const dayjs = require("dayjs");
 
 const getAllUser_Admin = async (req, res) => {
   try {
@@ -119,6 +120,133 @@ const updateUserById_Admin = async (req, res) => {
     console.error("Error in updateUserById:", error);
     return res.status(500).json({
       EM: `Error: ${error.message}`,
+      EC: -1,
+      DT: [],
+    });
+  }
+};
+
+const updateUserById_User = async (req, res) => {
+  const {
+    EMAIL,
+    HO_TEN,
+    SO_DIEN_THOAI,
+    NGAY_SINH,
+
+    DIA_CHI_Provinces,
+    DIA_CHI_Districts,
+    DIA_CHI_Wards,
+  } = req.body;
+
+  const { id } = req.params;
+
+  // Kiểm tra xem ID người dùng có hợp lệ không
+  if (!id) {
+    return res.status(400).json({
+      EM: "ID người dùng bị thiếu",
+      EC: 0,
+      DT: [],
+    });
+  }
+
+  try {
+    // Kiểm tra xem người dùng có tồn tại không
+    const [existingUser] = await pool.execute(
+      "SELECT * FROM NGUOI_DUNG WHERE ID_NGUOI_DUNG = ?",
+      [id]
+    );
+
+    if (existingUser.length === 0) {
+      return res.status(404).json({
+        EM: "Không tìm thấy người dùng",
+        EC: 0,
+        DT: [],
+      });
+    }
+
+    // Cập nhật các trường không phải null
+    let updateFields = [];
+    let updateValues = [];
+
+    if (EMAIL !== undefined && EMAIL !== null) {
+      updateFields.push("EMAIL = ?");
+      updateValues.push(EMAIL);
+    }
+    if (HO_TEN !== undefined && HO_TEN !== null) {
+      updateFields.push("HO_TEN = ?");
+      updateValues.push(HO_TEN);
+    }
+    if (SO_DIEN_THOAI !== undefined && SO_DIEN_THOAI !== null) {
+      updateFields.push("SO_DIEN_THOAI = ?");
+      updateValues.push(SO_DIEN_THOAI);
+    }
+    if (NGAY_SINH !== undefined && NGAY_SINH !== null) {
+      const formattedNgaySinh = dayjs(NGAY_SINH).format("YYYY-MM-DD"); // Sử dụng dayjs để chuyển đổi
+      updateFields.push("NGAY_SINH = ?");
+      updateValues.push(formattedNgaySinh);
+    }
+    if (DIA_CHI_Provinces !== undefined && DIA_CHI_Provinces !== null) {
+      updateFields.push("DIA_CHI_Provinces = ?");
+      updateValues.push(DIA_CHI_Provinces);
+    }
+    if (DIA_CHI_Districts !== undefined && DIA_CHI_Districts !== null) {
+      updateFields.push("DIA_CHI_Districts = ?");
+      updateValues.push(DIA_CHI_Districts);
+    }
+    if (DIA_CHI_Wards !== undefined && DIA_CHI_Wards !== null) {
+      updateFields.push("DIA_CHI_Wards = ?");
+      updateValues.push(DIA_CHI_Wards);
+    }
+
+    // Thêm trường ngày cập nhật
+    const ngayCapNhat = new Date();
+    updateFields.push("NGAY_CAP_NHAT_USER = ?");
+    updateValues.push(ngayCapNhat);
+
+    // Nếu không có gì cần cập nhật, trả về lỗi
+    if (updateFields.length === 0) {
+      return res.status(400).json({
+        EM: "Không có thông tin cần cập nhật",
+        EC: 0,
+        DT: [],
+      });
+    }
+
+    // Cập nhật thông tin người dùng
+    const updateQuery = `
+      UPDATE NGUOI_DUNG 
+      SET ${updateFields.join(", ")}
+      WHERE ID_NGUOI_DUNG = ?
+    `;
+
+    // Thêm ID người dùng vào cuối giá trị để xác định người dùng cần cập nhật
+    updateValues.push(id);
+
+    const [updateResult] = await pool.execute(updateQuery, updateValues);
+
+    if (updateResult.affectedRows > 0) {
+      // Lấy lại thông tin mới nhất của người dùng sau khi cập nhật
+      const [updatedUser] = await pool.execute(
+        "SELECT * FROM NGUOI_DUNG WHERE ID_NGUOI_DUNG = ?",
+        [id]
+      );
+
+      return res.status(200).json({
+        EM: "Cập nhật thông tin thành công",
+        EC: 1,
+        DT: updatedUser,
+      });
+    } else {
+      return res.status(400).json({
+        EM: "Cập nhật không thành công",
+        EC: 0,
+        DT: [],
+      });
+    }
+  } catch (error) {
+    console.error("Lỗi trong updateUserById_User:", error);
+    return res.status(500).json({
+      EM: `Lỗi hệ thống: ${error.message}`,
       EC: -1,
       DT: [],
     });
@@ -362,4 +490,5 @@ module.exports = {
   getAllUser_Admin,
   updateAvatarController,
   getUser_ById,
+  updateUserById_User,
 };

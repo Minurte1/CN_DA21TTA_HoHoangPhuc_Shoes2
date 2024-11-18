@@ -105,7 +105,11 @@ const AddressSelector = ({
         renderInput={(params) => (
           <TextField
             {...params}
-            label="Chọn tỉnh"
+            label={
+              selectedProvince
+                ? selectedProvince.name_with_type || selectedProvince
+                : "Chọn tỉnh"
+            }
             sx={{
               backgroundColor: "#151b23", // Màu nền của input
               "& .MuiInputLabel-root": { color: "#f0ffff" }, // Màu chữ của label
@@ -140,7 +144,11 @@ const AddressSelector = ({
         renderInput={(params) => (
           <TextField
             {...params}
-            label="Chọn huyện"
+            label={
+              selectedDistrict
+                ? selectedDistrict.name_with_type || selectedDistrict
+                : "Chọn huyện"
+            }
             sx={{
               backgroundColor: "#151b23", // Màu nền của input
               "& .MuiInputLabel-root": { color: "#f0ffff" },
@@ -176,7 +184,11 @@ const AddressSelector = ({
         renderInput={(params) => (
           <TextField
             {...params}
-            label="Chọn phường/xã"
+            label={
+              selectedWards
+                ? selectedWards.name_with_type || selectedWards
+                : "Chọn phường xã"
+            }
             sx={{
               backgroundColor: "#151b23", // Màu nền của input
               "& .MuiInputLabel-root": { color: "#f0ffff" },

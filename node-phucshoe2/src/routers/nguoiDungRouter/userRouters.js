@@ -11,6 +11,7 @@ const {
   getAllUser_Admin,
   updateAvatarController,
   getUser_ById,
+  updateUserById_User,
 } = require("../../controllers/nguoiDungController/userController");
 const { checkUserJWT } = require("../../middleware/JWTaction");
 const upload = require("../../config/multerConfig");
@@ -23,5 +24,6 @@ router.post("/verify-admin", verifyAdmin);
 router.post("/register");
 router.put("/user/:id/avatar", upload.single("images"), updateAvatarController);
 
+router.put("/user/:id", updateUserById_User);
 router.put("/user/update", updateUserById_Admin);
 module.exports = router;

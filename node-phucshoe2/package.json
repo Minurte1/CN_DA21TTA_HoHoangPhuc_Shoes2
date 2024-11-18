@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "Server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1", 
+    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon ./src/Server.js"
   },
   "author": "PhucShoe2",
@@ -19,6 +19,7 @@
     "cookie-session": "^2.1.0",
     "cors": "^2.8.5",
     "date-fns": "^4.1.0",
+    "dayjs": "^1.11.13",
     "dotenv": "^16.4.5",
     "ejs": "^3.1.10",
     "express": "^4.21.1",

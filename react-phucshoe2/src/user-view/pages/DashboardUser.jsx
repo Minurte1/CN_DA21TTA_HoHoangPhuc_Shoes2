@@ -10,6 +10,12 @@ import AddressSelector from "../components/addressUser";
 import AvatarChanger from "../components/avatarUser";
 import moment from "moment";
 
+import dayjs from "dayjs";
+import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+
 const api = process.env.REACT_APP_URL_SERVER;
 
 const UserProfile = () => {
@@ -18,6 +24,7 @@ const UserProfile = () => {
   const dispatch = useDispatch();
   const [currentAvatar, setCurrentAvatar] = useState("");
   const [dataUser, setDataUser] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(dataUser?.NGAY_SINH || null);
 
   const [selectedProvince, setSelectedProvince] = useState(null);
   const [selectedDistrict, setSelectedDistrict] = useState(null);
@@ -40,6 +47,18 @@ const UserProfile = () => {
       if (response.data.EC === 1) {
         setDataUser(response.data.DT[0]);
         setCurrentAvatar(response.data.DT[0].AVATAR);
+        setSelectedProvince(response.data.DT[0].DIA_CHI_Provinces);
+        setSelectedDistrict(response.data.DT[0].DIA_CHI_Districts);
+        setSelectedWards(response.data.DT[0].DIA_CHI_Wards);
+        // Kiểm tra và cập nhật selectedDate
+        if (response.data.DT[0].NGAY_SINH) {
+          const formattedDate = dayjs(response.data.DT[0].NGAY_SINH);
+          if (formattedDate.isValid()) {
+            setSelectedDate(formattedDate); // Cập nhật giá trị ngày hợp lệ
+          } else {
+            setSelectedDate(null); // Nếu không hợp lệ, đặt lại là null
+          }
+        }
       }
     } catch (error) {
       console.error("Lỗi hệ thống:", error);
@@ -53,14 +72,14 @@ const UserProfile = () => {
 
   const handleProfileUpdate = async () => {
     const updatedData = {
-      email: dataUser.EMAIL,
-      fullName: dataUser.HO_TEN,
-      phoneNumber: dataUser.SDT,
-      birthDate: dataUser.NGAY_SINH,
-      role: dataUser.VAI_TRO,
-      status: dataUser.TRANG_THAI,
-      updatedAt: dataUser.NGAY_CAP_NHAT,
-      createdAt: dataUser.NGAY_TAO,
+      EMAIL: dataUser.EMAIL,
+      HO_TEN: dataUser.HO_TEN,
+      SO_DIEN_THOAI: dataUser.SO_DIEN_THOAI,
+      NGAY_SINH: selectedDate,
+
+      DIA_CHI_Provinces: selectedProvince.name_with_type,
+      DIA_CHI_Districts: selectedDistrict.name_with_type,
+      DIA_CHI_Wards: selectedWards.name_with_type,
     };
 
     try {
@@ -201,33 +220,45 @@ const UserProfile = () => {
               },
             }}
           />{" "}
-          <TextField
-            label="Ngày sinh"
-            variant="outlined"
-            value={dataUser?.NGAY_SINH || ""} // Đảm bảo giá trị mặc định là chuỗi rỗng nếu không có dataUser hoặc EMAIL
-            onChange={(e) =>
-              setDataUser({ ...dataUser, NGAY_SINH: e.target.value })
-            }
-            fullWidth
-            InputProps={{
-              style: { color: "#fff" }, // Màu chữ trong TextField
-            }}
-            InputLabelProps={{
-              style: { color: "#fff" }, // Màu chữ nhãn
-            }}
-            sx={{
-              backgroundColor: "#151b23", // Màu nền của input
-              "& .MuiInputLabel-root": { color: "#f0ffff" }, // Màu chữ của label
-              "& .MuiInputBase-input": { color: "#f0ffff" }, // Màu chữ của input
-              "& .MuiOutlinedInput-root": {
-                "& fieldset": { borderColor: "#3d444d" }, // Màu viền
-              },
-              "& .MuiInputBase-root": {
-                borderRadius: "4px", // Làm tròn góc nếu muốn
-              },
-              ml: 2,
-            }}
-          />
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DatePicker
+              label="Ngày sinh"
+              value={selectedDate}
+              sx={{
+                backgroundColor: "#151b23", // Màu nền của input
+                "& .MuiInputLabel-root": { color: "#f0ffff" }, // Màu chữ của label
+                "& .MuiInputBase-input": { color: "#f0ffff" }, // Màu chữ của input
+                "& .MuiOutlinedInput-root": {
+                  "& fieldset": { borderColor: "#3d444d" }, // Màu viền
+                },
+                "& .MuiInputBase-root": {
+                  borderRadius: "4px", // Làm tròn góc nếu muốn
+                },
+                ml: 2,
+                "& .MuiSvgIcon-root": {
+                  color: "#f0ffff", // Màu của icon
+                },
+                width: "820px",
+              }}
+              onChange={(newDate) => {
+                setSelectedDate(newDate); // Cập nhật giá trị mới
+                setDataUser({ ...dataUser, NGAY_SINH: newDate }); // Cập nhật dataUser với giá trị ngày sinh
+              }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant="outlined"
+                  fullWidth
+                  InputProps={{
+                    style: { color: "#fff" }, // Màu chữ trong TextField
+                  }}
+                  InputLabelProps={{
+                    style: { color: "#fff" }, // Màu chữ nhãn
+                  }}
+                />
+              )}
+            />
+          </LocalizationProvider>
         </Box>
         <AddressSelector
           selectedProvince={selectedProvince}
