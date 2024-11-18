@@ -72,7 +72,6 @@ const UserProfile = () => {
 
   const handleProfileUpdate = async () => {
     const updatedData = {
-      EMAIL: dataUser.EMAIL,
       HO_TEN: dataUser.HO_TEN,
       SO_DIEN_THOAI: dataUser.SO_DIEN_THOAI,
       NGAY_SINH: selectedDate,
@@ -139,9 +138,9 @@ const UserProfile = () => {
             variant="outlined"
             fullWidth
             value={dataUser?.EMAIL || ""} // Đảm bảo giá trị mặc định là chuỗi rỗng nếu không có dataUser hoặc EMAIL
-            onChange={(e) =>
-              setDataUser({ ...dataUser, EMAIL: e.target.value })
-            }
+            // onChange={(e) =>
+            //   setDataUser({ ...dataUser, EMAIL: e.target.value })
+            // }
             InputProps={{
               style: { color: "#fff" }, // Màu chữ trong TextField
             }}

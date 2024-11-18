@@ -190,6 +190,18 @@ const Header = () => {
       </Box>
       {/* <Button color="inherit">Language</Button> */}
       <Box sx={{ display: "flex", alignItems: "center", ml: 2 }}>
+        <Typography
+          onClick={handleMenu}
+          variant="body1"
+          component="span"
+          sx={{
+            ml: 1,
+            cursor: "pointer",
+            color: `${userInfo?.VAI_TRO === "1" ? "red" : "white"}`,
+          }}
+        >
+          {isAuthenticated ? <div>{userInfo?.HO_TEN}</div> : <></>}
+        </Typography>{" "}
         <IconButton
           size="large"
           aria-label="account of current user"
@@ -327,27 +339,7 @@ const Header = () => {
             Đăng xuất
           </MenuItem>
         </Menu>
-
-        <Typography
-          onClick={handleMenu}
-          variant="body1"
-          component="span"
-          sx={{
-            ml: 1,
-            cursor: "pointer",
-            color: `${userInfo?.VAI_TRO === "1" ? "red" : "white"}`,
-          }}
-        >
-          {isAuthenticated ? <div>{userInfo?.HO_TEN}</div> : <></>}
-        </Typography>
       </Box>
-      <Button
-        variant="contained"
-        href="https://launcher-public-service-prod06.ol.epicgames.com/launcher/api/installer/download/EpicGamesLauncherInstaller.msi?trackingId=aebf7d1fc5764a45acab1b551038bebf"
-        style={{ backgroundColor: "#00aaff", marginLeft: 16 }}
-      >
-        {t.download}
-      </Button>
     </>
   );
 

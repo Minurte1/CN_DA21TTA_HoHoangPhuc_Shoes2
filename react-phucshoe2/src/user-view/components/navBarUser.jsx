@@ -36,7 +36,7 @@ const NavBarUser = () => (
     }}
   >
     <Typography variant="h6" style={{ marginBottom: "20px", color: "#fff" }}>
-      Account Settings
+      Profile User
     </Typography>
     <List component="nav">
       <ListItem button component={Link} to="/user" sx={{ color: "#f0f6fc" }}>

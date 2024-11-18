@@ -16,6 +16,7 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { setTotalCart } from "../redux/authSlice";
 import { enqueueSnackbar } from "notistack";
+import translations from "../redux/data/translations";
 const api = process.env.REACT_APP_URL_SERVER;
 
 const CarouselHead = ({ carouselProducts }) => {
@@ -23,7 +24,8 @@ const CarouselHead = ({ carouselProducts }) => {
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const [isSelected, setIsSelected] = useState(""); // State để theo dõi trạng thái nhấp
   const [animateLogo, setAnimateLogo] = useState(false); // State để quản lý animation logo
-
+  const language = useSelector((state) => state.language.language);
+  const t = translations[language].homeCarouselHead;
   const navigate = useNavigate();
   // State to manage the current main image
   const [mainImage, setMainImage] = useState("");
@@ -192,7 +194,7 @@ const CarouselHead = ({ carouselProducts }) => {
                 borderRadius: "14px",
               }}
             >
-              Mua Ngay
+              {t.BuyNow ? t.BuyNow : " Mua Ngay"}
             </Button>
             <Button
               variant="text"
@@ -211,7 +213,7 @@ const CarouselHead = ({ carouselProducts }) => {
               <AddCircleOutlineIcon
                 sx={{ marginRight: "10px", fontSize: "18px" }}
               />
-              Thêm vào giỏ hàng
+              {t.AddToCart ? t.AddToCart : "Thêm vào giỏ hàng"}
             </Button>
           </Box>
         </Box>

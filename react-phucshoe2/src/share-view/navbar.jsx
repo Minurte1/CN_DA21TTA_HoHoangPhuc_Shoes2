@@ -18,6 +18,7 @@ import { Link as RouterLink, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { setTotalCart } from "../redux/authSlice";
+import translations from "../redux/data/translations";
 
 const api = process.env.REACT_APP_URL_SERVER;
 const Navbar = () => {
@@ -27,7 +28,13 @@ const Navbar = () => {
   const [isFixed, setIsFixed] = useState(false); // State để điều khiển vị trí
   const location = useLocation();
   const dispatch = useDispatch();
+
+  //language
+  const language = useSelector((state) => state.language.language);
+  const t = translations[language].navbar;
+
   const isActive = (path) => location.pathname === path;
+
   const { isAuthenticated, userInfo, totalCart } = useSelector(
     (state) => state.auth
   );
@@ -76,7 +83,7 @@ const Navbar = () => {
                 color: isActive("/") ? "#3ccaff" : "#fff",
               }}
             >
-              Discover
+              {t.Discover}
             </Typography>
           </Box>
 
@@ -94,7 +101,7 @@ const Navbar = () => {
                 color: isActive("/browse") ? "#3ccaff" : "#fff",
               }}
             >
-              Browse
+              {t.Products}
             </Typography>
           </Box>
 
@@ -112,7 +119,7 @@ const Navbar = () => {
                 color: isActive("/news") ? "#3ccaff" : "#fff",
               }}
             >
-              News
+              {t.News}
             </Typography>
           </Box>
         </Box>
@@ -132,7 +139,7 @@ const Navbar = () => {
                 color: isActive("/wishlist") ? "#3ccaff" : "#fff",
               }}
             >
-              Wishlist
+              {t.Wishlist}
             </Typography>
           </Box>
 
@@ -151,7 +158,7 @@ const Navbar = () => {
               }}
             >
               <Badge badgeContent={totalCart} color="secondary">
-                Cart
+                {t.Cart}
               </Badge>
             </Typography>
           </Box>
@@ -202,7 +209,7 @@ const Navbar = () => {
             <SearchIcon />
           </IconButton>
           <InputBase
-            placeholder="Search store"
+            placeholder={t.SearchStore}
             sx={{
               ml: 1,
               color: "inherit",
@@ -235,7 +242,7 @@ const Navbar = () => {
               open={Boolean(anchorEl)}
               onClose={handleMenuClose}
             >
-              <MenuItem onClick={handleMenuClose}>Discover</MenuItem>
+              <MenuItem onClick={handleMenuClose}>{t.Discover}</MenuItem>
               <MenuItem onClick={handleMenuClose}>Browse</MenuItem>
               <MenuItem onClick={handleMenuClose}>News</MenuItem>
               <MenuItem onClick={handleMenuClose}>Wishlist</MenuItem>

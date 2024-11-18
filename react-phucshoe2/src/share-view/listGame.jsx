@@ -15,12 +15,15 @@ import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { enqueueSnackbar } from "notistack";
 import { setTotalCart } from "../redux/authSlice";
+import translations from "../redux/data/translations";
 const ListGame = ({ title, items, api }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const handleBuyProduct = (id) => {
     navigate(`/selectShoe/${id}`);
   };
+  const language = useSelector((state) => state.language.language);
+  const t = translations[language].homeProductCarousel;
 
   const { isAuthenticated, userInfo } = useSelector((state) => state.auth);
   const handleAddToCart = async (product) => {
@@ -141,7 +144,7 @@ const ListGame = ({ title, items, api }) => {
               {/* Thêm IconButton cho các icon */}
               <Box sx={{ display: "flex", alignItems: "center" }}>
                 {/* Tooltip và hiệu ứng cho Add to Cart */}
-                <Tooltip title="Add to Cart" arrow>
+                <Tooltip title={t.AddToCart} arrow>
                   <IconButton
                     sx={{
                       color: "#fff",
@@ -162,7 +165,7 @@ const ListGame = ({ title, items, api }) => {
                 </Tooltip>
 
                 {/* Tooltip và hiệu ứng cho Add to Wish */}
-                <Tooltip title="Add to Wish" arrow>
+                <Tooltip title={t.AddToWish} arrow>
                   <IconButton
                     sx={{
                       color: "#fff",

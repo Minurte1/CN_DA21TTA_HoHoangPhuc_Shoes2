@@ -19,12 +19,16 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { setTotalCart } from "../redux/authSlice";
 import { enqueueSnackbar } from "notistack";
+import translations from "../redux/data/translations";
 const ProductCarousel = ({ title, products, api }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [productLength, setProductLength] = useState(0);
   const [disable, setDisable] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const language = useSelector((state) => state.language.language);
+  const t = translations[language].homeProductCarousel;
+
   useEffect(() => {
     if (Array.isArray(products) && products.length > 0) {
       setProductLength(products.length);
@@ -221,7 +225,7 @@ const ProductCarousel = ({ title, products, api }) => {
                 }}
                 onClick={() => handleBuyProduct(product.ID_SAN_PHAM)}
               >
-                <Tooltip title="Add to Wish" arrow>
+                <Tooltip title={t.AddToWish} arrow>
                   <ControlPointIcon
                     sx={{
                       position: "absolute", // Đặt icon ở góc trên bên phải
@@ -275,7 +279,7 @@ const ProductCarousel = ({ title, products, api }) => {
                     {product.GIA
                       ? `${product.GIA.toLocaleString("vi-VN")}đ`
                       : "Giá không có sẵn"}{" "}
-                    <Tooltip title="Add to cart" arrow>
+                    <Tooltip title={t.AddToCart} arrow>
                       <AddShoppingCartIcon
                         sx={{
                           cursor: "pointer",

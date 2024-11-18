@@ -10,8 +10,12 @@ import {
 import FacebookIcon from "@mui/icons-material/Facebook";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import YouTubeIcon from "@mui/icons-material/YouTube";
-
+import translations from "../redux/data/translations";
+import { useSelector } from "react-redux";
 const Footer = () => {
+  const language = useSelector((state) => state.language.language);
+  const t = translations[language].footer;
+
   return (
     <Box
       sx={{ backgroundColor: "#1a1a1a", color: "white", padding: "40px 20px" }}
@@ -33,59 +37,59 @@ const Footer = () => {
       <Grid container spacing={4} justifyContent="center" textAlign="center">
         <Grid item xs={6} sm={3}>
           <Typography variant="h6" sx={{ fontWeight: "bold", marginBottom: 2 }}>
-            Resources
+            {t.resources}
           </Typography>
           <Box>
             <Link href="#" color="inherit" underline="hover">
-              Support-A-Creator
+              {t.support}
             </Link>
             <br />
             <Link href="#" color="inherit" underline="hover">
-              Distribute on Epic Games
+              {t.distribute}
             </Link>
             <br />
             <Link href="#" color="inherit" underline="hover">
-              Careers
+              {t.careers}
             </Link>
             <br />
             <Link href="#" color="inherit" underline="hover">
-              Company
+              {t.company}
             </Link>
           </Box>
         </Grid>
         <Grid item xs={6} sm={3}>
           <Box>
             <Link href="#" color="inherit" underline="hover">
-              Fan Art Policy
+              {t.fanArtPolicy}
             </Link>
             <br />
             <Link href="#" color="inherit" underline="hover">
-              UX Research
+              {t.uxResearch}
             </Link>
             <br />
             <Link href="#" color="inherit" underline="hover">
-              Store EULA
+              {t.storeEula}
             </Link>
             <br />
             <Link href="#" color="inherit" underline="hover">
-              Online Services
+              {t.onlineServices}
             </Link>
           </Box>
         </Grid>
         <Grid item xs={6} sm={3}>
           <Box>
             <Link href="#" color="inherit" underline="hover">
-              Community Rules
+              {t.communityRules}
             </Link>
             <br />
             <Link href="#" color="inherit" underline="hover">
-              Epic Newsroom
+              {t.newsroom}
             </Link>
           </Box>
         </Grid>
-        <Grid item xs={6} sm={3}>
+        {/* <Grid item xs={6} sm={3}>
           <Typography variant="h6" sx={{ fontWeight: "bold", marginBottom: 2 }}>
-            Made By Epic Games
+            {t.madeBy}
           </Typography>
           <Box>
             <Link href="#" color="inherit" underline="hover">
@@ -112,18 +116,15 @@ const Footer = () => {
               Unreal Tournament
             </Link>
           </Box>
-        </Grid>
+        </Grid> */}
       </Grid>
 
       <Divider sx={{ backgroundColor: "#444", marginY: 4 }} />
 
       {/* Copyright Section */}
       <Box sx={{ textAlign: "center", marginBottom: 3 }}>
-        <Typography variant="body2" color="textSecondary">
-          © 2024, Epic Games, Inc. All rights reserved. Epic, Epic Games, the
-          Epic Games logo, Fortnite, the Fortnite logo, Unreal, Unreal Engine,
-          and Unreal Tournament are trademarks or registered trademarks of Epic
-          Games, Inc. in the United States of America and elsewhere.
+        <Typography variant="body2" color="inherit">
+          {t.copyright}
         </Typography>
       </Box>
 
@@ -135,7 +136,7 @@ const Footer = () => {
           underline="hover"
           sx={{ marginRight: 2 }}
         >
-          Terms of Service
+          {t.termsOfService}
         </Link>
         <Link
           href="#"
@@ -143,10 +144,10 @@ const Footer = () => {
           underline="hover"
           sx={{ marginRight: 2 }}
         >
-          Privacy Policy
+          {t.privacyPolicy}
         </Link>
         <Link href="#" color="inherit" underline="hover">
-          Store Refund Policy
+          {t.storeRefundPolicy}
         </Link>
       </Box>
     </Box>

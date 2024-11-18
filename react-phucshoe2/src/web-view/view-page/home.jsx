@@ -17,6 +17,8 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import translations from "../../redux/data/translations";
 const api = process.env.REACT_APP_URL_SERVER;
 
 const Home = () => {
@@ -30,6 +32,10 @@ const Home = () => {
   const [bestExpensive, setBestExpensive] = useState([]);
   const [loading, setLoading] = useState(true); // State loading
   const navigate = useNavigate();
+
+  const language = useSelector((state) => state.language.language);
+  const t = translations[language].home;
+
   useEffect(() => {
     fetchAllProducts();
   }, []);
@@ -104,6 +110,7 @@ const Home = () => {
       </div>
     );
   }
+  console.log("t.ProductsGirl", t.ProductsGirl);
   return (
     <>
       <div className="container-home">
@@ -111,7 +118,7 @@ const Home = () => {
         <div className="home">
           <CarouselHead carouselProducts={carouselProducts} api={api} />
           <ProductCarousel
-            title="Sản phẩm dành cho nữ"
+            title={t.ProductsGirl ? t.ProductsGirl : "Sản phẩm dành cho nữ"}
             products={nuProducts}
             api={api}
           />
@@ -176,7 +183,7 @@ const Home = () => {
                           },
                         }}
                       >
-                        Mua Ngay
+                        {t.BuyNow}
                       </Button>
                     </CardContent>
                   </Card>
@@ -185,12 +192,12 @@ const Home = () => {
             </Grid>
           </Box>
           <CartProduct
-            title="Giày cho trẻ em"
+            title={t.ProductsChild}
             products={treEmProducts}
             api={api}
           />
           <ProductCarousel
-            title="Giày dành cho nam"
+            title={t.ProductsMale}
             products={namProducts}
             api={api}
           />
@@ -205,7 +212,7 @@ const Home = () => {
               <Grid item xs={12} sm={6} md={4}>
                 {bestSellingProducts && bestSellingProducts.length > 0 && (
                   <ListGame
-                    title="Bán chạy nhất"
+                    title={t.BestSellers}
                     api={api}
                     items={bestSellingProducts}
                   />
@@ -215,7 +222,7 @@ const Home = () => {
               <Grid item xs={12} sm={6} md={4}>
                 {bestExpensive && bestExpensive.length > 0 && (
                   <ListGame
-                    title="Có giá trị cao nhất"
+                    title={t.HighestValue}
                     api={api}
                     items={bestExpensive}
                   />
@@ -225,7 +232,7 @@ const Home = () => {
               <Grid item xs={12} sm={6} md={4}>
                 {bestFavorite && bestFavorite.length > 0 ? (
                   <ListGame
-                    title="Top Upcoming Wishlisted"
+                    title={t.MostPopularProducts}
                     items={bestFavorite}
                     api={api}
                   />
