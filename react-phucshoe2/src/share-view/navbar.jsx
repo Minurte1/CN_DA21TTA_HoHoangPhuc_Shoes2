@@ -183,7 +183,30 @@ const Navbar = () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [products, setProducts] = useState([]);
 
+  const handleSearchChange = async (e) => {
+    const term = e.target.value;
+    setSearchTerm(term);
+
+    // Gửi yêu cầu tìm kiếm khi người dùng nhập từ khóa
+    if (term.length >= 3) {
+      // Chỉ tìm kiếm khi có ít nhất 3 ký tự
+      try {
+        const response = await axios.get(`${api}/san-pham/search`, {
+          params: { query: term },
+        });
+        if (response.data.EC === 1) {
+          setProducts(response.data.DT);
+        }
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    } else {
+      setProducts([]);
+    }
+  };
   return (
     <AppBar
       position={isFixed ? "fixed" : "relative"} // Thay đổi vị trí dựa trên trạng thái
@@ -203,21 +226,91 @@ const Navbar = () => {
             padding: "4px 12px",
             marginRight: 16,
             width: "300px",
+            position: "relative", // Đảm bảo phần tử con có thể được căn chỉnh chính xác
           }}
         >
           <IconButton size="small" color="inherit">
             <SearchIcon />
           </IconButton>
           <InputBase
+            value={searchTerm}
+            onChange={handleSearchChange}
             placeholder={t.SearchStore}
             sx={{
               ml: 1,
               color: "inherit",
               flex: 1,
+              position: "relative", // Giữ cho input có thể căn chỉnh đúng với kết quả tìm kiếm
             }}
             inputProps={{ "aria-label": "search store" }}
           />
+
+          {/* Hiển thị kết quả tìm kiếm */}
+          <Box
+            sx={{
+              marginTop: "20px",
+              top: 20,
+              display: "flex",
+              flexDirection: "column",
+              gap: 0.5,
+              position: "absolute", // Đặt kết quả tìm kiếm dưới ô input
+              zIndex: 100, // Đảm bảo kết quả tìm kiếm hiển thị phía trên các phần tử khác
+              width: "100%", // Đảm bảo phần tử con chiếm toàn bộ chiều rộng của phần tử cha
+            }}
+          >
+            {products.length > 0 ? (
+              products.map((product) => (
+                <Box
+                  key={product.ID_SAN_PHAM}
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    backgroundColor: "#ffffff",
+                    borderRadius: 2,
+                    boxShadow: 2,
+                    padding: 1, // Thêm một chút padding để không bị dính sát vào nhau
+                  }}
+                >
+                  <Box sx={{ flex: 1, textAlign: "left" }}>
+                    <Typography
+                      variant="body1"
+                      sx={{
+                        color: "#101014",
+                        fontWeight: "bold",
+                        fontSize: "13px",
+                      }}
+                    >
+                      {product.TEN_SAN_PHAM}
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      sx={{ color: "gray", fontSize: "10px" }}
+                    >
+                      {new Intl.NumberFormat("vi-VN", {
+                        style: "currency",
+                        currency: "VND",
+                      }).format(product.GIA)}
+                    </Typography>
+                  </Box>
+                  <img
+                    src={`${api}/images/${product.HINH_ANH_SANPHAM}`}
+                    alt={product.TEN_SAN_PHAM}
+                    style={{
+                      width: 50,
+                      height: 50,
+                      objectFit: "cover",
+                      borderRadius: "50%",
+                      marginRight: 16,
+                    }}
+                  />
+                </Box>
+              ))
+            ) : (
+              <></>
+            )}
+          </Box>
         </Box>
+
         {isMobile ? (
           <>
             <IconButton

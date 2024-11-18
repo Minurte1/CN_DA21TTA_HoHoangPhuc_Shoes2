@@ -178,6 +178,56 @@ const getSAN_PHAM_Use = async (req, res) => {
     });
   }
 };
+//Search theo sản phẩm
+const getSAN_PHAM_Search = async (req, res) => {
+  const { query } = req.query; // Nhận từ khóa tìm kiếm từ frontend
+
+  if (!query) {
+    return res.status(400).json({
+      EM: "Vui lòng cung cấp từ khóa tìm kiếm",
+      EC: 0,
+      DT: [],
+    });
+  }
+
+  try {
+    // Truy vấn cơ sở dữ liệu với từ khóa tìm kiếm và giới hạn chỉ lấy 5 sản phẩm
+    const [results] = await connection.execute(
+      `
+      SELECT 
+        sp.ID_SAN_PHAM, sp.ID_THUONG_HIEU, sp.ID_DANH_MUC, sp.GIOI_TINH_ID, sp.CHAT_LIEU_ID_,
+        sp.TEN_SAN_PHAM, sp.GIA, sp.MO_TA_SAN_PHAM, sp.HINH_ANH_SANPHAM, sp.TRANG_THAI_SANPHAM, 
+        sp.NGAY_TAO_SANPHAM, sp.NGAY_CAP_NHAT_SANPHAM, sp.SO_LUONG_SANPHAM,
+        gt.TEN_GIOI_TINH,
+        dm.TEN_DANH_MUC, dm.MO_TA_LOAI_DANH_MUC,
+        cl.TEN_CHAT_LIEU_, cl.MO_TA_CHAT_LIEU,
+        th.TEN_THUONG_HIEU
+      FROM SAN_PHAM sp
+      LEFT JOIN GIOI_TINH gt ON sp.GIOI_TINH_ID = gt.GIOI_TINH_ID
+      LEFT JOIN LOAI_DANH_MUC dm ON sp.ID_DANH_MUC = dm.ID_DANH_MUC
+      LEFT JOIN CHAT_LIEU cl ON sp.CHAT_LIEU_ID_ = cl.CHAT_LIEU_ID_
+      LEFT JOIN THUONG_HIEU th ON sp.ID_THUONG_HIEU = th.ID_THUONG_HIEU
+      WHERE sp.TRANG_THAI_SANPHAM = 1
+      AND sp.TEN_SAN_PHAM LIKE ?  -- Tìm kiếm theo tên sản phẩm
+      LIMIT 5  -- Giới hạn kết quả trả về chỉ 5 sản phẩm
+    `,
+      [`%${query}%`]
+    );
+
+    return res.status(200).json({
+      EM: "Xem thông tin sản phẩm thành công",
+      EC: 1,
+      DT: results,
+    });
+  } catch (error) {
+    console.error("Error getting san pham:", error);
+    return res.status(500).json({
+      EM: "Có lỗi xảy ra khi lấy thông tin",
+      EC: 0,
+      DT: [],
+    });
+  }
+};
 
 //lấy tất cả sản phẩm ĐANG HOẠT ĐỘNG = NỮ
 const getSAN_PHAM_Use_Nu = async (req, res) => {
@@ -789,4 +839,5 @@ module.exports = {
   getFavoriteProductsByUser,
   getSAN_PHAM_Use_ById,
   getSAN_PHAM_Use_Nam,
+  getSAN_PHAM_Search,
 };
