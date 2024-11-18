@@ -14,7 +14,7 @@ import {
 import SearchIcon from "@mui/icons-material/Search";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useTheme } from "@mui/material/styles";
-import { Link as RouterLink, useLocation } from "react-router-dom";
+import { Link as RouterLink, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { setTotalCart } from "../redux/authSlice";
@@ -28,7 +28,7 @@ const Navbar = () => {
   const [isFixed, setIsFixed] = useState(false); // State để điều khiển vị trí
   const location = useLocation();
   const dispatch = useDispatch();
-
+  const navigate = useNavigate();
   //language
   const language = useSelector((state) => state.language.language);
   const t = translations[language].navbar;
@@ -65,7 +65,11 @@ const Navbar = () => {
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
-
+  const handleBuyProduct = (id) => {
+    setSearchTerm("");
+    setProducts([]);
+    navigate(`/selectShoe/${id}`);
+  };
   const menuItems = (
     <>
       <Box
@@ -262,6 +266,7 @@ const Navbar = () => {
               products.map((product) => (
                 <Box
                   key={product.ID_SAN_PHAM}
+                  onClick={() => handleBuyProduct(product.ID_SAN_PHAM)}
                   sx={{
                     display: "flex",
                     alignItems: "center",
