@@ -18,6 +18,8 @@ import {
   FormatSize,
   BorderStyle,
 } from "@mui/icons-material";
+import { useSelector } from "react-redux";
+import translations from "../../../../redux/data/translations";
 
 const FilterShoes = ({
   thuongHieu,
@@ -51,6 +53,9 @@ const FilterShoes = ({
   //
   offStatus,
 }) => {
+  const language = useSelector((state) => state.language.language);
+  const t = translations[language].products;
+
   return (
     <>
       {" "}
@@ -59,7 +64,7 @@ const FilterShoes = ({
         <FormControl sx={{ mb: 2, width: 250, ml: 2 }}>
           <TextField
             value={searchTerm}
-            label="Tìm kiếm tên sản phẩm"
+            label={t.SearchProduct ? t.SearchProduct : "Tìm kiếm sản phẩm"}
             onChange={handleSearchChange}
             InputProps={{
               startAdornment: (
@@ -94,7 +99,7 @@ const FilterShoes = ({
           <InputLabel
             sx={{ display: "flex", alignItems: "center", color: "#c9d1d9" }}
           >
-            <Apartment sx={{ mr: 1 }} /> Thương hiệu
+            <Apartment sx={{ mr: 1 }} /> {t.brands ? t.brands : "Thương hiệu"}
           </InputLabel>
           <Select
             value={selectedThuongHieu}
@@ -103,7 +108,7 @@ const FilterShoes = ({
             sx={{ color: "#c9d1d9" }}
           >
             {" "}
-            <MenuItem value="">Xem tất cả</MenuItem>
+            <MenuItem value="">{t.SeeAll ? t.SeeAll : "Xem tất cả"}</MenuItem>
             {thuongHieu.map((thuongHieuItem) => (
               <MenuItem
                 key={thuongHieuItem.ID_THUONG_HIEU}
@@ -120,7 +125,8 @@ const FilterShoes = ({
           <InputLabel
             sx={{ display: "flex", alignItems: "center", color: "#c9d1d9" }}
           >
-            <FormatListBulleted sx={{ mr: 1 }} /> Chất liệu
+            <FormatListBulleted sx={{ mr: 1 }} />{" "}
+            {t.material ? t.material : "Chất liệu"}
           </InputLabel>
           <Select
             value={selectedChatLieu}
@@ -129,7 +135,7 @@ const FilterShoes = ({
             label="Icon Chất liệu"
           >
             {" "}
-            <MenuItem value="">Xem tất cả</MenuItem>
+            <MenuItem value="">{t.SeeAll ? t.SeeAll : "Xem tất cả"}</MenuItem>
             {chatLieu.map((chatLieuItem) => (
               <MenuItem
                 key={chatLieuItem.CHAT_LIEU_ID_}
@@ -174,7 +180,7 @@ const FilterShoes = ({
           <InputLabel
             sx={{ display: "flex", alignItems: "center", color: "#c9d1d9" }}
           >
-            <ColorLens sx={{ mr: 1 }} /> Màu Sắc
+            <ColorLens sx={{ mr: 1 }} /> {t.Color ? t.Color : "Màu sắc"}
           </InputLabel>
           <Select
             value={selectedMauSac}
@@ -183,7 +189,7 @@ const FilterShoes = ({
             sx={{ color: "#c9d1d9" }}
           >
             {" "}
-            <MenuItem value="">Xem tất cả</MenuItem>
+            <MenuItem value="">{t.SeeAll ? t.SeeAll : "Xem tất cả"}</MenuItem>
             {mauSac.map((item) => (
               <MenuItem key={item.MAU_SAC_ID} value={item.MAU_SAC_ID}>
                 {item.TEN_MAU_SAC}
@@ -197,7 +203,7 @@ const FilterShoes = ({
           <InputLabel
             sx={{ display: "flex", alignItems: "center", color: "#c9d1d9" }}
           >
-            <AdsClick sx={{ mr: 1 }} /> Mục đích
+            <AdsClick sx={{ mr: 1 }} /> {t.purpose ? t.purpose : "Mục đích"}
           </InputLabel>
           <Select
             value={selectMucDichSuDung}
@@ -206,7 +212,7 @@ const FilterShoes = ({
             label="Icon Mục đích"
           >
             {" "}
-            <MenuItem value="">Xem tất cả</MenuItem>
+            <MenuItem value="">{t.SeeAll ? t.SeeAll : "Xem tất cả"}</MenuItem>
             {mucDichSuDung.map((item) => (
               <MenuItem
                 key={item.ID_MUC_DICH_SU_DUNG}
@@ -223,7 +229,7 @@ const FilterShoes = ({
           <InputLabel
             sx={{ display: "flex", alignItems: "center", color: "#c9d1d9" }}
           >
-            <FormatSize sx={{ mr: 1 }} /> Kích cỡ
+            <FormatSize sx={{ mr: 1 }} /> {t.Size ? t.Size : "Kích cỡ"}
           </InputLabel>
           <Select
             value={selectKichCo}
@@ -231,7 +237,7 @@ const FilterShoes = ({
             onChange={(e) => setSelectKichCo(e.target.value)}
             sx={{ color: "#c9d1d9" }}
           >
-            <MenuItem value="">Xem tất cả</MenuItem>
+            <MenuItem value="">{t.SeeAll ? t.SeeAll : "Xem tất cả"}</MenuItem>
             {kichCo.map((item) => (
               <MenuItem key={item.ID_KICH_CO} value={item.ID_KICH_CO}>
                 {item.KICH_CO}
@@ -246,7 +252,7 @@ const FilterShoes = ({
             sx={{ display: "flex", alignItems: "center", color: "#c9d1d9" }}
           >
             <BorderStyle sx={{ mr: 1 }} />
-            Phong cách
+            {t.Style ? t.Style : "Phong cách"}
           </InputLabel>
           <Select
             value={selectPhongCach}
@@ -255,7 +261,7 @@ const FilterShoes = ({
             sx={{ color: "#c9d1d9" }}
           >
             {" "}
-            <MenuItem value="">Xem tất cả</MenuItem>
+            <MenuItem value="">{t.SeeAll ? t.SeeAll : "Xem tất cả"}</MenuItem>
             {phongCach.map((item) => (
               <MenuItem key={item.ID_PHUONG_CACH} value={item.ID_PHUONG_CACH}>
                 {item.TEN_PHONG_CACH}

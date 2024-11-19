@@ -66,7 +66,19 @@ const translations = {
         "© 2024, PhucShoe2. Tất cả quyền được bảo lưu. PhucShoe2 và logo PhucShoe2 là các thương hiệu hoặc nhãn hiệu đã đăng ký của PhucShoe2 tại Việt Nam và các quốc gia khác.",
       resources: "Nguồn lực",
     },
+    products: {
+      brands: "Thương hiệu",
+      material: "Chất liệu",
+      color: "Màu sắc",
+      Size: "Kích cỡ",
+      Style: "Phong cách",
+      SearchProduct: "Tìm kiếm sản phẩm",
+      SeeAll: "Xem tất cả",
+      purpose: "Mục đích",
+    },
   },
+
+  // --------------------ENGLISH--------------------
   en: {
     home: {
       welcome: "Welcome",
@@ -74,7 +86,7 @@ const translations = {
       description: "We are using Redux to manage language state.",
     },
     profile: {
-      nameUser: "Mr. Phúc",
+      nameUser: "Phuc Nè",
       age: "Age",
       email: "Email",
     },
@@ -90,7 +102,7 @@ const translations = {
       searchStore: "Search products",
     },
     navbar: {
-      SearchStore: "Search Store",
+      SearchStore: "Search products",
       Discover: "Discover",
       Products: "Products",
       News: "News",
@@ -102,23 +114,29 @@ const translations = {
       AddToCart: "Add to Cart",
     },
     home: {
-      ProductsGirl: "Products for Women",
+      ProductsGirl: "Products for Girls",
+      ProductsMale: "Products for Men",
+      ProductsChild: "Products for Kids",
+      BuyNow: "Buy Now",
+      BestSellers: "Best Sellers",
+      HighestValue: "Highest Value",
+      MostPopularProducts: "Most Popular Products",
     },
     homeProductCarousel: {
       AddToCart: "Add to Cart",
+      AddToWish: "Add to Wishlist",
     },
-
     footer: {
       support: "Customer Support",
-      distribute: "Distribute at PhucShoe2",
+      distribute: "Distributed at PhucShoe2",
       careers: "Careers",
-      company: "About Us",
+      company: "About the Company",
       fanArtPolicy: "Fan Art Policy",
       uxResearch: "UX Research",
       storeEula: "Store EULA",
       onlineServices: "Online Services",
       communityRules: "Community Rules",
-      newsroom: "PhucShoe2 Newsroom",
+      newsroom: "PhucShoe2 News",
       madeBy: "Made by PhucShoe2",
       termsOfService: "Terms of Service",
       privacyPolicy: "Privacy Policy",
@@ -127,21 +145,33 @@ const translations = {
         "© 2024, PhucShoe2. All rights reserved. PhucShoe2 and the PhucShoe2 logo are trademarks or registered trademarks of PhucShoe2 in Vietnam and other countries.",
       resources: "Resources",
     },
+    products: {
+      brands: "Brands",
+      material: "Material",
+      color: "Color",
+      Size: "Size",
+      Style: "Style",
+      SearchProduct: "Search Products",
+      SeeAll: "See All",
+      purpose: "Purpose",
+    },
   },
+  // --------------------TÂY BÀN NHA--------------------
   es: {
     home: {
       welcome: "Bienvenido",
       example: "Este es un ejemplo",
-      description: "Estamos usando Redux para gestionar el estado del idioma.",
+      description:
+        "Estamos utilizando Redux para gestionar el estado del idioma.",
     },
     profile: {
-      nameUser: "Bienvenido. Phúc",
+      nameUser: "Phuc Nè",
       age: "Edad",
       email: "Correo electrónico",
     },
     about: {
       description: "Bienvenido a la página de información.",
-      contact: "Contáctanos",
+      contact: "Contáctenos",
     },
     header: {
       store: "Tienda",
@@ -151,7 +181,7 @@ const translations = {
       searchStore: "Buscar productos",
     },
     navbar: {
-      SearchStore: "Buscar en la tienda",
+      SearchStore: "Buscar productos",
       Discover: "Descubrir",
       Products: "Productos",
       News: "Noticias",
@@ -163,7 +193,46 @@ const translations = {
       AddToCart: "Añadir al carrito",
     },
     home: {
-      ProductsGirl: "Productos para mujeres",
+      ProductsGirl: "Productos para niñas",
+      ProductsMale: "Productos para hombres",
+      ProductsChild: "Productos para niños",
+      BuyNow: "Comprar ahora",
+      BestSellers: "Más vendidos",
+      HighestValue: "Mayor valor",
+      MostPopularProducts: "Productos más populares",
+    },
+    homeProductCarousel: {
+      AddToCart: "Añadir al carrito",
+      AddToWish: "Añadir a la lista de deseos",
+    },
+    footer: {
+      support: "Soporte al cliente",
+      distribute: "Distribuido en PhucShoe2",
+      careers: "Carreras",
+      company: "Acerca de la empresa",
+      fanArtPolicy: "Política de Fan Art",
+      uxResearch: "Investigación de UX",
+      storeEula: "EULA de la tienda",
+      onlineServices: "Servicios en línea",
+      communityRules: "Reglas de la comunidad",
+      newsroom: "Noticias de PhucShoe2",
+      madeBy: "Hecho por PhucShoe2",
+      termsOfService: "Términos del servicio",
+      privacyPolicy: "Política de privacidad",
+      storeRefundPolicy: "Política de reembolsos de la tienda",
+      copyright:
+        "© 2024, PhucShoe2. Todos los derechos reservados. PhucShoe2 y el logo de PhucShoe2 son marcas comerciales o marcas registradas de PhucShoe2 en Vietnam y otros países.",
+      resources: "Recursos",
+    },
+    products: {
+      brands: "Marcas",
+      material: "Material",
+      Color: "Color",
+      Size: "Tamaño",
+      Style: "Estilo",
+      SearchProduct: "Buscar productos",
+      SeeAll: "Ver todo",
+      purpose: "Propósito",
     },
   },
   // Thêm các ngôn ngữ và trang khác tại đây
