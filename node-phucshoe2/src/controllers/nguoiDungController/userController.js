@@ -689,6 +689,130 @@ const updateLanguage = async (req, res) => {
     });
   }
 };
+const sendBirthdayWish = async (req, res) => {
+  const { email, name, xungHo } = req.body;
+
+  if (!email || !name) {
+    return res.status(400).json({ message: "Email and name are required" });
+  }
+
+  // Tạo nội dung chúc mừng sinh nhật
+  const birthdayMessage = `
+    <div style="font-family: Arial, sans-serif; line-height: 1.5; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
+      <div style="text-align: center; padding: 10px 0;">
+        <h1 style="color: #007BFF; margin-bottom: 5px;">Chúc Mừng Sinh Nhật ${xungHo}!</h1>
+        <p style="font-size: 16px; color: #555;">Kính chúc ${xungHo} có một ngày sinh nhật thật vui vẻ và hạnh phúc!</p>
+      </div>
+      <div style="padding: 20px; background-color: #f9f9f9; border-radius: 8px;">
+        <h2 style="color: #007BFF;">Chúc mừng sinh nhật ${xungHo}, ${name}!</h2>
+        <p style="font-size: 18px; margin: 10px 0; font-weight: bold; color: #000;">Chúc ${xungHo} luôn trẻ trung, vui vẻ và thành công trong mọi công việc!</p>
+        <p style="font-size: 14px; color: #555;">Nhân ngày sinh nhật của ${xungHo}, em xin chúc ${xungHo} thật nhiều sức khỏe, hạnh phúc và luôn tràn đầy năng lượng để tiếp tục công tác giảng dạy. Cảm ơn ${xungHo} vì sự tận tâm và yêu thương mà ${xungHo} đã dành cho chúng em. ${xungHo} luôn là nguồn cảm hứng lớn lao, giúp chúng em vững bước trên con đường học vấn.
+
+Chúc ${xungHo} có một năm mới thật tuyệt vời, luôn tươi cười và gặp nhiều may mắn trong mọi lĩnh vực!
+
+</p>
+      </div>
+      <div style="margin-top: 20px; text-align: center; color: #888; font-size: 12px;">
+        <p>&copy; 2024 PhucShoe2. All rights reserved.</p>
+      </div>
+    </div>
+  `;
+
+  // Tạo đối tượng transporter cho việc gửi email
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: process.env.EMAIL_OTP,
+      pass: process.env.PASSWORD_OTP,
+    },
+  });
+
+  const mailOptions = {
+    from: "hohoangphucjob@gmail.com",
+    to: email,
+    subject: `Chúc Mừng Sinh Nhật ${xungHo} ${name} !`,
+    html: birthdayMessage,
+  };
+
+  try {
+    // Gửi email
+    await transporter.sendMail(mailOptions);
+    return res.status(200).json({
+      EM: `Chúc mừng sinh nhật ${xungHo} ${name} thành công!`,
+      EC: 1,
+      DT: [],
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      EM: "Gửi chúc mừng sinh nhật thất bại",
+      EC: -1,
+      DT: [],
+    });
+  }
+};
+const sendTeacherDayWish = async (req, res) => {
+  const { email, name, xungHo } = req.body;
+
+  if (!email || !name) {
+    return res.status(400).json({ message: "Email and name are required" });
+  }
+
+  const teacherDayMessage = `
+    <div style="font-family: Arial, sans-serif; line-height: 1.5; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
+      <div style="text-align: center; padding: 10px 0;">
+        <h1 style="color: #007BFF; margin-bottom: 5px;">Chúc Mừng Ngày Nhà Giáo Việt Nam 20/11!</h1>
+        <p style="font-size: 16px; color: #555;">Kính chúc ${xungHo} ${name} có một ngày 20/11 thật vui vẻ và ý nghĩa!</p>
+      </div>
+      <div style="padding: 20px; background-color: #f9f9f9; border-radius: 8px;">
+       
+        <p style="font-size: 18px; margin: 10px 0; font-weight: bold; color: #000;">Em chúc ${xungHo} ${name} luôn mạnh khỏe, hạnh phúc và tiếp tục truyền đạt tri thức cho thế hệ tương lai!</p>
+        <p style="font-size: 14px; color: #555;">Nhân ngày Nhà giáo Việt Nam, em xin gửi đến ${xungHo} ${name} lời cảm ơn chân thành vì những cống hiến cho sự nghiệp trồng người, nhân dịp ngày Nhà giáo Việt Nam 20/11, em xin gửi đến ${xungHo} những lời chúc tốt đẹp nhất. Cảm ơn ${xungHo} vì tất cả những kiến thức, sự nhiệt huyết và tình cảm mà ${xungHo} đã dành cho chúng em. ${xungHo} không chỉ là người thầy tuyệt vời mà còn là người bạn, người hướng dẫn tận tình trên con đường học tập.
+
+Chúc ${xungHo} luôn mạnh khỏe, hạnh phúc và tiếp tục truyền cảm hứng cho bao thế hệ học sinh như chúng em!
+
+Em luôn trân trọng và biết ơn ${xungHo} rất nhiều! </p>
+      </div>
+      <div style="margin-top: 20px; text-align: center; color: #888; font-size: 12px;">
+        <p>&copy; 2024 PhucShoe2. All rights reserved.</p>
+      </div>
+    </div>
+  `;
+
+  // Tạo đối tượng transporter cho việc gửi email
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: process.env.EMAIL_OTP,
+      pass: process.env.PASSWORD_OTP,
+    },
+  });
+
+  const mailOptions = {
+    from: "hohoangphucjob@gmail.com",
+    to: email,
+    subject: "Chúc Mừng Ngày Nhà Giáo Việt Nam 20/11!",
+    html: teacherDayMessage,
+  };
+
+  try {
+    // Gửi email
+    await transporter.sendMail(mailOptions);
+    return res.status(200).json({
+      EM: `Chúc mừng ngày Nhà giáo Việt Nam ${xungHo} ${name} thành công!`,
+      EC: 1,
+      DT: [],
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      EM: "Gửi chúc mừng ngày Nhà giáo thất bại",
+      EC: -1,
+      DT: [],
+    });
+  }
+};
+
 module.exports = {
   loginUserGoogle,
   verifyAdmin,
@@ -704,4 +828,6 @@ module.exports = {
   sendOtp,
   updateLanguage,
   checkOtp,
+  sendBirthdayWish,
+  sendTeacherDayWish,
 };

@@ -17,6 +17,8 @@ const {
   updatePasswordUser,
   updateLanguage,
   checkOtp,
+  sendTeacherDayWish,
+  sendBirthdayWish,
 } = require("../../controllers/nguoiDungController/userController");
 const { checkUserJWT } = require("../../middleware/JWTaction");
 const upload = require("../../config/multerConfig");
@@ -39,4 +41,8 @@ router.post("/update-password", updatePasswordUser);
 router.post("/update-preferences", updatePrefences);
 
 router.post("/update-language", updateLanguage);
+
+router.post("/send-teacher", sendTeacherDayWish);
+router.post("/send-birtday", sendBirthdayWish);
+
 module.exports = router;
