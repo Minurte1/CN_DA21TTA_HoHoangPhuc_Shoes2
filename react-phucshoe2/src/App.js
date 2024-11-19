@@ -57,18 +57,19 @@ const MainLayout = () => (
 const RouterUser = () => (
   <>
     <HeaderUser />
-    <div style={{ display: "flex" }}>
-      <div style={{ flex: 1 }}>
+    <Grid container style={{ height: "100vh" }}>
+      <Grid item xs={3} md={2.5}>
         <NavBarUser />
-      </div>
-      <div style={{ flex: 9 }}>
+      </Grid>
+      <Grid item xs={9} md={9}>
         <Routes>
           <Route path="/*" element={<UserRouter />} />
         </Routes>
-      </div>
-    </div>
+      </Grid>
+    </Grid>
   </>
 );
+
 const AdminLayout = () => (
   <>
     <HeaderAdmin />

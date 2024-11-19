@@ -76,6 +76,12 @@ const translations = {
       SeeAll: "Xem tất cả",
       purpose: "Mục đích",
     },
+    profile: {
+      UserInfo: "Thông tin người dùng",
+      Oder: "Đơn hàng",
+      PasswordAndSetting: "Mật khẩu & Cài đặt",
+      NeedHelp: "Bạn cần giúp đỡ?",
+    },
   },
 
   // --------------------ENGLISH--------------------
@@ -155,6 +161,12 @@ const translations = {
       SeeAll: "See All",
       purpose: "Purpose",
     },
+    profile: {
+      UserInfo: "User Information",
+      Oder: "Order",
+      PasswordAndSetting: "Password & Settings",
+      NeedHelp: "Need Help?",
+    },
   },
   // --------------------TÂY BÀN NHA--------------------
   es: {
@@ -233,6 +245,12 @@ const translations = {
       SearchProduct: "Buscar productos",
       SeeAll: "Ver todo",
       purpose: "Propósito",
+    },
+    profile: {
+      UserInfo: "Información del usuario",
+      Oder: "Pedido",
+      PasswordAndSetting: "Contraseña y configuración",
+      NeedHelp: "¿Necesitas ayuda?",
     },
   },
   // Thêm các ngôn ngữ và trang khác tại đây

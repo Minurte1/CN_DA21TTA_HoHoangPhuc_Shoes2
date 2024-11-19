@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   AppBar,
   Toolbar,
@@ -14,16 +14,65 @@ import AccountCircle from "@mui/icons-material/AccountCircle";
 import LanguageIcon from "@mui/icons-material/Language";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useTheme } from "@mui/material/styles";
-import { Link } from "react-router-dom";
+import { Link, Link as RouterLink, useNavigate } from "react-router-dom";
 
-const HeaderUser = () => {
+import Cookies from "js-cookie";
+
+import axiosInstance from "../../authentication/axiosInstance";
+import { jwtDecode } from "jwt-decode";
+import { useDispatch, useSelector } from "react-redux";
+import { setUserInfo, logout } from "../../redux/authSlice";
+import { setLanguage } from "../../redux/languageSlice";
+import translations from "../../redux/data/translations";
+const apiUrl = process.env.REACT_APP_URL_SERVER;
+const Header = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const [infoUser, setInfoUser] = useState("");
 
+  //redux
+  const dispatch = useDispatch();
+  const language = useSelector((state) => state.language.language);
+  const t = translations[language].header;
+  const { isAuthenticated, userInfo } = useSelector((state) => state.auth);
+  const [optionLanguage, setOptionLanguage] = useState("vi");
+  const handleChangeLanguage = (lang) => {
+    setOptionLanguage(lang);
+    dispatch(setLanguage(lang));
+  };
+  useEffect(() => {
+    const fetchProfileUser = async () => {
+      const token = Cookies.get("accessToken");
+
+      if (token) {
+        const decode = jwtDecode(token);
+        try {
+          const response = await axiosInstance.post(`${apiUrl}/user-info`, {
+            ID_NGUOI_DUNG: decode.ID_NGUOI_DUNG,
+          });
+          if (response.data.EC === 1) {
+            setInfoUser(response.data.DT);
+            dispatch(setUserInfo(response.data.DT));
+          }
+
+          console.log("response", response.data);
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    };
+
+    fetchProfileUser();
+  }, []);
   const handleMenu = (event) => {
-    setAnchorEl(event.currentTarget);
+    const token = Cookies.get("accessToken");
+    if (isAuthenticated && token) {
+      setAnchorEl(event.currentTarget);
+    } else {
+      navigate("/login");
+    }
   };
 
   const handleClose = () => {
@@ -37,15 +86,122 @@ const HeaderUser = () => {
   const handleMobileMenuClose = () => {
     setMobileMoreAnchorEl(null);
   };
+  const navigate = useNavigate();
 
+  const handleLogout = async () => {
+    try {
+      await axiosInstance.post(`${apiUrl}/logout`);
+      Cookies.remove("accessToken");
+
+      // Cập nhật Redux bằng cách dispatch hành động logout
+      dispatch(logout());
+      handleClose();
+      navigate("/login");
+    } catch (error) {
+      console.error("Lỗi đăng xuất:", error);
+    }
+  };
+  const [anchorElLanguage, setAnchorElLanguage] = useState(null);
+
+  const handleLanguageMenu = (event) => {
+    setAnchorElLanguage(event.currentTarget);
+  };
+
+  const handleLanguageClose = () => {
+    setAnchorElLanguage(null);
+  };
   const menuItems = (
     <>
-      <Button color="inherit">Support</Button>
-      <Button color="inherit">Distribute</Button>
-      <IconButton color="inherit">
-        <LanguageIcon />
-      </IconButton>
+      {" "}
+      <Button color="inherit">{t.support}</Button>
       <Box sx={{ display: "flex", alignItems: "center", ml: 2 }}>
+        <IconButton
+          color="inherit"
+          aria-label="language menu"
+          aria-controls="language-menu"
+          aria-haspopup="true"
+          onClick={handleLanguageMenu}
+        >
+          <LanguageIcon />
+        </IconButton>
+        <Button color="inherit" onClick={handleLanguageMenu}>
+          {optionLanguage == "vi"
+            ? "Tiếng Việt"
+            : optionLanguage == "en"
+            ? "English"
+            : " Español"}
+        </Button>
+
+        <Menu
+          id="language-menu"
+          anchorEl={anchorElLanguage}
+          open={Boolean(anchorElLanguage)}
+          onClose={handleLanguageClose}
+          PaperProps={{
+            sx: {
+              backgroundColor: "#29292d",
+              borderRadius: "13px",
+              paddingTop: 1,
+              paddingBottom: 1,
+            },
+          }}
+        >
+          <MenuItem
+            sx={{ color: "#fff", "&:hover": { backgroundColor: "#4a494c" } }}
+            onClick={() => {
+              handleChangeLanguage("vi");
+              handleLanguageClose();
+            }}
+          >
+            Tiếng Việt
+          </MenuItem>
+          <MenuItem
+            sx={{ color: "#fff", "&:hover": { backgroundColor: "#4a494c" } }}
+            onClick={() => {
+              handleChangeLanguage("en");
+              handleLanguageClose();
+            }}
+          >
+            English
+          </MenuItem>
+          <MenuItem
+            sx={{ color: "#fff", "&:hover": { backgroundColor: "#4a494c" } }}
+            onClick={() => {
+              handleChangeLanguage("es");
+              handleLanguageClose();
+            }}
+          >
+            Español
+          </MenuItem>
+        </Menu>
+
+        {/* <Typography
+          onClick={handleLanguageMenu}
+          variant="body1"
+          component="span"
+          sx={{
+            ml: 1,
+            cursor: "pointer",
+            color: `${userInfo?.VAI_TRO === "1" ? "red" : "white"}`,
+          }}
+        >
+          {isAuthenticated ? <div>{userInfo?.HO_TEN}</div> : <></>}
+        </Typography> */}
+      </Box>
+      {/* <Button color="inherit">Language</Button> */}
+      <Box sx={{ display: "flex", alignItems: "center", ml: 2 }}>
+        <Typography
+          onClick={handleMenu}
+          variant="body1"
+          component="span"
+          sx={{
+            ml: 1,
+            cursor: "pointer",
+            color: `${userInfo?.VAI_TRO === "1" ? "red" : "white"}`,
+          }}
+        >
+          {isAuthenticated ? <div>{userInfo?.HO_TEN}</div> : <></>}
+        </Typography>{" "}
         <IconButton
           size="large"
           aria-label="account of current user"
@@ -176,28 +332,14 @@ const HeaderUser = () => {
                 backgroundColor: "#4a494c", // Màu nền khi hover
               },
             }}
-            onClick={handleClose}
+            onClick={() => {
+              handleLogout();
+            }}
           >
-            My account
+            Đăng xuất
           </MenuItem>
         </Menu>
-
-        <Typography
-          onClick={handleMenu}
-          variant="body1"
-          component="span"
-          sx={{ ml: 1, cursor: "pointer" }}
-        >
-          Minurte1
-        </Typography>
       </Box>
-      {/* <Button
-        variant="contained"
-        href="https://launcher-public-service-prod06.ol.epicgames.com/launcher/api/installer/download/EpicGamesLauncherInstaller.msi?trackingId=aebf7d1fc5764a45acab1b551038bebf"
-        style={{ backgroundColor: "#00aaff", marginLeft: 16 }}
-      >
-        Download
-      </Button> */}
     </>
   );
 
@@ -207,18 +349,19 @@ const HeaderUser = () => {
       style={{ backgroundColor: "#101014", zIndex: 20 }}
     >
       <Toolbar>
-        <img
-          src="https://upload.wikimedia.org/wikipedia/commons/3/31/Epic_Games_logo.svg"
-          alt="Epic Games"
-          style={{ height: 30, marginRight: 16 }}
-        />
-        <Typography
-          variant="h6"
-          component="div"
-          sx={{ flexGrow: 1, display: { xs: "none", sm: "block" } }}
+        <Box
+          component={RouterLink}
+          to="/"
+          sx={{ textDecoration: "none", color: "#fff", flexGrow: 1 }}
         >
-          STORE
-        </Typography>
+          <Typography
+            variant="h6"
+            component="div"
+            sx={{ flexGrow: 1, display: { xs: "none", sm: "block" } }}
+          >
+            {t.store ? t.store : "Kho hàng"}
+          </Typography>
+        </Box>
         {isMobile ? (
           <>
             <IconButton
@@ -252,14 +395,14 @@ const HeaderUser = () => {
                 <AccountCircle sx={{ marginRight: 1 }} />
                 Minurte1
               </MenuItem>
-              {/* <MenuItem onClick={handleMobileMenuClose}>
+              <MenuItem onClick={handleMobileMenuClose}>
                 <Button
                   variant="contained"
                   style={{ backgroundColor: "#00aaff" }}
                 >
                   Download
                 </Button>
-              </MenuItem> */}
+              </MenuItem>
             </Menu>
           </>
         ) : (
@@ -270,4 +413,4 @@ const HeaderUser = () => {
   );
 };
 
-export default HeaderUser;
+export default Header;

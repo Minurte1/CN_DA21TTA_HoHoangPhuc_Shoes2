@@ -1,4 +1,4 @@
-const DonHangGame = () => {
+const DonHangUser = () => {
   return (
     <>
       {" "}
@@ -6,4 +6,4 @@ const DonHangGame = () => {
     </>
   );
 };
-export default DonHangGame;
+export default DonHangUser;

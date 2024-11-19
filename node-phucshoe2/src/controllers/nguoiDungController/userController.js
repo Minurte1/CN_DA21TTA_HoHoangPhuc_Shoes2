@@ -5,6 +5,11 @@ const fs = require("fs");
 const path = require("path");
 const dayjs = require("dayjs");
 
+const bcrypt = require("bcrypt");
+const nodemailer = require("nodemailer");
+const crypto = require("crypto");
+const otpStorage = new Map();
+
 const getAllUser_Admin = async (req, res) => {
   try {
     // Check if the user already exists in the database
@@ -481,6 +486,109 @@ const updateAvatarController = async (req, res) => {
   }
 };
 
+const sendOtp = async (req, res) => {
+  const { email } = req.body;
+
+  if (!email) return res.status(400).json({ message: "Email is required" });
+
+  // Tạo OTP và thời gian hết hạn
+  const otp = crypto.randomInt(100000, 999999);
+  const expiresAt = Date.now() + 10 * 60 * 1000; // 10 phút
+
+  // Lưu OTP
+  otpStorage.set(email, { otp, expiresAt });
+  console.log("to email: ", email);
+  // Gửi email
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: process.env.EMAIL_OTP,
+      pass: process.env.PASSWORD_OTP,
+    },
+  });
+
+  const mailOptions = {
+    from: "hohoangphucjob@gmail.com",
+    to: email,
+    subject: "Your OTP Code",
+    text: `Your OTP code is ${otp}. This code will expire in 10 minutes.`,
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    res.status(200).json({ message: "OTP sent to email" });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to send OTP", error });
+  }
+};
+
+const updatePasswordUser = async (req, res) => {
+  const { email, otp, newPassword } = req.body;
+
+  if (!email || !otp || !newPassword) {
+    return res.status(400).json({ message: "All fields are required" });
+  }
+
+  // Kiểm tra OTP
+  const storedOtp = otpStorage.get(email);
+  if (
+    !storedOtp ||
+    storedOtp.otp !== parseInt(otp) ||
+    Date.now() > storedOtp.expiresAt
+  ) {
+    return res.status(400).json({ message: "Invalid or expired OTP" });
+  }
+
+  // Mã hóa mật khẩu
+  const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+  // Cập nhật vào database
+  const result = await db.query(
+    "UPDATE nguoi_dung SET mat_khau = ? WHERE email = ?",
+    [hashedPassword, email]
+  );
+
+  if (result.affectedRows > 0) {
+    otpStorage.delete(email); // Xóa OTP sau khi thành công
+    res.status(200).json({ message: "Password updated successfully" });
+  } else {
+    res.status(500).json({ message: "Failed to update password" });
+  }
+};
+
+const updatePrefences = async (req, res) => {
+  const { email, otp, newPassword } = req.body;
+
+  if (!email || !otp || !newPassword) {
+    return res.status(400).json({ message: "All fields are required" });
+  }
+
+  // Kiểm tra OTP
+  const storedOtp = otpStorage.get(email);
+  if (
+    !storedOtp ||
+    storedOtp.otp !== parseInt(otp) ||
+    Date.now() > storedOtp.expiresAt
+  ) {
+    return res.status(400).json({ message: "Invalid or expired OTP" });
+  }
+
+  // Mã hóa mật khẩu
+  const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+  // Cập nhật vào database
+  const result = await db.query(
+    "UPDATE nguoi_dung SET mat_khau = ? WHERE email = ?",
+    [hashedPassword, email]
+  );
+
+  if (result.affectedRows > 0) {
+    otpStorage.delete(email); // Xóa OTP sau khi thành công
+    res.status(200).json({ message: "Password updated successfully" });
+  } else {
+    res.status(500).json({ message: "Failed to update password" });
+  }
+};
 module.exports = {
   loginUserGoogle,
   verifyAdmin,
@@ -491,4 +599,7 @@ module.exports = {
   updateAvatarController,
   getUser_ById,
   updateUserById_User,
+  updatePrefences,
+  updatePasswordUser,
+  sendOtp,
 };
