@@ -17,9 +17,17 @@ import NavBarAdmin from "./admin-view/components/navBarAdmin";
 import HeaderAdmin from "./admin-view/components/headerAdmin";
 import { Grid } from "@mui/material";
 
+import { useSelector } from "react-redux";
 function App() {
+  const { isAuthenticated, userInfo } = useSelector((state) => state.auth);
   return (
-    <div className="App">
+    <div
+      className="App"
+      style={{
+        backgroundColor: userInfo?.THEMES === "light" ? "#ffffff" : "#101014", // Sửa mã màu ở đây
+        color: userInfo?.THEMES === "dark" ? "#ffffff" : "#101014", // Đặt màu chữ phù hợp
+      }}
+    >
       <SnackbarProvider
         maxSnack={3}
         anchorOrigin={{

@@ -541,6 +541,7 @@ const sendOtp = async (req, res) => {
       DT: [],
     });
   } catch (error) {
+    console.log(error);
     return res.status(500).json({
       EM: "Gửi OTP thất bại",
       EC: -1,
@@ -548,38 +549,79 @@ const sendOtp = async (req, res) => {
     });
   }
 };
+const checkOtp = async (req, res) => {
+  const { email, otp } = req.body;
 
-const updatePasswordUser = async (req, res) => {
-  const { email, otp, newPassword } = req.body;
-
-  if (!email || !otp || !newPassword) {
-    return res.status(400).json({ message: "All fields are required" });
+  if (!email || !otp) {
+    return res.status(400).json({ message: "Email and OTP are required" });
   }
 
-  // Kiểm tra OTP
+  // Kiểm tra OTP có tồn tại trong bộ nhớ
   const storedOtp = otpStorage.get(email);
-  if (
-    !storedOtp ||
-    storedOtp.otp !== parseInt(otp) ||
-    Date.now() > storedOtp.expiresAt
-  ) {
-    return res.status(400).json({ message: "Invalid or expired OTP" });
+
+  if (!storedOtp) {
+    return res.status(400).json({
+      EM: "OTP không tồn tại hoặc đã hết hạn",
+      EC: -1,
+      DT: [],
+    });
+  }
+
+  // Kiểm tra thời gian hết hạn của OTP
+  const currentTime = Date.now();
+  if (currentTime > storedOtp.expiresAt) {
+    otpStorage.delete(email); // Xóa OTP đã hết hạn
+    return res.status(400).json({
+      EM: "OTP đã hết hạn",
+      EC: -1,
+      DT: [],
+    });
+  }
+
+  // Kiểm tra OTP có đúng không
+  if (parseInt(otp) === storedOtp.otp) {
+    return res.status(200).json({
+      EM: "OTP hợp lệ",
+      EC: 1,
+      DT: [],
+    });
+  } else {
+    return res.status(400).json({
+      EM: "OTP không đúng",
+      EC: -1,
+      DT: [],
+    });
+  }
+};
+
+const updatePasswordUser = async (req, res) => {
+  const { email, newPassword } = req.body;
+  console.log("re", req.body);
+  if (!email || !newPassword) {
+    return res.status(400).json({ message: "All fields are required" });
   }
 
   // Mã hóa mật khẩu
   const hashedPassword = await bcrypt.hash(newPassword, 10);
 
   // Cập nhật vào database
-  const result = await db.query(
-    "UPDATE nguoi_dung SET mat_khau = ? WHERE email = ?",
+  const result = await pool.query(
+    "UPDATE NGUOI_DUNG SET MAT_KHAU = ? WHERE EMAIL = ?",
     [hashedPassword, email]
   );
 
-  if (result.affectedRows > 0) {
-    otpStorage.delete(email); // Xóa OTP sau khi thành công
-    res.status(200).json({ message: "Password updated successfully" });
+  if (result[0].affectedRows > 0) {
+    return res.status(200).json({
+      EM: "Cập nhật mật khẩu thành công",
+      EC: 1,
+      DT: [],
+    });
   } else {
-    res.status(500).json({ message: "Failed to update password" });
+    return res.status(500).json({
+      EM: "Cập nhật mật khẩu thất bại",
+      EC: 0,
+      DT: [],
+    });
   }
 };
 
@@ -661,4 +703,5 @@ module.exports = {
   updatePasswordUser,
   sendOtp,
   updateLanguage,
+  checkOtp,
 };
