@@ -15,6 +15,7 @@ const {
   sendOtp,
   updatePrefences,
   updatePasswordUser,
+  updateLanguage,
 } = require("../../controllers/nguoiDungController/userController");
 const { checkUserJWT } = require("../../middleware/JWTaction");
 const upload = require("../../config/multerConfig");
@@ -32,5 +33,8 @@ router.put("/user/update", updateUserById_Admin);
 
 router.post("/send-otp", sendOtp);
 router.post("/update-password", updatePasswordUser);
+
 router.post("/update-preferences", updatePrefences);
+
+router.post("/update-language", updateLanguage);
 module.exports = router;

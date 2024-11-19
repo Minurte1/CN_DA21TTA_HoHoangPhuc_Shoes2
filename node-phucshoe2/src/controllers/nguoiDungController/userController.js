@@ -8,6 +8,7 @@ const dayjs = require("dayjs");
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
 const crypto = require("crypto");
+const { title } = require("process");
 const otpStorage = new Map();
 
 const getAllUser_Admin = async (req, res) => {
@@ -321,6 +322,8 @@ const loginUserGoogle = async (req, res) => {
             NGAY_TAO_USER: user.NGAY_TAO_USER,
             NGAY_CAP_NHAT_USER: user.NGAY_CAP_NHAT_USER,
             AVATAR: user.AVATAR,
+            THEMES: user.THEMES,
+            LANGUAGE: user.LANGUAGE,
           },
         },
       });
@@ -493,7 +496,7 @@ const sendOtp = async (req, res) => {
 
   // Tạo OTP và thời gian hết hạn
   const otp = crypto.randomInt(100000, 999999);
-  const expiresAt = Date.now() + 10 * 60 * 1000; // 10 phút
+  const expiresAt = Date.now() + 1 * 60 * 1000; // 1 phút
 
   // Lưu OTP
   otpStorage.set(email, { otp, expiresAt });
@@ -510,15 +513,39 @@ const sendOtp = async (req, res) => {
   const mailOptions = {
     from: "hohoangphucjob@gmail.com",
     to: email,
-    subject: "Your OTP Code",
-    text: `Your OTP code is ${otp}. This code will expire in 10 minutes.`,
+    subject: "PhucShoe2 - Your OTP Code",
+    html: `
+      <div style="font-family: Arial, sans-serif; line-height: 1.5; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
+        <div style="text-align: center; padding: 10px 0;">
+          <h1 style="color: #007BFF; margin-bottom: 5px;">PhucShoe2</h1>
+          <p style="font-size: 16px; color: #555;">Your Trusted Shoe Store</p>
+        </div>
+        <div style="padding: 20px; background-color: #f9f9f9; border-radius: 8px;">
+          <h2 style="color: #007BFF;">Your OTP Code</h2>
+          <p style="font-size: 18px; margin: 10px 0; font-weight: bold; color: #000;">${otp}</p>
+          <p style="font-size: 14px; color: #555;">This code will expire in <strong>1 minutes</strong>.</p>
+        </div>
+        <div style="margin-top: 20px; text-align: center; color: #888; font-size: 12px;">
+          <p>If you did not request this code, please ignore this email.</p>
+          <p style="margin-top: 10px;">&copy; 2024 PhucShoe2. All rights reserved.</p>
+        </div>
+      </div>
+    `,
   };
 
   try {
     await transporter.sendMail(mailOptions);
-    res.status(200).json({ message: "OTP sent to email" });
+    return res.status(200).json({
+      EM: "Gửi OTP thành công",
+      EC: 1,
+      DT: [],
+    });
   } catch (error) {
-    res.status(500).json({ message: "Failed to send OTP", error });
+    return res.status(500).json({
+      EM: "Gửi OTP thất bại",
+      EC: -1,
+      DT: [],
+    });
   }
 };
 
@@ -557,36 +584,67 @@ const updatePasswordUser = async (req, res) => {
 };
 
 const updatePrefences = async (req, res) => {
-  const { email, otp, newPassword } = req.body;
+  const { ID_NGUOI_DUNG, THEMES } = req.body;
 
-  if (!email || !otp || !newPassword) {
-    return res.status(400).json({ message: "All fields are required" });
+  try {
+    // Cập nhật `THEMES` vào database
+    const result = await pool.execute(
+      "UPDATE NGUOI_DUNG SET THEMES = ? WHERE ID_NGUOI_DUNG = ?",
+      [THEMES, ID_NGUOI_DUNG]
+    );
+
+    if (result[0].affectedRows > 0) {
+      return res.status(200).json({
+        EM: "Cập nhật themes thành công",
+        EC: 1,
+        DT: THEMES,
+      });
+    } else {
+      return res.status(500).json({
+        EM: "Cập nhật themes không thành công",
+        EC: 0,
+        DT: [],
+      });
+    }
+  } catch (error) {
+    console.error("Error updating theme:", error);
+    return res.status(500).json({
+      EM: "Cập nhật themes không thành công",
+      EC: 0,
+      DT: [],
+    });
   }
+};
+const updateLanguage = async (req, res) => {
+  const { ID_NGUOI_DUNG, LANGUAGE } = req.body;
+  console.log("LANGUAGE", LANGUAGE);
+  try {
+    // Cập nhật `LANGUAGE` vào database
+    const result = await pool.query(
+      "UPDATE NGUOI_DUNG SET LANGUAGE = ? WHERE ID_NGUOI_DUNG = ?",
+      [LANGUAGE, ID_NGUOI_DUNG]
+    );
 
-  // Kiểm tra OTP
-  const storedOtp = otpStorage.get(email);
-  if (
-    !storedOtp ||
-    storedOtp.otp !== parseInt(otp) ||
-    Date.now() > storedOtp.expiresAt
-  ) {
-    return res.status(400).json({ message: "Invalid or expired OTP" });
-  }
-
-  // Mã hóa mật khẩu
-  const hashedPassword = await bcrypt.hash(newPassword, 10);
-
-  // Cập nhật vào database
-  const result = await db.query(
-    "UPDATE nguoi_dung SET mat_khau = ? WHERE email = ?",
-    [hashedPassword, email]
-  );
-
-  if (result.affectedRows > 0) {
-    otpStorage.delete(email); // Xóa OTP sau khi thành công
-    res.status(200).json({ message: "Password updated successfully" });
-  } else {
-    res.status(500).json({ message: "Failed to update password" });
+    if (result[0].affectedRows > 0) {
+      return res.status(200).json({
+        EM: "Cập nhật LANGUAGE thành công",
+        EC: 1,
+        DT: LANGUAGE,
+      });
+    } else {
+      return res.status(500).json({
+        EM: "Cập nhật LANGUAGE không thành công",
+        EC: 0,
+        DT: [],
+      });
+    }
+  } catch (error) {
+    console.error("Error updating theme:", error);
+    return res.status(500).json({
+      EM: "Cập nhật LANGUAGE không thành công",
+      EC: -1,
+      DT: [],
+    });
   }
 };
 module.exports = {
@@ -602,4 +660,5 @@ module.exports = {
   updatePrefences,
   updatePasswordUser,
   sendOtp,
+  updateLanguage,
 };
