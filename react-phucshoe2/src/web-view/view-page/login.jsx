@@ -200,8 +200,15 @@ const LoginPage = () => {
           />
 
           <Typography
+            to="/forget-password"
+            component={Link}
             variant="body2"
-            sx={{ color: "#ccc", cursor: "pointer", marginBottom: 2 }}
+            sx={{
+              color: "#ccc",
+              cursor: "pointer",
+              marginBottom: 2,
+              textDecoration: "none",
+            }}
           >
             Forgot password?
           </Typography>
@@ -210,6 +217,7 @@ const LoginPage = () => {
             variant="contained"
             type="submit"
             sx={{
+              mt: 2,
               backgroundColor: "#26bbff",
               color: "#101014",
               borderRadius: "14px",

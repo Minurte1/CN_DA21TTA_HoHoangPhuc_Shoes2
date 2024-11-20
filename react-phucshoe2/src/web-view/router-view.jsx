@@ -9,6 +9,7 @@ import CheckOutMoMo from "./component-view/checkOutMoMo.jsx";
 import Cart from "../share-view/cartProduct.jsx";
 import WishlistProducts from "../share-view/wishListProducts.jsx";
 import BrowseProduct from "./view-page/browseShoes.jsx";
+import ForgotPassword from "./view-page/forgetPassword.jsx";
 
 const RouterView = () => {
   const element = useRoutes([
@@ -27,6 +28,10 @@ const RouterView = () => {
     {
       path: "/test",
       element: <CheckOutMoMo />,
+    },
+    {
+      path: "/forget-password",
+      element: <ForgotPassword />,
     },
     {
       path: "/register",
