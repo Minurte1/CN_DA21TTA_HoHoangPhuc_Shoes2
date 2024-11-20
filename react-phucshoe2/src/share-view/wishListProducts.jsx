@@ -16,7 +16,10 @@ import {
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import dayjs from "dayjs";
 import FilterShoes from "../admin-view/pages/quanLySanPham/component/FilterShoe";
+import { enqueueSnackbar } from "notistack";
+import { setTotalCart } from "../redux/authSlice";
 const api = process.env.REACT_APP_URL_SERVER;
 const WishlistItem = ({
   name,
@@ -30,73 +33,84 @@ const WishlistItem = ({
   material,
   brand,
   dateLiked,
-}) => (
-  <Card
-    sx={{
-      mb: 2,
-      display: "flex",
-      justifyContent: "space-between",
-      p: 2,
-      backgroundColor: "#202024",
-    }}
-  >
-    <Box sx={{ display: "flex", alignItems: "center", textAlign: "left" }}>
-      <img
-        src={`${api}/images/${image}`} // Replace with correct image URL
-        alt={`${name} thumbnail`}
-        style={{ marginRight: 16, width: "80px", borderRadius: "13px" }}
-      />
-      <Box>
-        <Typography variant="h6" color="white">
-          {name}
-        </Typography>
-        <Typography variant="body2" color="gray">
-          {gender} | {category} | {material} | {brand}
-        </Typography>
-        <Typography variant="body2" color="gray">
-          Rating: {rating}
-        </Typography>
+  handleAddToCart,
+  isLoading,
+  idProduct,
+}) => {
+  return (
+    <Card
+      sx={{
+        mb: 2,
+        display: "flex",
+        justifyContent: "space-between",
+        p: 2,
+        backgroundColor: "#202024",
+      }}
+    >
+      <Box sx={{ display: "flex", alignItems: "center", textAlign: "left" }}>
+        <img
+          src={`${api}/images/${image}`} // Replace with correct image URL
+          alt={`${name} thumbnail`}
+          style={{ marginRight: 16, width: "80px", borderRadius: "13px" }}
+        />
+        <Box>
+          <Typography variant="h6" color="white">
+            {name}
+          </Typography>
+          <Typography variant="body2" color="gray">
+            {gender} | {category} | {material} | {brand}
+          </Typography>
+          <Typography variant="body2" color="gray">
+            Rating: {rating}
+          </Typography>
+        </Box>
       </Box>
-    </Box>
-    <Box sx={{ textAlign: "right" }}>
-      <Typography variant="h6" color="white">
-        {new Intl.NumberFormat("vi-VN", {
-          style: "currency",
-          currency: "VND",
-        }).format(price)}
-      </Typography>
-      <Button
-        variant="text"
-        sx={{
-          color: "#c9d1d9",
-          textTransform: "none",
-          mr: 2,
-          "&:hover": {
-            color: "#fffff", // Change text color on hover
-          },
-        }}
-      >
-        Remove
-      </Button>
+      <Box sx={{ textAlign: "right" }}>
+        <Typography variant="h6" color="white">
+          {new Intl.NumberFormat("vi-VN", {
+            style: "currency",
+            currency: "VND",
+          }).format(price)}
+        </Typography>
+        <Button
+          variant="text"
+          sx={{
+            color: "#c9d1d9",
+            textTransform: "none",
+            mr: 2,
+            "&:hover": {
+              color: "#fffff", // Change text color on hover
+            },
+          }}
+        >
+          Remove
+        </Button>
 
-      <Button
-        variant="contained"
-        sx={{
-          borderRadius: "14px",
-          backgroundColor: "#26bbff",
-          color: "#101014",
-          fontWeight: "600",
-          fontSize: "12px",
-          "&:hover": {
-            backgroundColor: "#3ccaff",
-          },
-        }}
-      >
-        {inCart ? "View In Cart" : "Add To Cart"}
-      </Button>
-    </Box>
-  </Card>
-);
+        <Button
+          variant="contained"
+          sx={{
+            borderRadius: "14px",
+            backgroundColor: inCart ? "#cccccc" : "#26bbff",
+            color: inCart ? "#666666" : "#101014",
+            fontWeight: "600",
+            fontSize: "12px",
+            "&:hover": {
+              backgroundColor: inCart ? "#b3b3b3" : "#3ccaff",
+            },
+          }}
+          onClick={() => handleAddToCart(idProduct)}
+          disabled={inCart || isLoading} // Vô hiệu hóa nút nếu sản phẩm đã trong giỏ hàng hoặc đang xử lý
+        >
+          {isLoading
+            ? "Processing..."
+            : inCart
+            ? "View In Cart"
+            : "Add To Cart"}
+        </Button>
+      </Box>
+    </Card>
+  );
+};
 
 const WishlistFilters = ({
   thuongHieu,
@@ -187,25 +201,23 @@ const WishlistProducts = () => {
       return;
     }
 
-    const fetchWishlistItems = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:3002/san-pham/use/wishlist-user/${userInfo.ID_NGUOI_DUNG}`
-        );
-        const sortedItems = response.data.DT.sort(
-          (a, b) => new Date(b.NGAY_YEU_THICH) - new Date(a.NGAY_YEU_THICH)
-        );
-        setItems(sortedItems);
-      } catch (error) {
-        console.error("Error fetching wishlist data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchWishlistItems();
   }, [isAuthenticated, userInfo, navigate]);
-
+  const fetchWishlistItems = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:3002/san-pham/use/wishlist-user/${userInfo.ID_NGUOI_DUNG}`
+      );
+      const sortedItems = response.data.DT.sort(
+        (a, b) => new Date(b.NGAY_YEU_THICH) - new Date(a.NGAY_YEU_THICH)
+      );
+      setItems(sortedItems);
+    } catch (error) {
+      console.error("Error fetching wishlist data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
   useEffect(() => {
     fetchData();
   }, []);
@@ -366,7 +378,38 @@ const WishlistProducts = () => {
   const handlePageChange = (event, value) => {
     setCurrentPage(value);
   };
-  console.log("items", items);
+  const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useDispatch();
+  const handleAddToCart = async (idProduct) => {
+    try {
+      setIsLoading(true);
+      const updateDate = dayjs().format("YYYY-MM-DD HH:mm:ss"); // Lấy ngày giờ hiện tại và định dạng
+
+      const response = await axios.post(
+        `${api}/yeu-thich/add-cart/delete-wish`,
+        {
+          userId: userInfo.ID_NGUOI_DUNG,
+          productId: idProduct,
+          updateDate,
+        }
+      );
+
+      console.log("responsive ", response.data);
+      if (response.data.EC === 1) {
+        // Cập nhật trạng thái giỏ hàng thành công
+        fetchWishlistItems();
+        dispatch(setTotalCart(response.data.totalQuantity));
+        enqueueSnackbar(response.data.EM); // Hiển thị thông báo
+      } else {
+        enqueueSnackbar(response.data.EM); // Hiển thị lỗi từ API
+      }
+    } catch (error) {
+      console.error("Error adding product to cart:", error);
+      enqueueSnackbar("Đã xảy ra lỗi khi thêm sản phẩm vào giỏ hàng.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
   if (loading) {
     return (
       <div>
@@ -407,7 +450,11 @@ const WishlistProducts = () => {
         ) : (
           filteredProducts.map((item, index) => (
             <WishlistItem
+              isLoading={isLoading}
+              setLoading={setLoading}
+              handleAddToCart={handleAddToCart}
               key={index}
+              idProduct={item.ID_SAN_PHAM}
               name={item.TEN_SAN_PHAM}
               price={item.GIA}
               rating="N/A" // You can replace it with actual rating if available
