@@ -1,14 +1,21 @@
-// src/CheckOutMoMo.js
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux"; // Sử dụng Redux hooks
 import axios from "axios";
 import { toast } from "react-toastify"; // Đảm bảo bạn đã cài đặt react-toastify
+import { setItemCart, setTotalCart } from "../../redux/authSlice"; // Import các action cần thiết
 
 const CheckOutMoMo = () => {
+  const apiUrl = process.env.REACT_APP_URL_SERVER;
   const location = useLocation();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const [paymentInfo, setPaymentInfo] = useState({});
 
+  // Lấy dữ liệu từ Redux
+  const { itemCart, totalCart, userInfo } = useSelector((state) => state.auth);
+  console.log("itemCart", itemCart);
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
 
@@ -46,55 +53,60 @@ const CheckOutMoMo = () => {
     }
   }, []);
 
-  // const handleOrder = async (orderDetails) => {
-  //   try {
-  //     const { seatsToPurchase, discountedPrice, userId } = orderDetails;
+  // Hàm xử lý đơn hàng khi thanh toán thành công
+  const handleOrder = async () => {
+    try {
+      // Lấy các thông tin từ paymentInfo và Redux state
+      const orderId = paymentInfo.orderId; // Lấy orderId từ query params
+      const orderInfo = paymentInfo.orderInfo; // Lấy thông tin đơn hàng từ query params
+      const paymentMethod = 1;
+      const userId = userInfo.userId; // Lấy ID người dùng từ Redux
+      const totalAmount = totalCart; // Tổng tiền đơn hàng từ Redux
+      const cartItems = itemCart; // Lấy giỏ hàng từ Redux
 
-  //     // Gửi yêu cầu đến API để tạo đơn hàng
-  //     const response = await axiosInstance.post(
-  //       `http://localhost:3002/api/seats/order/ticket`,
-  //       {
-  //         seatsToPurchase: seatsToPurchase, // Truyền toàn bộ thông tin ghế
-  //         totalPrice: discountedPrice, // Truyền tổng tiền đã giảm
-  //       }
-  //     );
+      // Xử lý ghi chú đơn hàng (có thể từ paymentInfo hoặc mặc định)
+      const note = paymentInfo.message || "Không có ghi chú";
 
-  //     // Cập nhật điểm số người dùng
-  //     const updatedScore = userAllData.score - inputScore; // Tính toán điểm số mới
+      // Chuẩn bị dữ liệu cho API
+      const requestData = {
+        idNguoiDung: userId, // Lấy từ Redux
+        idThanhToan: paymentMethod, // Lấy phương thức thanh toán
+        tongTien: totalAmount, // Lấy tổng tiền
+        trangThaiDonHang: "Đang chờ", // Mặc định trạng thái là "Đang chờ"
+        ghiChuDonHang: note, // Ghi chú đơn hàng
+        ID_ODER: orderId, // Mã đơn hàng từ query params
+        items: cartItems,
+      };
 
-  //     const updateResponse = await axiosInstance.put(
-  //       `http://localhost:3002/api/users/score/${userId}`,
-  //       { score: updatedScore }
-  //     );
+      // Gửi yêu cầu API để tạo đơn hàng
+      const response = await axios.post(`${apiUrl}/don-hang`, requestData);
 
-  //     const response_updateScore = await axiosInstance.post(
-  //       `http://localhost:3002/api/seats/add-score`,
-  //       {
-  //         id: userId,
-  //         soLuongVe: seatsToPurchase.length,
-  //       }
-  //     );
+      if (response.data.EC === 1) {
+        // Đơn hàng được tạo thành công
+        toast.success("Đặt hàng thành công!");
 
-  //     // Cập nhật state của userAllData
-  //     setUserAllData((prev) => ({ ...prev, score: updatedScore }));
+        // Dọn dẹp giỏ hàng sau khi thanh toán thành công
+        dispatch(setItemCart([]));
+        dispatch(setTotalCart(0));
 
-  //     // Cập nhật cookie với dữ liệu mới
-  //     const updatedUserData = {
-  //       ...userAllData, // Sao chép tất cả thông tin người dùng
-  //       score: updatedScore, // Cập nhật điểm mới
-  //     };
-
-  //     Cookies.set("userData", JSON.stringify(updatedUserData)); // Cập nhật cookie
-
-  //     if (response.data.EC === 1) {
-  //       toast.success(`Bạn đã đặt vé thành công`);
-  //       navigate("/");
-  //     }
-  //   } catch (error) {
-  //     console.log("Lỗi khi mua vé:", error);
-  //     toast.error("Đã có lỗi xảy ra khi mua vé");
-  //   }
-  // };
+        // Điều hướng đến trang thành công
+        navigate("/order-success");
+      } else {
+        // Nếu có lỗi khi tạo đơn hàng
+        toast.error("Đã có lỗi xảy ra khi đặt hàng.");
+      }
+    } catch (error) {
+      console.error("Error while processing order:", error);
+      toast.error("Đã có lỗi khi xử lý đơn hàng.");
+    }
+  };
+  console.log("paymentInfo", paymentInfo);
+  useEffect(() => {
+    // Kiểm tra nếu đã có thông tin thanh toán thành công, thực hiện xử lý đơn hàng
+    if (paymentInfo.message === "Successful.") {
+      handleOrder(); // Xử lý đơn hàng khi thanh toán thành công
+    }
+  }, [paymentInfo]); // Chạy khi paymentInfo thay đổi
 
   return <></>; // Trả về JSX của bạn nếu cần thiết
 };

@@ -23,7 +23,7 @@ import { useNavigate } from "react-router-dom";
 
 import { Add, Remove } from "@mui/icons-material";
 import axios from "axios";
-import { setTotalCart } from "../redux/authSlice";
+import { setItemCart, setTotalCart, setIdOder } from "../redux/authSlice";
 const api = process.env.REACT_APP_URL_SERVER;
 const CartItem = ({
   id, // Assuming each item has a unique id
@@ -214,13 +214,16 @@ const CartSummary = ({
 const Cart = () => {
   const [items, setItems] = useState([]);
   const [subtotal, setSubtotal] = useState(0);
-  const { isAuthenticated, userInfo } = useSelector((state) => state.auth);
+  const { isAuthenticated, userInfo, itemCart, totalCart } = useSelector(
+    (state) => state.auth
+  );
   const [tongTienCart, setTongTienCart] = useState("");
   const [loading, setLoading] = useState(true);
   const [selectPhuongThucThanhToan, setSelectPhuongThucThanhToan] =
     useState("");
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
   useEffect(() => {
     if (!isAuthenticated || !userInfo) {
       // Redirect to login if user is not authenticated or userInfo is missing
@@ -327,9 +330,14 @@ const Cart = () => {
   };
   const handleSummitThanhToan = async () => {
     try {
-      const orderId = uuidv4(); // Tạo mã đơn hàng duy nhất
-      const orderInfo = `PhucShoes - Mã đơn hàng: ${orderId}`; // Thông tin mô tả đơn hàng
+      // Lưu giỏ hàng vào Redux
+      dispatch(setItemCart(items)); // Lưu giỏ hàng trong Redux store
+      dispatch(setTotalCart(totalCart)); // Cập nhật tổng tiền
 
+      // Tạo mã đơn hàng duy nhất
+      const orderId = uuidv4();
+      const orderInfo = `PhucShoes - Mã đơn hàng: ${orderId}`; // Thông tin mô tả đơn hàng
+      dispatch(setIdOder(orderId));
       const responsive = await axios.post(
         "http://emailserivce.somee.com/api/Momo/CreatePaymentUrl",
         {
@@ -338,7 +346,7 @@ const Cart = () => {
           options: "mutil",
           orderInfo: orderInfo,
           returnUrl: "http://localhost:3000/checkout",
-          amount: tongTienCart,
+          amount: totalCart, // Gửi tổng tiền trong giỏ hàng
         }
       );
       console.log(responsive.data.url);
@@ -352,6 +360,7 @@ const Cart = () => {
       console.error("Error during payment creation:", error);
     }
   };
+
   if (loading) {
     return (
       <div>
