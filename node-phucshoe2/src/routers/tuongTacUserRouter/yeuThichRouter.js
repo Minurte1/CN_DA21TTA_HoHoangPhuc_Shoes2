@@ -11,6 +11,6 @@ const {
 router.get("", getYEU_THICH);
 router.get("/:id", getYEU_THICH_By_IdUser);
 router.post("/", createYEU_THICH);
-router.delete("/", deleteYEU_THICH);
+router.post("/delete", deleteYEU_THICH);
 router.post("/add-cart/delete-wish", addSingleProductToCartAndDeleteWish);
 module.exports = router;

@@ -36,6 +36,7 @@ const WishlistItem = ({
   handleAddToCart,
   isLoading,
   idProduct,
+  removeFromFavorites,
 }) => {
   return (
     <Card
@@ -74,6 +75,7 @@ const WishlistItem = ({
         </Typography>
         <Button
           variant="text"
+          onClick={() => removeFromFavorites(idProduct)}
           sx={{
             color: "#c9d1d9",
             textTransform: "none",
@@ -410,6 +412,27 @@ const WishlistProducts = () => {
       setIsLoading(false);
     }
   };
+  const removeFromFavorites = async (idSanPham) => {
+    try {
+      const response = await axios.post(`${api}/yeu-thich/delete`, {
+        idSanPham: idSanPham,
+        idNguoiDung: userInfo.ID_NGUOI_DUNG,
+      });
+      console.log("daa", response.data);
+      if (response.data.EC === 1) {
+        fetchWishlistItems();
+        enqueueSnackbar(response.data.EM); // Thông báo thành công
+      } else {
+        fetchWishlistItems();
+        enqueueSnackbar(response.data.EM); // Thông báo lỗi
+      }
+    } catch (error) {
+      console.error("Error removing product from favorites:", error);
+      enqueueSnackbar(
+        "Có lỗi xảy ra khi xóa sản phẩm khỏi danh sách yêu thích."
+      );
+    }
+  };
   if (loading) {
     return (
       <div>
@@ -451,6 +474,7 @@ const WishlistProducts = () => {
           filteredProducts.map((item, index) => (
             <WishlistItem
               isLoading={isLoading}
+              removeFromFavorites={removeFromFavorites}
               setLoading={setLoading}
               handleAddToCart={handleAddToCart}
               key={index}

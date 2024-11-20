@@ -549,7 +549,7 @@ const getFavoriteProductsByUser = async (req, res) => {
     );
 
     if (results.length === 0) {
-      return res.status(404).json({
+      return res.status(200).json({
         EM: "Không có sản phẩm yêu thích cho người dùng hoặc sản phẩm không tồn tại",
         EC: 0,
         DT: [],
