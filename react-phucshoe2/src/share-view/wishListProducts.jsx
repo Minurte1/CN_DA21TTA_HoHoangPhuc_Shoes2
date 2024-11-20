@@ -16,6 +16,7 @@ import {
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import FilterShoes from "../admin-view/pages/quanLySanPham/component/FilterShoe";
 const api = process.env.REACT_APP_URL_SERVER;
 const WishlistItem = ({
   name,
@@ -97,25 +98,70 @@ const WishlistItem = ({
   </Card>
 );
 
-const WishlistFilters = () => (
+const WishlistFilters = ({
+  thuongHieu,
+  chatLieu,
+  selectedThuongHieu,
+  selectedChatLieu,
+  selectedTrangThai,
+  searchTerm,
+
+  handleSearchChange,
+  setSelectedTrangThai,
+  setSelectedChatLieu,
+  setSelectedThuongHieu,
+  setSelectedMauSac,
+
+  selectKichCo,
+  selectPhongCach,
+  selectMucDichSuDung,
+  selectedMauSac,
+
+  //
+  setSelectPhongCach,
+  setSelectMucDichSuDung,
+  setSelectKichCo,
+  //
+  phongCach,
+  mauSac,
+  mucDichSuDung,
+  kichCo,
+}) => (
   <Box
     sx={{ backgroundColor: "#202024", p: 2, borderRadius: 2, color: "white" }}
   >
-    <Typography variant="h6">Filters</Typography>
-    <FormControl fullWidth sx={{ mt: 2 }}>
-      <InputLabel sx={{ color: "#c9d1d9" }}>Category</InputLabel>
-      <Select sx={{ color: "#c9d1d9" }} label="Category">
-        <MenuItem value="Shoes">Shoes</MenuItem>
-        <MenuItem value="Clothes">Clothes</MenuItem>
-      </Select>
-    </FormControl>
-    <FormControl fullWidth sx={{ mt: 2 }}>
-      <InputLabel sx={{ color: "#c9d1d9" }}>Brand</InputLabel>
-      <Select sx={{ color: "#c9d1d9" }} label="Brand">
-        <MenuItem value="Nike">Nike</MenuItem>
-        <MenuItem value="Adidas">Adidas</MenuItem>
-      </Select>
-    </FormControl>
+    <FilterShoes
+      thuongHieu={thuongHieu}
+      chatLieu={chatLieu}
+      //
+      selectedThuongHieu={selectedThuongHieu}
+      selectedChatLieu={selectedChatLieu}
+      selectedTrangThai={selectedTrangThai}
+      //
+      selectedMauSac={selectedMauSac}
+      selectKichCo={selectKichCo}
+      selectPhongCach={selectPhongCach}
+      selectMucDichSuDung={selectMucDichSuDung}
+      //
+      setSelectedTrangThai={setSelectedTrangThai}
+      setSelectedChatLieu={setSelectedChatLieu}
+      setSelectedThuongHieu={setSelectedThuongHieu}
+      //
+      setSelectedMauSac={setSelectedMauSac}
+      setSelectPhongCach={setSelectPhongCach}
+      setSelectMucDichSuDung={setSelectMucDichSuDung}
+      setSelectKichCo={setSelectKichCo}
+      //
+      searchTerm={searchTerm}
+      handleSearchChange={handleSearchChange}
+      //
+      phongCach={phongCach}
+      mauSac={mauSac}
+      mucDichSuDung={mucDichSuDung}
+      kichCo={kichCo}
+      //
+      offStatus={true}
+    />
   </Box>
 );
 
@@ -124,7 +170,16 @@ const WishlistProducts = () => {
   const [loading, setLoading] = useState(true);
   const { isAuthenticated, userInfo } = useSelector((state) => state.auth);
   const navigate = useNavigate();
+  const [thuongHieu, setThuongHieu] = useState([]);
+  const [danhMuc, setDanhMuc] = useState([]);
+  const [chatLieu, setChatLieu] = useState([]);
+  const [gioiTinh, setGioiTinh] = useState([]);
 
+  // ----------------------------------------------
+  const [phongCach, setPhongCach] = useState([]);
+  const [mauSac, setMauSac] = useState([]);
+  const [mucDichSuDung, setMucDichSuDung] = useState([]);
+  const [kichCo, setKichCo] = useState([]);
   useEffect(() => {
     if (!isAuthenticated || !userInfo) {
       // Redirect to login if the user is not authenticated or if userInfo is missing
@@ -150,6 +205,168 @@ const WishlistProducts = () => {
 
     fetchWishlistItems();
   }, [isAuthenticated, userInfo, navigate]);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      const [
+        thuongHieuResponse,
+        danhMucResponse,
+        chatLieuResponse,
+        gioiTinhResponse,
+        phongCachResponse,
+        mauSacResponse,
+        mucDichSuDungResponse,
+        kichCoResponse,
+      ] = await Promise.all([
+        axios.get(`${api}/thuong-hieu/use`),
+        axios.get(`${api}/loai-danh-muc/use`),
+        axios.get(`${api}/chat-lieu/use`),
+        axios.get(`${api}/gioi-tinh/use`),
+
+        axios.get(`${api}/phong-cach/use`),
+        axios.get(`${api}/mau-sac/use`),
+        axios.get(`${api}/muc-dich-su-dung/use`),
+        axios.get(`${api}/kich-co/use`),
+      ]);
+
+      if (thuongHieuResponse.data.EC === 1) {
+        setThuongHieu(thuongHieuResponse.data.DT);
+      }
+      if (danhMucResponse.data.EC === 1) {
+        setDanhMuc(danhMucResponse.data.DT);
+      }
+      if (chatLieuResponse.data.EC === 1) {
+        setChatLieu(chatLieuResponse.data.DT);
+      }
+      if (gioiTinhResponse.data.EC === 1) {
+        setGioiTinh(gioiTinhResponse.data.DT);
+      }
+      if (phongCachResponse.data.EC === 1) {
+        setPhongCach(phongCachResponse.data.DT);
+      }
+      if (mauSacResponse.data.EC === 1) {
+        setMauSac(mauSacResponse.data.DT);
+      }
+      if (mucDichSuDungResponse.data.EC === 1) {
+        setMucDichSuDung(mucDichSuDungResponse.data.DT);
+      }
+      if (kichCoResponse.data.EC === 1) {
+        setKichCo(kichCoResponse.data.DT);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  //filter products
+  const [selectedThuongHieu, setSelectedThuongHieu] = useState("");
+  const [selectedChatLieu, setSelectedChatLieu] = useState("");
+  const [selectedTrangThai, setSelectedTrangThai] = useState("");
+
+  const [selectMucDichSuDung, setSelectMucDichSuDung] = useState("");
+  const [selectPhongCach, setSelectPhongCach] = useState("");
+  const [selectKichCo, setSelectKichCo] = useState("");
+  const [selectedMauSac, setSelectedMauSac] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const [filteredProducts, setFilteredProducts] = useState(items);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 16; // Số sản phẩm hiển thị mỗi trang
+
+  const handleSearchChange = (e) => {
+    const term = e.target.value;
+    setSearchTerm(term);
+
+    // Nếu không có từ khóa tìm kiếm, khôi phục lại tất cả sản phẩm
+    if (term === "") {
+      setFilteredProducts(items);
+    } else {
+      // Lọc sản phẩm theo từ khóa tìm kiếm
+      const filtered = items.filter((product) =>
+        product.TEN_SAN_PHAM.toLowerCase().includes(term.toLowerCase())
+      );
+      setFilteredProducts(filtered);
+    }
+  };
+
+  useEffect(() => {
+    const applyFilters = () => {
+      let updatedProducts = items;
+      if (selectMucDichSuDung) {
+        updatedProducts = updatedProducts.filter(
+          (product) => product.ID_MUC_DICH_SU_DUNG === selectMucDichSuDung
+        );
+      }
+      if (selectMucDichSuDung) {
+        updatedProducts = updatedProducts.filter(
+          (product) => product.ID_MUC_DICH_SU_DUNG === selectMucDichSuDung
+        );
+      }
+      if (selectPhongCach) {
+        updatedProducts = updatedProducts.filter(
+          (product) => product.ID_PHUONG_CACH === selectPhongCach
+        );
+      }
+      if (selectKichCo) {
+        updatedProducts = updatedProducts.filter(
+          (product) => product.ID_KICH_CO === selectKichCo
+        );
+      }
+      if (selectedMauSac) {
+        updatedProducts = updatedProducts.filter(
+          (product) => product.MAU_SAC_ID === selectedMauSac
+        );
+      }
+      if (selectedThuongHieu) {
+        updatedProducts = updatedProducts.filter(
+          (product) => product.ID_THUONG_HIEU === selectedThuongHieu
+        );
+      }
+      if (selectedChatLieu) {
+        updatedProducts = updatedProducts.filter(
+          (product) => product.CHAT_LIEU_ID_ === selectedChatLieu
+        );
+      }
+      if (selectedTrangThai !== "") {
+        updatedProducts = updatedProducts.filter(
+          (product) => product.TRANG_THAI_SANPHAM === selectedTrangThai
+        );
+      }
+
+      // Nếu có từ khóa tìm kiếm, lọc lại
+      if (searchTerm) {
+        updatedProducts = updatedProducts.filter((product) =>
+          product.TEN_SAN_PHAM.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+      }
+
+      setFilteredProducts(updatedProducts);
+    };
+
+    applyFilters();
+  }, [
+    selectedThuongHieu,
+    selectedChatLieu,
+    selectedTrangThai,
+    searchTerm, // Thêm searchTerm vào dependency array
+    items,
+    selectKichCo,
+    selectPhongCach,
+    selectMucDichSuDung,
+    selectedMauSac,
+  ]);
+  const currentProducts = filteredProducts.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+  const handlePageChange = (event, value) => {
+    setCurrentPage(value);
+  };
+  console.log("items", items);
   if (loading) {
     return (
       <div>
@@ -188,7 +405,7 @@ const WishlistProducts = () => {
         {loading ? (
           <Typography color="white">Loading...</Typography>
         ) : (
-          items.map((item, index) => (
+          filteredProducts.map((item, index) => (
             <WishlistItem
               key={index}
               name={item.TEN_SAN_PHAM}
@@ -207,7 +424,36 @@ const WishlistProducts = () => {
         )}
       </Grid>
       <Grid item xs={12} md={4}>
-        <WishlistFilters />
+        <WishlistFilters
+          thuongHieu={thuongHieu}
+          chatLieu={chatLieu}
+          //
+          selectedThuongHieu={selectedThuongHieu}
+          selectedChatLieu={selectedChatLieu}
+          selectedTrangThai={selectedTrangThai}
+          //
+          selectedMauSac={selectedMauSac}
+          selectKichCo={selectKichCo}
+          selectPhongCach={selectPhongCach}
+          selectMucDichSuDung={selectMucDichSuDung}
+          //
+          setSelectedTrangThai={setSelectedTrangThai}
+          setSelectedChatLieu={setSelectedChatLieu}
+          setSelectedThuongHieu={setSelectedThuongHieu}
+          //
+          setSelectedMauSac={setSelectedMauSac}
+          setSelectPhongCach={setSelectPhongCach}
+          setSelectMucDichSuDung={setSelectMucDichSuDung}
+          setSelectKichCo={setSelectKichCo}
+          //
+          searchTerm={searchTerm}
+          handleSearchChange={handleSearchChange}
+          //
+          phongCach={phongCach}
+          mauSac={mauSac}
+          mucDichSuDung={mucDichSuDung}
+          kichCo={kichCo}
+        />
       </Grid>
     </Grid>
   );
