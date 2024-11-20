@@ -11,6 +11,7 @@ import {
   FormControl,
   InputLabel,
   Switch,
+  Skeleton,
 } from "@mui/material";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
@@ -123,6 +124,7 @@ const WishlistProducts = () => {
   const [loading, setLoading] = useState(true);
   const { isAuthenticated, userInfo } = useSelector((state) => state.auth);
   const navigate = useNavigate();
+
   useEffect(() => {
     if (!isAuthenticated || !userInfo) {
       // Redirect to login if the user is not authenticated or if userInfo is missing
@@ -148,7 +150,15 @@ const WishlistProducts = () => {
 
     fetchWishlistItems();
   }, [isAuthenticated, userInfo, navigate]);
-
+  if (loading) {
+    return (
+      <div>
+        <Skeleton variant="rectangular" width="100%" height={100} />
+        <Skeleton variant="text" />
+        <Skeleton variant="text" />
+      </div>
+    );
+  }
   return (
     <Grid
       container

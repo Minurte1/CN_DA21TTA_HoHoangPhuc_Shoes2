@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   Container,
   TextField,
@@ -13,6 +13,7 @@ import {
   Box,
   Paper,
   InputAdornment,
+  IconButton,
 } from "@mui/material";
 
 import Icon from "@mui/material/Icon";
@@ -20,12 +21,27 @@ import dayjs from "dayjs";
 import { LocalizationProvider, DateTimePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { Link } from "react-router-dom";
-import axiosInstance from "../../authentication/axiosInstance";
-import { toast } from "react-toastify";
+
+import { useSelector } from "react-redux";
+import translations from "../../redux/data/translations";
+import { enqueueSnackbar } from "notistack";
+import axios from "axios";
+import ReplayIcon from "@mui/icons-material/Replay";
+import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
+const api = process.env.REACT_APP_URL_SERVER;
+
 const RegistrationForm = () => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [isOpenThongTinUser, setIsOpenThongTinUser] = useState(true);
+  const language = useSelector((state) => state.language.language);
+  const t = translations[language].register;
+  const [isAgreed, setIsAgreed] = useState(false); // Theo dõi checkbox 'terms of service'
+  const [isSubscribed, setIsSubscribed] = useState(false); // Theo dõi checkbox 'news'
+  const [isOpenOTP, setIsOpenOTP] = useState(true);
   const scrollRef = useRef(null); // Tạo ref cho phần tử cuộn tới
+  const { isAuthenticated, userInfo } = useSelector((state) => state.auth);
+  const [isOtpSent, setIsOtpSent] = useState(false); // Track OTP sent status
+
   const [formData, setFormData] = useState({
     fullName: "",
     phone: "",
@@ -57,31 +73,82 @@ const RegistrationForm = () => {
       console.log("selectedDate", selectedDate);
       setIsOpenThongTinUser(!isOpenThongTinUser);
     } else {
-      alert("Bạn phải trên 18 tuổi để tạo tài khoản.");
+      enqueueSnackbar("Bạn phải trên 18 tuổi để tạo tài khoản.");
     }
   };
   const handleRegister = async () => {
-    if (formData.password == confirmPassword) {
+    if (!isAgreed) {
+      enqueueSnackbar("Bạn phải đồng ý với điều khoản sử dụng!");
+      return;
+    }
+    if (!isSubscribed) {
+      enqueueSnackbar("Bạn phải đồng ý với điều khoản sử dụng!");
+      return;
+    }
+    if (formData.password === confirmPassword) {
       try {
-        const response = await axiosInstance.post(
-          `${process.env.REACT_APP_URL_SERVER}/register`,
-          {
-            formData,
-          }
-        );
+        const response = await axios.post(`${api}/register`, { formData });
         if (response.data.EC === 1) {
-          toast.success(response.data.EM);
+          enqueueSnackbar(response.data.EM);
         } else {
-          toast.error(response.data.EM);
+          enqueueSnackbar(response.data.EM);
         }
       } catch (error) {
-        toast.error(error);
-        console.log(error);
+        enqueueSnackbar("Có lỗi xảy ra!");
+        console.error(error);
       }
     } else {
-      toast.error("Mật khẩu không trùng khớp!!");
+      enqueueSnackbar("Mật khẩu không trùng khớp!");
     }
   };
+
+  const [otp, setOtp] = useState("");
+  const [countdown, setCountdown] = useState(0); // State to track countdown time
+  // Handle OTP send
+  const handleSendOtp = async () => {
+    if (countdown > 0) return; // Prevent sending OTP if countdown is active
+
+    try {
+      const response = await axios.post(`${api}/send-otp`, {
+        email: userInfo.EMAIL,
+      });
+      if (response.data.EC === 1) {
+        enqueueSnackbar(response.data.EM);
+        setCountdown(60); // Set countdown to 60 seconds
+        setIsOtpSent(true); // Mark OTP as sent
+      } else {
+        enqueueSnackbar(response.data.EM);
+      }
+    } catch (error) {}
+  };
+  //handle Check OTP
+  const handleCheckOtp = async () => {
+    try {
+      const response = await axios.post(`${api}/check-otp`, {
+        email: userInfo.EMAIL,
+        otp: otp,
+      });
+      if (response.data.EC === 1) {
+        enqueueSnackbar(response.data.EM);
+        setIsOtpSent(false);
+      } else {
+        enqueueSnackbar(response.data.EM);
+      }
+    } catch (error) {}
+  };
+  // Start countdown timer
+  useEffect(() => {
+    let timer;
+    if (countdown > 0) {
+      timer = setInterval(() => {
+        setCountdown((prev) => prev - 1);
+      }, 1000);
+    } else if (countdown === 0) {
+      setIsOtpSent(false);
+    }
+    return () => clearInterval(timer);
+  }, [countdown]);
+
   return (
     <Box
       sx={{
@@ -104,23 +171,24 @@ const RegistrationForm = () => {
           ref={scrollRef} // Gán ref cho phần tử này
         >
           {" "}
-          <img
-            src="https://upload.wikimedia.org/wikipedia/commons/3/31/Epic_Games_logo.svg"
-            alt="Epic Games"
-            style={{ marginBottom: 16, width: "50px", height: "50px" }}
-          />{" "}
           {isOpenThongTinUser ? (
             <>
               <Typography variant="h6" component="h1" gutterBottom>
-                Create Account
+                {t.createAccount ? t.createAccount : " Create Account"}
               </Typography>
               <Typography variant="body2" gutterBottom sx={{ mt: 2 }}>
-                Please enter your date of birth. This is to help you have a safe
-                and fun experience whatever your age.
+                {t.dateOfBirthPrompt
+                  ? t.dateOfBirthPrompt
+                  : `Please enter your date of birth. This is to help you have a safe
+                and fun experience whatever your age `}
               </Typography>
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DateTimePicker
-                  label="Date and Time of Birth"
+                  label={
+                    t.dateAndTimeOfBirth
+                      ? t.dateAndTimeOfBirth
+                      : "Ngày và Giờ Sinh"
+                  }
                   value={selectedDate}
                   sx={{
                     mt: 2,
@@ -161,231 +229,304 @@ const RegistrationForm = () => {
                 }}
                 onClick={() => handleOpenThongTinUser()}
               >
-                CONTINUE
+                {t.continue ? t.continue : "Tiếp tục"}
               </Button>
               <Typography variant="body2" sx={{ mt: 2 }}>
-                Already have an account?{" "}
+                {t.alreadyHaveAccount
+                  ? t.alreadyHaveAccount
+                  : "Bạn đã có tài khoản chưa?"}{" "}
+                &nbsp;
                 <Link href="#" underline="hover" sx={{ color: "#0070f3" }}>
-                  Sign in
+                  {t.signIn ? t.signIn : "Đăng nhập"}
                 </Link>
               </Typography>
               <Typography variant="body2" sx={{ mt: 1 }}>
                 <Link href="#" underline="hover" sx={{ color: "#0070f3" }}>
-                  Privacy Policy
+                  {t.privacyPolicy
+                    ? t.privacyPolicy
+                    : "Chính Sách Quyền Riêng Tư"}
                 </Link>
               </Typography>
             </>
           ) : (
             <>
-              <Container
-                maxWidth="xs"
-                style={{
-                  marginTop: "50px",
-                  backgroundColor: "#101014",
-                  padding: "20px",
-                  borderRadius: "8px",
-                }}
-              >
-                <Typography
-                  variant="h5"
-                  style={{ color: "#c1c1c1", textAlign: "center" }}
-                >
-                  Create Account
-                </Typography>
-                {/* <FormControl fullWidth margin="normal" variant="outlined">
-                  <InputLabel style={{ color: "#c1c1c1" }}>Country</InputLabel>
-                  <Select
-                    defaultValue="Vietnam"
-                    style={{ color: "#c1c1c1", borderColor: "#c1c1c1" }}
-                    MenuProps={{
-                      PaperProps: {
-                        style: {
-                          backgroundColor: "#101014",
-                          color: "#c1c1c1",
-                        },
-                      },
+              {isOpenOTP ? (
+                <>
+                  {" "}
+                  <Container
+                    maxWidth="xs"
+                    style={{
+                      marginTop: "50px",
+                      backgroundColor: "#101014",
+                      padding: "20px",
+                      borderRadius: "8px",
                     }}
                   >
-                    <MenuItem value="Vietnam">Vietnam</MenuItem>
-                  </Select>
-                </FormControl> */}
-                <TextField
-                  label="Email Address"
-                  variant="outlined"
-                  fullWidth
-                  margin="normal"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  InputProps={{
-                    style: { color: "#c1c1c1" },
-                  }}
-                  InputLabelProps={{ style: { color: "#c1c1c1" } }}
-                  sx={{
-                    "& .MuiOutlinedInput-root": {
-                      "& fieldset": {
-                        borderColor: "#c1c1c1",
+                    <Typography
+                      variant="h5"
+                      style={{ color: "#c1c1c1", textAlign: "center" }}
+                    >
+                      Create Account
+                    </Typography>
+                    <TextField
+                      label="Email Address"
+                      variant="outlined"
+                      fullWidth
+                      margin="normal"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      InputProps={{
+                        style: { color: "#c1c1c1" },
+                      }}
+                      InputLabelProps={{ style: { color: "#c1c1c1" } }}
+                      sx={{
+                        "& .MuiOutlinedInput-root": {
+                          "& fieldset": {
+                            borderColor: "#c1c1c1",
+                          },
+                          "&:hover fieldset": {
+                            borderColor: "#26bbff",
+                          },
+                          "&.Mui-focused fieldset": {
+                            borderColor: "#26bbff",
+                          },
+                        },
+                      }}
+                    />
+                    <TextField
+                      label="Full Name"
+                      variant="outlined"
+                      fullWidth
+                      margin="normal"
+                      name="fullName"
+                      value={formData.fullName}
+                      onChange={handleInputChange}
+                      required
+                      InputProps={{ style: { color: "#c1c1c1" } }}
+                      InputLabelProps={{ style: { color: "#c1c1c1" } }}
+                      sx={{
+                        "& .MuiOutlinedInput-root": {
+                          "& fieldset": {
+                            borderColor: "#c1c1c1",
+                          },
+                          "&:hover fieldset": {
+                            borderColor: "#26bbff",
+                          },
+                          "&.Mui-focused fieldset": {
+                            borderColor: "#26bbff",
+                          },
+                        },
+                      }}
+                    />
+                    <TextField
+                      label="Phone"
+                      variant="outlined"
+                      fullWidth
+                      margin="normal"
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleInputChange}
+                      InputProps={{ style: { color: "#c1c1c1" } }}
+                      InputLabelProps={{ style: { color: "#c1c1c1" } }}
+                      sx={{
+                        "& .MuiOutlinedInput-root": {
+                          "& fieldset": {
+                            borderColor: "#c1c1c1",
+                          },
+                          "&:hover fieldset": {
+                            borderColor: "#26bbff",
+                          },
+                          "&.Mui-focused fieldset": {
+                            borderColor: "#26bbff",
+                          },
+                        },
+                      }}
+                    />{" "}
+                    <TextField
+                      label="Password"
+                      type="password"
+                      variant="outlined"
+                      fullWidth
+                      margin="normal"
+                      name="password"
+                      value={formData.password}
+                      onChange={handleInputChange}
+                      InputProps={{ style: { color: "#c1c1c1" } }}
+                      InputLabelProps={{ style: { color: "#c1c1c1" } }}
+                      sx={{
+                        "& .MuiOutlinedInput-root": {
+                          "& fieldset": {
+                            borderColor: "#c1c1c1",
+                          },
+                          "&:hover fieldset": {
+                            borderColor: "#26bbff",
+                          },
+                          "&.Mui-focused fieldset": {
+                            borderColor: "#26bbff",
+                          },
+                        },
+                      }}
+                    />{" "}
+                    <TextField
+                      label="Confirm Password"
+                      type="password"
+                      variant="outlined"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      fullWidth
+                      margin="normal"
+                      InputProps={{ style: { color: "#c1c1c1" } }}
+                      InputLabelProps={{ style: { color: "#c1c1c1" } }}
+                      sx={{
+                        "& .MuiOutlinedInput-root": {
+                          "& fieldset": {
+                            borderColor: "#c1c1c1",
+                          },
+                          "&:hover fieldset": {
+                            borderColor: "#26bbff",
+                          },
+                          "&.Mui-focused fieldset": {
+                            borderColor: "#26bbff",
+                          },
+                        },
+                      }}
+                    />
+                    <Box
+                      display="flex"
+                      flexDirection="column"
+                      alignItems="start"
+                    >
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            checked={isSubscribed}
+                            onChange={(e) => setIsSubscribed(e.target.checked)}
+                            style={{ color: "#c1c1c1" }}
+                          />
+                        }
+                        label={
+                          <Typography style={{ color: "#c1c1c1" }}>
+                            Send me news, surveys and special offers from
+                            PhucShoe
+                          </Typography>
+                        }
+                      />
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            checked={isAgreed}
+                            onChange={(e) => setIsAgreed(e.target.checked)}
+                            style={{ color: "#c1c1c1" }}
+                          />
+                        }
+                        label={
+                          <Typography style={{ color: "#c1c1c1" }}>
+                            I have read and agree to the terms of service
+                          </Typography>
+                        }
+                      />
+                    </Box>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={() => setIsOpenOTP(false)}
+                      disabled={!isAgreed}
+                      fullWidth
+                      style={{
+                        backgroundColor: !isAgreed ? "#d3d3d3" : "#26bbff", // Màu khi disabled hoặc enabled
+                        color: !isAgreed ? "#9e9e9e" : "#101014", // Màu chữ tương ứng
+                        cursor: !isAgreed ? "not-allowed" : "pointer", // Con trỏ chỉ khi enabled
+                      }}
+                    >
+                      Continue
+                    </Button>
+                    <Typography
+                      align="center"
+                      style={{ color: "#c1c1c1", marginTop: "20px" }}
+                    >
+                      Already have an account?{" "}
+                      <a href="#" style={{ color: "#26bbff" }}>
+                        Sign In
+                      </a>
+                    </Typography>
+                    <Typography align="center" style={{ color: "#26bbff" }}>
+                      Privacy Policy
+                    </Typography>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      sx={{
+                        mt: 3,
+                        backgroundColor: "#26bbff",
+                        color: "#101014",
+                        width: "50%",
+                      }}
+                      onClick={handleOpenThongTinUser}
+                    >
+                      Back
+                    </Button>
+                  </Container>
+                </>
+              ) : (
+                <>
+                  <KeyboardBackspaceIcon sx={{ textAlign: "left" }} />
+                  <TextField
+                    label="OTP"
+                    variant="outlined"
+                    fullWidth
+                    sx={{
+                      color: "#c9d1d9", // Text color for input value
+                      width: "100%",
+                      "& .MuiInputBase-input": {
+                        color: "#c9d1d9",
                       },
-                      "&:hover fieldset": {
-                        borderColor: "#26bbff",
+                      "& .MuiInputBase-input::placeholder": {
+                        color: "#c9d1d9", // Placeholder color
                       },
-                      "&.Mui-focused fieldset": {
-                        borderColor: "#26bbff",
+                      "& .MuiOutlinedInput-root fieldset": {
+                        borderColor: "#c9d1d9", // Border color when not focused
                       },
-                    },
-                  }}
-                />
-                <TextField
-                  label="Full Name"
-                  variant="outlined"
-                  fullWidth
-                  margin="normal"
-                  name="fullName"
-                  value={formData.fullName}
-                  onChange={handleInputChange}
-                  required
-                  InputProps={{ style: { color: "#c1c1c1" } }}
-                  InputLabelProps={{ style: { color: "#c1c1c1" } }}
-                  sx={{
-                    "& .MuiOutlinedInput-root": {
-                      "& fieldset": {
-                        borderColor: "#c1c1c1",
+                      "& .Mui-focused .MuiInputLabel-root": {
+                        color: "#c9d1d9", // Focused label color
                       },
-                      "&:hover fieldset": {
-                        borderColor: "#26bbff",
+                      "& .MuiInputLabel-root": {
+                        color: "#c9d1d9", // Default label color
                       },
-                      "&.Mui-focused fieldset": {
-                        borderColor: "#26bbff",
-                      },
-                    },
-                  }}
-                />
-                <TextField
-                  label="Phone"
-                  variant="outlined"
-                  fullWidth
-                  margin="normal"
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleInputChange}
-                  InputProps={{ style: { color: "#c1c1c1" } }}
-                  InputLabelProps={{ style: { color: "#c1c1c1" } }}
-                  sx={{
-                    "& .MuiOutlinedInput-root": {
-                      "& fieldset": {
-                        borderColor: "#c1c1c1",
-                      },
-                      "&:hover fieldset": {
-                        borderColor: "#26bbff",
-                      },
-                      "&.Mui-focused fieldset": {
-                        borderColor: "#26bbff",
-                      },
-                    },
-                  }}
-                />{" "}
-                <TextField
-                  label="Password"
-                  type="password"
-                  variant="outlined"
-                  fullWidth
-                  margin="normal"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleInputChange}
-                  InputProps={{ style: { color: "#c1c1c1" } }}
-                  InputLabelProps={{ style: { color: "#c1c1c1" } }}
-                  sx={{
-                    "& .MuiOutlinedInput-root": {
-                      "& fieldset": {
-                        borderColor: "#c1c1c1",
-                      },
-                      "&:hover fieldset": {
-                        borderColor: "#26bbff",
-                      },
-                      "&.Mui-focused fieldset": {
-                        borderColor: "#26bbff",
-                      },
-                    },
-                  }}
-                />{" "}
-                <TextField
-                  label="Confirm Password"
-                  type="password"
-                  variant="outlined"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  fullWidth
-                  margin="normal"
-                  InputProps={{ style: { color: "#c1c1c1" } }}
-                  InputLabelProps={{ style: { color: "#c1c1c1" } }}
-                  sx={{
-                    "& .MuiOutlinedInput-root": {
-                      "& fieldset": {
-                        borderColor: "#c1c1c1",
-                      },
-                      "&:hover fieldset": {
-                        borderColor: "#26bbff",
-                      },
-                      "&.Mui-focused fieldset": {
-                        borderColor: "#26bbff",
-                      },
-                    },
-                  }}
-                />
-                <Box display="flex" flexDirection="column" alignItems="start">
-                  <FormControlLabel
-                    control={<Checkbox style={{ color: "#c1c1c1" }} />}
-                    label={
-                      <Typography style={{ color: "#c1c1c1" }}>
-                        Send me news, surveys and special offers from Epic Games
-                      </Typography>
-                    }
+                    }}
+                    value={otp}
+                    onChange={(e) => setOtp(e.target.value)}
+                    style={{ marginBottom: 20 }}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            onClick={handleSendOtp}
+                            disabled={countdown > 0}
+                          >
+                            <ReplayIcon sx={{ color: "#c9d1d9" }} />
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
                   />
-                  <FormControlLabel
-                    control={<Checkbox style={{ color: "#c1c1c1" }} />}
-                    label={
-                      <Typography style={{ color: "#c1c1c1" }}>
-                        I have read and agree to the terms of service
-                      </Typography>
-                    }
-                  />
-                </Box>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={() => handleRegister()}
-                  fullWidth
-                  style={{ backgroundColor: "#26bbff", color: "#101014" }}
-                >
-                  Continue
-                </Button>
-                <Typography
-                  align="center"
-                  style={{ color: "#c1c1c1", marginTop: "20px" }}
-                >
-                  Already have an account?{" "}
-                  <a href="#" style={{ color: "#26bbff" }}>
-                    Sign In
-                  </a>
-                </Typography>
-                <Typography align="center" style={{ color: "#26bbff" }}>
-                  Privacy Policy
-                </Typography>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  sx={{
-                    mt: 3,
-                    backgroundColor: "#26bbff",
-                    color: "#101014",
-                    width: "50%",
-                  }}
-                  onClick={handleOpenThongTinUser}
-                >
-                  Back
-                </Button>
-              </Container>
+                  <Typography
+                    variant="body1"
+                    sx={{ color: "#ffffff", textAlign: "right" }}
+                  >
+                    {countdown > 1 ? `${countdown}s` : ""}
+                  </Typography>
+                  <Button
+                    onClick={handleCheckOtp}
+                    variant="contained"
+                    color="primary"
+                    fullWidth
+                    type="submit"
+                  >
+                    Xác nhận
+                  </Button>{" "}
+                </>
+              )}
             </>
           )}
         </Paper>

@@ -106,7 +106,7 @@ const PasswordAndSetting = () => {
   };
 
   //change password
-
+  const [isOpenOTP, setIsOpenOTP] = useState(false);
   const [otp, setOtp] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
@@ -214,9 +214,10 @@ const PasswordAndSetting = () => {
               gap: 2, // Khoảng cách giữa các phần tử
             }}
           >
-            <Typography variant="body1" sx={{ color: "#ffffff" }}>
+            {" "}
+            <Button variant="text" sx={{ color: "#ffffff" }}>
               Thay đổi ngôn ngữ
-            </Typography>
+            </Button>
             <Button
               variant="outlined"
               onClick={handleLanguageMenu}
@@ -242,9 +243,10 @@ const PasswordAndSetting = () => {
               gap: 2, // Khoảng cách giữa các phần tử
             }}
           >
-            <Typography variant="body1" sx={{ color: "#ffffff" }}>
+            {" "}
+            <Button variant="text" sx={{ color: "#ffffff" }}>
               Thay đổi màu nền
-            </Typography>
+            </Button>
             <Box sx={{ ml: 1 }}>
               <Button
                 variant="outlined"
@@ -316,149 +318,157 @@ const PasswordAndSetting = () => {
                 }
               }
             >
-              {" "}
-              <Typography
-                variant="body1"
+              <Button
+                variant="text"
+                onClick={() => setIsOpenOTP(!isOpenOTP)}
                 sx={{ color: "#ffffff", width: "100%" }}
               >
                 Thay đổi mật khẩu
-              </Typography>
+              </Button>
             </Box>
-
-            <Box>
-              <form onSubmit={handleUpdatePassword}>
+            {isOpenOTP ? (
+              <>
                 {" "}
-                {isOpenChangePassword ? (
-                  <>
+                <Box>
+                  <form onSubmit={handleUpdatePassword}>
                     {" "}
-                    <TextField
-                      label="New Password"
-                      variant="outlined"
-                      sx={{
-                        color: "#c9d1d9", // Text color for input value
-                        width: "100%",
-                        "& .MuiInputBase-input": {
-                          color: "#c9d1d9",
-                        },
-                        "& .MuiInputBase-input::placeholder": {
-                          color: "#c9d1d9", // Placeholder color
-                        },
-                        "& .MuiOutlinedInput-root fieldset": {
-                          borderColor: "#c9d1d9", // Border color when not focused
-                        },
-                        "& .Mui-focused .MuiInputLabel-root": {
-                          color: "#c9d1d9", // Focused label color
-                        },
-                        "& .MuiInputLabel-root": {
-                          color: "#c9d1d9", // Default label color
-                        },
-                      }}
-                      type="password"
-                      fullWidth
-                      value={newPassword}
-                      onChange={(e) => setNewPassword(e.target.value)}
-                      style={{ marginBottom: 20 }}
-                    />{" "}
-                    <TextField
-                      label="Confirm New Password"
-                      variant="outlined"
-                      sx={{
-                        color: "#c9d1d9", // Text color for input value
-                        width: "100%",
-                        "& .MuiInputBase-input": {
-                          color: "#c9d1d9",
-                        },
-                        "& .MuiInputBase-input::placeholder": {
-                          color: "#c9d1d9", // Placeholder color
-                        },
-                        "& .MuiOutlinedInput-root fieldset": {
-                          borderColor: "#c9d1d9", // Border color when not focused
-                        },
-                        "& .Mui-focused .MuiInputLabel-root": {
-                          color: "#c9d1d9", // Focused label color
-                        },
-                        "& .MuiInputLabel-root": {
-                          color: "#c9d1d9", // Default label color
-                        },
-                      }}
-                      fullWidth
-                      value={confirmNewPassword}
-                      onChange={(e) => setConfirmNewPassword(e.target.value)}
-                      style={{ marginBottom: 20 }}
-                    />
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      fullWidth
-                      type="submit"
-                      sx={{
-                        backgroundColor: "#ffffff", // Màu nền trắng
-                        color: "#101014", // Màu chữ
-                      }}
-                    >
-                      Cập nhật mật khẩu
-                    </Button>
-                  </>
-                ) : (
-                  <>
-                    <TextField
-                      label="OTP"
-                      variant="outlined"
-                      fullWidth
-                      sx={{
-                        color: "#c9d1d9", // Text color for input value
-                        width: "100%",
-                        "& .MuiInputBase-input": {
-                          color: "#c9d1d9",
-                        },
-                        "& .MuiInputBase-input::placeholder": {
-                          color: "#c9d1d9", // Placeholder color
-                        },
-                        "& .MuiOutlinedInput-root fieldset": {
-                          borderColor: "#c9d1d9", // Border color when not focused
-                        },
-                        "& .Mui-focused .MuiInputLabel-root": {
-                          color: "#c9d1d9", // Focused label color
-                        },
-                        "& .MuiInputLabel-root": {
-                          color: "#c9d1d9", // Default label color
-                        },
-                      }}
-                      value={otp}
-                      onChange={(e) => setOtp(e.target.value)}
-                      style={{ marginBottom: 20 }}
-                      InputProps={{
-                        endAdornment: (
-                          <InputAdornment position="end">
-                            <IconButton
-                              onClick={handleSendOtp}
-                              disabled={countdown > 0}
-                            >
-                              <ReplayIcon sx={{ color: "#c9d1d9" }} />
-                            </IconButton>
-                          </InputAdornment>
-                        ),
-                      }}
-                    />
-                    <Typography
-                      variant="body1"
-                      sx={{ color: "#ffffff", textAlign: "right" }}
-                    >
-                      {countdown > 1 ? `${countdown}s` : ""}
-                    </Typography>
-                    <Button
-                      onClick={handleCheckOtp}
-                      variant="contained"
-                      color="primary"
-                      fullWidth
-                      type="submit"
-                    >
-                      Xác nhận
-                    </Button>
-                  </>
-                )}
-              </form>
-            </Box>
+                    {isOpenChangePassword ? (
+                      <>
+                        {" "}
+                        <TextField
+                          label="New Password"
+                          variant="outlined"
+                          sx={{
+                            color: "#c9d1d9", // Text color for input value
+                            width: "100%",
+                            "& .MuiInputBase-input": {
+                              color: "#c9d1d9",
+                            },
+                            "& .MuiInputBase-input::placeholder": {
+                              color: "#c9d1d9", // Placeholder color
+                            },
+                            "& .MuiOutlinedInput-root fieldset": {
+                              borderColor: "#c9d1d9", // Border color when not focused
+                            },
+                            "& .Mui-focused .MuiInputLabel-root": {
+                              color: "#c9d1d9", // Focused label color
+                            },
+                            "& .MuiInputLabel-root": {
+                              color: "#c9d1d9", // Default label color
+                            },
+                          }}
+                          type="password"
+                          fullWidth
+                          value={newPassword}
+                          onChange={(e) => setNewPassword(e.target.value)}
+                          style={{ marginBottom: 20 }}
+                        />{" "}
+                        <TextField
+                          label="Confirm New Password"
+                          variant="outlined"
+                          sx={{
+                            color: "#c9d1d9", // Text color for input value
+                            width: "100%",
+                            "& .MuiInputBase-input": {
+                              color: "#c9d1d9",
+                            },
+                            "& .MuiInputBase-input::placeholder": {
+                              color: "#c9d1d9", // Placeholder color
+                            },
+                            "& .MuiOutlinedInput-root fieldset": {
+                              borderColor: "#c9d1d9", // Border color when not focused
+                            },
+                            "& .Mui-focused .MuiInputLabel-root": {
+                              color: "#c9d1d9", // Focused label color
+                            },
+                            "& .MuiInputLabel-root": {
+                              color: "#c9d1d9", // Default label color
+                            },
+                          }}
+                          fullWidth
+                          value={confirmNewPassword}
+                          onChange={(e) =>
+                            setConfirmNewPassword(e.target.value)
+                          }
+                          style={{ marginBottom: 20 }}
+                        />
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          fullWidth
+                          type="submit"
+                          sx={{
+                            backgroundColor: "#ffffff", // Màu nền trắng
+                            color: "#101014", // Màu chữ
+                          }}
+                        >
+                          Cập nhật mật khẩu
+                        </Button>
+                      </>
+                    ) : (
+                      <>
+                        <TextField
+                          label="OTP"
+                          variant="outlined"
+                          fullWidth
+                          sx={{
+                            color: "#c9d1d9", // Text color for input value
+                            width: "100%",
+                            "& .MuiInputBase-input": {
+                              color: "#c9d1d9",
+                            },
+                            "& .MuiInputBase-input::placeholder": {
+                              color: "#c9d1d9", // Placeholder color
+                            },
+                            "& .MuiOutlinedInput-root fieldset": {
+                              borderColor: "#c9d1d9", // Border color when not focused
+                            },
+                            "& .Mui-focused .MuiInputLabel-root": {
+                              color: "#c9d1d9", // Focused label color
+                            },
+                            "& .MuiInputLabel-root": {
+                              color: "#c9d1d9", // Default label color
+                            },
+                          }}
+                          value={otp}
+                          onChange={(e) => setOtp(e.target.value)}
+                          style={{ marginBottom: 20 }}
+                          InputProps={{
+                            endAdornment: (
+                              <InputAdornment position="end">
+                                <IconButton
+                                  onClick={handleSendOtp}
+                                  disabled={countdown > 0}
+                                >
+                                  <ReplayIcon sx={{ color: "#c9d1d9" }} />
+                                </IconButton>
+                              </InputAdornment>
+                            ),
+                          }}
+                        />
+                        <Typography
+                          variant="body1"
+                          sx={{ color: "#ffffff", textAlign: "right" }}
+                        >
+                          {countdown > 1 ? `${countdown}s` : ""}
+                        </Typography>
+                        <Button
+                          onClick={handleCheckOtp}
+                          variant="contained"
+                          color="primary"
+                          fullWidth
+                          type="submit"
+                        >
+                          Xác nhận
+                        </Button>
+                      </>
+                    )}
+                  </form>
+                </Box>
+              </>
+            ) : (
+              <></>
+            )}
           </Box>
           <Menu
             id="language-menu"

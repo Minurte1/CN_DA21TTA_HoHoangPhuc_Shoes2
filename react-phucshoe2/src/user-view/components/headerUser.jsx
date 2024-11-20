@@ -91,12 +91,12 @@ const Header = () => {
   const handleLogout = async () => {
     try {
       await axiosInstance.post(`${apiUrl}/logout`);
+      navigate("/login");
       Cookies.remove("accessToken");
 
       // Cập nhật Redux bằng cách dispatch hành động logout
       dispatch(logout());
       handleClose();
-      navigate("/login");
     } catch (error) {
       console.error("Lỗi đăng xuất:", error);
     }
@@ -262,6 +262,7 @@ const Header = () => {
               paddingTop: 1,
               paddingBottom: 1,
               paddingRight: 8,
+
               paddingLeft: 2,
               color: "#fff",
               "&:hover": {
@@ -269,8 +270,10 @@ const Header = () => {
               },
             }}
             onClick={handleClose}
+            component={Link}
+            to="/profile/don-hang"
           >
-            My account
+            Đơn hàng
           </MenuItem>{" "}
           <MenuItem
             sx={{
@@ -285,40 +288,10 @@ const Header = () => {
               },
             }}
             onClick={handleClose}
+            component={Link}
+            to="/profile/mat-khau-cai-dat"
           >
-            My account
-          </MenuItem>{" "}
-          <MenuItem
-            sx={{
-              borderRadius: "8px",
-              paddingTop: 1,
-              paddingBottom: 1,
-              paddingRight: 8,
-              paddingLeft: 2,
-              color: "#fff",
-              "&:hover": {
-                backgroundColor: "#4a494c", // Màu nền khi hover
-              },
-            }}
-            onClick={handleClose}
-          >
-            My account
-          </MenuItem>{" "}
-          <MenuItem
-            sx={{
-              borderRadius: "8px",
-              paddingTop: 1,
-              paddingBottom: 1,
-              paddingRight: 8,
-              paddingLeft: 2,
-              color: "#fff",
-              "&:hover": {
-                backgroundColor: "#4a494c", // Màu nền khi hover
-              },
-            }}
-            onClick={handleClose}
-          >
-            My account
+            Mật khẩu & cài đặt
           </MenuItem>{" "}
           <MenuItem
             sx={{

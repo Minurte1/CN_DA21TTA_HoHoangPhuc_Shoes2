@@ -82,6 +82,17 @@ const translations = {
       PasswordAndSetting: "Mật khẩu & Cài đặt",
       NeedHelp: "Bạn cần giúp đỡ?",
     },
+    register: {
+      createAccount: "Tạo Tài Khoản",
+      dateOfBirthPrompt:
+        "Vui lòng nhập ngày sinh của bạn. Điều này giúp bạn có trải nghiệm an toàn và thú vị ở bất kỳ độ tuổi nào.",
+      dateAndTimeOfBirth: "Ngày và Giờ Sinh",
+
+      alreadyHaveAccount: "Đã có tài khoản?",
+      signIn: "Đăng nhập",
+      privacyPolicy: "Chính Sách Quyền Riêng Tư",
+      continue: "Tiếp tục",
+    },
   },
 
   // --------------------ENGLISH--------------------
@@ -167,6 +178,16 @@ const translations = {
       PasswordAndSetting: "Password & Settings",
       NeedHelp: "Need Help?",
     },
+    register: {
+      createAccount: "Create Account",
+      dateOfBirthPrompt:
+        "Please enter your date of birth. This is to help you have a safe and fun experience whatever your age.",
+      dateAndTimeOfBirth: "Date and Time of Birth",
+      continue: "Continue",
+      alreadyHaveAccount: "Already have an account?",
+      signIn: "Sign in",
+      privacyPolicy: "Privacy Policy",
+    },
   },
   // --------------------TÂY BÀN NHA--------------------
   es: {
@@ -251,6 +272,16 @@ const translations = {
       Oder: "Pedido",
       PasswordAndSetting: "Contraseña y configuración",
       NeedHelp: "¿Necesitas ayuda?",
+    },
+    register: {
+      createAccount: "Crear Cuenta",
+      dateOfBirthPrompt:
+        "Por favor, ingresa tu fecha de nacimiento. Esto es para ayudarte a tener una experiencia segura y divertida a cualquier edad.",
+      dateAndTimeOfBirth: "Fecha y Hora de Nacimiento",
+      continue: "Continuar",
+      alreadyHaveAccount: "¿Ya tienes una cuenta?",
+      signIn: "Iniciar sesión",
+      privacyPolicy: "Política de Privacidad",
     },
   },
   // Thêm các ngôn ngữ và trang khác tại đây

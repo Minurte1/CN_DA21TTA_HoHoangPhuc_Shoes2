@@ -12,6 +12,7 @@ import {
   Switch,
   IconButton,
   InputLabel,
+  Skeleton,
 } from "@mui/material";
 
 import { Payments } from "@mui/icons-material";
@@ -272,6 +273,7 @@ const Cart = () => {
   const [subtotal, setSubtotal] = useState(0);
   const { isAuthenticated, userInfo } = useSelector((state) => state.auth);
   const [tongTienCart, setTongTienCart] = useState("");
+  const [loading, setLoading] = useState(true);
   const [selectPhuongThucThanhToan, setSelectPhuongThucThanhToan] =
     useState("");
   const navigate = useNavigate();
@@ -301,11 +303,8 @@ const Cart = () => {
         (acc, item) => acc + item.GIA * item.SO_LUONG_GIOHANG,
         0
       );
-
+      setLoading(false);
       setSubtotal(total);
-      // } else {
-      //   console.error("Error fetching cart items:", data.EM);
-      // }
     } catch (error) {
       console.error("Error fetching cart items:", error);
     }
@@ -326,6 +325,15 @@ const Cart = () => {
       console.error("Error fetching payment methods:", error);
     }
   };
+  if (loading) {
+    return (
+      <div>
+        <Skeleton variant="rectangular" width="100%" height={100} />
+        <Skeleton variant="text" />
+        <Skeleton variant="text" />
+      </div>
+    );
+  }
 
   return (
     <Grid

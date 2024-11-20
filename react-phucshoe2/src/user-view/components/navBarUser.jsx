@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   Container,
@@ -26,7 +26,7 @@ import { useSelector } from "react-redux";
 const NavBarUser = () => {
   const language = useSelector((state) => state.language.language);
   const t = translations[language].profile;
-
+  const [isOpenNeedHelp, setIsOpenNeedHelp] = useState(false);
   return (
     <Box
       sx={{
@@ -108,11 +108,27 @@ const NavBarUser = () => {
       </ListItem> */}
         <Divider style={{ margin: "20px 0" }} />
         <Typography
+          onClick={() => setIsOpenNeedHelp(!isOpenNeedHelp)}
           variant="body2"
           style={{ color: "#888", textAlign: "center", cursor: "pointer" }}
         >
           {t.NeedHelp ? t.NeedHelp : "BẠN CẦN GIÚP ĐỠ?"}
         </Typography>
+        {isOpenNeedHelp ? (
+          <>
+            {" "}
+            <Typography
+              mt={4}
+              onClick={() => setIsOpenNeedHelp(!isOpenNeedHelp)}
+              variant="body2"
+              style={{ color: "#888", textAlign: "center", cursor: "pointer" }}
+            >
+              Kệ bạn =)))
+            </Typography>
+          </>
+        ) : (
+          <></>
+        )}
       </List>
     </Box>
   );

@@ -122,7 +122,7 @@ const UserProfile = () => {
         }}
       >
         <AvatarChanger
-          userId={userInfo.ID_NGUOI_DUNG}
+          userId={userInfo?.ID_NGUOI_DUNG}
           currentAvatar={`${api}/images/${currentAvatar}`}
           onAvatarChange={handleAvatarChange}
         />
