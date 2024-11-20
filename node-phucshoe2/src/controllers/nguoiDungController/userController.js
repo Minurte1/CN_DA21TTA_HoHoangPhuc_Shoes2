@@ -388,6 +388,102 @@ const loginUserGoogle = async (req, res) => {
   }
 };
 
+const loginUser = async (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res.status(400).json({
+      EM: "Email và mật khẩu không được để trống",
+      EC: 0,
+      DT: [],
+    });
+  }
+
+  try {
+    // Kiểm tra xem người dùng có tồn tại trong cơ sở dữ liệu không
+    const [rows] = await pool.query(
+      "SELECT * FROM NGUOI_DUNG WHERE EMAIL = ?",
+      [email]
+    );
+
+    if (rows.length === 0) {
+      return res.status(404).json({
+        EM: "Người dùng không tồn tại",
+        EC: 0,
+        DT: [],
+      });
+    }
+
+    const user = rows[0];
+
+    // Kiểm tra mật khẩu
+    const isPasswordValid = await bcrypt.compare(password, user.MAT_KHAU); // So sánh mật khẩu
+    if (!isPasswordValid) {
+      return res.status(401).json({
+        EM: "Mật khẩu không đúng",
+        EC: 0,
+        DT: [],
+      });
+    }
+
+    // Kiểm tra nếu tài khoản bị khóa
+    if (user.TRANG_THAI_USER === -1) {
+      return res.status(403).json({
+        EM: "Tài khoản bị khóa, không thể đăng nhập",
+        EC: 0,
+        DT: "Account is disabled",
+      });
+    }
+
+    // Tạo JWT token
+    const token = jwt.sign(
+      {
+        ID_NGUOI_DUNG: user.ID_NGUOI_DUNG,
+        EMAIL: user.EMAIL,
+        VAI_TRO: user.VAI_TRO,
+        HO_TEN: user.HO_TEN,
+        SO_DIEN_THOAI: user.SO_DIEN_THOAI,
+        DIA_CHI: user.DIA_CHI,
+        TRANG_THAI_USER: user.TRANG_THAI_USER,
+        NGAY_TAO_USER: user.NGAY_TAO_USER,
+        NGAY_CAP_NHAT_USER: user.NGAY_CAP_NHAT_USER,
+        AVATAR: user.AVATAR,
+      },
+      JWT_SECRET,
+      { expiresIn: "5h" }
+    );
+
+    // Trả về token và thông tin người dùng
+    return res.status(200).json({
+      EM: "Đăng nhập thành công",
+      EC: 1,
+      DT: {
+        accessToken: token,
+        userInfo: {
+          ID_NGUOI_DUNG: user.ID_NGUOI_DUNG,
+          EMAIL: user.EMAIL,
+          HO_TEN: user.HO_TEN,
+          VAI_TRO: user.VAI_TRO,
+          SO_DIEN_THOAI: user.SO_DIEN_THOAI,
+          DIA_CHI: user.DIA_CHI,
+          TRANG_THAI_USER: user.TRANG_THAI_USER,
+          NGAY_TAO_USER: user.NGAY_TAO_USER,
+          NGAY_CAP_NHAT_USER: user.NGAY_CAP_NHAT_USER,
+          AVATAR: user.AVATAR,
+          THEMES: user.THEMES,
+          LANGUAGE: user.LANGUAGE,
+        },
+      },
+    });
+  } catch (error) {
+    console.error("Error in loginUser:", error);
+    return res.status(500).json({
+      EM: `Lỗi: ${error.message}`,
+      EC: -1,
+      DT: [],
+    });
+  }
+};
 const verifyAdmin = async (req, res) => {
   const { token } = req.body;
   console.log("token", token);
@@ -924,4 +1020,5 @@ module.exports = {
   sendBirthdayWish,
   sendTeacherDayWish,
   registerUser,
+  loginUser,
 };

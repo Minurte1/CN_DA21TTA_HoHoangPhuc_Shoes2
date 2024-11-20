@@ -14,6 +14,7 @@ import { toast } from "react-toastify";
 
 import { useDispatch } from "react-redux";
 import { login } from "../../redux/authSlice";
+import { enqueueSnackbar } from "notistack";
 const LoginPage = () => {
   const [user, setUser] = useState(null);
   const [tokenGoogle, setTokenGoogle] = useState(null);
@@ -87,6 +88,52 @@ const LoginPage = () => {
     }
   }, [user, navigate, dispatch]);
 
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!email || !password) {
+      enqueueSnackbar("Please fill in all fields");
+      return;
+    }
+
+    setLoading(true); // Bắt đầu loading
+
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_URL_SERVER}/login`,
+        { email, password }
+      );
+      console.log("Response:", response.data);
+
+      if (response.data.EC === 1) {
+        Cookies.remove("accessToken");
+        const accessToken = response.data.DT.accessToken;
+        Cookies.set("accessToken", accessToken, { expires: 7 });
+
+        // Cập nhật trạng thái người dùng trong Redux
+        dispatch(
+          login({
+            accessToken,
+            userInfo: response.data.DT.userInfo, // Thông tin người dùng
+          })
+        );
+
+        enqueueSnackbar(response.data.EM);
+        navigate("/");
+      } else {
+        enqueueSnackbar(response.data.EM);
+      }
+    } catch (error) {
+      console.error("Đã xảy ra lỗi:", error);
+      enqueueSnackbar(
+        error.response?.data?.EM || "Có lỗi xảy ra, vui lòng thử lại."
+      );
+    } finally {
+      setLoading(false); // Kết thúc loading
+    }
+  };
   return (
     <Box
       sx={{
@@ -128,45 +175,53 @@ const LoginPage = () => {
           Sign In
         </Typography>
 
-        <TextField
-          label="Email Address"
-          variant="outlined"
-          fullWidth
-          sx={{ marginBottom: 2 }}
-          InputLabelProps={{ style: { color: "#ccc" } }}
-          inputProps={{ style: { color: "#fff" } }}
-        />
+        <form onSubmit={handleSubmit}>
+          <TextField
+            label="Email Address"
+            variant="outlined"
+            fullWidth
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            sx={{ marginBottom: 2 }}
+            InputLabelProps={{ style: { color: "#ccc" } }}
+            inputProps={{ style: { color: "#fff" } }}
+          />
 
-        <TextField
-          label="Password"
-          variant="outlined"
-          type="password"
-          fullWidth
-          sx={{ marginBottom: 2 }}
-          InputLabelProps={{ style: { color: "#ccc" } }}
-          inputProps={{ style: { color: "#fff" } }}
-        />
+          <TextField
+            label="Password"
+            variant="outlined"
+            type="password"
+            fullWidth
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            sx={{ marginBottom: 2 }}
+            InputLabelProps={{ style: { color: "#ccc" } }}
+            inputProps={{ style: { color: "#fff" } }}
+          />
 
-        <Typography
-          variant="body2"
-          sx={{ color: "#ccc", cursor: "pointer", marginBottom: 2 }}
-        >
-          Forgot password?
-        </Typography>
+          <Typography
+            variant="body2"
+            sx={{ color: "#ccc", cursor: "pointer", marginBottom: 2 }}
+          >
+            Forgot password?
+          </Typography>
 
-        <Button
-          variant="contained"
-          sx={{
-            backgroundColor: "#26bbff",
-            color: "#101014",
-            borderRadius: "14px",
-            width: "100%",
-            padding: "10px",
-            fontWeight: "600",
-          }}
-        >
-          SIGN IN
-        </Button>
+          <Button
+            variant="contained"
+            type="submit"
+            sx={{
+              backgroundColor: "#26bbff",
+              color: "#101014",
+              borderRadius: "14px",
+              width: "100%",
+              padding: "10px",
+              fontWeight: "600",
+            }}
+            disabled={loading} // Disable button khi đang loading
+          >
+            {loading ? "Loading..." : "SIGN IN"}
+          </Button>
+        </form>
 
         <Typography variant="body2" sx={{ margin: "20px 0", color: "#ccc" }}>
           or sign in with
