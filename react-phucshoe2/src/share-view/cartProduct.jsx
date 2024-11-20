@@ -35,78 +35,17 @@ const CartItem = ({
   brand,
   quantityInCart,
   image,
-  onQuantityChange,
+
   userId,
   fetchCartItems,
-
+  handleQuantityChange,
   color,
   phongCach,
   mucDich,
   kichCo,
+  quantity,
+  handleRemoveProduct,
 }) => {
-  const [quantity, setQuantity] = useState(quantityInCart);
-
-  const handleQuantityChange = async (newQuantity) => {
-    try {
-      if (newQuantity < 1) return; // Prevents quantity from going below 1
-
-      if (newQuantity > quantity) {
-        // Tăng số lượng
-        const response = await axios.post(`${api}/gio-hang/add-single`, {
-          userId: userId,
-          productId: id,
-          updateDate: new Date().toISOString(),
-        });
-
-        if (response.data.EC === 1) {
-          fetchCartItems();
-          setQuantity(newQuantity);
-          onQuantityChange(id, newQuantity);
-        } else {
-          console.error("Error adding quantity:", response.data.EM);
-        }
-      } else if (newQuantity < quantity) {
-        // Giảm số lượng
-        const response = await axios.post(`${api}/gio-hang/remove-single`, {
-          userId: userId,
-          productId: id,
-        });
-
-        if (response.data.EC === 1) {
-          fetchCartItems();
-          setQuantity(newQuantity);
-          onQuantityChange(id, newQuantity);
-        } else {
-          console.error("Error removing quantity:", response.data.EM);
-        }
-      }
-    } catch (error) {
-      console.error("Error updating quantity:", error);
-    }
-  };
-  console.log("id", id);
-  const handleRemoveProduct = async () => {
-    try {
-      while (quantity > 0) {
-        const response = await axios.post(`${api}/gio-hang/remove-products`, {
-          userId: userId,
-          productId: id,
-        });
-
-        if (response.data.EC === 1) {
-          fetchCartItems();
-          setQuantity(quantity - 1);
-          onQuantityChange(id, quantity - 1);
-        } else {
-          console.error("Error removing product:", response.data.EM);
-          break;
-        }
-      }
-    } catch (error) {
-      console.error("Error removing product completely:", error);
-    }
-  };
-
   return (
     <Card
       sx={{
@@ -170,7 +109,7 @@ const CartItem = ({
           <IconButton
             sx={{ color: "#d32a28" }}
             size="small"
-            onClick={() => handleQuantityChange(quantity - 1)}
+            onClick={() => handleQuantityChange(quantity - 1, id, "Delete")}
           >
             <Remove />
           </IconButton>
@@ -180,7 +119,7 @@ const CartItem = ({
           <IconButton
             sx={{ color: "#3ccaff" }}
             size="small"
-            onClick={() => handleQuantityChange(quantity + 1)}
+            onClick={() => handleQuantityChange(quantity + 1, id, "Add")}
           >
             <Add />
           </IconButton>
@@ -190,7 +129,7 @@ const CartItem = ({
           sx={{ mt: 2 }}
           variant="text"
           color="error"
-          onClick={handleRemoveProduct}
+          onClick={() => handleRemoveProduct(id)}
         >
           Remove
         </Button>
@@ -289,16 +228,18 @@ const Cart = () => {
   }, [isAuthenticated, userInfo, navigate]);
   const fetchCartItems = async () => {
     try {
-      const response = await fetch(
+      const response = await axios.get(
         `${api}/gio-hang/use/cart-user/${userInfo.ID_NGUOI_DUNG}`
       );
-      const data = await response.json();
+
+      const data = response.data;
 
       // if (data.EC === 1) {
       dispatch(setTotalCart(data.totalQuantity));
       setTongTienCart(data.TOTAL_AMOUNT);
       setItems(data.DT);
-      // Calculate the total cart value
+
+      // Tính tổng giá trị giỏ hàng
       const total = data.DT.reduce(
         (acc, item) => acc + item.GIA * item.SO_LUONG_GIOHANG,
         0
@@ -325,6 +266,62 @@ const Cart = () => {
       console.error("Error fetching payment methods:", error);
     }
   };
+
+  const handleQuantityChange = async (newQuantity, id, title) => {
+    try {
+      if (newQuantity < 1) return; // Prevents quantity from going below 1
+
+      if (title === "Add") {
+        // Tăng số lượng
+        const response = await axios.post(`${api}/gio-hang/add-single`, {
+          userId: userInfo.ID_NGUOI_DUNG,
+          productId: id,
+          updateDate: new Date().toISOString(),
+        });
+
+        if (response.data.EC === 1) {
+          fetchCartItems();
+
+          // onQuantityChange(id, newQuantity);
+        } else {
+          console.error("Error adding quantity:", response.data.EM);
+        }
+      } else if (title === "Delete") {
+        // Giảm số lượng
+        const response = await axios.post(`${api}/gio-hang/remove-single`, {
+          userId: userInfo.ID_NGUOI_DUNG,
+          productId: id,
+        });
+
+        if (response.data.EC === 1) {
+          fetchCartItems();
+
+          // onQuantityChange(id, newQuantity);
+        } else {
+          console.error("Error removing quantity:", response.data.EM);
+        }
+      }
+    } catch (error) {
+      console.error("Error updating quantity:", error);
+    }
+  };
+
+  const handleRemoveProduct = async (id) => {
+    console.log("handleRemoveProduct", id);
+    try {
+      const response = await axios.post(`${api}/gio-hang/remove-products`, {
+        userId: userInfo.ID_NGUOI_DUNG,
+        productId: id,
+      });
+
+      if (response.data.EC === 1) {
+        fetchCartItems();
+      }
+    } catch (error) {
+      console.error("Error removing product completely:", error);
+    }
+  };
+
   if (loading) {
     return (
       <div>
@@ -373,6 +370,9 @@ const Cart = () => {
         {items.map((item, index) => (
           <CartItem
             key={index}
+            quantity={item.TONG_SO_LUONG}
+            handleRemoveProduct={handleRemoveProduct}
+            handleQuantityChange={handleQuantityChange}
             name={item.TEN_SAN_PHAM}
             price={item.GIA}
             description={item.MO_TA_SAN_PHAM}
