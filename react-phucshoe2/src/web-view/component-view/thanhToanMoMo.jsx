@@ -14,24 +14,24 @@ import { useNavigate } from "react-router-dom";
 const PaymentMoMo = () => {
   const navigate = useNavigate();
   const handleSummit = async () => {
-    const responsive = await axios.post(
-      "http://emailserivce.somee.com/api/Momo/CreatePaymentUrl",
-      {
-        fullName: "string",
-        orderId: "string",
-        orderInfo: "string",
-        returnUrl: "http://localhost:3000/checkout",
-        amount: 123456,
-      }
-    );
-    console.log(responsive.data.url);
-    // Lấy URL từ phản hồi
-    const paymentUrl = responsive.data.url;
-    console.log(paymentUrl);
-
-    // Chuyển hướng đến URL thanh toán
-    window.location.href = paymentUrl;
     try {
+      const responsive = await axios.post(
+        "http://emailserivce.somee.com/api/Momo/CreatePaymentUrl",
+        {
+          fullName: "string",
+          orderId: "string",
+          orderInfo: "string",
+          returnUrl: "http://localhost:3000/checkout",
+          amount: 123456,
+        }
+      );
+      console.log(responsive.data.url);
+      // Lấy URL từ phản hồi
+      const paymentUrl = responsive.data.url;
+      console.log(paymentUrl);
+
+      // Chuyển hướng đến URL thanh toán
+      window.location.href = paymentUrl;
     } catch (error) {}
   };
   return (

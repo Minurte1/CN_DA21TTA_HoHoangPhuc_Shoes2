@@ -14,6 +14,7 @@ import {
   InputLabel,
   Skeleton,
 } from "@mui/material";
+import { v4 as uuidv4 } from "uuid"; // Thêm thư viện UUID nếu bạn muốn tạo mã đơn hàng duy nhất
 
 import { Payments } from "@mui/icons-material";
 
@@ -144,6 +145,7 @@ const CartSummary = ({
   paymentMethods,
   selectPhuongThucThanhToan,
   setSelectPhuongThucThanhToan,
+  handleSummitThanhToan,
 }) => (
   <Box sx={{ backgroundColor: "#202024", p: 2, borderRadius: 2 }}>
     <Typography variant="h6" color="white">
@@ -190,11 +192,13 @@ const CartSummary = ({
     <Divider sx={{ my: 1, backgroundColor: "#555" }} />
     <Button
       variant="contained"
+      onClick={() => handleSummitThanhToan()}
       sx={{
         borderRadius: "14px",
         backgroundColor: "#26bbff",
         color: "#101014",
         fontWeight: "600",
+
         fontSize: "12px",
         "&:hover": {
           backgroundColor: "#3ccaff",
@@ -321,7 +325,33 @@ const Cart = () => {
       console.error("Error removing product completely:", error);
     }
   };
+  const handleSummitThanhToan = async () => {
+    try {
+      const orderId = uuidv4(); // Tạo mã đơn hàng duy nhất
+      const orderInfo = `PhucShoes - Mã đơn hàng: ${orderId}`; // Thông tin mô tả đơn hàng
 
+      const responsive = await axios.post(
+        "http://emailserivce.somee.com/api/Momo/CreatePaymentUrl",
+        {
+          fullName: userInfo.HO_TEN,
+          orderId: orderId,
+          options: "mutil",
+          orderInfo: orderInfo,
+          returnUrl: "http://localhost:3000/checkout",
+          amount: tongTienCart,
+        }
+      );
+      console.log(responsive.data.url);
+      // Lấy URL từ phản hồi
+      const paymentUrl = responsive.data.url;
+      console.log(paymentUrl);
+
+      // Chuyển hướng đến URL thanh toán
+      window.location.href = paymentUrl;
+    } catch (error) {
+      console.error("Error during payment creation:", error);
+    }
+  };
   if (loading) {
     return (
       <div>
@@ -394,6 +424,7 @@ const Cart = () => {
       </Grid>
       <Grid item xs={12} sm={12} md={4} lg={3.5} xl={4}>
         <CartSummary
+          handleSummitThanhToan={handleSummitThanhToan}
           subtotal={subtotal}
           tongTienCart={tongTienCart}
           paymentMethods={paymentMethods}

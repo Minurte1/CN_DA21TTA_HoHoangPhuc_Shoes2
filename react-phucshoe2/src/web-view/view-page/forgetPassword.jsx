@@ -262,7 +262,7 @@ const ForgotPassword = () => {
               <Button
                 onClick={handleCheckOtp}
                 variant="contained"
-                color="primary"
+                sx={{ backgroundColor: "#3ccaff", color: "#121212" }}
                 fullWidth
                 type="submit"
               >
