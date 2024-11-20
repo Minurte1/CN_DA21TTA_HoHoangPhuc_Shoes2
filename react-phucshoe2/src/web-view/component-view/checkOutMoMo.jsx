@@ -14,7 +14,9 @@ const CheckOutMoMo = () => {
   const [paymentInfo, setPaymentInfo] = useState({});
 
   // Lấy dữ liệu từ Redux
-  const { itemCart, totalCart, userInfo } = useSelector((state) => state.auth);
+  const { isAuthenticated, userInfo, itemCart, totalCart } = useSelector(
+    (state) => state.auth
+  );
   console.log("itemCart", itemCart);
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
@@ -57,40 +59,26 @@ const CheckOutMoMo = () => {
   const handleOrder = async () => {
     try {
       // Lấy các thông tin từ paymentInfo và Redux state
-      const orderId = paymentInfo.orderId; // Lấy orderId từ query params
-      const orderInfo = paymentInfo.orderInfo; // Lấy thông tin đơn hàng từ query params
-      const paymentMethod = 1;
-      const userId = userInfo.userId; // Lấy ID người dùng từ Redux
-      const totalAmount = totalCart; // Tổng tiền đơn hàng từ Redux
-      const cartItems = itemCart; // Lấy giỏ hàng từ Redux
-
-      // Xử lý ghi chú đơn hàng (có thể từ paymentInfo hoặc mặc định)
-      const note = paymentInfo.message || "Không có ghi chú";
-
-      // Chuẩn bị dữ liệu cho API
+      const orderId = paymentInfo.orderInfo; // Lấy orderId từ query params
       const requestData = {
-        idNguoiDung: userId, // Lấy từ Redux
-        idThanhToan: paymentMethod, // Lấy phương thức thanh toán
-        tongTien: totalAmount, // Lấy tổng tiền
-        trangThaiDonHang: "Đang chờ", // Mặc định trạng thái là "Đang chờ"
-        ghiChuDonHang: note, // Ghi chú đơn hàng
-        ID_ODER: orderId, // Mã đơn hàng từ query params
-        items: cartItems,
+        idNguoiDung: userInfo.ID_NGUOI_DUNG,
+
+        email: userInfo.EMAIL,
+
+        ID_ODER: orderId,
       };
 
       // Gửi yêu cầu API để tạo đơn hàng
-      const response = await axios.post(`${apiUrl}/don-hang`, requestData);
+      const response = await axios.post(
+        `${apiUrl}/don-hang/hoan-tat`,
+        requestData
+      );
 
       if (response.data.EC === 1) {
         // Đơn hàng được tạo thành công
         toast.success("Đặt hàng thành công!");
 
-        // Dọn dẹp giỏ hàng sau khi thanh toán thành công
-        dispatch(setItemCart([]));
-        dispatch(setTotalCart(0));
-
-        // Điều hướng đến trang thành công
-        navigate("/order-success");
+        navigate("/cart");
       } else {
         // Nếu có lỗi khi tạo đơn hàng
         toast.error("Đã có lỗi xảy ra khi đặt hàng.");

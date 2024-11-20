@@ -135,11 +135,86 @@ const deleteTHANH_TOAN = async (req, res) => {
     });
   }
 };
+const crypto = require("crypto");
+const axios = require("axios");
 
+// Cấu hình MoMo
+const MOMO_PARTNER_CODE = "MOMO";
+const MOMO_ACCESS_KEY = "F8BBA842ECF85";
+const MOMO_SECRET_KEY = "K951B6PE1waDMi640xX08PD3vg6EkVlz";
+const REDIRECT_URL =
+  "https://webhook.site/b3088a6a-2d17-4f8d-a383-71389a6c600b";
+const IPN_URL = "https://webhook.site/b3088a6a-2d17-4f8d-a383-71389a6c600b";
+
+const createPayment = async (req, res) => {
+  try {
+    // Thông tin thanh toán
+    const amount = req.body.amount || 500000; // Số tiền thanh toán
+    const orderId = MOMO_PARTNER_CODE + new Date().getTime(); // Tạo mã đơn hàng
+    const requestId = orderId; // Request ID
+    const orderInfo = "Thanh toán với MoMo";
+    const extraData = ""; // Thông tin bổ sung (nếu cần)
+    const paymentCode = req.body.paymentCode || ""; // Mã thanh toán của người dùng (nếu có)
+
+    // Tạo raw signature
+    const rawSignature = `accessKey=${MOMO_ACCESS_KEY}&amount=${amount}&extraData=${extraData}&ipnUrl=${IPN_URL}&orderId=${orderId}&orderInfo=${orderInfo}&partnerCode=${MOMO_PARTNER_CODE}&paymentCode=${paymentCode}&redirectUrl=${REDIRECT_URL}&requestId=${requestId}&requestType=payWithMethod`;
+
+    // Tạo chữ ký bảo mật
+    const signature = crypto
+      .createHmac("sha256", MOMO_SECRET_KEY)
+      .update(rawSignature)
+      .digest("hex");
+    console.log("Raw Signature:", rawSignature);
+    console.log("Generated Signature:", signature);
+
+    // Payload gửi đến API MoMo
+    const requestBody = {
+      partnerCode: MOMO_PARTNER_CODE,
+      accessKey: MOMO_ACCESS_KEY,
+      requestId: requestId,
+      amount: amount,
+      orderId: orderId,
+      orderInfo: orderInfo,
+      redirectUrl: REDIRECT_URL,
+      ipnUrl: IPN_URL,
+      lang: "vi",
+      extraData: extraData,
+      requestType: "payWithMethod",
+      paymentCode: paymentCode,
+      autoCapture: true,
+      orderGroupId: "",
+      signature: signature,
+    };
+
+    // Gửi yêu cầu đến API MoMo
+    const response = await axios.post(
+      "https://test-payment.momo.vn/v2/gateway/api/create",
+      requestBody
+    );
+
+    // Kiểm tra kết quả
+    if (response.data.resultCode === 0) {
+      return res.json({
+        message: "Tạo thanh toán thành công",
+        payUrl: response.data.payUrl, // URL để người dùng thanh toán
+      });
+    } else {
+      console.error("MoMo Error Response:", response.data);
+      throw new Error(response.data.message || "Lỗi không xác định từ MoMo");
+    }
+  } catch (error) {
+    console.error("Error creating MoMo payment:", error.message);
+    res.status(500).json({
+      message: "Lỗi khi tạo thanh toán",
+      error: error.message,
+    });
+  }
+};
 module.exports = {
   getTHANH_TOAN,
   createTHANH_TOAN,
   updateTHANH_TOAN,
   deleteTHANH_TOAN,
   getTHANH_TOAN_Use,
+  createPayment,
 };

@@ -45,13 +45,13 @@ const createDON_HANG = async (req, res) => {
   try {
     const ngayTaoDonHang = new Date();
     const [results] = await connection.execute(
-      "INSERT INTO don_hang (ID_NGUOI_DUNG, ID_THANH_TOAN, TONG_TIEN, TRANG_THAI_DON_HANG, GHI_CHU_DONHANG, NGAY_TAO_DONHANG, NGAY_CAP_NHAT_DONHANG, ID_ODER) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+      "INSERT INTO DON_HANG (ID_NGUOI_DUNG, ID_THANH_TOAN, TONG_TIEN, TRANG_THAI_DON_HANG,  NGAY_TAO_DONHANG, NGAY_CAP_NHAT_DONHANG, ID_ODER) VALUES (?, ?, ?, ?,  ?, ?, ?)",
       [
         idNguoiDung,
         idThanhToan,
         tongTien,
         trangThaiDonHang,
-        ghiChuDonHang,
+
         ngayTaoDonHang,
         ngayTaoDonHang,
         ID_ODER,
@@ -61,44 +61,20 @@ const createDON_HANG = async (req, res) => {
     const donHangId = results.insertId;
 
     const chiTietHoaDonPromises = items.map(async (item) => {
-      const { idSanPham, soLuong, giaSanPhamChiTiet } = item;
+      const { ID_SAN_PHAM, TONG_SO_LUONG, GIA } = item;
 
       await connection.execute(
         "INSERT INTO CHI_TIET_HOA_DON (ID_SAN_PHAM, ID_DON_HANG, SO_LUONG_SP, GIA_SAN_PHAM_CHI_TIET) VALUES (?, ?, ?, ?)",
-        [idSanPham, donHangId, soLuong, giaSanPhamChiTiet]
+        [ID_SAN_PHAM, donHangId, TONG_SO_LUONG, GIA]
       );
     });
 
     await Promise.all(chiTietHoaDonPromises);
 
-    // Chuẩn bị dữ liệu gửi email
-    const orderDetails = {
-      orderId: ID_ODER,
-      tongTien,
-      ngayTaoDonHang,
-      items: items.map((item) => ({
-        tenSanPham: item.tenSanPham,
-        soLuong: item.soLuong,
-        giaSanPhamChiTiet: item.giaSanPhamChiTiet,
-      })),
-    };
-
-    // Gọi trực tiếp hàm gửi email
-    const emailResult = await sendOrderEmail({ email, orderDetails });
-
-    if (emailResult.EC === 1) {
-      // Xóa dữ liệu trong bảng GIO_HANG
-      await connection.execute("DELETE FROM gio_hang WHERE ID_NGUOI_DUNG = ?", [
-        idNguoiDung,
-      ]);
-
-      return res.json({
-        EM: "Thêm đơn hàng, gửi email và xóa giỏ hàng thành công",
-        EC: 1,
-      });
-    } else {
-      throw new Error("Gửi email thất bại");
-    }
+    return res.json({
+      EM: "Thêm đơn hàng, gửi email và xóa giỏ hàng thành công",
+      EC: 1,
+    });
   } catch (error) {
     console.error("Error creating don hang:", error);
     return res.status(500).json({
@@ -106,7 +82,110 @@ const createDON_HANG = async (req, res) => {
       EC: -1,
     });
   } finally {
-    connection.release();
+  }
+};
+const updateTrangThaiDonHang = async (req, res) => {
+  const { ID_ODER, email, idNguoiDung } = req.body;
+
+  if (!ID_ODER || !email || !idNguoiDung) {
+    return res.status(400).json({
+      EM: "Vui lòng cung cấp đầy đủ thông tin",
+      EC: -1,
+    });
+  }
+
+  try {
+    // Lấy thông tin đơn hàng và chi tiết sản phẩm
+    const [orderResults] = await connection.execute(
+      "SELECT * FROM DON_HANG WHERE ID_ODER = ? AND ID_NGUOI_DUNG = ?",
+      [ID_ODER, idNguoiDung]
+    );
+
+    if (orderResults.length === 0) {
+      return res.status(404).json({
+        EM: "Đơn hàng không tồn tại",
+        EC: -1,
+      });
+    }
+
+    const order = orderResults[0]; // Lấy đơn hàng đầu tiên (vì ID_ODER là duy nhất)
+    const trangThaiDonHang = "Đã thanh toán thành công và đang chờ giao hàng";
+    const [updateResults] = await connection.execute(
+      "UPDATE DON_HANG SET TRANG_THAI_DON_HANG = ?, NGAY_CAP_NHAT_DONHANG = ? WHERE ID_ODER = ?",
+      [trangThaiDonHang, new Date(), ID_ODER]
+    );
+
+    const [orderDetails] = await connection.execute(
+      "SELECT c.ID_SAN_PHAM, c.SO_LUONG_SP, c.GIA_SAN_PHAM_CHI_TIET, p.TEN_SAN_PHAM FROM CHI_TIET_HOA_DON c JOIN SAN_PHAM p ON c.ID_SAN_PHAM = p.ID_SAN_PHAM WHERE c.ID_DON_HANG = ?",
+      [order.ID_DON_HANG]
+    );
+
+    // Lấy thông tin người dùng
+    const [userResults] = await connection.execute(
+      "SELECT HO_TEN, EMAIL, DIA_CHI_Provinces,DIA_CHI_Districts,DIA_CHI_Wards, SO_DIEN_THOAI FROM NGUOI_DUNG WHERE ID_NGUOI_DUNG = ?",
+      [idNguoiDung]
+    );
+    console.log("orderDetails", orderDetails);
+    if (userResults.length === 0) {
+      return res.status(404).json({
+        EM: "Người dùng không tồn tại",
+        EC: -1,
+      });
+    }
+
+    const user = userResults[0]; // Lấy thông tin người dùng
+
+    // Chuẩn bị thông tin gửi email
+    const orderDetailsFormatted = {
+      orderId: order.ID_ODER,
+      tongTien: order.TONG_TIEN,
+      ngayTaoDonHang: order.NGAY_TAO_DONHANG,
+      items: orderDetails.map((item) => ({
+        tenSanPham: item.TEN_SAN_PHAM,
+        soLuong: item.SO_LUONG_SP,
+        giaSanPhamChiTiet: item.GIA_SAN_PHAM_CHI_TIET,
+      })),
+      user: {
+        name: user.HO_TEN,
+        email: user.EMAIL,
+        address:
+          user.DIA_CHI_Wards +
+          ", " +
+          user.DIA_CHI_Districts +
+          ", " +
+          user.DIA_CHI_Provinces,
+        phone: user.SO_DIEN_THOAI,
+      },
+    };
+
+    // Gọi hàm gửi email
+    const emailResult = await sendOrderEmail({
+      email,
+      orderDetails: orderDetailsFormatted,
+    });
+
+    if (emailResult.EC === 1) {
+      // Xóa dữ liệu trong bảng GIO_HANG nếu email gửi thành công
+      await connection.execute("DELETE FROM GIO_HANG WHERE ID_NGUOI_DUNG = ?", [
+        idNguoiDung,
+      ]);
+
+      return res.json({
+        EM: "Cập nhật trạng thái đơn hàng thành công và đã gửi email",
+        EC: 1,
+      });
+    } else {
+      return res.status(500).json({
+        EM: "Lỗi khi gửi email",
+        EC: -1,
+      });
+    }
+  } catch (error) {
+    console.error("Error updating don hang status:", error);
+    return res.status(500).json({
+      EM: "Lỗi khi cập nhật trạng thái đơn hàng",
+      EC: -1,
+    });
   }
 };
 
@@ -118,18 +197,21 @@ const sendOrderEmail = async ({ email, orderDetails }) => {
       EC: -1,
     };
   }
-
+  const formattedTongTien = new Intl.NumberFormat("vi-VN", {
+    style: "currency",
+    currency: "VND",
+  }).format(orderDetails.tongTien);
   // Tạo nội dung email
   const orderMessage = `
     <div style="font-family: Arial, sans-serif; line-height: 1.5; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
       <div style="text-align: center; padding: 10px 0;">
-        <h1 style="color: #007BFF;">Cảm Ơn Bạn Đã Đặt Hàng!</h1>
+        <h1 style="color: #007BFF;">Cảm Ơn Bạn Đã Đặt Hàng! PhucShoe2</h1>
         <p style="font-size: 16px; color: #555;">Đơn hàng của bạn đã được ghi nhận thành công.</p>
       </div>
       <div style="padding: 20px; background-color: #f9f9f9; border-radius: 8px;">
         <h2 style="color: #007BFF;">Chi Tiết Đơn Hàng</h2>
         <p><strong>Mã Đơn Hàng:</strong> ${orderDetails.orderId}</p>
-        <p><strong>Tổng Tiền:</strong> ${orderDetails.tongTien} VND</p>
+        <p><strong>Tổng Tiền:</strong> ${formattedTongTien}</p>
         <p><strong>Ngày Đặt:</strong> ${orderDetails.ngayTaoDonHang}</p>
         <h3>Sản Phẩm:</h3>
         <ul>
@@ -140,9 +222,13 @@ const sendOrderEmail = async ({ email, orderDetails }) => {
             )
             .join("")}
         </ul>
+        <h3>Thông Tin Người Dùng:</h3>
+        <p><strong>Họ Tên:</strong> ${orderDetails.user.name}</p>
+        <p><strong>Địa Chỉ:</strong> ${orderDetails.user.address}</p>
+        <p><strong>Số Điện Thoại:</strong> ${orderDetails.user.phone}</p>
       </div>
       <div style="margin-top: 20px; text-align: center; color: #888; font-size: 12px;">
-        <p>&copy; 2024 ShoeStore. All rights reserved.</p>
+        <p>&copy; 2024 PhucShoe2. All rights reserved.</p>
       </div>
     </div>
   `;
@@ -271,4 +357,5 @@ module.exports = {
   createDON_HANG,
   updateDON_HANG,
   deleteDON_HANG,
+  updateTrangThaiDonHang,
 };
