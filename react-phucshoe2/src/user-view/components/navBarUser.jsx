@@ -42,7 +42,7 @@ const NavBarUser = () => {
       }}
     >
       <Typography variant="h6" style={{ marginBottom: "20px", color: "#fff" }}>
-        Profile User
+        Thông tin
       </Typography>
       <List component="nav">
         <ListItem

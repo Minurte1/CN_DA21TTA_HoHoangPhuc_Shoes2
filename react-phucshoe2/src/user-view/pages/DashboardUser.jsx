@@ -5,11 +5,11 @@ import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { enqueueSnackbar } from "notistack";
 import axios from "axios";
-import { setTotalCart } from "../../redux/authSlice";
+import { login, setTotalCart } from "../../redux/authSlice";
 import AddressSelector from "../components/addressUser";
 import AvatarChanger from "../components/avatarUser";
 import moment from "moment";
-
+import Cookies from "js-cookie";
 import dayjs from "dayjs";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -106,8 +106,17 @@ const UserProfile = () => {
         `${api}/user/${userInfo.ID_NGUOI_DUNG}`,
         updatedData
       );
-
+      console.log("response.data.DT[0]", response.data);
       if (response.data.EC === 1) {
+        Cookies.remove("accessToken");
+        const accessToken = response.data.accessToken;
+        Cookies.set("accessToken", accessToken, { expires: 7 });
+        dispatch(
+          login({
+            accessToken,
+            userInfo: response.data.DT[0],
+          })
+        );
         enqueueSnackbar("Thông tin đã được cập nhật thành công", {
           variant: "success",
         });

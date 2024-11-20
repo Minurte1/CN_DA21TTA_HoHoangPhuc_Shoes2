@@ -278,7 +278,7 @@ const Header = () => {
             to="/profile"
             onClick={handleClose}
           >
-            Profile
+            Thông tin
           </MenuItem>
           <MenuItem
             sx={{

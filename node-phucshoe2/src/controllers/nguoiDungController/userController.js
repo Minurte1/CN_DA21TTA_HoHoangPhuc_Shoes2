@@ -236,11 +236,29 @@ const updateUserById_User = async (req, res) => {
         "SELECT * FROM NGUOI_DUNG WHERE ID_NGUOI_DUNG = ?",
         [id]
       );
-
+      console.log("updatedUser[0]", updatedUser[0]);
+      const user = updatedUser[0];
+      const token = jwt.sign(
+        {
+          ID_NGUOI_DUNG: user.ID_NGUOI_DUNG,
+          EMAIL: user.EMAIL,
+          VAI_TRO: user.VAI_TRO,
+          HO_TEN: user.HO_TEN,
+          SO_DIEN_THOAI: user.SO_DIEN_THOAI,
+          DIA_CHI: user.DIA_CHI,
+          TRANG_THAI_USER: user.TRANG_THAI_USER,
+          NGAY_TAO_USER: user.NGAY_TAO_USER,
+          NGAY_CAP_NHAT_USER: user.NGAY_CAP_NHAT_USER,
+          AVATAR: user.AVATAR,
+        },
+        JWT_SECRET,
+        { expiresIn: "5h" }
+      );
       return res.status(200).json({
         EM: "Cập nhật thông tin thành công",
         EC: 1,
         DT: updatedUser,
+        accessToken: token,
       });
     } else {
       return res.status(400).json({
@@ -656,10 +674,34 @@ const updateAvatarController = async (req, res) => {
         [ngayCapNhat, avatarFile, id]
       );
 
+      // Lấy lại thông tin mới nhất của người dùng sau khi cập nhật
+      const [updatedUser] = await pool.execute(
+        "SELECT * FROM NGUOI_DUNG WHERE ID_NGUOI_DUNG = ?",
+        [id]
+      );
+      console.log("updatedUser[0]", updatedUser[0]);
+      const user = updatedUser[0];
+      const token = jwt.sign(
+        {
+          ID_NGUOI_DUNG: user.ID_NGUOI_DUNG,
+          EMAIL: user.EMAIL,
+          VAI_TRO: user.VAI_TRO,
+          HO_TEN: user.HO_TEN,
+          SO_DIEN_THOAI: user.SO_DIEN_THOAI,
+          DIA_CHI: user.DIA_CHI,
+          TRANG_THAI_USER: user.TRANG_THAI_USER,
+          NGAY_TAO_USER: user.NGAY_TAO_USER,
+          NGAY_CAP_NHAT_USER: user.NGAY_CAP_NHAT_USER,
+          AVATAR: user.AVATAR,
+        },
+        JWT_SECRET,
+        { expiresIn: "5h" }
+      );
       return res.status(200).json({
-        EM: "Cập nhật avatar thành công",
+        EM: "Cập nhật thông tin thành công",
         EC: 1,
-        DT: [],
+        DT: updatedUser,
+        accessToken: token,
       });
     } else {
       return res.status(404).json({

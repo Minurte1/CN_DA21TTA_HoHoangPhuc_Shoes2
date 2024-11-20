@@ -12,12 +12,16 @@ import {
 import { CameraAlt } from "@mui/icons-material";
 import { useDropzone } from "react-dropzone";
 import axios from "axios";
+import { login } from "../../redux/authSlice";
+import { useDispatch } from "react-redux";
+import Cookies from "js-cookie";
+import { enqueueSnackbar } from "notistack";
 const api = process.env.REACT_APP_URL_SERVER;
 
 const AvatarChanger = ({ currentAvatar, onAvatarChange, userId }) => {
   const [openDialog, setOpenDialog] = useState(false);
   const [file, setFile] = useState(null);
-
+  const dispatch = useDispatch();
   const onDrop = (acceptedFiles) => {
     if (acceptedFiles && acceptedFiles.length > 0) {
       setFile(acceptedFiles[0]);
@@ -43,8 +47,22 @@ const AvatarChanger = ({ currentAvatar, onAvatarChange, userId }) => {
           },
         }
       );
+      if (response.data.EC === 1) {
+        Cookies.remove("accessToken");
+        console.log(" response.data.DT", response.data.accessToken);
+        const accessToken = response.data.accessToken;
 
-      console.log(response.data);
+        Cookies.set("accessToken", accessToken, { expires: 7 });
+        dispatch(
+          login({
+            accessToken,
+            userInfo: response.data.DT[0],
+          })
+        );
+        enqueueSnackbar("Thông tin đã được cập nhật thành công", {
+          variant: "success",
+        });
+      }
     } catch (error) {
       console.error(
         "Error changing avatar:",
