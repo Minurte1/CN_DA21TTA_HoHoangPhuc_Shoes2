@@ -71,11 +71,31 @@ const UserProfile = () => {
   };
 
   const handleProfileUpdate = async () => {
+    // Kiểm tra người dùng đã đủ 18 tuổi chưa
+    const today = new Date();
+    const birthDate = new Date(selectedDate); // selectedDate là ngày sinh đã chọn
+    const age = today.getFullYear() - birthDate.getFullYear();
+    const month = today.getMonth() - birthDate.getMonth();
+
+    // Điều kiện kiểm tra độ tuổi
+    if (age < 18 || (age === 18 && month < 0)) {
+      enqueueSnackbar("Bạn phải đủ 18 tuổi để cập nhật thông tin", {
+        variant: "error",
+      });
+      return; // Ngừng thực hiện tiếp
+    }
+
+    // Kiểm tra định dạng số điện thoại (đảm bảo là một chuỗi số hợp lệ)
+    const phoneRegex = /^[0-9]{10}$/; // Số điện thoại phải có từ 10 đến 11 chữ số
+    if (!phoneRegex.test(dataUser.SO_DIEN_THOAI)) {
+      enqueueSnackbar("Số điện thoại không hợp lệ", { variant: "error" });
+      return; // Ngừng thực hiện tiếp
+    }
+
     const updatedData = {
       HO_TEN: dataUser.HO_TEN,
       SO_DIEN_THOAI: dataUser.SO_DIEN_THOAI,
       NGAY_SINH: selectedDate,
-
       DIA_CHI_Provinces: selectedProvince.name_with_type,
       DIA_CHI_Districts: selectedDistrict.name_with_type,
       DIA_CHI_Wards: selectedWards.name_with_type,
@@ -100,6 +120,7 @@ const UserProfile = () => {
       enqueueSnackbar("Lỗi hệ thống, vui lòng thử lại", { variant: "error" });
     }
   };
+
   const formattedDate = moment(dataUser?.NGAY_TAO_USER).format(
     "YYYY-MM-DD HH:mm:ss"
   );

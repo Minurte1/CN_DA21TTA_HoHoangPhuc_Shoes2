@@ -9,6 +9,7 @@ import {
   MenuItem,
   Box,
   useMediaQuery,
+  Avatar,
 } from "@mui/material";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import LanguageIcon from "@mui/icons-material/Language";
@@ -202,16 +203,39 @@ const Header = () => {
         >
           {isAuthenticated ? <div>{userInfo?.HO_TEN}</div> : <></>}
         </Typography>{" "}
-        <IconButton
-          size="large"
-          aria-label="account of current user"
-          aria-controls="menu-appbar"
-          aria-haspopup="true"
-          onClick={handleMenu}
-          color="inherit"
-        >
-          <AccountCircle />
-        </IconButton>
+        {isAuthenticated ? (
+          // Nếu người dùng đã đăng nhập, hiển thị avatar
+          <IconButton
+            size="large"
+            aria-label="account of current user"
+            aria-controls="menu-appbar"
+            aria-haspopup="true"
+            onClick={handleMenu}
+            color="inherit"
+          >
+            {/* Nếu có avatar, hiển thị avatar, nếu không có, hiển thị icon mặc định */}
+            {userInfo?.AVATAR ? (
+              <Avatar
+                src={`${apiUrl}/images/${userInfo?.AVATAR}`}
+                alt="user avatar"
+              />
+            ) : (
+              <AccountCircle />
+            )}
+          </IconButton>
+        ) : (
+          // Nếu chưa đăng nhập, hiển thị icon tài khoản
+          <IconButton
+            size="large"
+            aria-label="account of current user"
+            aria-controls="menu-appbar"
+            aria-haspopup="true"
+            onClick={handleMenu}
+            color="inherit"
+          >
+            <AccountCircle />
+          </IconButton>
+        )}
         <Menu
           id="menu-appbar"
           anchorEl={anchorEl}

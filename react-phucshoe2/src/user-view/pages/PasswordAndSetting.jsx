@@ -16,18 +16,10 @@ import {
   IconButton,
 } from "@mui/material";
 
-import AccountCircle from "@mui/icons-material/AccountCircle";
-import LanguageIcon from "@mui/icons-material/Language";
-import MenuIcon from "@mui/icons-material/Menu";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ReplayIcon from "@mui/icons-material/Replay";
 import { useTheme } from "@mui/material/styles";
-import { Link, Link as RouterLink, useNavigate } from "react-router-dom";
 
-import Cookies from "js-cookie";
-
-import axiosInstance from "../../authentication/axiosInstance";
-import { jwtDecode } from "jwt-decode";
 import { useDispatch, useSelector } from "react-redux";
 import { setUserInfo, logout } from "../../redux/authSlice";
 import { setLanguage } from "../../redux/languageSlice";

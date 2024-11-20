@@ -9,6 +9,7 @@ import {
   MenuItem,
   Box,
   useMediaQuery,
+  Avatar,
 } from "@mui/material";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import LanguageIcon from "@mui/icons-material/Language";
@@ -210,7 +211,16 @@ const Header = () => {
           onClick={handleMenu}
           color="inherit"
         >
-          <AccountCircle />
+          {isAuthenticated ? (
+            // Nếu người dùng đã đăng nhập, hiển thị avatar
+            <Avatar
+              src={`${apiUrl}/images/${userInfo?.AVATAR}`}
+              alt="user avatar"
+            />
+          ) : (
+            // Nếu chưa đăng nhập, hiển thị icon AccountCircle
+            <AccountCircle />
+          )}
         </IconButton>
         <Menu
           id="menu-appbar"
