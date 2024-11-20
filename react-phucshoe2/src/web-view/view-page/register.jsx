@@ -20,7 +20,7 @@ import Icon from "@mui/material/Icon";
 import dayjs from "dayjs";
 import { LocalizationProvider, DateTimePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { useSelector } from "react-redux";
 import translations from "../../redux/data/translations";
@@ -39,9 +39,9 @@ const RegistrationForm = () => {
   const [isSubscribed, setIsSubscribed] = useState(false); // Theo dõi checkbox 'news'
   const [isOpenOTP, setIsOpenOTP] = useState(true);
   const scrollRef = useRef(null); // Tạo ref cho phần tử cuộn tới
-  const { isAuthenticated, userInfo } = useSelector((state) => state.auth);
-  const [isOtpSent, setIsOtpSent] = useState(false); // Track OTP sent status
 
+  const [isOtpSent, setIsOtpSent] = useState(false); // Track OTP sent status
+  const naviagte = useNavigate();
   const [formData, setFormData] = useState({
     fullName: "",
     phone: "",
@@ -77,19 +77,12 @@ const RegistrationForm = () => {
     }
   };
   const handleRegister = async () => {
-    if (!isAgreed) {
-      enqueueSnackbar("Bạn phải đồng ý với điều khoản sử dụng!");
-      return;
-    }
-    if (!isSubscribed) {
-      enqueueSnackbar("Bạn phải đồng ý với điều khoản sử dụng!");
-      return;
-    }
     if (formData.password === confirmPassword) {
       try {
         const response = await axios.post(`${api}/register`, { formData });
         if (response.data.EC === 1) {
           enqueueSnackbar(response.data.EM);
+          naviagte("/login");
         } else {
           enqueueSnackbar(response.data.EM);
         }
@@ -110,7 +103,7 @@ const RegistrationForm = () => {
 
     try {
       const response = await axios.post(`${api}/send-otp`, {
-        email: userInfo.EMAIL,
+        email: formData.email,
       });
       if (response.data.EC === 1) {
         enqueueSnackbar(response.data.EM);
@@ -125,12 +118,12 @@ const RegistrationForm = () => {
   const handleCheckOtp = async () => {
     try {
       const response = await axios.post(`${api}/check-otp`, {
-        email: userInfo.EMAIL,
+        email: formData.email,
         otp: otp,
       });
       if (response.data.EC === 1) {
         enqueueSnackbar(response.data.EM);
-        setIsOtpSent(false);
+        handleRegister();
       } else {
         enqueueSnackbar(response.data.EM);
       }
@@ -430,13 +423,33 @@ const RegistrationForm = () => {
                     <Button
                       variant="contained"
                       color="primary"
-                      onClick={() => setIsOpenOTP(false)}
-                      disabled={!isAgreed}
+                      onClick={() => {
+                        if (!isAgreed) {
+                          enqueueSnackbar(
+                            "Bạn phải đồng ý với điều khoản sử dụng!"
+                          );
+                          return;
+                        }
+                        if (!isSubscribed) {
+                          enqueueSnackbar(
+                            "Bạn phải đồng ý với điều khoản sử dụng!"
+                          );
+                          return;
+                        }
+
+                        setIsOpenOTP(false);
+                      }}
+                      disabled={!isAgreed || !isSubscribed} // Disable nút khi chưa đồng ý hoặc chưa đăng ký
                       fullWidth
                       style={{
-                        backgroundColor: !isAgreed ? "#d3d3d3" : "#26bbff", // Màu khi disabled hoặc enabled
-                        color: !isAgreed ? "#9e9e9e" : "#101014", // Màu chữ tương ứng
-                        cursor: !isAgreed ? "not-allowed" : "pointer", // Con trỏ chỉ khi enabled
+                        backgroundColor:
+                          !isAgreed || !isSubscribed ? "#d3d3d3" : "#26bbff", // Màu khi disabled hoặc enabled
+                        color:
+                          !isAgreed || !isSubscribed ? "#9e9e9e" : "#101014", // Màu chữ tương ứng
+                        cursor:
+                          !isAgreed || !isSubscribed
+                            ? "not-allowed"
+                            : "pointer", // Con trỏ chỉ khi enabled
                       }}
                     >
                       Continue
@@ -470,7 +483,23 @@ const RegistrationForm = () => {
                 </>
               ) : (
                 <>
-                  <KeyboardBackspaceIcon sx={{ textAlign: "left" }} />
+                  <Box display="flex" alignItems="center" mb={2}>
+                    <KeyboardBackspaceIcon
+                      onClick={() => setIsOpenOTP(true)}
+                      sx={{
+                        marginRight: 1,
+                        color: "#c9d1d9", // Màu mặc định
+                        cursor: "pointer", // Hiệu ứng con trỏ khi hover
+                        "&:hover": {
+                          color: "#ffffff", // Màu sáng hơn khi hover
+                        },
+                      }}
+                    />
+
+                    <Typography variant="h7" sx={{ color: "#c9d1d9" }}>
+                      Kiểm tra tài khoản email của bạn
+                    </Typography>
+                  </Box>
                   <TextField
                     label="OTP"
                     variant="outlined"
@@ -524,7 +553,7 @@ const RegistrationForm = () => {
                     type="submit"
                   >
                     Xác nhận
-                  </Button>{" "}
+                  </Button>
                 </>
               )}
             </>

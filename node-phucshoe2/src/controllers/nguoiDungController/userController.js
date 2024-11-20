@@ -445,6 +445,99 @@ const verifyAdmin = async (req, res) => {
   }
 };
 
+const registerUser = async (req, res) => {
+  const {
+    password,
+    email,
+    VAI_TRO = "0", // Giả sử mặc định là "user" nếu không có thông tin
+    fullName,
+    phone,
+    DIA_CHI = null, // Nếu không có địa chỉ thì gán là null
+    TRANG_THAI_USER = "1", // Mặc định người dùng ở trạng thái "active"
+    AVATAR = null, // Mặc định không có avatar
+    NGAY_SINH = null, // Ngày sinh mặc định là null nếu không có
+    DIA_CHI_Provinces = null, // Nếu không có địa chỉ thì gán là null
+    DIA_CHI_Districts = null,
+    DIA_CHI_Wards = null,
+    THEMES = "dark", // Mặc định không có theme
+    LANGUAGE = "vi", // Giả sử mặc định ngôn ngữ là tiếng Việt
+  } = req.body.formData;
+
+  const EMAIL = email;
+  const HO_TEN = fullName;
+  const SO_DIEN_THOAI = phone;
+
+  // Mã hóa mật khẩu trước khi lưu vào database
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  // Kiểm tra xem có thiếu thông tin cần thiết không
+  if (!EMAIL || !hashedPassword || !HO_TEN || !SO_DIEN_THOAI) {
+    return res.status(400).json({
+      EM: "Missing required fields",
+      EC: 0,
+      DT: [],
+    });
+  }
+
+  try {
+    // Kiểm tra xem email đã tồn tại trong cơ sở dữ liệu chưa
+    const [existingUser] = await pool.query(
+      `SELECT * FROM NGUOI_DUNG WHERE EMAIL = ?`,
+      [EMAIL]
+    );
+
+    if (existingUser.length > 0) {
+      return res.status(400).json({
+        EM: "Tài khoản email này đã được đăng ký",
+        EC: 0,
+        DT: [],
+      });
+    }
+
+    // Thực hiện đăng ký người dùng mới
+    const [result] = await pool.query(
+      `INSERT INTO NGUOI_DUNG (
+        MAT_KHAU, EMAIL, VAI_TRO, HO_TEN, SO_DIEN_THOAI, DIA_CHI, TRANG_THAI_USER, 
+        NGAY_TAO_USER, NGAY_CAP_NHAT_USER, AVATAR, NGAY_SINH, DIA_CHI_Provinces, 
+        DIA_CHI_Districts, DIA_CHI_Wards, THEMES, LANGUAGE
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), NOW(), ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        hashedPassword,
+        EMAIL,
+        VAI_TRO,
+        HO_TEN,
+        SO_DIEN_THOAI,
+        DIA_CHI,
+        TRANG_THAI_USER,
+        AVATAR,
+        NGAY_SINH,
+        DIA_CHI_Provinces,
+        DIA_CHI_Districts,
+        DIA_CHI_Wards,
+        THEMES,
+        LANGUAGE,
+      ]
+    );
+
+    return res.status(200).json({
+      EM: "Đăng ký tài khoản thành công",
+      EC: 1,
+      DT: {
+        ID_NGUOI_DUNG: result.insertId, // Trả về ID người dùng mới
+        EMAIL,
+        HO_TEN,
+      },
+    });
+  } catch (error) {
+    console.error("Error in register:", error);
+    return res.status(500).json({
+      EM: `Error: ${error.message}`,
+      EC: -1,
+      DT: [],
+    });
+  }
+};
+
 const logoutUser = (req, res) => {
   res.clearCookie("accessToken");
   return res.status(200).json({ message: "Đăng xuất thành công" });
@@ -830,4 +923,5 @@ module.exports = {
   checkOtp,
   sendBirthdayWish,
   sendTeacherDayWish,
+  registerUser,
 };

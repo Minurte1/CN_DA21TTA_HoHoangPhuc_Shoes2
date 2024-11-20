@@ -19,6 +19,7 @@ const {
   checkOtp,
   sendTeacherDayWish,
   sendBirthdayWish,
+  registerUser,
 } = require("../../controllers/nguoiDungController/userController");
 const { checkUserJWT } = require("../../middleware/JWTaction");
 const upload = require("../../config/multerConfig");
@@ -28,7 +29,7 @@ router.get("/user/:id", getUser_ById);
 router.post("/logout", logoutUser);
 router.post("/login/google", loginUserGoogle);
 router.post("/verify-admin", verifyAdmin);
-router.post("/register");
+router.post("/register", registerUser);
 router.put("/user/:id/avatar", upload.single("images"), updateAvatarController);
 
 router.put("/user/:id", updateUserById_User);
