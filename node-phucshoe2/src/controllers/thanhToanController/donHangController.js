@@ -12,9 +12,49 @@ const otpStorage = new Map();
 // Lấy danh sách đơn hàng
 const getDON_HANG = async (req, res) => {
   try {
-    const [results] = await connection.execute("SELECT * FROM `don_hang`");
+    // Lấy dữ liệu đơn hàng kèm thông tin thanh toán và người dùng
+    const [results] = await connection.execute(`
+      SELECT 
+        d.ID_ODER, 
+        d.ID_NGUOI_DUNG, 
+        d.ID_THANH_TOAN, 
+        t.PHUONG_THUC_THANH_TOAN, 
+        d.TONG_TIEN, 
+        d.TRANG_THAI_DON_HANG, 
+        d.GHI_CHU_DONHANG, 
+        d.NGAY_CAP_NHAT_DONHANG, 
+        d.NGAY_TAO_DONHANG,
+
+        u.EMAIL,
+        u.VAI_TRO,
+        u.HO_TEN,
+        u.SO_DIEN_THOAI,
+        u.DIA_CHI,
+        u.TRANG_THAI_USER,
+        u.NGAY_TAO_USER,
+        u.NGAY_CAP_NHAT_USER,
+       
+        u.NGAY_SINH,
+        u.DIA_CHI_Provinces,
+        u.DIA_CHI_Districts,
+        u.DIA_CHI_Wards
+    
+      FROM 
+        DON_HANG d
+      LEFT JOIN 
+        THANH_TOAN t 
+      ON 
+        d.ID_THANH_TOAN = t.ID_THANH_TOAN
+      LEFT JOIN 
+        NGUOI_DUNG u 
+      ON 
+        d.ID_NGUOI_DUNG = u.ID_NGUOI_DUNG
+      ORDER BY 
+        d.NGAY_TAO_DONHANG DESC
+    `);
+
     return res.status(200).json({
-      EM: "Xem thông tin thành công",
+      EM: "Lấy danh sách đơn hàng thành công",
       EC: 1,
       DT: results,
     });
@@ -327,7 +367,7 @@ const deleteDON_HANG = async (req, res) => {
     );
 
     if (results.length > 0) {
-      await connection.execute("DELETE FROM don_hang WHERE ID_DON_HANG = ?", [
+      await connection.execute("DELETE FROM DON_HANG WHERE ID_DON_HANG = ?", [
         id,
       ]);
       return {

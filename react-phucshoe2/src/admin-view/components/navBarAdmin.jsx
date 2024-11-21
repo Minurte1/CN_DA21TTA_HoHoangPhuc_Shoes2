@@ -319,7 +319,7 @@ const NavBarAdmin = () => {
                 <ListItem
                   button
                   component={Link}
-                  to="/user/don-hang/new"
+                  to="/admin/don-hang/tat-ca"
                   sx={{ pl: 4, color: "#f0f6fc" }}
                 >
                   <ListItemText primary="Đơn hàng mới" />
