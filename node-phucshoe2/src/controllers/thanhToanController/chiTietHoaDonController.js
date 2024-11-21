@@ -8,6 +8,7 @@ const getChiTietHoaDon = async (req, res) => {
           dh.ID_ODER, 
           dh.ID_NGUOI_DUNG, 
           dh.ID_THANH_TOAN, 
+          dh.ID_DON_HANG,
           dh.TONG_TIEN, 
           dh.TRANG_THAI_DON_HANG, 
           dh.GHI_CHU_DONHANG, 

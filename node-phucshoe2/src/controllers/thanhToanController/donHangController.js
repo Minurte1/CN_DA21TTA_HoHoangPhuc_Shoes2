@@ -24,7 +24,7 @@ const getDON_HANG = async (req, res) => {
         d.GHI_CHU_DONHANG, 
         d.NGAY_CAP_NHAT_DONHANG, 
         d.NGAY_TAO_DONHANG,
-
+        d.ID_DON_HANG, 
         u.EMAIL,
         u.VAI_TRO,
         u.HO_TEN,
@@ -102,10 +102,10 @@ const createDON_HANG = async (req, res) => {
 
     const chiTietHoaDonPromises = items.map(async (item) => {
       const { ID_SAN_PHAM, TONG_SO_LUONG, GIA } = item;
-
+      const giaSanPhamChiTiet = GIA * TONG_SO_LUONG;
       await connection.execute(
         "INSERT INTO CHI_TIET_HOA_DON (ID_SAN_PHAM, ID_DON_HANG, SO_LUONG_SP, GIA_SAN_PHAM_CHI_TIET) VALUES (?, ?, ?, ?)",
-        [ID_SAN_PHAM, donHangId, TONG_SO_LUONG, GIA]
+        [ID_SAN_PHAM, donHangId, TONG_SO_LUONG, giaSanPhamChiTiet]
       );
     });
 
@@ -255,12 +255,18 @@ const sendOrderEmail = async ({ email, orderDetails }) => {
         <p><strong>Ngày Đặt:</strong> ${orderDetails.ngayTaoDonHang}</p>
         <h3>Sản Phẩm:</h3>
         <ul>
-          ${orderDetails.items
-            .map(
-              (item) =>
-                `<li>${item.tenSanPham} - ${item.soLuong} x ${item.giaSanPhamChiTiet} VND</li>`
-            )
-            .join("")}
+        ${orderDetails.items
+          .map(
+            (item) =>
+              `<li>${item.tenSanPham} - ${
+                item.soLuong
+              } x ${new Intl.NumberFormat("vi-VN", {
+                style: "currency",
+                currency: "VND",
+              }).format(item.giaSanPhamChiTiet)} </li>`
+          )
+          .join("")}
+        
         </ul>
         <h3>Thông Tin Người Dùng:</h3>
         <p><strong>Họ Tên:</strong> ${orderDetails.user.name}</p>

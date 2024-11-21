@@ -14,9 +14,15 @@ import {
 } from "@mui/material";
 import moment from "moment";
 import axios from "axios";
+import VisibilityIcon from "@mui/icons-material/Visibility"; // Import icon Visibility
+import InfoIcon from "@mui/icons-material/Info"; // Import icon Info
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore"; // Import icon ExpandMore
+import ProductDetailModal from "./modal/chiTietDonHang";
 
 const DonHangAdmin = () => {
   const [orders, setOrders] = useState([]);
+  const [selectedOrderId, setSelectedOrderId] = useState(null);
+  const [openModal, setOpenModal] = useState(false);
 
   useEffect(() => {
     fetchOrders();
@@ -31,6 +37,19 @@ const DonHangAdmin = () => {
     } catch (error) {
       console.error("Error fetching orders:", error);
     }
+  };
+
+  // Hàm mở modal và truyền ID đơn hàng vào
+  const handleViewDetails = (orderId) => {
+    console.log("orderId", orderId);
+    setSelectedOrderId(orderId);
+    setOpenModal(true);
+  };
+
+  // Hàm đóng modal
+  const handleCloseModal = () => {
+    setOpenModal(false);
+    setSelectedOrderId(null);
   };
 
   return (
@@ -53,7 +72,6 @@ const DonHangAdmin = () => {
               <TableCell sx={{ fontSize: "0.875rem", color: "#ffffff" }}>
                 <b>Người dùng</b>
               </TableCell>
-
               <TableCell sx={{ fontSize: "0.875rem", color: "#ffffff" }}>
                 <b>Số điện thoại</b>
               </TableCell>
@@ -71,6 +89,9 @@ const DonHangAdmin = () => {
               </TableCell>
               <TableCell sx={{ fontSize: "0.875rem", color: "#ffffff" }}>
                 <b>Ngày Cập Nhật</b>
+              </TableCell>{" "}
+              <TableCell sx={{ fontSize: "0.875rem", color: "#ffffff" }}>
+                <b>Chi Tiết</b>
               </TableCell>
             </TableRow>
           </TableHead>
@@ -83,7 +104,6 @@ const DonHangAdmin = () => {
                 <TableCell sx={{ fontSize: "0.875rem", color: "#ffffff" }}>
                   {order.HO_TEN}
                 </TableCell>
-
                 <TableCell sx={{ fontSize: "0.875rem", color: "#ffffff" }}>
                   {order.SO_DIEN_THOAI}
                 </TableCell>
@@ -107,7 +127,6 @@ const DonHangAdmin = () => {
                 >
                   {order.TRANG_THAI_DON_HANG}
                 </TableCell>
-
                 <TableCell sx={{ fontSize: "0.875rem", color: "#ffffff" }}>
                   {order.NGAY_TAO_DONHANG
                     ? moment(order.NGAY_TAO_DONHANG).format("DD/MM/YYYY HH:mm")
@@ -119,12 +138,25 @@ const DonHangAdmin = () => {
                         "DD/MM/YYYY HH:mm"
                       )
                     : "N/A"}
+                </TableCell>{" "}
+                <TableCell sx={{ fontSize: "0.875rem", color: "#26bbff" }}>
+                  <Button
+                    onClick={() => handleViewDetails(order.ID_DON_HANG)}
+                    startIcon={<VisibilityIcon sx={{ color: "#26bbff" }} />}
+                  ></Button>{" "}
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
+      {/* Modal hiển thị thông tin chi tiết */}
+      {openModal && (
+        <ProductDetailModal
+          productId={selectedOrderId} // Truyền ID đơn hàng vào modal
+          onClose={handleCloseModal} // Hàm đóng modal
+        />
+      )}
     </Container>
   );
 };
