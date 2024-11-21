@@ -11,6 +11,7 @@ import {
   Paper,
   Box,
   Button,
+  Pagination,
 } from "@mui/material";
 import moment from "moment";
 import axios from "axios";
@@ -51,7 +52,15 @@ const DonHangAdmin = () => {
     setOpenModal(false);
     setSelectedOrderId(null);
   };
-
+  const [currentPage, setCurrentPage] = useState(1); // Current page state
+  const [itemsPerPage] = useState(8); // Number of items per page
+  const handlePageChange = (event, value) => {
+    setCurrentPage(value); // Update current page
+  };
+  // Lấy dữ liệu đơn hàng theo trang
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentOrders = orders.slice(indexOfFirstItem, indexOfLastItem); // Cắt mảng đơn hàng theo trang
   return (
     <Container>
       <Box sx={{ width: "100%", textAlign: "left", mt: 4, mb: 3 }}>
@@ -96,7 +105,7 @@ const DonHangAdmin = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {orders.map((order, index) => (
+            {currentOrders.map((order, index) => (
               <TableRow key={index}>
                 <TableCell sx={{ fontSize: "0.875rem", color: "#ffffff" }}>
                   {order.ID_ODER || "Không xác định"}
@@ -149,7 +158,32 @@ const DonHangAdmin = () => {
             ))}
           </TableBody>
         </Table>
-      </TableContainer>
+      </TableContainer>{" "}
+      {/* Pagination */}
+      <Pagination
+        count={Math.ceil(orders.length / itemsPerPage)} // Tổng số trang
+        page={currentPage}
+        onChange={handlePageChange}
+        sx={{
+          marginTop: 4,
+          display: "flex",
+          justifyContent: "center",
+          ".MuiPagination-ul": {
+            borderRadius: "8px", // Bo góc
+            padding: "4px 8px", // Khoảng cách bên trong
+          },
+          ".MuiPaginationItem-root": {
+            color: "#c9d1d9", // Màu chữ đen
+            fontWeight: "bold", // Chữ đậm
+          },
+          ".Mui-selected": {
+            color: "#ffffff", // Màu chữ trắng
+          },
+          ".MuiPaginationItem-ellipsis": {
+            color: "#999999", // Màu cho dấu "..."
+          },
+        }}
+      />
       {/* Modal hiển thị thông tin chi tiết */}
       {openModal && (
         <ProductDetailModal

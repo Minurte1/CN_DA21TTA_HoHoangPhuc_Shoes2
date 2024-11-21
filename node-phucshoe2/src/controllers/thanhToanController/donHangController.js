@@ -67,6 +67,69 @@ const getDON_HANG = async (req, res) => {
     });
   }
 };
+const getDON_HANG_ByIDUser = async (req, res) => {
+  try {
+    // Lấy ID_NGUOI_DUNG từ tham số của request
+    const { id } = req.params;
+
+    // Lấy dữ liệu đơn hàng kèm thông tin thanh toán và người dùng
+    const [results] = await connection.execute(
+      `
+      SELECT 
+        d.ID_ODER, 
+        d.ID_NGUOI_DUNG, 
+        d.ID_THANH_TOAN, 
+        t.PHUONG_THUC_THANH_TOAN, 
+        d.TONG_TIEN, 
+        d.TRANG_THAI_DON_HANG, 
+        d.GHI_CHU_DONHANG, 
+        d.NGAY_CAP_NHAT_DONHANG, 
+        d.NGAY_TAO_DONHANG,
+        d.ID_DON_HANG, 
+        u.EMAIL,
+        u.VAI_TRO,
+        u.HO_TEN,
+        u.SO_DIEN_THOAI,
+        u.DIA_CHI,
+        u.TRANG_THAI_USER,
+        u.NGAY_TAO_USER,
+        u.NGAY_CAP_NHAT_USER,
+        u.NGAY_SINH,
+        u.DIA_CHI_Provinces,
+        u.DIA_CHI_Districts,
+        u.DIA_CHI_Wards
+      FROM 
+        DON_HANG d
+      LEFT JOIN 
+        THANH_TOAN t 
+      ON 
+        d.ID_THANH_TOAN = t.ID_THANH_TOAN
+      LEFT JOIN 
+        NGUOI_DUNG u 
+      ON 
+        d.ID_NGUOI_DUNG = u.ID_NGUOI_DUNG
+      WHERE 
+        d.ID_NGUOI_DUNG = ?  -- Lọc theo ID_NGUOI_DUNG
+      ORDER BY 
+        d.NGAY_TAO_DONHANG DESC
+    `,
+      [id]
+    ); // Truyền tham số idNguoiDung vào câu truy vấn
+
+    return res.status(200).json({
+      EM: "Lấy danh sách đơn hàng thành công",
+      EC: 1,
+      DT: results,
+    });
+  } catch (error) {
+    console.error("Error getting don hang:", error);
+    return res.status(500).json({
+      EM: "Có lỗi xảy ra khi lấy thông tin",
+      EC: 0,
+      DT: [],
+    });
+  }
+};
 
 // Tạo đơn hàng mới
 const createDON_HANG = async (req, res) => {
@@ -404,4 +467,5 @@ module.exports = {
   updateDON_HANG,
   deleteDON_HANG,
   updateTrangThaiDonHang,
+  getDON_HANG_ByIDUser,
 };

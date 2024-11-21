@@ -6,9 +6,11 @@ const {
   updateDON_HANG,
   deleteDON_HANG,
   updateTrangThaiDonHang,
+  getDON_HANG_ByIDUser,
 } = require("../../controllers/thanhToanController/donHangController");
 // Định nghĩa các route
-router.get("/", getDON_HANG);
+router.get("/", getDON_HANG); //admin
+router.get("/:id", getDON_HANG_ByIDUser); //admin
 router.post("/", createDON_HANG);
 router.post("/hoan-tat", updateTrangThaiDonHang);
 router.put("/:id", updateDON_HANG);

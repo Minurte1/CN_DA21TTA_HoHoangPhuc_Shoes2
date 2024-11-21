@@ -26,11 +26,10 @@ import { setLanguage } from "../../redux/languageSlice";
 import translations from "../../redux/data/translations";
 import axios from "axios";
 import { enqueueSnackbar } from "notistack";
-const apiUrl = process.env.REACT_APP_URL_SERVER;
 
 const PasswordAndSetting = () => {
   const [optionLanguage, setOptionLanguage] = useState("vi");
-
+  const apiUrl = process.env.REACT_APP_URL_SERVER;
   const dispatch = useDispatch();
   const { isAuthenticated, userInfo } = useSelector((state) => state.auth);
   const [themesWeb, setThemesWeb] = useState(userInfo?.THEMES);
