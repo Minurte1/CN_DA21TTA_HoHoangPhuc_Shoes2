@@ -217,11 +217,7 @@ const PasswordAndSetting = () => {
                 color: "#101014", // Màu chữ
               }}
             >
-              {optionLanguage === "vi"
-                ? "Tiếng Việt"
-                : optionLanguage === "en"
-                ? "English"
-                : "Español"}{" "}
+              {optionLanguage === "vi" ? "Tiếng Việt" : "English"}
               <ArrowDropDownIcon />
             </Button>
           </Box>
@@ -493,7 +489,7 @@ const PasswordAndSetting = () => {
             >
               English
             </MenuItem>
-            <MenuItem
+            {/* <MenuItem
               sx={{ color: "#fff", "&:hover": { backgroundColor: "#4a494c" } }}
               onClick={() => {
                 handleChangeLanguage("es");
@@ -501,7 +497,7 @@ const PasswordAndSetting = () => {
               }}
             >
               Español
-            </MenuItem>
+            </MenuItem> */}
           </Menu>
         </Box>
       </Box>

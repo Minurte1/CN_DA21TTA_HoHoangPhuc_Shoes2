@@ -23,6 +23,8 @@ import StarIcon from "@mui/icons-material/Star";
 import { Link } from "react-router-dom";
 import translations from "../../redux/data/translations";
 import { useSelector } from "react-redux";
+import InventoryIcon from "@mui/icons-material/Inventory";
+import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
 const NavBarUser = () => {
   const language = useSelector((state) => state.language.language);
   const t = translations[language].profile;
@@ -65,9 +67,22 @@ const NavBarUser = () => {
           sx={{ color: "#f0f6fc" }}
         >
           <ListItemIcon>
-            <EmailIcon sx={{ color: "#ffffff" }} />
+            <ShoppingBagIcon sx={{ color: "#ffffff" }} />
           </ListItemIcon>
           <ListItemText primary={t.Oder ? t.Oder : "Đơn hàng"} />
+        </ListItem>{" "}
+        <ListItem
+          button
+          component={Link}
+          to="/profile/lich-su-mua-hang"
+          sx={{ color: "#f0f6fc" }}
+        >
+          <ListItemIcon>
+            <InventoryIcon sx={{ color: "#ffffff" }} />
+          </ListItemIcon>
+          <ListItemText
+            primary={t.HistoryBuy ? t.HistoryBuy : "Lịch sử mua hàng"}
+          />
         </ListItem>
         {/* <ListItem
         button

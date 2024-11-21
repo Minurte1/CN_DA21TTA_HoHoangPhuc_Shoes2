@@ -18,7 +18,10 @@ const UserRouter = () => {
       path: "/mat-khau-cai-dat",
       element: <PasswordAndSetting />,
     },
-
+    {
+      path: "/lich-su-mua-hang",
+      element: <PasswordAndSetting />,
+    },
     {
       path: "*",
       element: <Navigate to="/login" replace />,

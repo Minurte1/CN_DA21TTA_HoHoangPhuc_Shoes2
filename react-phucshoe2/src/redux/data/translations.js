@@ -81,6 +81,7 @@ const translations = {
       Oder: "Đơn hàng",
       PasswordAndSetting: "Mật khẩu & Cài đặt",
       NeedHelp: "Bạn cần giúp đỡ?",
+      HistoryBuy: "Lịch sử mua hàng",
     },
     register: {
       createAccount: "Tạo Tài Khoản",

@@ -126,11 +126,7 @@ const Header = () => {
           <LanguageIcon />
         </IconButton>
         <Button color="inherit" onClick={handleLanguageMenu}>
-          {optionLanguage == "vi"
-            ? "Tiếng Việt"
-            : optionLanguage == "en"
-            ? "English"
-            : " Español"}
+          {optionLanguage === "vi" ? "Tiếng Việt" : "English"}
         </Button>
 
         <Menu
@@ -165,7 +161,7 @@ const Header = () => {
           >
             English
           </MenuItem>
-          <MenuItem
+          {/* <MenuItem
             sx={{ color: "#fff", "&:hover": { backgroundColor: "#4a494c" } }}
             onClick={() => {
               handleChangeLanguage("es");
@@ -173,7 +169,7 @@ const Header = () => {
             }}
           >
             Español
-          </MenuItem>
+          </MenuItem> */}
         </Menu>
 
         {/* <Typography
