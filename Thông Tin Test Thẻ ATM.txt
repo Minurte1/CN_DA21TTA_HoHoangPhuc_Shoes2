@@ -17,12 +17,12 @@ No	Name	Number	Card Expdate	CVC	OTP	Test Case
 1	NGUYEN VAN A	5200 0000 0000 1096	05/25	111	OTP	Card Successful
 
 
-{
-id:"hght",
-name:"Cao"
-}
+----------------------------------------------------------------------------------
+	VN PAY 
 
 
-CategoryTest  => Realtime
-tạo review 
-tạo tài khoản gui
+Ngân hàng: NCB
+Số thẻ: 9704198526191432198
+Tên chủ thẻ:NGUYEN VAN A
+Ngày phát hành:07/15
+Mật khẩu OTP:123456

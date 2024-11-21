@@ -3,6 +3,7 @@ import { useRoutes, Navigate } from "react-router-dom";
 import UserProfile from "./pages/DashboardUser";
 import DonHangUser from "./pages/DonHang";
 import PasswordAndSetting from "./pages/PasswordAndSetting";
+import LichSuMuaHangUser from "./pages/lichSuMuaHang";
 
 const UserRouter = () => {
   const element = useRoutes([
@@ -20,7 +21,7 @@ const UserRouter = () => {
     },
     {
       path: "/lich-su-mua-hang",
-      element: <PasswordAndSetting />,
+      element: <LichSuMuaHangUser />,
     },
     {
       path: "*",

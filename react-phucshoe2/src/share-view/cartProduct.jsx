@@ -334,46 +334,45 @@ const Cart = () => {
       enqueueSnackbar("Vui lòng chọn phương thức thanh toán!!");
       return;
     }
-    try {
-      // Lưu giỏ hàng vào Redux
-      dispatch(setItemCart(items));
+    // Lưu giỏ hàng vào Redux
+    dispatch(setItemCart(items));
 
-      // Tạo mã đơn hàng duy nhất
-      const orderId = uuidv4();
-      const orderInfo = `PhucShoes - Mã đơn hàng: ${orderId}`; // Thông tin mô tả đơn hàng
-      dispatch(setIdOder(orderId));
-      const responsive = await axios.post(
-        "http://emailserivce.somee.com/api/Momo/CreatePaymentUrl",
-        {
-          fullName: userInfo.HO_TEN,
-          orderId: orderInfo,
-          options: "mutil",
-          orderInfo: orderInfo,
-          returnUrl: "http://localhost:3000/checkout",
-          amount: tongTienCart, // Gửi tổng tiền trong giỏ hàng
-        }
-      );
+    // Tạo mã đơn hàng duy nhất
+    const orderId = uuidv4();
+    const orderInfo = `PhucShoes - Mã đơn hàng: ${orderId}`;
+    const requestData = {
+      idNguoiDung: userInfo.ID_NGUOI_DUNG,
+      idThanhToan: selectPhuongThucThanhToan,
+      tongTien: tongTienCart,
+      trangThaiDonHang: "Đang chờ thanh toán",
+      ID_ODER: orderInfo,
+      items: items,
+      email: userInfo.EMAIL,
+    };
 
-      const paymentUrl = responsive.data.url;
-      console.log(paymentUrl);
-      // Chuẩn bị dữ liệu cho API
-      const requestData = {
-        idNguoiDung: userInfo.ID_NGUOI_DUNG, // Lấy từ Redux
-        idThanhToan: selectPhuongThucThanhToan, // Lấy phương thức thanh toán
-        tongTien: tongTienCart, // Lấy tổng tiền
-        trangThaiDonHang: "Đang chờ thanh toán", // Mặc định trạng thái là "Đang chờ"
-        ID_ODER: orderInfo, // Mã đơn hàng từ query params
-        items: items,
-        email: userInfo.EMAIL,
-      };
+    if (selectPhuongThucThanhToan === "Momo") {
+      try {
+        dispatch(setIdOder(orderId));
+        const responsive = await axios.post(
+          "http://emailserivce.somee.com/api/Momo/CreatePaymentUrl",
+          {
+            fullName: userInfo.HO_TEN,
+            orderId: orderInfo,
+            options: "mutil",
+            orderInfo: orderInfo,
+            returnUrl: "http://localhost:3000/checkout",
+            amount: tongTienCart, // Gửi tổng tiền trong giỏ hàng
+          }
+        );
 
-      // Gửi yêu cầu API để tạo đơn hàng
+        const paymentUrl = responsive.data.url;
+
+        window.location.href = paymentUrl;
+      } catch (error) {
+        console.error("Error during payment creation:", error);
+      }
+    } else if (selectPhuongThucThanhToan === "Thanh toán tại nhà") {
       const response = await axios.post(`${api}/don-hang`, requestData);
-      console.log("response", response.data);
-      // Chuyển hướng đến URL thanh toán
-      window.location.href = paymentUrl;
-    } catch (error) {
-      console.error("Error during payment creation:", error);
     }
   };
 
