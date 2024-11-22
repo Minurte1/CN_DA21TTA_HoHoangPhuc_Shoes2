@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+import { enqueueSnackbar } from "notistack";
 
 const DanhGiaSanPhamUser = () => {
   const { id } = useParams(); // Nhận ID đơn hàng từ URL
@@ -41,36 +42,77 @@ const DanhGiaSanPhamUser = () => {
     }
   }, [id]);
 
-  const handleRatingChange = (value) => {
-    setRating(value);
+  const handleRatingChange = (productId, value) => {
+    setDataChiTietHoaDon((prevState) => ({
+      ...prevState,
+      chiTietHoaDon: prevState.chiTietHoaDon.map((product) =>
+        product.ID_CHI_TIET_HOA_DON === productId
+          ? { ...product, rating: value }
+          : product
+      ),
+    }));
   };
 
-  const handleCommentsChange = (e) => {
-    setComments(e.target.value);
+  const handleCommentsChange = (productId, e) => {
+    setDataChiTietHoaDon((prevState) => ({
+      ...prevState,
+      chiTietHoaDon: prevState.chiTietHoaDon.map((product) =>
+        product.ID_CHI_TIET_HOA_DON === productId
+          ? { ...product, comments: e.target.value }
+          : product
+      ),
+    }));
   };
 
-  const handleSubmit = () => {
-    // Gửi đánh giá và bình luận lên server
-    console.log({
-      id,
-      rating,
-      comments,
-    });
+  const handleSubmit = async () => {
+    try {
+      // Gửi đánh giá và bình luận cho tất cả các sản phẩm
+      const response = await axios.post(`${api}/chi-tiet-hoa-don/danh-gia`, {
+        ID_HOA_DON: id,
+        products: dataChiTietHoaDon.chiTietHoaDon.map((product) => ({
+          id: product.ID_CHI_TIET_HOA_DON,
+          rating: product.rating, // Giá trị rating cho từng sản phẩm
+          comments: product.comments, // Bình luận cho từng sản phẩm
+        })),
+      });
+
+      if (response.data.EC === 1) {
+        enqueueSnackbar("Cập nhật đánh giá và bình luận thành công!");
+        navigate(-1);
+      } else {
+        enqueueSnackbar("Có lỗi xảy ra khi gửi đánh giá!");
+      }
+    } catch (error) {
+      console.error("Lỗi khi gửi yêu cầu:", error);
+      enqueueSnackbar("Có lỗi xảy ra khi gửi yêu cầu.");
+    }
   };
 
   return (
     <Paper sx={{ p: 3, maxWidth: 600, mx: "auto", mt: 4 }}>
-      <Button onClick={() => navigate(-1)}>Trở về</Button>
-
       {/* Danh sách đơn hàng */}
       <Box mt={2}>
         <Paper sx={{ mb: 2, p: 2, textAlign: "left" }}>
+          {" "}
+          <Button
+            onClick={() => navigate(-1)}
+            variant="contained"
+            sx={{
+              textAlign: "left",
+              backgroundColor: "#26bbff",
+              color: "#efefefe",
+            }}
+          >
+            Trở về
+          </Button>
           {/* Thông tin đơn hàng */}
           {loading ? (
             <Skeleton variant="text" width="80%" height={40} />
           ) : (
             <>
-              <Typography variant="h6">{dataChiTietHoaDon.ID_ODER}</Typography>
+              <Typography mt={4} variant="h6">
+                {dataChiTietHoaDon.ID_ODER}
+              </Typography>
               <Typography
                 variant="body2"
                 sx={{ mb: 1, color: "text.secondary" }}
@@ -97,7 +139,6 @@ const DanhGiaSanPhamUser = () => {
               <Divider sx={{ my: 2 }} />
             </>
           )}
-
           {/* Danh sách sản phẩm */}
           {loading ? (
             <Skeleton variant="rectangular" width="100%" height={120} />
@@ -147,9 +188,12 @@ const DanhGiaSanPhamUser = () => {
                       <Box sx={{ mb: 3 }}>
                         <Typography gutterBottom>Đánh giá số sao:</Typography>
                         <Rating
-                          value={rating}
+                          value={product.rating || 0}
                           onChange={(e, newValue) =>
-                            handleRatingChange(newValue)
+                            handleRatingChange(
+                              product.ID_CHI_TIET_HOA_DON,
+                              newValue
+                            )
                           }
                         />
                       </Box>
@@ -159,17 +203,29 @@ const DanhGiaSanPhamUser = () => {
                           fullWidth
                           multiline
                           rows={4}
-                          value={comments}
-                          onChange={handleCommentsChange}
+                          value={product.comments || ""}
+                          onChange={(e) =>
+                            handleCommentsChange(product.ID_CHI_TIET_HOA_DON, e)
+                          }
                           placeholder="Nhập bình luận của bạn..."
                         />
                       </Box>
                     </>
-                  )}
+                  )}{" "}
                 </Box>
               </>
             ))
-          )}
+          )}{" "}
+          <Button
+            sx={{
+              textAlign: "left",
+              backgroundColor: "#26bbff",
+              color: "#ffffff",
+            }}
+            onClick={handleSubmit}
+          >
+            Gửi{" "}
+          </Button>
         </Paper>
       </Box>
     </Paper>

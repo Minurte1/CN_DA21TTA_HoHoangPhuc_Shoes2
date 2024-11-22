@@ -6,6 +6,7 @@ const {
   getChiTietHoaDonTheoNguoiDung_Cancel,
   getPaidOrdersAwaitingProcessing,
   getChiTietHoaDonTheoNguoiDung_WaitingThanhToan,
+  addReviewAndComment,
 } = require("../../controllers/thanhToanController/chiTietHoaDonController");
 
 // Định nghĩa các route
@@ -28,4 +29,5 @@ router.get(
   getChiTietHoaDonTheoNguoiDung_WaitingThanhToan
 );
 
+router.post("/danh-gia", addReviewAndComment);
 module.exports = router;

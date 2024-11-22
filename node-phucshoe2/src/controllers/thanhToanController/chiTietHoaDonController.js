@@ -248,6 +248,8 @@ const getChiTietHoaDonTheoNguoiDung_Success = async (req, res) => {
         mdsd.TEN_MUC_DICH_SU_DUNG, 
         kc.ID_KICH_CO, 
         kc.KICH_CO,
+        cthd.DANH_GIA,
+        cthd.BINH_LUAN,
         cthd.ID_CHI_TIET_HOA_DON, 
         cthd.SO_LUONG_SP, 
         cthd.GIA_SAN_PHAM_CHI_TIET,
@@ -729,10 +731,65 @@ const getPaidOrdersAwaitingProcessing = async (req, res) => {
     });
   }
 };
+
+//Đánh giá sản phẩm
+const addReviewAndComment = async (req, res) => {
+  const { ID_HOA_DON, products } = req.body;
+  console.log("re", req.body);
+  try {
+    // Kiểm tra dữ liệu đầu vào
+    if (
+      !ID_HOA_DON ||
+      !products ||
+      !Array.isArray(products) ||
+      products.length === 0
+    ) {
+      return res.status(400).json({
+        EM: "Thiếu thông tin đánh giá hoặc bình luận",
+        EC: 0,
+      });
+    }
+
+    // Lặp qua từng sản phẩm và cập nhật đánh giá, bình luận
+    for (let product of products) {
+      const { id, rating, comments } = product;
+
+      // Cập nhật thông tin đánh giá và bình luận vào bảng CHI_TIET_HOA_DON
+      const [updateResult] = await connection.execute(
+        `UPDATE CHI_TIET_HOA_DON 
+         SET DANH_GIA = ?, BINH_LUAN = ? 
+         WHERE ID_CHI_TIET_HOA_DON = ?`,
+        [rating, comments, id]
+      );
+
+      // Kiểm tra nếu không có bản ghi nào được cập nhật
+      if (updateResult.affectedRows === 0) {
+        return res.status(404).json({
+          EM: `Không tìm thấy chi tiết hóa đơn với ID ${id}`,
+          EC: 0,
+        });
+      }
+    }
+
+    // Trả về kết quả thành công
+    return res.status(200).json({
+      EM: "Cập nhật đánh giá và bình luận thành công",
+      EC: 1,
+    });
+  } catch (error) {
+    console.error("Error updating review and comment:", error);
+    return res.status(500).json({
+      EM: "Có lỗi xảy ra khi cập nhật đánh giá và bình luận",
+      EC: 0,
+    });
+  }
+};
+
 module.exports = {
   getChiTietHoaDon,
   getChiTietHoaDonTheoNguoiDung_Success,
   getChiTietHoaDonTheoNguoiDung_Cancel,
   getPaidOrdersAwaitingProcessing,
   getChiTietHoaDonTheoNguoiDung_WaitingThanhToan,
+  addReviewAndComment,
 };

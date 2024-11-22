@@ -62,7 +62,7 @@ const LichSuMuaHangUser = () => {
       console.error("Error while fetching data:", error);
     }
   };
-
+  console.log("dataChiTietHoaDon", dataChiTietHoaDon);
   return (
     <Box sx={{ p: 2, bgcolor: "#f6f6f6" }}>
       {/* Tabs */}
@@ -137,10 +137,11 @@ const LichSuMuaHangUser = () => {
                       onClick={() =>
                         navigate(`/profile/danh-gia/${order.ID_DON_HANG}`)
                       }
+                      disabled={product.DANH_GIA !== null} // Kiểm tra điều kiện nếu DANH_GIA khác null thì vô hiệu hóa button
                     >
                       Đánh giá
                     </Button>
-                    ;
+
                     <Button
                       variant="outlined"
                       sx={{
