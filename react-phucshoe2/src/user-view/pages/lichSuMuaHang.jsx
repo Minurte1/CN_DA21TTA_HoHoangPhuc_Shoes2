@@ -10,12 +10,15 @@ import {
 } from "@mui/material";
 import { useSelector } from "react-redux";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const LichSuMuaHangUser = () => {
   const [tabIndex, setTabIndex] = useState(0);
   const apiUrl = process.env.REACT_APP_URL_SERVER;
   const { isAuthenticated, userInfo } = useSelector((state) => state.auth);
   const [dataChiTietHoaDon, setDataChiTietHoaDon] = useState([]);
+
+  const navigate = useNavigate();
 
   const handleTabChange = (event, newIndex) => {
     setTabIndex(newIndex);
@@ -122,10 +125,37 @@ const LichSuMuaHangUser = () => {
                     ₫
                   </Typography>
                 </Box>{" "}
-                <Button variant="outlined">Đánh giá</Button>
-                <Button variant="outlined" sx={{ ml: 2 }}>
-                  Mua lại
-                </Button>
+                {tabIndex === 1 ? (
+                  <>
+                    <Button
+                      variant="outlined"
+                      sx={{
+                        color: "green",
+                        borderColor: "green",
+                        ":hover": { bgcolor: "rgba(0, 128, 0, 0.1)" },
+                      }}
+                      onClick={() =>
+                        navigate(`/profile/danh-gia/${order.ID_DON_HANG}`)
+                      }
+                    >
+                      Đánh giá
+                    </Button>
+                    ;
+                    <Button
+                      variant="outlined"
+                      sx={{
+                        ml: 2,
+                        color: "#f60",
+                        borderColor: "#f60",
+                        ":hover": { bgcolor: "rgba(0, 0, 255, 0.1)" },
+                      }}
+                    >
+                      Mua lại
+                    </Button>
+                  </>
+                ) : (
+                  false
+                )}
               </Box>
             ))}
           </Paper>

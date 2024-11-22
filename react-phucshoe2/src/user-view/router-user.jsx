@@ -4,6 +4,7 @@ import UserProfile from "./pages/DashboardUser";
 import DonHangUser from "./pages/DonHang";
 import PasswordAndSetting from "./pages/PasswordAndSetting";
 import LichSuMuaHangUser from "./pages/lichSuMuaHang";
+import DanhGiaSanPhamUser from "./pages/DanhGiaSanPhamUser";
 
 const UserRouter = () => {
   const element = useRoutes([
@@ -22,6 +23,10 @@ const UserRouter = () => {
     {
       path: "/lich-su-mua-hang",
       element: <LichSuMuaHangUser />,
+    },
+    {
+      path: "/danh-gia/:id",
+      element: <DanhGiaSanPhamUser />,
     },
     {
       path: "*",
