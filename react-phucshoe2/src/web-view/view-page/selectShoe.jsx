@@ -93,7 +93,7 @@ const SelectShoe = () => {
   if (!product) {
     return <div>Loading...</div>; // Add a loading state
   }
-
+  console.log("product => ", product);
   return (
     <Container maxWidth="lg" className="container-select-game">
       <Grid container spacing={2}>
@@ -146,59 +146,6 @@ const SelectShoe = () => {
           >
             <Typography sx={{ color: "#fff" }}>
               Mô tả: {product.MO_TA_SAN_PHAM} {/* Product Description */}
-            </Typography>
-          </Box>{" "}
-          <Box
-            sx={{
-              textAlign: "left",
-              borderRadius: 1,
-              display: "flex",
-              alignItems: "center",
-              mt: 2,
-            }}
-          >
-            <Typography sx={{ color: "#fff" }}>
-              Đối tượng phù hợp nhất: {product.TEN_GIOI_TINH}{" "}
-              {/* Product Description */}
-            </Typography>
-          </Box>{" "}
-          <Box
-            sx={{
-              textAlign: "left",
-              borderRadius: 1,
-              display: "flex",
-              alignItems: "center",
-              mt: 2,
-            }}
-          >
-            <Typography sx={{ color: "#fff" }}>
-              Kích cỡ: {product.KICH_CO} {/* Product Description */}
-            </Typography>
-          </Box>{" "}
-          <Box
-            sx={{
-              textAlign: "left",
-              borderRadius: 1,
-              display: "flex",
-              alignItems: "center",
-              mt: 2,
-            }}
-          >
-            <Typography sx={{ color: "#fff" }}>
-              Phong cách: {product.TEN_PHONG_CACH} {/* Product Description */}
-            </Typography>
-          </Box>{" "}
-          <Box
-            sx={{
-              textAlign: "left",
-              borderRadius: 1,
-              display: "flex",
-              alignItems: "center",
-              mt: 2,
-            }}
-          >
-            <Typography sx={{ color: "#fff" }}>
-              Thương hiệu: {product.TEN_THUONG_HIEU} {/* Product Description */}
             </Typography>
           </Box>{" "}
           <Box
@@ -324,7 +271,7 @@ const SelectShoe = () => {
                   paddingBottom: 1,
                 }}
               >
-                Epic Rewards: Earn 5% Back
+                Kích cỡ: {product.TEN_DANH_MUC} {/* Product Description */}
               </Typography>
               <Typography
                 variant="body2"
@@ -334,7 +281,7 @@ const SelectShoe = () => {
                   paddingBottom: 1,
                 }}
               >
-                Refund Type: Self-Refundable
+                Kích cỡ: {product.KICH_CO} {/* Product Description */}
               </Typography>
               <Typography
                 variant="body2"
@@ -344,7 +291,7 @@ const SelectShoe = () => {
                   paddingBottom: 1,
                 }}
               >
-                Developer: Fun Dog Studios
+                Phong cách: {product.TEN_PHONG_CACH} {/* Product Description */}
               </Typography>
               <Typography
                 variant="body2"
@@ -354,7 +301,8 @@ const SelectShoe = () => {
                   paddingBottom: 1,
                 }}
               >
-                Publisher: Fun Dog Studios
+                Thương hiệu: {product.TEN_THUONG_HIEU}{" "}
+                {/* Product Description */}
               </Typography>
               <Typography
                 variant="body2"
@@ -364,8 +312,28 @@ const SelectShoe = () => {
                   paddingBottom: 1,
                 }}
               >
-                Release Date:{" "}
-                {new Date(product.NGAY_TAO_SANPHAM).toLocaleDateString()}
+                Đối tượng phù hợp nhất: {product.TEN_GIOI_TINH}{" "}
+              </Typography>
+              <Typography
+                variant="body2"
+                sx={{
+                  borderBottom: "1px solid rgba(204, 204, 204, 0.5)",
+                  paddingTop: 3,
+                  paddingBottom: 1,
+                }}
+              >
+                Số lượng trong kho còn : {product.SO_LUONG_SANPHAM}
+                {/* {new Date(product.NGAY_TAO_SANPHAM).toLocaleDateString()} */}
+              </Typography>{" "}
+              <Typography
+                variant="body2"
+                sx={{
+                  borderBottom: "1px solid rgba(204, 204, 204, 0.5)",
+                  paddingTop: 3,
+                  paddingBottom: 1,
+                }}
+              >
+                Màu sắc: {product.TEN_MAU_SAC}
               </Typography>
             </Box>
           </Box>

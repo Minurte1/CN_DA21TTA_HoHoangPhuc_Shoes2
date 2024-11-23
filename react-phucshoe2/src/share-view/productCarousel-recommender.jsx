@@ -206,10 +206,11 @@ const RecommenderProductCarousel = ({ ID_SAN_PHAM }) => {
           },
         }}
       >
+        Gợi ý{" "}
         <ArrowForwardIosIcon
           className="arrow-icon"
           sx={{ fontSize: "19px", color: "#fff", marginLeft: "10px" }}
-        />
+        />{" "}
       </Typography>
       <Box
         sx={{
