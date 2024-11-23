@@ -131,12 +131,41 @@ def recommend_products(product_id, products, similarity_matrix, top_n=10):
     recommended_indices = [i[0] for i in sim_scores[1:top_n+1]]
     
     # Trả về danh sách sản phẩm gợi ý
-    recommendations = products.iloc[recommended_indices][[
-        "ID_SAN_PHAM", "TEN_SAN_PHAM", "TEN_DANH_MUC", 
-        "TEN_CHAT_LIEU_", "TEN_THUONG_HIEU", "TEN_GIOI_TINH"
-    ]].to_dict(orient="records")
+    recommended_product_ids = products.iloc[recommended_indices]['ID_SAN_PHAM'].tolist()
     
-    return recommendations
+    return recommended_product_ids
+def fetch_products_by_ids(db, product_ids):
+    query = """
+    SELECT 
+        sp.ID_SAN_PHAM, sp.ID_THUONG_HIEU,sp.GIA, sp.ID_DANH_MUC, sp.GIOI_TINH_ID, sp.CHAT_LIEU_ID_, 
+        sp.TEN_SAN_PHAM,  sp.MO_TA_SAN_PHAM, sp.HINH_ANH_SANPHAM, sp.TRANG_THAI_SANPHAM, 
+        sp.NGAY_TAO_SANPHAM, sp.NGAY_CAP_NHAT_SANPHAM, sp.SO_LUONG_SANPHAM,
+        gt.TEN_GIOI_TINH,
+        dm.TEN_DANH_MUC,
+        cl.TEN_CHAT_LIEU_,
+        th.TEN_THUONG_HIEU
+    FROM SAN_PHAM sp
+    LEFT JOIN GIOI_TINH gt ON sp.GIOI_TINH_ID = gt.GIOI_TINH_ID
+    LEFT JOIN LOAI_DANH_MUC dm ON sp.ID_DANH_MUC = dm.ID_DANH_MUC
+    LEFT JOIN CHAT_LIEU cl ON sp.CHAT_LIEU_ID_ = cl.CHAT_LIEU_ID_
+    LEFT JOIN THUONG_HIEU th ON sp.ID_THUONG_HIEU = th.ID_THUONG_HIEU
+    WHERE sp.ID_SAN_PHAM IN (%s)
+    """
+    # Chuyển danh sách ID_SAN_PHAM thành chuỗi các ID để chèn vào query
+    format_strings = ','.join(['%s'] * len(product_ids))
+    query = query % format_strings
+    
+    cursor = db.cursor()
+    cursor.execute(query, tuple(product_ids))
+    results = cursor.fetchall()
+
+    # Kiểm tra số lượng cột trong dữ liệu trả về và sửa lại danh sách cột cho phù hợp
+    columns = ["ID_SAN_PHAM",  "ID_THUONG_HIEU","GIA", "ID_DANH_MUC", "GIOI_TINH_ID", 
+               "CHAT_LIEU_ID_", "TEN_SAN_PHAM",  "MO_TA_SAN_PHAM", "HINH_ANH_SANPHAM", 
+               "TRANG_THAI_SANPHAM", "NGAY_TAO_SANPHAM", "NGAY_CAP_NHAT_SANPHAM", "SO_LUONG_SANPHAM",
+               "TEN_GIOI_TINH", "TEN_DANH_MUC", "TEN_CHAT_LIEU_", "TEN_THUONG_HIEU"]
+
+    return pd.DataFrame(results, columns=columns)
 
 # Endpoint API để gợi ý sản phẩm
 @app.route('/recommend', methods=['POST'])
@@ -161,11 +190,14 @@ def recommend():
         similarity_matrix = build_similarity_matrix(all_products)
         
         # Lấy gợi ý sản phẩm
-        recommendations = recommend_products(product_id, all_products, similarity_matrix, top_n=10)
+        recommended_product_ids = recommend_products(product_id, all_products, similarity_matrix, top_n=10)
+        
+        # Lấy thông tin chi tiết của các sản phẩm gợi ý
+        recommended_product_details = fetch_products_by_ids(db, recommended_product_ids)
         
         return jsonify({
             "input_product": product_details.to_dict(orient="records"),
-            "recommendations": recommendations
+            "recommendations": recommended_product_details.to_dict(orient="records")
         })
     
     except Exception as e:
