@@ -6,6 +6,7 @@ import axios from "axios"; // Make sure to import axios
 import { useSelector, useDispatch } from "react-redux";
 import { enqueueSnackbar } from "notistack";
 import { setTotalCart } from "../../redux/authSlice";
+import RecommenderProductCarousel from "../../share-view/productCarousel-recommender";
 const api = process.env.REACT_APP_URL_SERVER;
 
 const SelectShoe = () => {
@@ -370,6 +371,7 @@ const SelectShoe = () => {
           </Box>
         </Grid>
       </Grid>
+      {id && <RecommenderProductCarousel ID_SAN_PHAM={id} />}
     </Container>
   );
 };

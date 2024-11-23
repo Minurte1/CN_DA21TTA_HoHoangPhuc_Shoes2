@@ -35,7 +35,6 @@ const PasswordAndSetting = () => {
   const [themesWeb, setThemesWeb] = useState(userInfo?.THEMES);
 
   //api change backgroundColor
-
   useEffect(() => {
     if (themesWeb) {
       changeThemseWeb();

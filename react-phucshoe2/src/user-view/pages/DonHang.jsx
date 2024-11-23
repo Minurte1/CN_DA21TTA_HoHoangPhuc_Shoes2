@@ -67,7 +67,7 @@ const DonHangUser = () => {
   // Lấy dữ liệu đơn hàng theo trang
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentOrders = orders.slice(indexOfFirstItem, indexOfLastItem); // Cắt mảng đơn hàng theo trang
+  const currentOrders = orders.slice(indexOfFirstItem, indexOfLastItem); 
   return (
     <Container>
       <Box sx={{ width: "100%", textAlign: "left", mt: 4, mb: 3 }}>
