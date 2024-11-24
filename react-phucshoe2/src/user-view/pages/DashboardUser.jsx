@@ -29,6 +29,7 @@ const UserProfile = () => {
   const [selectedProvince, setSelectedProvince] = useState(null);
   const [selectedDistrict, setSelectedDistrict] = useState(null);
   const [selectedWards, setSelectedWards] = useState(null);
+  const [selectStreetName, setSelectStreetName] = useState(null);
   useEffect(() => {
     if (!isAuthenticated) {
       navigate("/login");
@@ -50,6 +51,7 @@ const UserProfile = () => {
         setSelectedProvince(response.data.DT[0].DIA_CHI_Provinces);
         setSelectedDistrict(response.data.DT[0].DIA_CHI_Districts);
         setSelectedWards(response.data.DT[0].DIA_CHI_Wards);
+        setSelectStreetName(response.data.DT[0].DIA_CHI_STREETNAME);
         // Kiểm tra và cập nhật selectedDate
         if (response.data.DT[0].NGAY_SINH) {
           const formattedDate = dayjs(response.data.DT[0].NGAY_SINH);
@@ -99,6 +101,7 @@ const UserProfile = () => {
       DIA_CHI_Provinces: selectedProvince.name_with_type,
       DIA_CHI_Districts: selectedDistrict.name_with_type,
       DIA_CHI_Wards: selectedWards.name_with_type,
+      DIA_CHI_STREETNAME: selectStreetName,
     };
 
     try {
@@ -106,7 +109,7 @@ const UserProfile = () => {
         `${api}/user/${userInfo.ID_NGUOI_DUNG}`,
         updatedData
       );
-      console.log("response.data.DT[0]", response.data);
+      console.log("response.data.DT", response.data);
       if (response.data.EC === 1) {
         Cookies.remove("accessToken");
         const accessToken = response.data.accessToken;
@@ -114,13 +117,13 @@ const UserProfile = () => {
         dispatch(
           login({
             accessToken,
-            userInfo: response.data.DT[0],
+            userInfo: response.data.DT,
           })
         );
         enqueueSnackbar("Thông tin đã được cập nhật thành công", {
           variant: "success",
         });
-        setDataUser(response.data.DT[0]);
+        setDataUser(response.data.DT);
       } else {
         enqueueSnackbar(response.data.EM, { variant: "error" });
       }
@@ -298,7 +301,32 @@ const UserProfile = () => {
           setSelectedDistrict={setSelectedDistrict}
           setSelectedWards={setSelectedWards}
         />
-
+        <TextField
+          label="Tên đường"
+          variant="outlined"
+          value={selectStreetName} // Đảm bảo giá trị mặc định là chuỗi rỗng nếu không có dataUser hoặc EMAIL
+          fullWidth
+          onChange={(e) => setSelectStreetName(e.target.value)}
+          InputProps={{
+            style: { color: "#fff" }, // Màu chữ trong TextField
+          }}
+          InputLabelProps={{
+            style: { color: "#fff" }, // Màu chữ nhãn
+            shrink: true,
+          }}
+          sx={{
+            mt: 3,
+            backgroundColor: "#151b23", // Màu nền của input
+            "& .MuiInputLabel-root": { color: "#f0ffff" }, // Màu chữ của label
+            "& .MuiInputBase-input": { color: "#f0ffff" }, // Màu chữ của input
+            "& .MuiOutlinedInput-root": {
+              "& fieldset": { borderColor: "#3d444d" }, // Màu viền
+            },
+            "& .MuiInputBase-root": {
+              borderRadius: "4px", // Làm tròn góc nếu muốn
+            },
+          }}
+        />
         {/* ----------------Các thông tin khác --------------------------- */}
 
         <Typography

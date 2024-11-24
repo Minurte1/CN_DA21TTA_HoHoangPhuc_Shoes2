@@ -124,6 +124,7 @@ const SelectShoe = () => {
   const [selectedDistrict, setSelectedDistrict] = useState(null);
   const [selectedWards, setSelectedWards] = useState(null);
   const [selectStreetName, setSelectStreetName] = useState(null);
+  const [soDienThoai, setSoDienThoai] = useState(null);
   if (!product) {
     return <div>Loading...</div>; // Add a loading state
   }
@@ -338,7 +339,7 @@ const SelectShoe = () => {
                 >
                   {userInfo && (
                     <>
-                      {`Địa chỉ: ${userInfo?.DIA_CHI_Wards}, 
+                      {`Địa chỉ: ${userInfo.DIA_CHI_STREETNAME}, ${userInfo?.DIA_CHI_Wards}, 
               ${userInfo?.DIA_CHI_Districts}, ${userInfo?.DIA_CHI_Provinces}`}
                     </>
                   )}
@@ -371,6 +372,31 @@ const SelectShoe = () => {
                     style: { color: "#fff" }, // Màu chữ trong TextField
                   }}
                   onChange={(e) => setSelectStreetName(e.target.value)}
+                  InputLabelProps={{
+                    style: { color: "#fff" }, // Màu chữ nhãn
+                  }}
+                  sx={{
+                    backgroundColor: "#343437", // Màu nền của input
+                    "& .MuiInputLabel-root": { color: "#fff" }, // Màu chữ của label
+                    "& .MuiInputBase-input": { color: "#fff" }, // Màu chữ của input
+                    "& .MuiOutlinedInput-root": {
+                      "& fieldset": { borderColor: "#00000" }, // Màu viền
+                    },
+                    "& .MuiInputBase-root": {
+                      borderRadius: "4px", // Làm tròn góc nếu muốn
+                    },
+                  }}
+                />{" "}
+                <TextField
+                  label="Số điện thoại"
+                  variant="outlined"
+                  type="number"
+                  value={soDienThoai} // Đảm bảo giá trị mặc định là chuỗi rỗng nếu không có dataUser hoặc EMAIL
+                  fullWidth
+                  InputProps={{
+                    style: { color: "#fff" }, // Màu chữ trong TextField
+                  }}
+                  onChange={(e) => setSoDienThoai(e.target.value)}
                   InputLabelProps={{
                     style: { color: "#fff" }, // Màu chữ nhãn
                   }}

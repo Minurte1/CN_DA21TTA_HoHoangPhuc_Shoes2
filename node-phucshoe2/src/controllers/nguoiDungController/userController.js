@@ -141,6 +141,7 @@ const updateUserById_User = async (req, res) => {
     DIA_CHI_Provinces,
     DIA_CHI_Districts,
     DIA_CHI_Wards,
+    DIA_CHI_STREETNAME,
   } = req.body;
 
   const { id } = req.params;
@@ -202,7 +203,10 @@ const updateUserById_User = async (req, res) => {
       updateFields.push("DIA_CHI_Wards = ?");
       updateValues.push(DIA_CHI_Wards);
     }
-
+    if (DIA_CHI_STREETNAME !== undefined && DIA_CHI_STREETNAME !== null) {
+      updateFields.push("DIA_CHI_STREETNAME = ?");
+      updateValues.push(DIA_CHI_STREETNAME);
+    }
     // Thêm trường ngày cập nhật
     const ngayCapNhat = new Date();
     updateFields.push("NGAY_CAP_NHAT_USER = ?");
@@ -249,6 +253,10 @@ const updateUserById_User = async (req, res) => {
           NGAY_TAO_USER: user.NGAY_TAO_USER,
           NGAY_CAP_NHAT_USER: user.NGAY_CAP_NHAT_USER,
           AVATAR: user.AVATAR,
+          DIA_CHI_Provinces: user.DIA_CHI_Provinces,
+          DIA_CHI_Districts: user.DIA_CHI_Districts,
+          DIA_CHI_Wards: user.DIA_CHI_Wards,
+          DIA_CHI_STREETNAME: user.DIA_CHI_STREETNAME,
         },
         JWT_SECRET,
         { expiresIn: "5h" }
@@ -256,7 +264,7 @@ const updateUserById_User = async (req, res) => {
       return res.status(200).json({
         EM: "Cập nhật thông tin thành công",
         EC: 1,
-        DT: updatedUser,
+        DT: updatedUser[0],
         accessToken: token,
       });
     } else {
@@ -347,6 +355,7 @@ const loginUserGoogle = async (req, res) => {
             DIA_CHI_Provinces: user.DIA_CHI_Provinces,
             DIA_CHI_Districts: user.DIA_CHI_Districts,
             DIA_CHI_Wards: user.DIA_CHI_Wards,
+            DIA_CHI_STREETNAME: user.DIA_CHI_STREETNAME,
           },
         },
       });
@@ -403,6 +412,7 @@ const loginUserGoogle = async (req, res) => {
             DIA_CHI_Provinces: user.DIA_CHI_Provinces,
             DIA_CHI_Districts: user.DIA_CHI_Districts,
             DIA_CHI_Wards: user.DIA_CHI_Wards,
+            DIA_CHI_STREETNAME: user.DIA_CHI_STREETNAME,
           },
         },
       });
@@ -507,6 +517,7 @@ const loginUser = async (req, res) => {
           DIA_CHI_Provinces: user.DIA_CHI_Provinces,
           DIA_CHI_Districts: user.DIA_CHI_Districts,
           DIA_CHI_Wards: user.DIA_CHI_Wards,
+          DIA_CHI_STREETNAME: user.DIA_CHI_STREETNAME,
         },
       },
     });
