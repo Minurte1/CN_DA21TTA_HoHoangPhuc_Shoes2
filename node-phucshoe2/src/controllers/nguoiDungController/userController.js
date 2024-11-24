@@ -310,6 +310,9 @@ const loginUserGoogle = async (req, res) => {
           NGAY_TAO_USER: user.NGAY_TAO_USER,
           NGAY_CAP_NHAT_USER: user.NGAY_CAP_NHAT_USER,
           AVATAR: user.AVATAR,
+          DIA_CHI_Provinces: user.DIA_CHI_Provinces,
+          DIA_CHI_Districts: user.DIA_CHI_Districts,
+          DIA_CHI_Wards: user.DIA_CHI_Wards,
         },
         JWT_SECRET,
         { expiresIn: "5h" }
@@ -341,6 +344,9 @@ const loginUserGoogle = async (req, res) => {
             AVATAR: user.AVATAR,
             THEMES: user.THEMES,
             LANGUAGE: user.LANGUAGE,
+            DIA_CHI_Provinces: user.DIA_CHI_Provinces,
+            DIA_CHI_Districts: user.DIA_CHI_Districts,
+            DIA_CHI_Wards: user.DIA_CHI_Wards,
           },
         },
       });
@@ -370,6 +376,9 @@ const loginUserGoogle = async (req, res) => {
           NGAY_TAO_USER: user.NGAY_TAO_USER,
           NGAY_CAP_NHAT_USER: user.NGAY_CAP_NHAT_USER,
           AVATAR: user.AVATAR,
+          DIA_CHI_Provinces: user.DIA_CHI_Provinces,
+          DIA_CHI_Districts: user.DIA_CHI_Districts,
+          DIA_CHI_Wards: user.DIA_CHI_Wards,
         },
         JWT_SECRET,
         { expiresIn: "5h" }
@@ -391,6 +400,9 @@ const loginUserGoogle = async (req, res) => {
             NGAY_TAO_USER: user.NGAY_TAO_USER,
             NGAY_CAP_NHAT_USER: user.NGAY_CAP_NHAT_USER,
             AVATAR: user.AVATAR,
+            DIA_CHI_Provinces: user.DIA_CHI_Provinces,
+            DIA_CHI_Districts: user.DIA_CHI_Districts,
+            DIA_CHI_Wards: user.DIA_CHI_Wards,
           },
         },
       });
@@ -465,6 +477,9 @@ const loginUser = async (req, res) => {
         NGAY_TAO_USER: user.NGAY_TAO_USER,
         NGAY_CAP_NHAT_USER: user.NGAY_CAP_NHAT_USER,
         AVATAR: user.AVATAR,
+        DIA_CHI_Provinces: user.DIA_CHI_Provinces,
+        DIA_CHI_Districts: user.DIA_CHI_Districts,
+        DIA_CHI_Wards: user.DIA_CHI_Wards,
       },
       JWT_SECRET,
       { expiresIn: "5h" }
@@ -489,6 +504,9 @@ const loginUser = async (req, res) => {
           AVATAR: user.AVATAR,
           THEMES: user.THEMES,
           LANGUAGE: user.LANGUAGE,
+          DIA_CHI_Provinces: user.DIA_CHI_Provinces,
+          DIA_CHI_Districts: user.DIA_CHI_Districts,
+          DIA_CHI_Wards: user.DIA_CHI_Wards,
         },
       },
     });
@@ -692,6 +710,9 @@ const updateAvatarController = async (req, res) => {
           NGAY_TAO_USER: user.NGAY_TAO_USER,
           NGAY_CAP_NHAT_USER: user.NGAY_CAP_NHAT_USER,
           AVATAR: user.AVATAR,
+          DIA_CHI_Provinces: user.DIA_CHI_Provinces,
+          DIA_CHI_Districts: user.DIA_CHI_Districts,
+          DIA_CHI_Wards: user.DIA_CHI_Wards,
         },
         JWT_SECRET,
         { expiresIn: "5h" }

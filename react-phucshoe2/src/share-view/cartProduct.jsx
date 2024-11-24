@@ -167,7 +167,6 @@ const CartSummary = ({
       )}
     </Typography>
     <Typography color="white">Các hình thức thanh toán</Typography>{" "}
-    {/* Trạng thái */}
     <FormControl sx={{ mb: 2, minWidth: 300, mt: 2 }}>
       <InputLabel
         sx={{ display: "flex", alignItems: "center", color: "#c9d1d9" }}
@@ -348,9 +347,11 @@ const Cart = () => {
       ID_ODER: orderInfo,
       items: items,
       email: userInfo.EMAIL,
+      DIA_CHI_DON_HANG: `${userInfo.DIA_CHI_Wards}, ${userInfo.DIA_CHI_Districts}, ${userInfo.DIA_CHI_Provinces}`,
+      SO_DIEN_THOAI_DON_HANG: userInfo.SO_DIEN_THOAI,
     };
-
-    if (selectPhuongThucThanhToan === "Momo") {
+    console.log("selectPhuongThucThanhToan", selectPhuongThucThanhToan);
+    if (selectPhuongThucThanhToan === 1) {
       try {
         dispatch(setIdOder(orderId));
         const responsive = await axios.post(
@@ -364,14 +365,14 @@ const Cart = () => {
             amount: tongTienCart, // Gửi tổng tiền trong giỏ hàng
           }
         );
-
+        axios.post(`${api}/don-hang`, requestData);
         const paymentUrl = responsive.data.url;
 
         window.location.href = paymentUrl;
       } catch (error) {
         console.error("Error during payment creation:", error);
       }
-    } else if (selectPhuongThucThanhToan === "Thanh toán tại nhà") {
+    } else if (selectPhuongThucThanhToan === 2) {
       const response = await axios.post(`${api}/don-hang`, requestData);
     }
   };

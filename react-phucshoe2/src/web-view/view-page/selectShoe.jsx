@@ -1,12 +1,28 @@
 import React, { useState, useEffect } from "react";
-import { Container, Grid, Box, Button, Typography } from "@mui/material";
+import {
+  Container,
+  Grid,
+  Box,
+  Button,
+  Typography,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  Switch,
+  Divider,
+  TextField,
+} from "@mui/material";
 import StarIcon from "@mui/icons-material/Star";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios"; // Make sure to import axios
 import { useSelector, useDispatch } from "react-redux";
 import { enqueueSnackbar } from "notistack";
 import { setTotalCart } from "../../redux/authSlice";
+import { Payments } from "@mui/icons-material";
+
 import RecommenderProductCarousel from "../../share-view/productCarousel-recommender";
+import AddressSelector from "../../user-view/components/addressUser";
 const api = process.env.REACT_APP_URL_SERVER;
 
 const SelectShoe = () => {
@@ -14,7 +30,10 @@ const SelectShoe = () => {
   const [product, setProduct] = useState(null); // Initialize as null to handle loading state
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
+  const { isAuthenticated, userInfo } = useSelector((state) => state.auth);
+  const [selectPhuongThucThanhToan, setSelectPhuongThucThanhToan] =
+    useState("");
+  const [paymentMethods, setPaymentMethods] = useState([]);
   useEffect(() => {
     if (id) {
       fetchProduct(id);
@@ -27,12 +46,16 @@ const SelectShoe = () => {
       if (response.data.EC === 1) {
         setProduct(response.data.DT); // Set product data
       }
+      const response_Payment = await axios.get(`${api}/thanh-toan/use`);
+      if (response_Payment.data.EC === 1) {
+        setPaymentMethods(response_Payment.data.DT);
+      }
     } catch (error) {
       console.error("Error fetching product:", error);
     }
   };
 
-  const { isAuthenticated, userInfo } = useSelector((state) => state.auth);
+  // THÊM VÀO GIỎ HÀNG
   const handleAddToCart = async () => {
     if (!isAuthenticated) {
       // Nếu chưa, chuyển hướng đến trang đăng nhập
@@ -90,10 +113,21 @@ const SelectShoe = () => {
       enqueueSnackbar(error.response.data.EM);
     }
   };
+
+  //THAY ĐỔI ĐỊA CHỈ
+  const [isSwitchOn, setIsSwitchOn] = useState(true); // Trạng thái của Switch
+
+  const handleSwitchChange = (event) => {
+    setIsSwitchOn(event.target.checked); // Cập nhật trạng thái
+  };
+  const [selectedProvince, setSelectedProvince] = useState(null);
+  const [selectedDistrict, setSelectedDistrict] = useState(null);
+  const [selectedWards, setSelectedWards] = useState(null);
+  const [selectStreetName, setSelectStreetName] = useState(null);
   if (!product) {
     return <div>Loading...</div>; // Add a loading state
   }
-  console.log("product => ", product);
+  console.log("product => ", userInfo);
   return (
     <Container maxWidth="lg" className="container-select-game">
       <Grid container spacing={2}>
@@ -262,6 +296,99 @@ const SelectShoe = () => {
             >
               Add To Cart
             </Button>
+            <FormControl sx={{ mb: 2 }}>
+              <InputLabel
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  color: "#fff",
+                  fontWeight: "500",
+                }}
+              >
+                <Payments sx={{ mr: 1 }} />
+                Phương thức thanh toán
+              </InputLabel>
+              <Select
+                value={selectPhuongThucThanhToan}
+                label="Icon Phương thức thanh toán"
+                onChange={(e) => setSelectPhuongThucThanhToan(e.target.value)}
+                sx={{ backgroundColor: "#343437" }}
+              >
+                {" "}
+                <MenuItem value="">Xem tất cả</MenuItem>
+                {paymentMethods.map((item) => (
+                  <MenuItem key={item.ID_THANH_TOAN} value={item.ID_THANH_TOAN}>
+                    {item.PHUONG_THUC_THANH_TOAN}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>{" "}
+            {isSwitchOn ? (
+              <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+                <Switch
+                  checked={isSwitchOn} // Liên kết trạng thái với Switch
+                  onChange={handleSwitchChange}
+                  color="primary"
+                />
+
+                <Typography
+                  variant="body2"
+                  color="white"
+                  sx={{ fontSize: "11px" }}
+                >
+                  {userInfo && (
+                    <>
+                      {`Địa chỉ: ${userInfo?.DIA_CHI_Wards}, 
+              ${userInfo?.DIA_CHI_Districts}, ${userInfo?.DIA_CHI_Provinces}`}
+                    </>
+                  )}
+                </Typography>
+              </Box>
+            ) : (
+              <>
+                <Switch
+                  checked={isSwitchOn} // Liên kết trạng thái với Switch
+                  onChange={handleSwitchChange}
+                  color="primary"
+                />
+                <AddressSelector
+                  selectedProvince={selectedProvince}
+                  selectedDistrict={selectedDistrict}
+                  selectedWards={selectedWards}
+                  //
+                  setSelectedProvince={setSelectedProvince}
+                  setSelectedDistrict={setSelectedDistrict}
+                  setSelectedWards={setSelectedWards}
+                  backgroundColor={"#343437"}
+                  color={"#fff"}
+                />{" "}
+                <TextField
+                  label="Tên đường"
+                  variant="outlined"
+                  value={selectStreetName} // Đảm bảo giá trị mặc định là chuỗi rỗng nếu không có dataUser hoặc EMAIL
+                  fullWidth
+                  InputProps={{
+                    style: { color: "#fff" }, // Màu chữ trong TextField
+                  }}
+                  onChange={(e) => setSelectStreetName(e.target.value)}
+                  InputLabelProps={{
+                    style: { color: "#fff" }, // Màu chữ nhãn
+                  }}
+                  sx={{
+                    backgroundColor: "#343437", // Màu nền của input
+                    "& .MuiInputLabel-root": { color: "#fff" }, // Màu chữ của label
+                    "& .MuiInputBase-input": { color: "#fff" }, // Màu chữ của input
+                    "& .MuiOutlinedInput-root": {
+                      "& fieldset": { borderColor: "#00000" }, // Màu viền
+                    },
+                    "& .MuiInputBase-root": {
+                      borderRadius: "4px", // Làm tròn góc nếu muốn
+                    },
+                  }}
+                />
+              </>
+            )}
+            <Divider sx={{ backgroundColor: "#555", mb: 2 }} />
             <Box>
               <Typography
                 variant="body2"

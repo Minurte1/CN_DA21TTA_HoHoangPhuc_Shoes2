@@ -25,6 +25,8 @@ const getDON_HANG = async (req, res) => {
         d.NGAY_CAP_NHAT_DONHANG, 
         d.NGAY_TAO_DONHANG,
         d.ID_DON_HANG, 
+        d.DIA_CHI_DON_HANG,
+        d.SO_DIEN_THOAI_DON_HANG,
         u.EMAIL,
         u.VAI_TRO,
         u.HO_TEN,
@@ -84,7 +86,9 @@ const getDON_HANG_ByIDUser = async (req, res) => {
         d.TRANG_THAI_DON_HANG, 
         d.GHI_CHU_DONHANG, 
         d.NGAY_CAP_NHAT_DONHANG, 
-        d.NGAY_TAO_DONHANG,
+        d.NGAY_TAO_DONHANG,   
+        d.DIA_CHI_DON_HANG,
+        d.SO_DIEN_THOAI_DON_HANG,
         d.ID_DON_HANG, 
         u.EMAIL,
         u.VAI_TRO,
@@ -141,14 +145,16 @@ const createDON_HANG = async (req, res) => {
     ghiChuDonHang,
     ID_ODER,
     items,
-    email, // Thêm email user
+    email,
+    SO_DIEN_THOAI_DON_HANG,
+    DIA_CHI_DON_HANG,
   } = req.body;
   console.log("req.body", req.body);
 
   try {
     const ngayTaoDonHang = new Date();
     const [results] = await connection.execute(
-      "INSERT INTO DON_HANG (ID_NGUOI_DUNG, ID_THANH_TOAN, TONG_TIEN, TRANG_THAI_DON_HANG,  NGAY_TAO_DONHANG, NGAY_CAP_NHAT_DONHANG, ID_ODER) VALUES (?, ?, ?, ?,  ?, ?, ?)",
+      "INSERT INTO DON_HANG (ID_NGUOI_DUNG, ID_THANH_TOAN, TONG_TIEN, TRANG_THAI_DON_HANG,  NGAY_TAO_DONHANG, NGAY_CAP_NHAT_DONHANG, ID_ODER,SO_DIEN_THOAI_DON_HANG,DIA_CHI_DON_HANG) VALUES (?, ?, ?, ?,  ?, ?, ?,?,?)",
       [
         idNguoiDung,
         idThanhToan,
@@ -158,6 +164,8 @@ const createDON_HANG = async (req, res) => {
         ngayTaoDonHang,
         ngayTaoDonHang,
         ID_ODER,
+        SO_DIEN_THOAI_DON_HANG,
+        DIA_CHI_DON_HANG,
       ]
     );
 
@@ -251,13 +259,9 @@ const updateTrangThaiDonHang = async (req, res) => {
       user: {
         name: user.HO_TEN,
         email: user.EMAIL,
-        address:
-          user.DIA_CHI_Wards +
-          ", " +
-          user.DIA_CHI_Districts +
-          ", " +
-          user.DIA_CHI_Provinces,
-        phone: user.SO_DIEN_THOAI,
+        address: order.DIA_CHI_DON_HANG,
+
+        phone: order.SO_DIEN_THOAI_DON_HANG,
       },
     };
 

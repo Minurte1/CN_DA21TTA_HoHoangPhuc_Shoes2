@@ -15,6 +15,9 @@ const AddressSelector = ({
   setSelectedProvince,
   setSelectedDistrict,
   setSelectedWards,
+  //
+  backgroundColor,
+  color,
 }) => {
   const [provinces, setProvinces] = useState([]);
   const [districts, setDistricts] = useState([]);
@@ -111,11 +114,17 @@ const AddressSelector = ({
                 : "Chọn tỉnh"
             }
             sx={{
-              backgroundColor: "#151b23", // Màu nền của input
-              "& .MuiInputLabel-root": { color: "#f0ffff" }, // Màu chữ của label
-              "& .MuiInputBase-input": { color: "#f0ffff" }, // Màu chữ của input
+              backgroundColor: backgroundColor || "#151b23", // Màu nền của input
+              "& .MuiInputLabel-root": {
+                color: color || "#f0ffff", // Màu chữ của label
+              },
+              "& .MuiInputBase-input": {
+                color: "#f0ffff", // Màu chữ của input
+              },
               "& .MuiOutlinedInput-root": {
-                "& fieldset": { borderColor: "#3d444d" }, // Màu viền
+                "& fieldset": {
+                  borderColor: "#3d444d", // Màu viền
+                },
               },
               "& .MuiInputBase-root": {
                 borderRadius: "4px", // Làm tròn góc nếu muốn
@@ -150,11 +159,17 @@ const AddressSelector = ({
                 : "Chọn huyện"
             }
             sx={{
-              backgroundColor: "#151b23", // Màu nền của input
-              "& .MuiInputLabel-root": { color: "#f0ffff" },
-              "& .MuiInputBase-input": { color: "#f0ffff" },
+              backgroundColor: backgroundColor || "#151b23", // Màu nền của input
+              "& .MuiInputLabel-root": {
+                color: color || "#f0ffff", // Màu chữ của label
+              },
+              "& .MuiInputBase-input": {
+                color: "#f0ffff", // Màu chữ của input
+              },
               "& .MuiOutlinedInput-root": {
-                "& fieldset": { borderColor: "#3d444d" },
+                "& fieldset": {
+                  borderColor: "#3d444d", // Màu viền
+                },
               },
               "& .MuiInputBase-root": {
                 borderRadius: "4px", // Làm tròn góc nếu muốn
@@ -190,11 +205,17 @@ const AddressSelector = ({
                 : "Chọn phường xã"
             }
             sx={{
-              backgroundColor: "#151b23", // Màu nền của input
-              "& .MuiInputLabel-root": { color: "#f0ffff" },
-              "& .MuiInputBase-input": { color: "#f0ffff" },
+              backgroundColor: backgroundColor || "#151b23", // Màu nền của input
+              "& .MuiInputLabel-root": {
+                color: color || "#f0ffff", // Màu chữ của label
+              },
+              "& .MuiInputBase-input": {
+                color: "#f0ffff", // Màu chữ của input
+              },
               "& .MuiOutlinedInput-root": {
-                "& fieldset": { borderColor: "#3d444d" },
+                "& fieldset": {
+                  borderColor: "#3d444d", // Màu viền
+                },
               },
               "& .MuiInputBase-root": {
                 borderRadius: "4px", // Làm tròn góc nếu muốn
