@@ -20,6 +20,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { enqueueSnackbar } from "notistack";
 import { setTotalCart } from "../../redux/authSlice";
 import { Payments } from "@mui/icons-material";
+import { v4 as uuidv4 } from "uuid"; // Thêm thư viện UUID nếu bạn muốn tạo mã đơn hàng duy nhất
 
 import RecommenderProductCarousel from "../../share-view/productCarousel-recommender";
 import AddressSelector from "../../user-view/components/addressUser";
@@ -41,7 +42,10 @@ const SelectShoe = () => {
     if (id) {
       fetchProduct(id);
     }
-  }, [id]);
+    if (!isAuthenticated) {
+      setIsSwitchOn(false);
+    }
+  }, [id, isAuthenticated]);
 
   const fetchProduct = async (id) => {
     try {
@@ -71,7 +75,7 @@ const SelectShoe = () => {
   // THÊM VÀO GIỎ HÀNG
   const handleAddToCart = async () => {
     if (!isAuthenticated) {
-      // Nếu chưa, chuyển hướng đến trang đăng nhập
+      enqueueSnackbar("Vui lòng đăng nhập để tiếp tục!");
       navigate("/login"); // Đảm bảo '/login' là đường dẫn đúng tới trang đăng nhập của bạn
       return; // Dừng hàm nếu chưa đăng nhập
     }
@@ -101,6 +105,7 @@ const SelectShoe = () => {
   }; // Hàm handleAddToWish
   const handleAddToWish = async (product) => {
     if (!isAuthenticated) {
+      enqueueSnackbar("Vui lòng đăng nhập để tiếp tục!");
       // Nếu người dùng chưa đăng nhập, chuyển hướng đến trang đăng nhập
       navigate("/login");
       return; // Dừng hàm nếu chưa đăng nhập
@@ -129,7 +134,6 @@ const SelectShoe = () => {
 
   //THAY ĐỔI ĐỊA CHỈ
   const [isSwitchOn, setIsSwitchOn] = useState(true); // Trạng thái của Switch
-
   const handleSwitchChange = (event) => {
     setIsSwitchOn(event.target.checked); // Cập nhật trạng thái
   };
@@ -138,6 +142,61 @@ const SelectShoe = () => {
   const [selectedWards, setSelectedWards] = useState(null);
   const [selectStreetName, setSelectStreetName] = useState(null);
   const [soDienThoai, setSoDienThoai] = useState(null);
+
+  const handleSummitThanhToan = async () => {
+    if (!isAuthenticated) {
+      enqueueSnackbar("Vui lòng đăng nhập để tiếp tục!");
+      return;
+    }
+    if (selectPhuongThucThanhToan === "") {
+      enqueueSnackbar("Vui lòng chọn phương thức thanh toán!!");
+      return;
+    }
+
+    // Tạo mã đơn hàng duy nhất
+    const orderId = uuidv4();
+    const orderInfo = `PhucShoes - Mã đơn hàng: ${orderId}`;
+    const requestData = {
+      idNguoiDung: userInfo.ID_NGUOI_DUNG,
+      idThanhToan: selectPhuongThucThanhToan,
+      tongTien: product.GIA,
+      trangThaiDonHang: "Đang chờ thanh toán",
+      ID_ODER: orderInfo,
+      items: [product],
+      email: userInfo.EMAIL,
+      DIA_CHI_DON_HANG: isSwitchOn
+        ? `${selectStreetName}, ${userInfo.DIA_CHI_Wards?.name}, ${userInfo.DIA_CHI_Districts?.name}, ${userInfo.DIA_CHI_Provinces?.name}`
+        : `${selectStreetName}, ${selectedWards?.name}, ${selectedDistrict?.name}, ${selectedProvince?.name}`,
+      SO_DIEN_THOAI_DON_HANG: isSwitchOn
+        ? `${userInfo.SO_DIEN_THOAI}`
+        : `${soDienThoai}`,
+    };
+
+    console.log("selectPhuongThucThanhToan", selectPhuongThucThanhToan);
+    if (selectPhuongThucThanhToan === 1) {
+      try {
+        const responsive = await axios.post(
+          "http://emailserivce.somee.com/api/Momo/CreatePaymentUrl",
+          {
+            fullName: userInfo.HO_TEN,
+            orderId: orderInfo,
+            options: "mutil",
+            orderInfo: orderInfo,
+            returnUrl: "http://localhost:3000/checkout",
+            amount: product.GIA, // Gửi tổng tiền trong giỏ hàng
+          }
+        );
+        axios.post(`${api}/don-hang`, requestData);
+        const paymentUrl = responsive.data.url;
+
+        window.location.href = paymentUrl;
+      } catch (error) {
+        console.error("Error during payment creation:", error);
+      }
+    } else if (selectPhuongThucThanhToan === 2) {
+      const response = await axios.post(`${api}/don-hang`, requestData);
+    }
+  };
   if (!product) {
     return <div>Loading...</div>; // Add a loading state
   }
@@ -270,11 +329,13 @@ const SelectShoe = () => {
             {/* Price */}
             <Button
               variant="contained"
+              onClick={handleSummitThanhToan}
               sx={{
                 borderRadius: "14px",
                 paddingTop: "13px",
                 paddingBottom: "13px",
                 backgroundColor: "#26bbff",
+
                 color: "#101014",
                 fontWeight: "600",
                 fontSize: "12px",
@@ -338,7 +399,7 @@ const SelectShoe = () => {
                 value={selectPhuongThucThanhToan}
                 label="Icon Phương thức thanh toán"
                 onChange={(e) => setSelectPhuongThucThanhToan(e.target.value)}
-                sx={{ backgroundColor: "#343437" }}
+                sx={{ backgroundColor: "#343437", color: "#fff" }}
               >
                 {" "}
                 <MenuItem value="">Xem tất cả</MenuItem>
@@ -356,27 +417,26 @@ const SelectShoe = () => {
                   onChange={handleSwitchChange}
                   color="primary"
                 />
-
-                <Typography
-                  variant="body2"
-                  color="white"
-                  sx={{ fontSize: "11px" }}
-                >
-                  {userInfo && (
-                    <>
+                {userInfo && (
+                  <>
+                    <Typography
+                      variant="body2"
+                      color="white"
+                      sx={{ fontSize: "11px" }}
+                    >
                       {`Địa chỉ: ${userInfo.DIA_CHI_STREETNAME}, ${userInfo?.DIA_CHI_Wards}, 
               ${userInfo?.DIA_CHI_Districts}, ${userInfo?.DIA_CHI_Provinces}`}
-                    </>
-                  )}
-                </Typography>
+                    </Typography>
+                  </>
+                )}
               </Box>
             ) : (
               <>
-                <Switch
+                {/* <Switch
                   checked={isSwitchOn} // Liên kết trạng thái với Switch
                   onChange={handleSwitchChange}
                   color="primary"
-                />
+                /> */}
                 <AddressSelector
                   selectedProvince={selectedProvince}
                   selectedDistrict={selectedDistrict}

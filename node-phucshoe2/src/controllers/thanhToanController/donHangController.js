@@ -149,18 +149,22 @@ const createDON_HANG = async (req, res) => {
     SO_DIEN_THOAI_DON_HANG,
     DIA_CHI_DON_HANG,
   } = req.body;
+
   console.log("req.body", req.body);
 
   try {
+    // Đảm bảo items luôn là mảng
+    const itemsArray = Array.isArray(items) ? items : [items];
+
+    // Tạo đơn hàng
     const ngayTaoDonHang = new Date();
     const [results] = await connection.execute(
-      "INSERT INTO DON_HANG (ID_NGUOI_DUNG, ID_THANH_TOAN, TONG_TIEN, TRANG_THAI_DON_HANG,  NGAY_TAO_DONHANG, NGAY_CAP_NHAT_DONHANG, ID_ODER,SO_DIEN_THOAI_DON_HANG,DIA_CHI_DON_HANG) VALUES (?, ?, ?, ?,  ?, ?, ?,?,?)",
+      "INSERT INTO DON_HANG (ID_NGUOI_DUNG, ID_THANH_TOAN, TONG_TIEN, TRANG_THAI_DON_HANG, NGAY_TAO_DONHANG, NGAY_CAP_NHAT_DONHANG, ID_ODER, SO_DIEN_THOAI_DON_HANG, DIA_CHI_DON_HANG) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
       [
         idNguoiDung,
         idThanhToan,
         tongTien,
         trangThaiDonHang,
-
         ngayTaoDonHang,
         ngayTaoDonHang,
         ID_ODER,
@@ -171,17 +175,25 @@ const createDON_HANG = async (req, res) => {
 
     const donHangId = results.insertId;
 
-    const chiTietHoaDonPromises = items.map(async (item) => {
-      const { ID_SAN_PHAM, TONG_SO_LUONG, GIA } = item;
+    // Thêm chi tiết hóa đơn cho từng sản phẩm
+    const chiTietHoaDonPromises = itemsArray.map(async (item) => {
+      const { ID_SAN_PHAM, TONG_SO_LUONG = 1, GIA } = item;
       const giaSanPhamChiTiet = GIA * TONG_SO_LUONG;
+      console.log("TONG_SO_LUONG", TONG_SO_LUONG);
+      console.log("GIA", GIA);
+      console.log("donHangId", donHangId);
+      console.log("ID_SAN_PHAM", ID_SAN_PHAM);
+      console.log("giaSanPhamChiTiet", giaSanPhamChiTiet);
       await connection.execute(
         "INSERT INTO CHI_TIET_HOA_DON (ID_SAN_PHAM, ID_DON_HANG, SO_LUONG_SP, GIA_SAN_PHAM_CHI_TIET) VALUES (?, ?, ?, ?)",
         [ID_SAN_PHAM, donHangId, TONG_SO_LUONG, giaSanPhamChiTiet]
       );
     });
 
+    // Chờ tất cả các sản phẩm được thêm vào chi tiết hóa đơn
     await Promise.all(chiTietHoaDonPromises);
 
+    // Phản hồi thành công
     return res.json({
       EM: "Thêm đơn hàng, gửi email và xóa giỏ hàng thành công",
       EC: 1,
@@ -192,9 +204,9 @@ const createDON_HANG = async (req, res) => {
       EM: "Lỗi khi thêm đơn hàng hoặc gửi email",
       EC: -1,
     });
-  } finally {
   }
 };
+
 const updateTrangThaiDonHang = async (req, res) => {
   const { ID_ODER, email, idNguoiDung } = req.body;
 
