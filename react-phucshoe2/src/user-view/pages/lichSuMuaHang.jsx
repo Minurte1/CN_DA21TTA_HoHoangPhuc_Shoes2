@@ -17,7 +17,8 @@ const LichSuMuaHangUser = () => {
   const apiUrl = process.env.REACT_APP_URL_SERVER;
   const { isAuthenticated, userInfo } = useSelector((state) => state.auth);
   const [dataChiTietHoaDon, setDataChiTietHoaDon] = useState([]);
-
+  const color = "#fff";
+  const backgroundColor = " #1a1a1a";
   const navigate = useNavigate();
 
   const handleTabChange = (event, newIndex) => {
@@ -64,38 +65,51 @@ const LichSuMuaHangUser = () => {
   };
   console.log("dataChiTietHoaDon", dataChiTietHoaDon);
   return (
-    <Box sx={{ p: 2, bgcolor: "#f6f6f6" }}>
+    <Box sx={{ p: 2, bgcolor: "#1a1a1a" }}>
       {/* Tabs */}
       <Tabs value={tabIndex} onChange={handleTabChange} variant="fullWidth">
-        <Tab label="Chờ xác nhận" />
-        <Tab label="Đã giao" />
-        <Tab label="Đã hủy" />
-        <Tab label="Tất cả" />
-        <Tab label="Chưa thanh toán" />
+        <Tab sx={{ color: color }} label="Chờ xác nhận" />
+        <Tab sx={{ color: color }} label="Đã giao" />
+        <Tab sx={{ color: color }} label="Đã hủy" />
+        <Tab sx={{ color: color }} label="Tất cả" />
+        <Tab sx={{ color: color }} label="Chưa thanh toán" />
       </Tabs>
 
       {/* Danh sách đơn hàng */}
-      <Box mt={2}>
+      <Box mt={2} sx={{ backgroundColor: "#101014" }}>
         {dataChiTietHoaDon?.map((order, index) => (
-          <Paper key={index} sx={{ mb: 2, p: 2, textAlign: "left" }}>
+          <Paper
+            key={index}
+            sx={{
+              mb: 2,
+              p: 2,
+              textAlign: "left",
+              backgroundColor: "#101014",
+              color: color,
+            }}
+          >
             {/* Thông tin đơn hàng */}
             <Typography variant="h6">{order.ID_ODER}</Typography>
-            <Typography variant="body2" sx={{ mb: 1, color: "text.secondary" }}>
-              Trạng thái:{" "}
+            <Typography variant="body2" sx={{ mb: 1, color: color }}>
+              Trạng thái:
               <Typography
                 component="span"
                 sx={{
+                  ml: 2,
                   color:
                     order.TRANG_THAI_DON_HANG === "Giao dịch thành công"
                       ? "green"
-                      : "text.secondary",
+                      : order.TRANG_THAI_DON_HANG ===
+                        "Đã thanh toán thành công và đang chờ giao hàng"
+                      ? "yellow"
+                      : "",
                 }}
               >
                 {order.TRANG_THAI_DON_HANG}
               </Typography>
             </Typography>
 
-            <Typography variant="body1" color="text.primary" sx={{ mb: 1 }}>
+            <Typography variant="body1" sx={{ mb: 1, color: color }}>
               Tổng tiền: {order.TONG_TIEN.toLocaleString("vi-VN")}₫
             </Typography>
             <Divider sx={{ my: 2 }} />
@@ -117,10 +131,10 @@ const LichSuMuaHangUser = () => {
                   <Typography variant="body1">
                     {product.TEN_SAN_PHAM}
                   </Typography>
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography variant="body2" sx={{ color: color }}>
                     Số lượng: {product.SO_LUONG_SP}
                   </Typography>
-                  <Typography variant="body1" sx={{ mt: 1, color: "#f60" }}>
+                  <Typography variant="body1" sx={{ mt: 1, color: color }}>
                     Giá: {product.GIA_SAN_PHAM_CHI_TIET.toLocaleString("vi-VN")}
                     ₫
                   </Typography>

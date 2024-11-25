@@ -78,7 +78,7 @@ const CheckOutMoMo = () => {
         // Đơn hàng được tạo thành công
         toast.success("Đặt hàng thành công!");
 
-        navigate("/cart");
+        navigate("/");
       } else {
         // Nếu có lỗi khi tạo đơn hàng
         toast.error("Đã có lỗi xảy ra khi đặt hàng.");

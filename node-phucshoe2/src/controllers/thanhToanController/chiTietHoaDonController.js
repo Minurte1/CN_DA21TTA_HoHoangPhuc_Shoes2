@@ -634,7 +634,10 @@ const getPaidOrdersAwaitingProcessing = async (req, res) => {
         LEFT JOIN 
           NGUOI_DUNG nd ON dh.ID_NGUOI_DUNG = nd.ID_NGUOI_DUNG
         WHERE 
-          dh.ID_NGUOI_DUNG = ? AND dh.TRANG_THAI_DON_HANG = 'Thanh toán thành công và đang chờ xử lý'`,
+  dh.ID_NGUOI_DUNG = ? AND dh.TRANG_THAI_DON_HANG IN ('Đang chờ thanh toán', 'Đã thanh toán thành công và đang chờ giao hàng')
+   ORDER BY 
+          dh.NGAY_TAO_DONHANG DESC`,
+
       [id]
     );
     // Nếu không có đơn hàng nào, trả về thông báo lỗi
@@ -653,8 +656,8 @@ const getPaidOrdersAwaitingProcessing = async (req, res) => {
         sp.ID_SAN_PHAM, 
         sp.ID_THUONG_HIEU, 
         sp.ID_DANH_MUC, 
-        sp.GIOI_TINH_ID,   dh.DIA_CHI_DON_HANG,
-        dh.SO_DIEN_THOAI_DON_HANG,
+        sp.GIOI_TINH_ID,  
+    
         sp.CHAT_LIEU_ID_,
         sp.TEN_SAN_PHAM, 
         sp.GIA, 
