@@ -12,7 +12,8 @@ const getProductReviews = async (req, res) => {
         NGUOI_DUNG.HO_TEN, 
         NGUOI_DUNG.EMAIL, 
         NGUOI_DUNG.AVATAR,
-        NGUOI_DUNG.VAI_TRO,  
+        NGUOI_DUNG.VAI_TRO,
+        DON_HANG.NGAY_CAP_NHAT_DONHANG,  
         CHI_TIET_HOA_DON.DANH_GIA, 
         CHI_TIET_HOA_DON.BINH_LUAN
        FROM CHI_TIET_HOA_DON
@@ -24,9 +25,9 @@ const getProductReviews = async (req, res) => {
     );
 
     if (results.length === 0) {
-      return res.status(404).json({
+      return res.status(200).json({
         EM: "Không tìm thấy đánh giá hoặc bình luận cho sản phẩm này",
-        EC: 0,
+        EC: 1,
         DT: [],
       });
     }
