@@ -1,79 +1,50 @@
-const connection = require("../../config/database"); // Đảm bảo `connection` được import từ tệp kết nối cơ sở dữ liệu của bạn
+const pool = require("../../config/database"); // Đảm bảo `connection` được import từ tệp kết nối cơ sở dữ liệu của bạn
 
 // 1. Lấy danh sách bình luận
-const getBinhLuan = async (req, res) => {
-  try {
-    const [results] = await connection.execute("SELECT * FROM `BINH_LUAN`");
-    res
-      .status(200)
-      .json({ EM: "Lấy danh sách bình luận thành công", EC: 1, DT: results });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ EM: "Lỗi hệ thống", EC: -1 });
-  }
-};
+const getProductReviews = async (req, res) => {
+  const { id } = req.params; // Lấy ID_SAN_PHAM từ URL
+  console.log("id", id);
 
-// 2. Thêm mới bình luận
-const createBinhLuan = async (req, res) => {
-  const {
-    ID_SAN_PHAM,
-    ID_NGUOI_DUNG,
-    DANH_GIA,
-    NGAY_TAO_BAI_VIET,
-    NOI_DUNG_CMT,
-  } = req.body;
   try {
-    const [results] = await connection.execute(
-      "INSERT INTO `BINH_LUAN` (ID_SAN_PHAM, ID_NGUOI_DUNG, DANH_GIA, NGAY_TAO_BAI_VIET, NOI_DUNG_CMT) VALUES (?, ?, ?, ?, ?)",
-      [ID_SAN_PHAM, ID_NGUOI_DUNG, DANH_GIA, NGAY_TAO_BAI_VIET, NOI_DUNG_CMT]
-    );
-    res
-      .status(201)
-      .json({ EM: "Thêm bình luận thành công", EC: 1, DT: results });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ EM: "Lỗi hệ thống", EC: -1 });
-  }
-};
-
-// 3. Cập nhật bình luận
-const updateBinhLuan = async (req, res) => {
-  const { id } = req.params;
-  const { DANH_GIA, NOI_DUNG_CMT, NGAY_TAO_BAI_VIET } = req.body;
-  try {
-    const [results] = await connection.execute(
-      "UPDATE `BINH_LUAN` SET DANH_GIA = ?, NOI_DUNG_CMT = ?, NGAY_TAO_BAI_VIET = ? WHERE ID_BINH_LUAN = ?",
-      [DANH_GIA, NOI_DUNG_CMT, NGAY_TAO_BAI_VIET, id]
-    );
-    res
-      .status(200)
-      .json({ EM: "Cập nhật bình luận thành công", EC: 1, DT: results });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ EM: "Lỗi hệ thống", EC: -1 });
-  }
-};
-
-// 4. Xóa bình luận
-const deleteBinhLuan = async (req, res) => {
-  const { id } = req.params;
-  try {
-    const [results] = await connection.execute(
-      "DELETE FROM `BINH_LUAN` WHERE ID_BINH_LUAN = ?",
+    // Truy vấn tất cả đánh giá, bình luận và thông tin người dùng theo ID_SAN_PHAM
+    const [results] = await pool.execute(
+      `SELECT 
+        NGUOI_DUNG.HO_TEN, 
+        NGUOI_DUNG.EMAIL, 
+        NGUOI_DUNG.AVATAR,
+        NGUOI_DUNG.VAI_TRO,  
+        CHI_TIET_HOA_DON.DANH_GIA, 
+        CHI_TIET_HOA_DON.BINH_LUAN
+       FROM CHI_TIET_HOA_DON
+       JOIN DON_HANG ON CHI_TIET_HOA_DON.ID_DON_HANG = DON_HANG.ID_DON_HANG
+       JOIN NGUOI_DUNG ON DON_HANG.ID_NGUOI_DUNG = NGUOI_DUNG.ID_NGUOI_DUNG
+       WHERE CHI_TIET_HOA_DON.ID_SAN_PHAM = ? 
+       AND (CHI_TIET_HOA_DON.DANH_GIA IS NOT NULL OR CHI_TIET_HOA_DON.BINH_LUAN IS NOT NULL)`,
       [id]
     );
-    res
-      .status(200)
-      .json({ EM: "Xóa bình luận thành công", EC: 1, DT: results });
+
+    if (results.length === 0) {
+      return res.status(404).json({
+        EM: "Không tìm thấy đánh giá hoặc bình luận cho sản phẩm này",
+        EC: 0,
+        DT: [],
+      });
+    }
+
+    return res.status(200).json({
+      EM: "Lấy đánh giá và bình luận thành công",
+      EC: 1,
+      DT: results,
+    });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ EM: "Lỗi hệ thống", EC: -1 });
+    console.error("Error fetching reviews and comments:", error);
+    return res.status(500).json({
+      EM: "Lỗi hệ thống khi lấy đánh giá và bình luận",
+      EC: -1,
+    });
   }
 };
 
 module.exports = {
-  getBinhLuan,
-  createBinhLuan,
-  updateBinhLuan,
-  deleteBinhLuan,
+  getProductReviews,
 };

@@ -23,9 +23,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-//api
-
+//api user
 const userRoute = require("./routers/nguoiDungRouter/userRouters.js");
+
+//api products
 const chatLieuRoute = require("./routers/sanPhamRouters/categoryRouter/chatLieuRouter.js");
 const gioiTinhRoute = require("./routers/sanPhamRouters/categoryRouter/gioiTinhRouter.js");
 const kichCoRoute = require("./routers/sanPhamRouters/categoryRouter/kichCoRouter.js");
@@ -36,12 +37,19 @@ const phongCachRoute = require("./routers/sanPhamRouters/categoryRouter/phongCac
 const thuongHieuRoute = require("./routers/sanPhamRouters/categoryRouter/thuonghieuRouter.js");
 const sanPhamRoute = require("./routers/sanPhamRouters/SanPhamRouter.js");
 const carouselProductsRoute = require("./routers/sanPhamRouters/carouselProductsRoute.js");
+
+//api thanh toán
 const thanhToanRoute = require("./routers/thanhToanRouter/thanhToanRouter.js");
-const gioHangRoute = require("./routers/tuongTacUserRouter/gioHangRouter.js");
-const yeuThichRoute = require("./routers/tuongTacUserRouter/yeuThichRouter.js");
 const donHangRoute = require("./routers/thanhToanRouter/donHangRouter.js");
 const chiTietHoaDonRoute = require("./routers/thanhToanRouter/chiTietHoaDonRouter.js");
+
+//api tương tác người dùng
+const gioHangRoute = require("./routers/tuongTacUserRouter/gioHangRouter.js");
+const yeuThichRoute = require("./routers/tuongTacUserRouter/yeuThichRouter.js");
+const binhLuanRoute = require("./routers/tuongTacUserRouter/binhLuanRouter.js");
+
 app.use("/", userRoute);
+//
 app.use("/chat-lieu/", chatLieuRoute);
 app.use("/gioi-tinh/", gioiTinhRoute);
 app.use("/kich-co/", kichCoRoute);
@@ -52,11 +60,14 @@ app.use("/phong-cach", phongCachRoute);
 app.use("/thuong-hieu", thuongHieuRoute);
 app.use("/san-pham", sanPhamRoute);
 app.use("/carousel-products", carouselProductsRoute);
+//
 app.use("/thanh-toan/", thanhToanRoute);
 app.use("/gio-hang/", gioHangRoute);
+app.use("/chi-tiet-hoa-don/", chiTietHoaDonRoute);
+//
 app.use("/yeu-thich/", yeuThichRoute);
 app.use("/don-hang/", donHangRoute);
-app.use("/chi-tiet-hoa-don/", chiTietHoaDonRoute);
+app.use("/binh-luan/", binhLuanRoute);
 
 const configViewEngine = require("./config/viewEngine");
 configViewEngine(app);

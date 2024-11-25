@@ -23,17 +23,20 @@ import { Payments } from "@mui/icons-material";
 
 import RecommenderProductCarousel from "../../share-view/productCarousel-recommender";
 import AddressSelector from "../../user-view/components/addressUser";
+import CommentsSection from "../component-view/binhLuan";
 const api = process.env.REACT_APP_URL_SERVER;
 
 const SelectShoe = () => {
   const { id } = useParams();
-  const [product, setProduct] = useState(null); // Initialize as null to handle loading state
+  const [product, setProduct] = useState(null);
+  const [paymentMethods, setPaymentMethods] = useState([]);
+  const [binhLuan, setBinhLuan] = useState([]);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { isAuthenticated, userInfo } = useSelector((state) => state.auth);
   const [selectPhuongThucThanhToan, setSelectPhuongThucThanhToan] =
     useState("");
-  const [paymentMethods, setPaymentMethods] = useState([]);
+
   useEffect(() => {
     if (id) {
       fetchProduct(id);
@@ -42,13 +45,23 @@ const SelectShoe = () => {
 
   const fetchProduct = async (id) => {
     try {
-      const response = await axios.get(`${api}/san-pham/use/${id}`);
-      if (response.data.EC === 1) {
-        setProduct(response.data.DT); // Set product data
+      // Tạo các promise cho các API call
+      const productPromise = axios.get(`${api}/san-pham/use/${id}`);
+      const binhLuanPromise = axios.get(`${api}/binh-luan/${id}`);
+      const paymentPromise = axios.get(`${api}/thanh-toan/use`);
+
+      const [responseProduct, responseBinhLuan, responsePayment] =
+        await Promise.all([productPromise, binhLuanPromise, paymentPromise]);
+      if (responseProduct.data.EC === 1) {
+        setProduct(responseProduct.data.DT);
       }
-      const response_Payment = await axios.get(`${api}/thanh-toan/use`);
-      if (response_Payment.data.EC === 1) {
-        setPaymentMethods(response_Payment.data.DT);
+
+      if (responseBinhLuan.data.EC === 1) {
+        setBinhLuan(responseBinhLuan.data.DT);
+      }
+
+      if (responsePayment.data.EC === 1) {
+        setPaymentMethods(responsePayment.data.DT);
       }
     } catch (error) {
       console.error("Error fetching product:", error);
@@ -208,8 +221,20 @@ const SelectShoe = () => {
           >
             <Typography sx={{ color: "#fff" }}>
               Mô tả thể loại: {product.MO_TA_LOAI_DANH_MUC}{" "}
-              {/* Product Description */}
             </Typography>
+          </Box>{" "}
+          <Box
+            sx={{
+              backgroundColor: "#ec8070",
+              textAlign: "left",
+              borderRadius: 1,
+              marginLeft: "-16px",
+              display: "flex",
+              mt: 2,
+            }}
+          >
+            {" "}
+            <CommentsSection reviews={binhLuan} />
           </Box>{" "}
         </Grid>
 
