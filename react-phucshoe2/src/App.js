@@ -18,6 +18,7 @@ import HeaderAdmin from "./admin-view/components/headerAdmin";
 import { Grid } from "@mui/material";
 
 import { useSelector } from "react-redux";
+import ChatRealTime from "./web-view/component-view/ComponentChat/ChatRealTime";
 function App() {
   const { isAuthenticated, userInfo } = useSelector((state) => state.auth);
   return (
@@ -56,6 +57,7 @@ const MainLayout = () => (
   <>
     <Header />
     <Navbar />
+    <ChatRealTime />
     <Routes>
       <Route path="/*" element={<RouterView />} />
     </Routes>
