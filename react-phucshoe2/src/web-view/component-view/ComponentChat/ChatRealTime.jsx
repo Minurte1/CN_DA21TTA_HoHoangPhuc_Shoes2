@@ -100,9 +100,9 @@ const ChatRealTime = () => {
       });
 
       if (response.data.EC === 1) {
-        // Gửi thành công, thêm tin nhắn mới vào danh sách
+        handleUserIb();
         setTinNhan((prevMessages) => [...prevMessages, response.data.DT]);
-        console.log("Tin nhắn mới:", response.data.DT);
+        // console.log("Tin nhắn mới:", response.data.DT);
       } else {
         console.error("Gửi tin nhắn thất bại:", response.data.EM);
       }
@@ -125,10 +125,10 @@ const ChatRealTime = () => {
     try {
       const response = await axios.post(
         `http://localhost:3002/tin-nhan/messages`,
-        { idNguoiGui: userInfo.ID_NGUOI_DUNG, idNguoiNhan: 1 }
+        { idNguoiGui: userInfo.ID_NGUOI_DUNG }
       );
-      console.log("response.data ", response.data);
-      // console.log('check id user', userId)
+      console.log("response.data ", response.data.DT);
+      setTinNhan(response.data.DT);
     } catch (error) {
       if (error.response && error.response.status === 404) {
         console.log("User not found");
@@ -148,7 +148,7 @@ const ChatRealTime = () => {
         chatContainerRef.current.scrollHeight;
     }
   }, [TinNhan]);
-
+  console.log("tin nhan ", TinNhan);
   return (
     <>
       <div className="container-chat">
@@ -183,16 +183,16 @@ const ChatRealTime = () => {
                   <div key={message._id} className="message">
                     <div
                       className={`container-messs ${
-                        message.name !== NguoiMaBanMuonNhanTin
+                        message.ID_NGUOI_DUNG !== userInfo?.ID_NGUOI_DUNG
                           ? "text-align-right justify-content-right"
                           : ""
                       }`}
                     >
                       <div className="container-messCha2">
-                        {message.username !== NguoiMaBanMuonNhanTin && (
+                        {message.ID_NGUOI_DUNG === userInfo?.ID_NGUOI_DUNG && (
                           <div className="container-noidungtinnhan2 text-align-right">
                             <p className="noidungtinnhan2">
-                              {message.noiDungTinNhan}
+                              {message.NOI_DUNG_TINNHAN}1
                             </p>
                           </div>
                         )}
@@ -200,16 +200,16 @@ const ChatRealTime = () => {
                       <div className="container-messCha">
                         <img
                           className={`NoiDungChat-NoiDung-1-TinNhan-Avt ${
-                            message.name === NguoiMaBanMuonNhanTin
+                            message.ID_NGUOI_DUNG !== userInfo?.ID_NGUOI_DUNG
                               ? "image-Avta"
                               : "display-none"
                           }`}
-                          src={`http://localhost:3002/public/uploads/${ImageUserWantMess}`}
+                          src={`http://localhost:3002/images/${userInfo?.AVATAR}`}
                         />
-                        {message.username === NguoiMaBanMuonNhanTin && (
+                        {message.ID_NGUOI_DUNG !== userInfo?.ID_NGUOI_DUNG && (
                           <div className="container-noidungtinnhan">
                             <p className="noidungtinnhan">
-                              {message.noiDungTinNhan}
+                              {message.NOI_DUNG_TINNHAN}2
                             </p>
                           </div>
                         )}

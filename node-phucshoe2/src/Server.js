@@ -25,7 +25,7 @@ app.use((req, res, next) => {
 });
 //setting
 const corsOptions = {
-  origin: process.env.URL_REACT, // Địa chỉ frontend
+  origin: "*", // Địa chỉ frontend
   credentials: true, // Cho phép gửi cookie
 };
 app.use(cors(corsOptions));
