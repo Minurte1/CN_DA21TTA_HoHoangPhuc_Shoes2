@@ -12,6 +12,10 @@ import {
   Box,
   Button,
   Pagination,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
 } from "@mui/material";
 import moment from "moment";
 import axios from "axios";
@@ -19,11 +23,16 @@ import VisibilityIcon from "@mui/icons-material/Visibility"; // Import icon Visi
 
 import ProductDetailModal from "./modal/chiTietDonHang";
 import { enqueueSnackbar } from "notistack";
-
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import CancelIcon from "@mui/icons-material/Cancel";
 const TatCaDonHangAdminProcess = () => {
   const [orders, setOrders] = useState([]);
   const [selectedOrderId, setSelectedOrderId] = useState(null);
   const [openModal, setOpenModal] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false); // Trạng thái mở modal
+  const [actionType, setActionType] = useState(""); // Loại hành động (success or canceled)
+  const [currentOrderId, setCurrentOrderId] = useState(null); // ID đơn hàng hiện tại
+
   const api = process.env.REACT_APP_URL_SERVER;
   useEffect(() => {
     fetchOrders();
@@ -73,6 +82,28 @@ const TatCaDonHangAdminProcess = () => {
     } finally {
     }
   };
+  // Mở modal với Hỏi update
+  const handleOpenDialog = (type, orderId) => {
+    setActionType(type);
+    setCurrentOrderId(orderId);
+    setOpenDialog(true);
+  };
+
+  // Đóng modal
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+    setActionType("");
+    setCurrentOrderId(null);
+  };
+  // Xử lý khi người dùng xác nhận hành động trong modal
+  const handleConfirmAction = () => {
+    if (actionType === "success" && currentOrderId) {
+      handleUpdateStatusSuccess(currentOrderId);
+    } else if (actionType === "canceled" && currentOrderId) {
+      handleUpdateStatusCanceled(currentOrderId);
+    }
+    handleCloseDialog();
+  };
 
   // Hàm mở modal và truyền ID đơn hàng vào
   const handleViewDetails = (orderId) => {
@@ -109,32 +140,38 @@ const TatCaDonHangAdminProcess = () => {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell sx={{ fontSize: "0.875rem", color: "#ffffff" }}>
+              <TableCell sx={{ fontSize: "0.875rem", color: "#26bbff" }}>
                 <b>ID Đơn Hàng</b>
               </TableCell>
-              <TableCell sx={{ fontSize: "0.875rem", color: "#ffffff" }}>
+              <TableCell sx={{ fontSize: "0.875rem", color: "#26bbff" }}>
                 <b>Người dùng</b>
               </TableCell>
-              <TableCell sx={{ fontSize: "0.875rem", color: "#ffffff" }}>
+              <TableCell sx={{ fontSize: "0.875rem", color: "#26bbff" }}>
                 <b>Số điện thoại</b>
               </TableCell>
-              <TableCell sx={{ fontSize: "0.875rem", color: "#ffffff" }}>
+              <TableCell sx={{ fontSize: "0.875rem", color: "#26bbff" }}>
                 <b>Tỉnh thành</b>
               </TableCell>
-              <TableCell sx={{ fontSize: "0.875rem", color: "#ffffff" }}>
+              <TableCell sx={{ fontSize: "0.875rem", color: "#26bbff" }}>
                 <b>Tổng Tiền</b>
               </TableCell>
-              <TableCell sx={{ fontSize: "0.875rem", color: "#ffffff" }}>
+              <TableCell sx={{ fontSize: "0.875rem", color: "#26bbff" }}>
                 <b>Trạng Thái</b>
               </TableCell>
-              <TableCell sx={{ fontSize: "0.875rem", color: "#ffffff" }}>
+              <TableCell sx={{ fontSize: "0.875rem", color: "#26bbff" }}>
                 <b>Ngày Tạo</b>
               </TableCell>
-              <TableCell sx={{ fontSize: "0.875rem", color: "#ffffff" }}>
+              <TableCell sx={{ fontSize: "0.875rem", color: "#26bbff" }}>
                 <b>Ngày Cập Nhật</b>
               </TableCell>{" "}
-              <TableCell sx={{ fontSize: "0.875rem", color: "#ffffff" }}>
+              <TableCell sx={{ fontSize: "0.875rem", color: "#26bbff" }}>
                 <b>Chi Tiết</b>
+              </TableCell>{" "}
+              <TableCell sx={{ fontSize: "0.875rem", color: "#26bbff" }}>
+                <b>Hành động</b>
+              </TableCell>{" "}
+              <TableCell sx={{ fontSize: "0.875rem", color: "#26bbff" }}>
+                <b>Hành động</b>
               </TableCell>
             </TableRow>
           </TableHead>
@@ -188,19 +225,29 @@ const TatCaDonHangAdminProcess = () => {
                     startIcon={<VisibilityIcon sx={{ color: "#26bbff" }} />}
                   ></Button>{" "}
                 </TableCell>{" "}
-                <TableCell sx={{ fontSize: "0.875rem", color: "#26bbff" }}>
+                <TableCell sx={{ fontSize: "0.875rem", color: "#68d684" }}>
+                  {/* Nút "Giao dịch thành công" */}
                   <Button
-                    onClick={() => handleUpdateStatusSuccess(order.ID_DON_HANG)}
-                    startIcon={<VisibilityIcon sx={{ color: "#26bbff" }} />}
-                  ></Button>{" "}
-                </TableCell>{" "}
-                <TableCell sx={{ fontSize: "0.875rem", color: "#26bbff" }}>
-                  <Button
+                    sx={{ color: "#68d684" }}
                     onClick={() =>
-                      handleUpdateStatusCanceled(order.ID_DON_HANG)
+                      handleOpenDialog("success", order.ID_DON_HANG)
                     }
-                    startIcon={<VisibilityIcon sx={{ color: "#26bbff" }} />}
-                  ></Button>{" "}
+                    // startIcon={<CheckCircleIcon sx={{ color: "#26bbff" }} />}
+                  >
+                    Đã giao
+                  </Button>
+                </TableCell>
+                <TableCell sx={{ fontSize: "0.875rem" }}>
+                  {/* Nút "Đã hủy" */}
+                  <Button
+                    sx={{ color: "red" }}
+                    onClick={() =>
+                      handleOpenDialog("canceled", order.ID_DON_HANG)
+                    }
+                    // startIcon={<CancelIcon sx={{ color: "#26bbff" }} />}
+                  >
+                    Đã hủy
+                  </Button>
                 </TableCell>
               </TableRow>
             ))}
@@ -238,7 +285,29 @@ const TatCaDonHangAdminProcess = () => {
           productId={selectedOrderId} // Truyền ID đơn hàng vào modal
           onClose={handleCloseModal} // Hàm đóng modal
         />
-      )}
+      )}{" "}
+      {/* Modal xác nhận */}
+      <Dialog open={openDialog} onClose={handleCloseDialog}>
+        <DialogTitle>Xác nhận hành động</DialogTitle>
+        <DialogContent>
+          {actionType === "success" ? (
+            <p>
+              Bạn có chắc chắn muốn đánh dấu đơn hàng này là "Giao dịch thành
+              công"?
+            </p>
+          ) : (
+            <p>Bạn có chắc chắn muốn hủy đơn hàng này không?</p>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog} color="primary">
+            Hủy
+          </Button>
+          <Button onClick={handleConfirmAction} color="primary">
+            Xác nhận
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   );
 };
