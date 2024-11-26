@@ -120,14 +120,14 @@ const MucDichSuDungManager = () => {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell sx={{ color: "#c9d1d9" }}>ID</TableCell>
-              <TableCell sx={{ color: "#c9d1d9" }}>
+              <TableCell sx={{ color: "#26bbff" }}>ID</TableCell>
+              <TableCell sx={{ color: "#26bbff" }}>
                 Tên Mục Đích Sử Dụng
               </TableCell>
-              <TableCell sx={{ color: "#c9d1d9" }}>Trạng Thái</TableCell>
-              <TableCell sx={{ color: "#c9d1d9" }}>Ngày Tạo</TableCell>
-              <TableCell sx={{ color: "#c9d1d9" }}>Ngày Cập Nhật</TableCell>
-              <TableCell sx={{ color: "#c9d1d9" }}>Actions</TableCell>
+              <TableCell sx={{ color: "#26bbff" }}>Trạng Thái</TableCell>
+              <TableCell sx={{ color: "#26bbff" }}>Ngày Tạo</TableCell>
+              <TableCell sx={{ color: "#26bbff" }}>Ngày Cập Nhật</TableCell>
+              <TableCell sx={{ color: "#26bbff" }}>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>

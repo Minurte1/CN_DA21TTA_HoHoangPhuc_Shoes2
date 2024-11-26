@@ -74,31 +74,31 @@ const TatCaDonHangAdminCancel = () => {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell sx={{ fontSize: "0.875rem", color: "#ffffff" }}>
+              <TableCell sx={{ fontSize: "0.875rem", color: "#26bbff" }}>
                 <b>ID Đơn Hàng</b>
               </TableCell>
-              <TableCell sx={{ fontSize: "0.875rem", color: "#ffffff" }}>
+              <TableCell sx={{ fontSize: "0.875rem", color: "#26bbff" }}>
                 <b>Người dùng</b>
               </TableCell>
-              <TableCell sx={{ fontSize: "0.875rem", color: "#ffffff" }}>
+              <TableCell sx={{ fontSize: "0.875rem", color: "#26bbff" }}>
                 <b>Số điện thoại</b>
               </TableCell>
-              <TableCell sx={{ fontSize: "0.875rem", color: "#ffffff" }}>
+              <TableCell sx={{ fontSize: "0.875rem", color: "#26bbff" }}>
                 <b>Tỉnh thành</b>
               </TableCell>
-              <TableCell sx={{ fontSize: "0.875rem", color: "#ffffff" }}>
+              <TableCell sx={{ fontSize: "0.875rem", color: "#26bbff" }}>
                 <b>Tổng Tiền</b>
               </TableCell>
-              <TableCell sx={{ fontSize: "0.875rem", color: "#ffffff" }}>
+              <TableCell sx={{ fontSize: "0.875rem", color: "#26bbff" }}>
                 <b>Trạng Thái</b>
               </TableCell>
-              <TableCell sx={{ fontSize: "0.875rem", color: "#ffffff" }}>
+              <TableCell sx={{ fontSize: "0.875rem", color: "#26bbff" }}>
                 <b>Ngày Tạo</b>
               </TableCell>
-              <TableCell sx={{ fontSize: "0.875rem", color: "#ffffff" }}>
+              <TableCell sx={{ fontSize: "0.875rem", color: "#26bbff" }}>
                 <b>Ngày Cập Nhật</b>
               </TableCell>{" "}
-              <TableCell sx={{ fontSize: "0.875rem", color: "#ffffff" }}>
+              <TableCell sx={{ fontSize: "0.875rem", color: "#26bbff" }}>
                 <b>Chi Tiết</b>
               </TableCell>
             </TableRow>
@@ -128,9 +128,9 @@ const TatCaDonHangAdminCancel = () => {
                       order.TRANG_THAI_DON_HANG ===
                       "Đã thanh toán thành công và đang chờ giao hàng"
                         ? "yellow"
-                        : order.TRANG_THAI_DON_HANG === "Hoàn tất"
+                        : order.TRANG_THAI_DON_HANG === "Giao dịch thành công"
                         ? "green"
-                        : "#ffffff",
+                        : "red",
                   }}
                 >
                   {order.TRANG_THAI_DON_HANG}

@@ -23,21 +23,21 @@ const TableShoes = ({
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell sx={{ color: "#c9d1d9" }}>ID</TableCell>
-            <TableCell sx={{ color: "#c9d1d9" }}>Thương hiệu</TableCell>
-            <TableCell sx={{ color: "#c9d1d9" }}>Thể loại</TableCell>
-            <TableCell sx={{ color: "#c9d1d9" }}>Chất liệu</TableCell>
-            <TableCell sx={{ color: "#c9d1d9" }}>Tên sản phẩm</TableCell>
-            <TableCell sx={{ color: "#c9d1d9" }}>Giá tiền</TableCell>
-            <TableCell sx={{ color: "#c9d1d9" }}>Mô tả</TableCell>
-            <TableCell sx={{ color: "#c9d1d9" }}>Hình ảnh</TableCell>
-            <TableCell sx={{ color: "#c9d1d9" }}>Trạng thái</TableCell>
-            <TableCell sx={{ color: "#c9d1d9" }}>Số lượng</TableCell>
-            <TableCell sx={{ color: "#c9d1d9" }}>
+            <TableCell sx={{ color: "#26bbff" }}>ID</TableCell>
+            <TableCell sx={{ color: "#26bbff" }}>Thương hiệu</TableCell>
+            <TableCell sx={{ color: "#26bbff" }}>Thể loại</TableCell>
+            <TableCell sx={{ color: "#26bbff" }}>Chất liệu</TableCell>
+            <TableCell sx={{ color: "#26bbff" }}>Tên sản phẩm</TableCell>
+            <TableCell sx={{ color: "#26bbff" }}>Giá tiền</TableCell>
+            <TableCell sx={{ color: "#26bbff" }}>Mô tả</TableCell>
+            <TableCell sx={{ color: "#26bbff" }}>Hình ảnh</TableCell>
+            <TableCell sx={{ color: "#26bbff" }}>Trạng thái</TableCell>
+            <TableCell sx={{ color: "#26bbff" }}>Số lượng</TableCell>
+            <TableCell sx={{ color: "#26bbff" }}>
               Ngày thêm vào hệ thống
             </TableCell>
-            <TableCell sx={{ color: "#c9d1d9" }}>Ngày cập nhật</TableCell>
-            <TableCell sx={{ color: "#c9d1d9" }}>Hành động</TableCell>
+            <TableCell sx={{ color: "#26bbff" }}>Ngày cập nhật</TableCell>
+            <TableCell sx={{ color: "#26bbff" }}>Hành động</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>

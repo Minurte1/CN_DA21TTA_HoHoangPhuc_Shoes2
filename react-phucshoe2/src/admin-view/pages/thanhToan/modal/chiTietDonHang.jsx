@@ -64,10 +64,10 @@ const ProductDetailModal = ({ productId, onClose }) => {
             <Typography variant="h6">Thông tin khách hàng:</Typography>
             <Typography>Email: {productDetails.EMAIL}</Typography>
             <Typography>
-              Số điện thoại: {productDetails.SO_DIEN_THOAI}
+              Số điện thoại: {productDetails.SO_DIEN_THOAI_DON_HANG}
             </Typography>
             <Typography>
-              Địa chỉ: {productDetails.DIA_CHI || "Chưa cập nhật"}
+              Địa chỉ đơn hàng: {productDetails.DIA_CHI_DON_HANG}
             </Typography>
             <Typography>
               Ngày tạo đơn hàng:{" "}
@@ -107,10 +107,6 @@ const ProductDetailModal = ({ productId, onClose }) => {
             <Typography>
               Ngày sinh:{" "}
               {new Date(productDetails.NGAY_SINH).toLocaleDateString()}
-            </Typography>
-            <Typography>
-              Địa chỉ: {productDetails.DIA_CHI_Provinces},{" "}
-              {productDetails.DIA_CHI_Districts}, {productDetails.DIA_CHI_Wards}
             </Typography>
             <Typography>
               Vai trò: {productDetails.VAI_TRO === "0" ? "Người dùng" : "Admin"}

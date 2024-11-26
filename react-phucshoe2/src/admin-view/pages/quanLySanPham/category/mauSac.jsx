@@ -111,11 +111,11 @@ const MauSacManager = () => {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell sx={{ color: "#c9d1d9" }}>ID</TableCell>
-              <TableCell sx={{ color: "#c9d1d9" }}>Tên Màu Sắc</TableCell>{" "}
-              <TableCell sx={{ color: "#c9d1d9" }}>Ngày Tạo Ra</TableCell>{" "}
-              <TableCell sx={{ color: "#c9d1d9" }}>Ngày Cập Nhật</TableCell>
-              <TableCell sx={{ color: "#c9d1d9" }}>Actions</TableCell>
+              <TableCell sx={{ color: "#26bbff" }}>ID</TableCell>
+              <TableCell sx={{ color: "#26bbff" }}>Tên Màu Sắc</TableCell>{" "}
+              <TableCell sx={{ color: "#26bbff" }}>Ngày Tạo Ra</TableCell>{" "}
+              <TableCell sx={{ color: "#26bbff" }}>Ngày Cập Nhật</TableCell>
+              <TableCell sx={{ color: "#26bbff" }}>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>

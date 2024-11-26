@@ -67,7 +67,7 @@ const DonHangUser = () => {
   // Lấy dữ liệu đơn hàng theo trang
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentOrders = orders.slice(indexOfFirstItem, indexOfLastItem); 
+  const currentOrders = orders.slice(indexOfFirstItem, indexOfLastItem);
   return (
     <Container>
       <Box sx={{ width: "100%", textAlign: "left", mt: 4, mb: 3 }}>
@@ -82,31 +82,31 @@ const DonHangUser = () => {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell sx={{ fontSize: "0.875rem", color: "#ffffff" }}>
+              <TableCell sx={{ fontSize: "0.875rem", color: "#26bbff" }}>
                 <b>ID Đơn Hàng</b>
               </TableCell>
-              <TableCell sx={{ fontSize: "0.875rem", color: "#ffffff" }}>
+              <TableCell sx={{ fontSize: "0.875rem", color: "#26bbff" }}>
                 <b>Người dùng</b>
               </TableCell>
-              <TableCell sx={{ fontSize: "0.875rem", color: "#ffffff" }}>
+              <TableCell sx={{ fontSize: "0.875rem", color: "#26bbff" }}>
                 <b>Số điện thoại</b>
               </TableCell>
-              <TableCell sx={{ fontSize: "0.875rem", color: "#ffffff" }}>
+              <TableCell sx={{ fontSize: "0.875rem", color: "#26bbff" }}>
                 <b>Tỉnh thành</b>
               </TableCell>
-              <TableCell sx={{ fontSize: "0.875rem", color: "#ffffff" }}>
+              <TableCell sx={{ fontSize: "0.875rem", color: "#26bbff" }}>
                 <b>Tổng Tiền</b>
               </TableCell>
-              <TableCell sx={{ fontSize: "0.875rem", color: "#ffffff" }}>
+              <TableCell sx={{ fontSize: "0.875rem", color: "#26bbff" }}>
                 <b>Trạng Thái</b>
               </TableCell>
-              <TableCell sx={{ fontSize: "0.875rem", color: "#ffffff" }}>
+              <TableCell sx={{ fontSize: "0.875rem", color: "#26bbff" }}>
                 <b>Ngày Tạo</b>
               </TableCell>
-              <TableCell sx={{ fontSize: "0.875rem", color: "#ffffff" }}>
+              <TableCell sx={{ fontSize: "0.875rem", color: "#26bbff" }}>
                 <b>Ngày Cập Nhật</b>
               </TableCell>{" "}
-              <TableCell sx={{ fontSize: "0.875rem", color: "#ffffff" }}>
+              <TableCell sx={{ fontSize: "0.875rem", color: "#26bbff" }}>
                 <b>Chi Tiết</b>
               </TableCell>
             </TableRow>
@@ -136,9 +136,11 @@ const DonHangUser = () => {
                       order.TRANG_THAI_DON_HANG ===
                       "Đã thanh toán thành công và đang chờ giao hàng"
                         ? "yellow"
-                        : order.TRANG_THAI_DON_HANG === "Hoàn tất"
-                        ? "green"
-                        : "#ffffff",
+                        : order.TRANG_THAI_DON_HANG === "Giao dịch thành công"
+                        ? "#73ec8b"
+                        : order.TRANG_THAI_DON_HANG === "Đang chờ thanh toán"
+                        ? "yellow"
+                        : "red",
                   }}
                 >
                   {order.TRANG_THAI_DON_HANG}

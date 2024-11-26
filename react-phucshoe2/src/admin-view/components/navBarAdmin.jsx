@@ -199,14 +199,6 @@ const NavBarAdmin = () => {
                 >
                   <ListItemText primary="Carousel Sản Phẩm" />
                 </ListItem>
-                <ListItem
-                  button
-                  component={Link}
-                  to="/admin/san-pham/inventory"
-                  sx={{ pl: 4, color: "#f0f6fc" }}
-                >
-                  <ListItemText primary="Kho hàng" />
-                </ListItem>
                 <List>
                   <ListItem
                     button

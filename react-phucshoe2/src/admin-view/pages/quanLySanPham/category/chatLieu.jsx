@@ -136,19 +136,19 @@ const ChatLieuManager = () => {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell sx={{ color: "#c9d1d9" }}>ID</TableCell>
-              <TableCell sx={{ color: "#c9d1d9" }}>
+              <TableCell sx={{ color: "#26bbff" }}>ID</TableCell>
+              <TableCell sx={{ color: "#26bbff" }}>
                 Tên chất liệu
               </TableCell>{" "}
-              <TableCell sx={{ color: "#c9d1d9" }}>Trạng Thái</TableCell>{" "}
-              <TableCell sx={{ color: "#c9d1d9" }}>Mô tả</TableCell>
-              <TableCell sx={{ color: "#c9d1d9" }}>
+              <TableCell sx={{ color: "#26bbff" }}>Trạng Thái</TableCell>{" "}
+              <TableCell sx={{ color: "#26bbff" }}>Mô tả</TableCell>
+              <TableCell sx={{ color: "#26bbff" }}>
                 Ngày tạo chất liệu
               </TableCell>{" "}
-              <TableCell sx={{ color: "#c9d1d9" }}>
+              <TableCell sx={{ color: "#26bbff" }}>
                 Ngày cập nhật chất liệu gần nhất
               </TableCell>
-              <TableCell sx={{ color: "#c9d1d9" }}>Actions</TableCell>
+              <TableCell sx={{ color: "#26bbff" }}>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>

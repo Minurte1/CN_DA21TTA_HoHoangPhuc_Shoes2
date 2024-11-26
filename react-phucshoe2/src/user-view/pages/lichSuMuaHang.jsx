@@ -149,7 +149,7 @@ const LichSuMuaHangUser = () => {
                       ml: 2,
                       color:
                         order.TRANG_THAI_DON_HANG === "Giao dịch thành công"
-                          ? "green"
+                          ? "#73ec8b"
                           : order.TRANG_THAI_DON_HANG ===
                             "Đã thanh toán thành công và đang chờ giao hàng"
                           ? "yellow"

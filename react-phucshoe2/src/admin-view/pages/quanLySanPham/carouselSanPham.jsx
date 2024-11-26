@@ -178,14 +178,14 @@ const CarouselManager = () => {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell sx={{ color: "#c9d1d9" }}>ID</TableCell>
-              <TableCell sx={{ color: "#c9d1d9" }}>Hình ảnh nền</TableCell>{" "}
-              <TableCell sx={{ color: "#c9d1d9" }}>Hình ảnh icon</TableCell>
-              <TableCell sx={{ color: "#c9d1d9" }}>Mô tả</TableCell>{" "}
-              <TableCell sx={{ color: "#c9d1d9" }}>Trạng thái</TableCell>
-              <TableCell sx={{ color: "#c9d1d9" }}>Ngày tạo</TableCell>
-              <TableCell sx={{ color: "#c9d1d9" }}>Ngày cập nhật</TableCell>
-              <TableCell sx={{ color: "#c9d1d9" }}>Actions</TableCell>
+              <TableCell sx={{ color: "#26bbff" }}>ID</TableCell>
+              <TableCell sx={{ color: "#26bbff" }}>Hình ảnh nền</TableCell>{" "}
+              <TableCell sx={{ color: "#26bbff" }}>Hình ảnh icon</TableCell>
+              <TableCell sx={{ color: "#26bbff" }}>Mô tả</TableCell>{" "}
+              <TableCell sx={{ color: "#26bbff" }}>Trạng thái</TableCell>
+              <TableCell sx={{ color: "#26bbff" }}>Ngày tạo</TableCell>
+              <TableCell sx={{ color: "#26bbff" }}>Ngày cập nhật</TableCell>
+              <TableCell sx={{ color: "#26bbff" }}>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>

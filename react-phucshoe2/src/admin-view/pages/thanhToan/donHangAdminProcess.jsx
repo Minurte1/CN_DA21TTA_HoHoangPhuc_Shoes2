@@ -203,7 +203,7 @@ const TatCaDonHangAdminProcess = () => {
                       "Đã thanh toán thành công và đang chờ giao hàng"
                         ? "yellow"
                         : order.TRANG_THAI_DON_HANG === "Hoàn tất"
-                        ? "green"
+                        ? "#73ec8b"
                         : "#ffffff",
                   }}
                 >

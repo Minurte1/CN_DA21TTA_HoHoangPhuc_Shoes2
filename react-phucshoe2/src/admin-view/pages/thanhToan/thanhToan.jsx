@@ -125,11 +125,11 @@ const ThanhToanManager = () => {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell sx={{ color: "#c9d1d9" }}>ID</TableCell>
-              <TableCell sx={{ color: "#c9d1d9" }}>Thương thức</TableCell>
-              <TableCell sx={{ color: "#c9d1d9" }}>Trạng Thái</TableCell>
-              <TableCell sx={{ color: "#c9d1d9" }}>Ngày thanh toán</TableCell>
-              <TableCell sx={{ color: "#c9d1d9" }}>Actions</TableCell>
+              <TableCell sx={{ color: "#26bbff" }}>ID</TableCell>
+              <TableCell sx={{ color: "#26bbff" }}>Thương thức</TableCell>
+              <TableCell sx={{ color: "#26bbff" }}>Trạng Thái</TableCell>
+              <TableCell sx={{ color: "#26bbff" }}>Ngày thanh toán</TableCell>
+              <TableCell sx={{ color: "#26bbff" }}>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
