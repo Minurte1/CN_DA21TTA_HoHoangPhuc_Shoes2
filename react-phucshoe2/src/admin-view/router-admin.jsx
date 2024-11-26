@@ -1,6 +1,6 @@
 import { useRoutes, Navigate } from "react-router-dom";
 import DashboardAdmin from "./pages/DashboardAdmin";
-import DonHangGame from "./pages/DonHang";
+
 import DanhSachNguoiDungAdmin from "./pages/quanLyNguoiDung/DanhSachNguoiDungAdmin";
 import ChatLieuManager from "./pages/quanLySanPham/category/chatLieu";
 import GioiTinhManager from "./pages/quanLySanPham/category/gioiTinh";
@@ -13,7 +13,11 @@ import ThuongHieuManager from "./pages/quanLySanPham/category/thuongHieu";
 import SanPhamManager from "./pages/quanLySanPham/sanPham";
 import CarouselManager from "./pages/quanLySanPham/carouselSanPham";
 import ThanhToanManager from "./pages/thanhToan/thanhToan";
-import DonHangAdmin from "./pages/thanhToan/donHangAdmin";
+
+import TatCaDonHangAdmin from "./pages/thanhToan/donHangAdmin";
+import TatCaDonHangAdminSuccess from "./pages/thanhToan/donHangAdminSuccess";
+import TatCaDonHangAdminCancel from "./pages/thanhToan/donHangAdminCancel";
+import TatCaDonHangAdminProcess from "./pages/thanhToan/donHangAdminProcess";
 
 // import QuanLySanPham from "./pages/QuanLySanPham";
 // import TuongTacNguoiDung from "./pages/TuongTacNguoiDung";
@@ -24,10 +28,7 @@ const RouterAdmin = () => {
       path: "/",
       element: <DashboardAdmin />,
     },
-    {
-      path: "/donhang",
-      element: <DonHangGame />,
-    },
+
     {
       path: "/nguoi-dung/danh-sach",
       element: <DanhSachNguoiDungAdmin />,
@@ -78,7 +79,19 @@ const RouterAdmin = () => {
     },
     {
       path: "/don-hang/tat-ca",
-      element: <DonHangAdmin />,
+      element: <TatCaDonHangAdmin />,
+    },
+    {
+      path: "/don-hang/da-giao",
+      element: <TatCaDonHangAdminSuccess />,
+    },
+    {
+      path: "/don-hang/da-huy",
+      element: <TatCaDonHangAdminCancel />,
+    },
+    {
+      path: "/don-hang/dang-xu-ly",
+      element: <TatCaDonHangAdminProcess />,
     },
     // {
     //   path: "/san-pham",

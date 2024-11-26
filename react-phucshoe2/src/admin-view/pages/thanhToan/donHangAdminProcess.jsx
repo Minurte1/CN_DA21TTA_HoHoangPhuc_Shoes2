@@ -19,7 +19,7 @@ import VisibilityIcon from "@mui/icons-material/Visibility"; // Import icon Visi
 
 import ProductDetailModal from "./modal/chiTietDonHang";
 
-const TatCaDonHangAdmin = () => {
+const TatCaDonHangAdminProcess = () => {
   const [orders, setOrders] = useState([]);
   const [selectedOrderId, setSelectedOrderId] = useState(null);
   const [openModal, setOpenModal] = useState(false);
@@ -30,7 +30,9 @@ const TatCaDonHangAdmin = () => {
 
   const fetchOrders = async () => {
     try {
-      const response = await axios.get("http://localhost:3002/don-hang");
+      const response = await axios.get(
+        `http://localhost:3002/chi-tiet-hoa-don/all-process`
+      );
       if (response.data.EC === 1) {
         setOrders(response.data.DT);
       }
@@ -194,4 +196,4 @@ const TatCaDonHangAdmin = () => {
   );
 };
 
-export default TatCaDonHangAdmin;
+export default TatCaDonHangAdminProcess;

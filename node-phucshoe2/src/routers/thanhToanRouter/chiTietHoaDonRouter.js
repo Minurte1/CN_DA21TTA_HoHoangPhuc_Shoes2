@@ -7,9 +7,23 @@ const {
   getPaidOrdersAwaitingProcessing,
   getChiTietHoaDonTheoNguoiDung_WaitingThanhToan,
   addReviewAndComment,
+
+  //
+  getAllChiTietHoaDon_Admin,
+  getALLPaidOrdersAwaitingProcessing_Admin,
+  getALLChiTietHoaDonTheoNguoiDung_Cancel_Admin,
+  getAllChiTietHoaDonTheoNguoiDung_Success_Admin,
 } = require("../../controllers/thanhToanController/chiTietHoaDonController");
 
-// Định nghĩa các route
+// ----------Admin----------------------------
+
+router.get("/all", getAllChiTietHoaDon_Admin);
+router.get("/all-success", getAllChiTietHoaDonTheoNguoiDung_Success_Admin);
+router.get("/all-cancel", getALLChiTietHoaDonTheoNguoiDung_Cancel_Admin);
+
+router.get("/all-process", getALLPaidOrdersAwaitingProcessing_Admin);
+
+// --------User ---------------------------------
 
 // Lấy chi tiết hóa đơn theo ID
 router.get("/:id", getChiTietHoaDon);

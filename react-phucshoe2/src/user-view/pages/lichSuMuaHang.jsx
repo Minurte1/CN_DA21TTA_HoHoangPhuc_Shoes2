@@ -105,7 +105,8 @@ const LichSuMuaHangUser = () => {
                       : "",
                 }}
               >
-                {order.TRANG_THAI_DON_HANG}
+                {order.TRANG_THAI_DON_HANG} || Với phương thức thanh toán{" "}
+                {order.PHUONG_THUC_THANH_TOAN}
               </Typography>
             </Typography>
 

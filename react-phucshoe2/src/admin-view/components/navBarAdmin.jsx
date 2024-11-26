@@ -319,15 +319,7 @@ const NavBarAdmin = () => {
                 <ListItem
                   button
                   component={Link}
-                  to="/admin/don-hang/tat-ca"
-                  sx={{ pl: 4, color: "#f0f6fc" }}
-                >
-                  <ListItemText primary="Đơn hàng mới" />
-                </ListItem>
-                <ListItem
-                  button
-                  component={Link}
-                  to="/user/don-hang/processing"
+                  to="/admin/don-hang/dang-xu-ly"
                   sx={{ pl: 4, color: "#f0f6fc" }}
                 >
                   <ListItemText primary="Đơn hàng đang xử lý" />
@@ -335,10 +327,26 @@ const NavBarAdmin = () => {
                 <ListItem
                   button
                   component={Link}
-                  to="/user/don-hang/history"
+                  to="/admin/don-hang/tat-ca"
                   sx={{ pl: 4, color: "#f0f6fc" }}
                 >
-                  <ListItemText primary="Lịch sử đơn hàng" />
+                  <ListItemText primary="Tất cả đơn hàng" />
+                </ListItem>
+                <ListItem
+                  button
+                  component={Link}
+                  to="/admin/don-hang/da-giao"
+                  sx={{ pl: 4, color: "#f0f6fc" }}
+                >
+                  <ListItemText primary="Đơn hàng đã giao" />
+                </ListItem>{" "}
+                <ListItem
+                  button
+                  component={Link}
+                  to="/admin/don-hang/da-huy"
+                  sx={{ pl: 4, color: "#f0f6fc" }}
+                >
+                  <ListItemText primary="Đơn hàng đã hủy" />
                 </ListItem>{" "}
                 <ListItem
                   button
