@@ -9,6 +9,20 @@ const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const hostname = process.env.HOST_NAME || "localhost";
 
+// Middleware để gắn `io` vào `req`
+const http = require("http");
+const { Server } = require("socket.io");
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+  },
+});
+
+app.use((req, res, next) => {
+  req.io = io;
+  next();
+});
 //setting
 const corsOptions = {
   origin: process.env.URL_REACT, // Địa chỉ frontend
@@ -71,57 +85,34 @@ app.use("/binh-luan/", binhLuanRoute);
 
 app.use("/tin-nhan/", tinNhanRoute);
 
-const http = require("http");
-const { Server } = require("socket.io");
-const server = http.createServer(app);
-const io = new Server(server, {
-  cors: {
-    origin: "*",
-  },
-});
-
-// Middleware để gắn `io` vào `req`
-app.use((req, res, next) => {
-  req.io = io;
-  next();
-});
-
 // Socket.IO logic
 const userSockets = {}; // Lưu trữ socket.id của từng user theo userId
 
 io.on("connection", (socket) => {
-  console.log("User connected:", socket.id);
+  console.log("User connected:", socket.id); // Kiểm tra kết nối thành công
 
-  // Khi client gửi sự kiện đăng nhập
   socket.on("user_connected", (userId) => {
-    userSockets[userId] = socket.id; // Gán socket.id cho userId
     console.log(`User ${userId} connected with socket ID: ${socket.id}`);
+    userSockets[userId] = socket.id;
   });
 
-  // Lắng nghe khi client gửi tin nhắn
   socket.on("send_message", (data) => {
-    console.log(`Message received from ${data.idNguoiGui}:`, data);
-
     const receiverSocketId = userSockets[data.idNguoiNhan];
+    console.log("receiverSocketId", receiverSocketId);
     if (receiverSocketId) {
-      // Phát tin nhắn tới người nhận
+      console.log("receive_message", data);
       io.to(receiverSocketId).emit("receive_message", data);
-      console.log(
-        `Message sent to user ${data.idNguoiNhan} with socket ID: ${receiverSocketId}`
-      );
     } else {
-      console.log(`User ${data.idNguoiNhan} is not connected.`);
+      console.warn(`Receiver ${data.idNguoiNhan} is not connected.`);
+      // Xử lý bổ sung nếu cần, ví dụ: lưu tin nhắn vào cơ sở dữ liệu
     }
   });
 
-  // Lắng nghe khi user rời khỏi
   socket.on("disconnect", () => {
     console.log("User disconnected:", socket.id);
-    // Xóa user khỏi danh sách kết nối
     for (const userId in userSockets) {
       if (userSockets[userId] === socket.id) {
         delete userSockets[userId];
-        console.log(`User ${userId} disconnected`);
         break;
       }
     }
@@ -131,6 +122,6 @@ io.on("connection", (socket) => {
 const configViewEngine = require("./config/viewEngine");
 configViewEngine(app);
 
-app.listen(port, hostname, () => {
+server.listen(port, hostname, () => {
   console.log(`${hostname}Example app listening on port ${port}`);
 });

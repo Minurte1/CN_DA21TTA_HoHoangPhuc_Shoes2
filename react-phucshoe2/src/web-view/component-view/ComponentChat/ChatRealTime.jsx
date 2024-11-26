@@ -30,35 +30,36 @@ const ChatRealTime = () => {
   const [IdAdminChat, setIdAdminChat] = useState("");
 
   useEffect(() => {
-    if (token) {
-      try {
-        const decodedToken = jwtDecode(token);
-        setUsername(decodedToken.taikhoan);
-        console.log("check", username);
-      } catch (error) {
-        console.error("Invalid token", error);
-      }
+    if (isAuthenticated) {
+      console.log("isAuthenticated =>>>>>>>>>>>>>>>", isAuthenticated);
+
+      const newSocket = io("http://localhost:3002");
+      setSocket(newSocket);
+
+      // Lắng nghe sự kiện khi socket kết nối thành công
+      newSocket.on("connect", () => {
+        console.log("Socket connected with ID:", newSocket.id);
+        // Khi socket kết nối thành công, thông báo userId cho server
+        newSocket.emit("user_connected", username);
+      });
+
+      // Lắng nghe tin nhắn mới từ server
+      newSocket.on("receive_message", (message) => {
+        console.log("Tin nhắn mới:", message);
+        setTinNhan((prevMessages) => [...prevMessages, message]);
+      });
+
+      // Lắng nghe sự kiện khi ngắt kết nối
+      newSocket.on("disconnect", () => {
+        console.log("Socket disconnected");
+      });
+
+      return () => {
+        newSocket.disconnect(); // Ngắt kết nối khi component bị hủy
+        console.log("Socket disconnected on cleanup");
+      };
     }
-  }, [token]);
-
-  useEffect(() => {
-    // Kết nối tới Socket.IO
-    const newSocket = io(ENDPOINT);
-    setSocket(newSocket);
-
-    // Khi socket kết nối thành công, thông báo userId cho server
-    newSocket.emit("user_connected", username);
-
-    // Lắng nghe tin nhắn mới từ server
-    newSocket.on("receive_message", (message) => {
-      console.log("Tin nhắn mới:", message);
-      setTinNhan((prevMessages) => [...prevMessages, message]);
-    });
-
-    return () => {
-      newSocket.disconnect(); // Ngắt kết nối khi component bị hủy
-    };
-  }, [username]);
+  }, [isAuthenticated]);
 
   const handleIconCaVoi = async () => {
     if (IdCoversation) {
@@ -90,33 +91,26 @@ const ChatRealTime = () => {
       return; // Không làm gì nếu không có nội dung tin nhắn
     }
 
-    console.log("Check username:", username);
-    console.log("Check conversation ID:", IdCoversation);
+    try {
+      // Gửi tin nhắn tới backend
+      const response = await axios.post(`${ENDPOINT}/tin-nhan/send`, {
+        idNguoiGui: userInfo.ID_NGUOI_DUNG, // ID người gửi
+        idNguoiNhan: 1, // ID người nhận (bạn cần cung cấp giá trị này từ context)
+        noiDungTinNhan: inputMess, // Nội dung tin nhắn
+      });
 
-    if (IdCoversation) {
-      try {
-        // Gửi tin nhắn tới backend
-        const response = await axios.post(`${ENDPOINT}/tin-nhan/send`, {
-          idNguoiGui: username, // ID người gửi
-          idNguoiNhan: 1, // ID người nhận (bạn cần cung cấp giá trị này từ context)
-          noiDungTinNhan: inputMess, // Nội dung tin nhắn
-        });
-
-        if (response.data.EC === 1) {
-          // Gửi thành công, thêm tin nhắn mới vào danh sách
-          setTinNhan((prevMessages) => [...prevMessages, response.data.DT]);
-          console.log("Tin nhắn mới:", response.data.DT);
-        } else {
-          console.error("Gửi tin nhắn thất bại:", response.data.EM);
-        }
-
-        // Xóa nội dung nhập
-        setinputMess("");
-      } catch (error) {
-        console.error("Lỗi khi gửi tin nhắn:", error);
+      if (response.data.EC === 1) {
+        // Gửi thành công, thêm tin nhắn mới vào danh sách
+        setTinNhan((prevMessages) => [...prevMessages, response.data.DT]);
+        console.log("Tin nhắn mới:", response.data.DT);
+      } else {
+        console.error("Gửi tin nhắn thất bại:", response.data.EM);
       }
-    } else {
-      console.warn("Không tìm thấy IdCoversation!");
+
+      // Xóa nội dung nhập
+      setinputMess("");
+    } catch (error) {
+      console.error("Lỗi khi gửi tin nhắn:", error);
     }
   };
 
@@ -128,13 +122,12 @@ const ChatRealTime = () => {
   };
 
   const handleUserIb = async () => {
-    console.log("check username KH", username);
     try {
-      const response = await axios.get(
-        `http://localhost:3002/api/getUserByUsername/${username}`
+      const response = await axios.post(
+        `http://localhost:3002/tin-nhan/messages`,
+        { idNguoiGui: userInfo.ID_NGUOI_DUNG, idNguoiNhan: 1 }
       );
-      const { userId } = response.data;
-      setUserId(userId);
+      console.log("response.data ", response.data);
       // console.log('check id user', userId)
     } catch (error) {
       if (error.response && error.response.status === 404) {
@@ -142,49 +135,6 @@ const ChatRealTime = () => {
       } else {
         console.log("An error occurred during the search.");
       }
-    }
-    const usernameAdmin = "admin";
-    try {
-      const response = await axios.get(
-        `http://localhost:3002/api/getUserByUsername/${usernameAdmin}`
-      );
-      const { userId } = response.data;
-      setIdAdminChat(userId);
-      console.log("check id user", userId);
-    } catch (error) {
-      if (error.response && error.response.status === 404) {
-        console.log("User not found");
-      } else {
-        console.log("An error occurred during the search.");
-      }
-    }
-    try {
-      if ((IdAdminChat, userId)) {
-        // Gửi yêu cầu POST đến server
-        const response = await axios.post(
-          "http://localhost:3002/api/createConversation",
-          {
-            participants: [IdAdminChat, userId], // Truyền id của user đó xuống server
-          }
-        );
-        setIdCoversation(response.data.conversationId);
-        console.log("id conver =>", IdCoversation);
-      }
-      if (IdCoversation) {
-        const responseMess = await axios.post(
-          "http://localhost:3002/api/getMessages",
-          {
-            conversationId: IdCoversation,
-          }
-        );
-        setTinNhan(responseMess.data);
-
-        console.log("check tin nhắn1 =>", responseMess.data);
-      }
-
-      console.log("Tạo cuộc trò chuyện thành công");
-    } catch (error) {
-      console.error("Lỗi khi tạo cuộc trò chuyện:", error);
     }
   };
 
@@ -241,7 +191,9 @@ const ChatRealTime = () => {
                       <div className="container-messCha2">
                         {message.username !== NguoiMaBanMuonNhanTin && (
                           <div className="container-noidungtinnhan2 text-align-right">
-                            <p className="noidungtinnhan2">{message.message}</p>
+                            <p className="noidungtinnhan2">
+                              {message.noiDungTinNhan}
+                            </p>
                           </div>
                         )}
                       </div>
@@ -256,7 +208,9 @@ const ChatRealTime = () => {
                         />
                         {message.username === NguoiMaBanMuonNhanTin && (
                           <div className="container-noidungtinnhan">
-                            <p className="noidungtinnhan">{message.message}</p>
+                            <p className="noidungtinnhan">
+                              {message.noiDungTinNhan}
+                            </p>
                           </div>
                         )}
                       </div>

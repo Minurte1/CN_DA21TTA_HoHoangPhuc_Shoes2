@@ -14,7 +14,7 @@ const sendMessage = async (req, res) => {
 
   try {
     const [result] = await connection.execute(
-      `INSERT INTO TIN_NHAN (ID_NGUOI_GUI, ID_NGUOI_NHAN, NOI_DUNG_TINNHAN, NGAY_TAO_TIN_NHAN)
+      `INSERT INTO TIN_NHAN (ID_NGUOI_DUNG, ID_NGUOI_NHAN, NOI_DUNG_TINNHAN, NGAY_TAO_TIN_NHAN)
          VALUES (?, ?, ?, NOW())`,
       [idNguoiGui, idNguoiNhan, noiDungTinNhan]
     );
@@ -53,7 +53,7 @@ const sendMessage = async (req, res) => {
 
 // Lấy danh sách tin nhắn
 const getMessages = async (req, res) => {
-  const { idNguoiGui, idNguoiNhan } = req.query;
+  const { idNguoiGui, idNguoiNhan } = req.body;
 
   if (!idNguoiGui || !idNguoiNhan) {
     return res.status(400).json({
@@ -66,8 +66,8 @@ const getMessages = async (req, res) => {
   try {
     const [messages] = await connection.execute(
       `SELECT * FROM TIN_NHAN 
-         WHERE (ID_NGUOI_GUI = ? AND ID_NGUOI_NHAN = ?) 
-         OR (ID_NGUOI_GUI = ? AND ID_NGUOI_NHAN = ?)
+         WHERE (ID_NGUOI_DUNG = ? AND ID_NGUOI_NHAN = ?) 
+         OR (ID_NGUOI_DUNG = ? AND ID_NGUOI_NHAN = ?)
          ORDER BY NGAY_TAO_TIN_NHAN ASC`,
       [idNguoiGui, idNguoiNhan, idNguoiNhan, idNguoiGui]
     );
