@@ -477,6 +477,131 @@ const deleteDON_HANG = async (req, res) => {
   }
 };
 
+// Cập nhật trạng thái đơn hàng là "Đã hủy" cho USER
+const updateOrderStatusCanceled_User = async (req, res) => {
+  const { orderId } = req.params; // ID đơn hàng từ tham số URL
+  const { userId } = req.user; // ID người dùng từ thông tin xác thực (JWT)
+
+  try {
+    // Kiểm tra xem người dùng có quyền cập nhật đơn hàng này không
+    const [orderCheck] = await connection.execute(
+      `SELECT * FROM DON_HANG WHERE ID_ODER = ? AND ID_NGUOI_DUNG = ?`,
+      [orderId, userId] // Xác nhận người dùng có quyền truy cập đơn hàng này
+    );
+
+    if (orderCheck.length === 0) {
+      return res.status(403).json({
+        EM: "Bạn không có quyền cập nhật trạng thái đơn hàng này",
+        EC: 0,
+        DT: [],
+      });
+    }
+
+    // Cập nhật trạng thái đơn hàng
+    const [result] = await connection.execute(
+      `UPDATE DON_HANG 
+       SET TRANG_THAI_DON_HANG = 'Đã hủy', 
+           NGAY_CAP_NHAT_DONHANG = NOW() 
+       WHERE ID_ODER = ? AND ID_NGUOI_DUNG = ?`,
+      [orderId, userId] // Đảm bảo chỉ người dùng đó mới có thể cập nhật đơn hàng của mình
+    );
+
+    if (result.affectedRows > 0) {
+      return res.status(200).json({
+        EM: "Cập nhật trạng thái đơn hàng thành công",
+        EC: 1,
+        DT: [],
+      });
+    } else {
+      return res.status(404).json({
+        EM: "Không tìm thấy đơn hàng này",
+        EC: 0,
+        DT: [],
+      });
+    }
+  } catch (error) {
+    console.error("Error updating order status:", error);
+    return res.status(500).json({
+      EM: "Có lỗi xảy ra khi cập nhật trạng thái đơn hàng",
+      EC: 0,
+      DT: [],
+    });
+  }
+};
+// Cập nhật trạng thái đơn hàng là "Đã hủy" ADMIN
+const updateOrderStatusCanceled = async (req, res) => {
+  const { orderId } = req.params; // ID đơn hàng từ tham số URL
+  console.log("orderId", orderId);
+  try {
+    // Cập nhật trạng thái đơn hàng
+    const [result] = await connection.execute(
+      `UPDATE DON_HANG 
+       SET TRANG_THAI_DON_HANG = 'Đã hủy', 
+           NGAY_CAP_NHAT_DONHANG = NOW() 
+       WHERE ID_DON_HANG = ?`,
+      [orderId] // Tham số orderId để xác định đơn hàng cần cập nhật
+    );
+    console.log("result", result);
+    if (result.affectedRows > 0) {
+      return res.status(200).json({
+        EM: "Cập nhật trạng thái đơn hàng thành công",
+        EC: 1,
+        DT: [],
+      });
+    } else {
+      return res.status(404).json({
+        EM: "Không tìm thấy đơn hàng",
+        EC: 0,
+        DT: [],
+      });
+    }
+  } catch (error) {
+    console.error("Error updating order status:", error);
+    return res.status(500).json({
+      EM: "Có lỗi xảy ra khi cập nhật trạng thái đơn hàng",
+      EC: 0,
+      DT: [],
+    });
+  }
+};
+
+// Cập nhật trạng thái đơn hàng là "Giao dịch thành công" ADMIN
+const updateOrderStatusSuccess = async (req, res) => {
+  const { orderId } = req.params; // ID đơn hàng từ tham số URL
+  console.log("orderId", orderId);
+  try {
+    // Cập nhật trạng thái đơn hàng
+    const [result] = await connection.execute(
+      `UPDATE DON_HANG 
+       SET TRANG_THAI_DON_HANG = 'Giao dịch thành công', 
+           NGAY_CAP_NHAT_DONHANG = NOW() 
+       WHERE ID_DON_HANG = ?`,
+      [orderId] // Tham số orderId để xác định đơn hàng cần cập nhật
+    );
+
+    if (result.affectedRows > 0) {
+      return res.status(200).json({
+        EM: "Cập nhật trạng thái đơn hàng thành công",
+        EC: 1,
+        DT: [],
+      });
+    } else {
+      return res.status(404).json({
+        EM: "Không tìm thấy đơn hàng",
+        EC: 0,
+        DT: [],
+      });
+    }
+  } catch (error) {
+    console.error("Error updating order status:", error);
+    return res.status(500).json({
+      EM: "Có lỗi xảy ra khi cập nhật trạng thái đơn hàng",
+      EC: 0,
+      DT: [],
+    });
+  }
+};
+
 module.exports = {
   getDON_HANG,
   createDON_HANG,
@@ -484,4 +609,7 @@ module.exports = {
   deleteDON_HANG,
   updateTrangThaiDonHang,
   getDON_HANG_ByIDUser,
+  updateOrderStatusCanceled_User,
+  updateOrderStatusCanceled,
+  updateOrderStatusSuccess,
 };

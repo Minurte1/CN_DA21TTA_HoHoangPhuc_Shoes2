@@ -18,26 +18,59 @@ import axios from "axios";
 import VisibilityIcon from "@mui/icons-material/Visibility"; // Import icon Visibility
 
 import ProductDetailModal from "./modal/chiTietDonHang";
+import { enqueueSnackbar } from "notistack";
 
 const TatCaDonHangAdminProcess = () => {
   const [orders, setOrders] = useState([]);
   const [selectedOrderId, setSelectedOrderId] = useState(null);
   const [openModal, setOpenModal] = useState(false);
-
+  const api = process.env.REACT_APP_URL_SERVER;
   useEffect(() => {
     fetchOrders();
   }, []);
 
   const fetchOrders = async () => {
     try {
-      const response = await axios.get(
-        `http://localhost:3002/chi-tiet-hoa-don/all-process`
-      );
+      const response = await axios.get(`${api}/chi-tiet-hoa-don/all-process`);
       if (response.data.EC === 1) {
         setOrders(response.data.DT);
       }
     } catch (error) {
       console.error("Error fetching orders:", error);
+    }
+  };
+
+  const handleUpdateStatusSuccess = async (orderId) => {
+    try {
+      // Gửi yêu cầu cập nhật trạng thái "Giao dịch thành công"
+      const response = await axios.put(`${api}/don-hang/${orderId}/success`);
+
+      if (response.data.EC === 1) {
+        enqueueSnackbar(response.data.EM);
+      } else {
+        enqueueSnackbar(response.data.EM);
+      }
+    } catch (err) {
+      console.error("Error updating order status:", err);
+      enqueueSnackbar(err.response.data.EM);
+    } finally {
+    }
+  };
+
+  const handleUpdateStatusCanceled = async (orderId) => {
+    try {
+      // Gửi yêu cầu cập nhật trạng thái "Đã hủy"
+      const response = await axios.put(`${api}/don-hang/${orderId}/canceled`);
+
+      if (response.data.EC === 1) {
+        enqueueSnackbar(response.data.EM); // Thông báo thành công
+      } else {
+        enqueueSnackbar(response.data.EM); // Thông báo lỗi
+      }
+    } catch (err) {
+      console.error("Error updating order status:", err);
+      enqueueSnackbar("Có lỗi xảy ra khi cập nhật trạng thái đơn hàng.");
+    } finally {
     }
   };
 
@@ -152,6 +185,20 @@ const TatCaDonHangAdminProcess = () => {
                 <TableCell sx={{ fontSize: "0.875rem", color: "#26bbff" }}>
                   <Button
                     onClick={() => handleViewDetails(order.ID_DON_HANG)}
+                    startIcon={<VisibilityIcon sx={{ color: "#26bbff" }} />}
+                  ></Button>{" "}
+                </TableCell>{" "}
+                <TableCell sx={{ fontSize: "0.875rem", color: "#26bbff" }}>
+                  <Button
+                    onClick={() => handleUpdateStatusSuccess(order.ID_DON_HANG)}
+                    startIcon={<VisibilityIcon sx={{ color: "#26bbff" }} />}
+                  ></Button>{" "}
+                </TableCell>{" "}
+                <TableCell sx={{ fontSize: "0.875rem", color: "#26bbff" }}>
+                  <Button
+                    onClick={() =>
+                      handleUpdateStatusCanceled(order.ID_DON_HANG)
+                    }
                     startIcon={<VisibilityIcon sx={{ color: "#26bbff" }} />}
                   ></Button>{" "}
                 </TableCell>
