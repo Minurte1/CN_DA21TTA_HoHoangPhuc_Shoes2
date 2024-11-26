@@ -566,22 +566,52 @@ const updateOrderStatusCanceled = async (req, res) => {
 };
 
 // Cập nhật trạng thái đơn hàng là "Giao dịch thành công" ADMIN
+
 const updateOrderStatusSuccess = async (req, res) => {
   const { orderId } = req.params; // ID đơn hàng từ tham số URL
   console.log("orderId", orderId);
+
+  let conn; // Khai báo biến kết nối
+
   try {
+    // Lấy kết nối từ pool
+    conn = await connection.getConnection();
+
+    // Bắt đầu giao dịch
+    await conn.beginTransaction();
+
     // Cập nhật trạng thái đơn hàng
-    const [result] = await connection.execute(
+    const [result] = await conn.execute(
       `UPDATE DON_HANG 
        SET TRANG_THAI_DON_HANG = 'Giao dịch thành công', 
            NGAY_CAP_NHAT_DONHANG = NOW() 
        WHERE ID_DON_HANG = ?`,
-      [orderId] // Tham số orderId để xác định đơn hàng cần cập nhật
+      [orderId]
     );
 
     if (result.affectedRows > 0) {
+      // Lấy danh sách chi tiết đơn hàng (sản phẩm)
+      const [orderDetails] = await conn.execute(
+        `SELECT ID_SAN_PHAM, SO_LUONG_SP FROM CHI_TIET_HOA_DON WHERE ID_DON_HANG = ?`,
+        [orderId]
+      );
+
+      // Trừ số lượng sản phẩm trong bảng SAN_PHAM
+      for (let i = 0; i < orderDetails.length; i++) {
+        const { ID_SAN_PHAM, SO_LUONG_SP } = orderDetails[i];
+        await conn.execute(
+          `UPDATE SAN_PHAM 
+           SET SO_LUONG_SANPHAM = SO_LUONG_SANPHAM - ? 
+           WHERE ID_SAN_PHAM = ?`,
+          [SO_LUONG_SP, ID_SAN_PHAM]
+        );
+      }
+
+      // Nếu tất cả các thao tác thành công, commit giao dịch
+      await conn.commit();
+
       return res.status(200).json({
-        EM: "Cập nhật trạng thái đơn hàng thành công",
+        EM: "Cập nhật trạng thái đơn hàng thành công và trừ số lượng sản phẩm",
         EC: 1,
         DT: [],
       });
@@ -593,15 +623,23 @@ const updateOrderStatusSuccess = async (req, res) => {
       });
     }
   } catch (error) {
+    // Nếu có lỗi, rollback giao dịch
+    if (conn) {
+      await conn.rollback();
+    }
     console.error("Error updating order status:", error);
     return res.status(500).json({
       EM: "Có lỗi xảy ra khi cập nhật trạng thái đơn hàng",
       EC: 0,
       DT: [],
     });
+  } finally {
+    // Giải phóng kết nối
+    if (conn) {
+      conn.release();
+    }
   }
 };
-
 module.exports = {
   getDON_HANG,
   createDON_HANG,

@@ -63,6 +63,7 @@ const TatCaDonHangAdminProcess = () => {
       console.error("Error updating order status:", err);
       enqueueSnackbar(err.response.data.EM);
     } finally {
+      fetchOrders();
     }
   };
 
@@ -80,6 +81,7 @@ const TatCaDonHangAdminProcess = () => {
       console.error("Error updating order status:", err);
       enqueueSnackbar("Có lỗi xảy ra khi cập nhật trạng thái đơn hàng.");
     } finally {
+      fetchOrders();
     }
   };
   // Mở modal với Hỏi update
