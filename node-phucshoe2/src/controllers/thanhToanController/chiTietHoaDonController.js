@@ -38,7 +38,9 @@ const getChiTietHoaDon = async (req, res) => {
         LEFT JOIN 
           NGUOI_DUNG nd ON dh.ID_NGUOI_DUNG = nd.ID_NGUOI_DUNG
         WHERE 
-          dh.ID_DON_HANG = ?`,
+          dh.ID_DON_HANG = ?
+           ORDER BY 
+          dh.NGAY_CAP_NHAT_DONHANG DESC`,
       [id]
     );
 
@@ -207,7 +209,9 @@ const getChiTietHoaDonTheoNguoiDung_Success = async (req, res) => {
         LEFT JOIN 
           NGUOI_DUNG nd ON dh.ID_NGUOI_DUNG = nd.ID_NGUOI_DUNG
         WHERE 
-          dh.ID_NGUOI_DUNG = ? AND dh.TRANG_THAI_DON_HANG = 'Giao dịch thành công'`,
+          dh.ID_NGUOI_DUNG = ? AND dh.TRANG_THAI_DON_HANG = 'Giao dịch thành công'
+           ORDER BY 
+          dh.NGAY_CAP_NHAT_DONHANG DESC`,
       [id]
     );
     // Nếu không có đơn hàng nào, trả về thông báo lỗi
@@ -351,7 +355,9 @@ const getChiTietHoaDonTheoNguoiDung_Cancel = async (req, res) => {
         LEFT JOIN 
           NGUOI_DUNG nd ON dh.ID_NGUOI_DUNG = nd.ID_NGUOI_DUNG
         WHERE 
-          dh.ID_NGUOI_DUNG = ? AND dh.TRANG_THAI_DON_HANG = 'Đã hủy'`,
+          dh.ID_NGUOI_DUNG = ? AND dh.TRANG_THAI_DON_HANG = 'Đã hủy' 
+           ORDER BY 
+          dh.NGAY_CAP_NHAT_DONHANG DESC`,
       [id]
     );
     // Nếu không có đơn hàng nào, trả về thông báo lỗi
@@ -493,7 +499,9 @@ const getChiTietHoaDonTheoNguoiDung_WaitingThanhToan = async (req, res) => {
         LEFT JOIN 
           NGUOI_DUNG nd ON dh.ID_NGUOI_DUNG = nd.ID_NGUOI_DUNG
         WHERE 
-          dh.ID_NGUOI_DUNG = ? AND dh.TRANG_THAI_DON_HANG = 'Đang chờ thanh toán'`,
+          dh.ID_NGUOI_DUNG = ? AND dh.TRANG_THAI_DON_HANG = 'Đang chờ thanh toán'  
+          ORDER BY 
+          dh.NGAY_CAP_NHAT_DONHANG DESC`,
       [id]
     );
     // Nếu không có đơn hàng nào, trả về thông báo lỗi
@@ -637,7 +645,7 @@ const getPaidOrdersAwaitingProcessing = async (req, res) => {
         WHERE 
   dh.ID_NGUOI_DUNG = ? AND dh.TRANG_THAI_DON_HANG IN ('Đang chờ thanh toán', 'Đã thanh toán thành công và đang chờ giao hàng')
    ORDER BY 
-          dh.NGAY_TAO_DONHANG DESC`,
+          dh.NGAY_CAP_NHAT_DONHANG DESC`,
 
       [id]
     );
@@ -832,7 +840,7 @@ const getAllChiTietHoaDon_Admin = async (req, res) => {
         LEFT JOIN 
           NGUOI_DUNG nd ON dh.ID_NGUOI_DUNG = nd.ID_NGUOI_DUNG
         ORDER BY 
-          dh.NGAY_TAO_DONHANG DESC
+          dh.NGAY_CAP_NHAT_DONHANG DESC
       `
     );
 
@@ -972,8 +980,8 @@ const getALLPaidOrdersAwaitingProcessing_Admin = async (req, res) => {
           NGUOI_DUNG nd ON dh.ID_NGUOI_DUNG = nd.ID_NGUOI_DUNG
         WHERE 
   dh.TRANG_THAI_DON_HANG IN ('Đang chờ thanh toán', 'Đã thanh toán thành công và đang chờ giao hàng')
-   ORDER BY 
-          dh.NGAY_TAO_DONHANG DESC`
+    ORDER BY 
+          dh.NGAY_CAP_NHAT_DONHANG DESC`
     );
     // Nếu không có đơn hàng nào, trả về thông báo lỗi
     if (donHangResults.length === 0) {
@@ -1114,7 +1122,9 @@ const getALLChiTietHoaDonTheoNguoiDung_Cancel_Admin = async (req, res) => {
         LEFT JOIN 
           NGUOI_DUNG nd ON dh.ID_NGUOI_DUNG = nd.ID_NGUOI_DUNG
         WHERE 
-          dh.TRANG_THAI_DON_HANG = 'Đã hủy'`
+          dh.TRANG_THAI_DON_HANG = 'Đã hủy'
+           ORDER BY 
+          dh.NGAY_CAP_NHAT_DONHANG DESC`
     );
     // Nếu không có đơn hàng nào, trả về thông báo lỗi
     if (donHangResults.length === 0) {
@@ -1254,7 +1264,9 @@ const getAllChiTietHoaDonTheoNguoiDung_Success_Admin = async (req, res) => {
         LEFT JOIN 
           NGUOI_DUNG nd ON dh.ID_NGUOI_DUNG = nd.ID_NGUOI_DUNG
         WHERE 
-          dh.TRANG_THAI_DON_HANG = 'Giao dịch thành công'`
+          dh.TRANG_THAI_DON_HANG = 'Giao dịch thành công' 
+           ORDER BY 
+          dh.NGAY_CAP_NHAT_DONHANG DESC`
     );
     // Nếu không có đơn hàng nào, trả về thông báo lỗi
     if (donHangResults.length === 0) {
