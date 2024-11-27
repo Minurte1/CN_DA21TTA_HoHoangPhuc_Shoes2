@@ -289,7 +289,7 @@ const getMessagesFromUser = async (req, res) => {
       [idNguoiGui]
     );
 
-    if (sender.length === 0 || sender[0].VAI_TRO !== 1) {
+    if (sender.length === 0 || sender[0].VAI_TRO !== "1") {
       return res.status(403).json({
         EM: "Bạn không có quyền xem tin nhắn này",
         EC: 0,
