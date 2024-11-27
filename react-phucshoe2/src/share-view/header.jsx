@@ -91,7 +91,11 @@ const Header = () => {
 
   const handleLogout = async () => {
     try {
-      await axiosInstance.post(`${apiUrl}/logout`);
+      await axiosInstance.post(
+        `${apiUrl}/logout`,
+        {},
+        { withCredentials: true }
+      );
       Cookies.remove("accessToken");
 
       // Cập nhật Redux bằng cách dispatch hành động logout

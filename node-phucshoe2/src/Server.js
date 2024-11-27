@@ -25,9 +25,12 @@ app.use((req, res, next) => {
 });
 //setting
 const corsOptions = {
-  origin: "*", // Địa chỉ frontend
-  credentials: true, // Cho phép gửi cookie
+  origin: (origin, callback) => {
+    callback(null, true); // Allow all origins dynamically
+  },
+  credentials: true,
 };
+
 app.use(cors(corsOptions));
 
 app.use(cookieParser());

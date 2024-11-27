@@ -94,14 +94,14 @@ const ChatRealTime = () => {
     try {
       // Gửi tin nhắn tới backend
       const response = await axios.post(`${ENDPOINT}/tin-nhan/send`, {
-        idNguoiGui: userInfo.ID_NGUOI_DUNG, // ID người gửi
-        idNguoiNhan: 1, // ID người nhận (bạn cần cung cấp giá trị này từ context)
-        noiDungTinNhan: inputMess, // Nội dung tin nhắn
+        ID_NGUOI_DUNG: userInfo.ID_NGUOI_DUNG, // ID người gửi
+
+        NOI_DUNG_TINNHAN: inputMess, // Nội dung tin nhắn
       });
 
       if (response.data.EC === 1) {
         handleUserIb();
-        setTinNhan((prevMessages) => [...prevMessages, response.data.DT]);
+        // setTinNhan((prevMessages) => [...prevMessages, response.data.DT]);
         // console.log("Tin nhắn mới:", response.data.DT);
       } else {
         console.error("Gửi tin nhắn thất bại:", response.data.EM);
@@ -125,7 +125,7 @@ const ChatRealTime = () => {
     try {
       const response = await axios.post(
         `http://localhost:3002/tin-nhan/messages`,
-        { idNguoiGui: userInfo.ID_NGUOI_DUNG }
+        { ID_NGUOI_DUNG: userInfo.ID_NGUOI_DUNG }
       );
       console.log("response.data ", response.data.DT);
       setTinNhan(response.data.DT);
@@ -192,7 +192,7 @@ const ChatRealTime = () => {
                         {message.ID_NGUOI_DUNG === userInfo?.ID_NGUOI_DUNG && (
                           <div className="container-noidungtinnhan2 text-align-right">
                             <p className="noidungtinnhan2">
-                              {message.NOI_DUNG_TINNHAN}1
+                              {message.NOI_DUNG_TINNHAN}
                             </p>
                           </div>
                         )}
@@ -204,12 +204,12 @@ const ChatRealTime = () => {
                               ? "image-Avta"
                               : "display-none"
                           }`}
-                          src={`http://localhost:3002/images/${userInfo?.AVATAR}`}
+                          src={`http://localhost:3002/images/profile_pic-1701261034673.png`}
                         />
                         {message.ID_NGUOI_DUNG !== userInfo?.ID_NGUOI_DUNG && (
                           <div className="container-noidungtinnhan">
                             <p className="noidungtinnhan">
-                              {message.NOI_DUNG_TINNHAN}2
+                              {message.NOI_DUNG_TINNHAN}
                             </p>
                           </div>
                         )}

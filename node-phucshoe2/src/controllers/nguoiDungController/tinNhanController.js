@@ -2,9 +2,9 @@ const connection = require("../../config/database");
 
 // Gửi tin nhắn
 const sendMessage = async (req, res) => {
-  const { idNguoiGui, noiDungTinNhan } = req.body;
+  const { ID_NGUOI_DUNG, NOI_DUNG_TINNHAN } = req.body;
 
-  if (!idNguoiGui || !noiDungTinNhan) {
+  if (!ID_NGUOI_DUNG || !NOI_DUNG_TINNHAN) {
     return res.status(400).json({
       EM: "Thiếu thông tin người gửi hoặc nội dung tin nhắn",
       EC: 0,
@@ -28,14 +28,14 @@ const sendMessage = async (req, res) => {
 
     // Gửi tin nhắn đến tất cả các admin
     for (const admin of admins) {
-      const idNguoiNhan = admin.ID_NGUOI_DUNG;
+      const ID_NGUOI_DUNG_2 = admin.ID_NGUOI_DUNG;
 
       // Kiểm tra xem đã có cuộc trò chuyện giữa người gửi và người nhận chưa
       let [conversation] = await connection.execute(
         `SELECT * FROM CONVERSATIONS 
          WHERE (ID_NGUOI_DUNG_1 = ? AND ID_NGUOI_DUNG_2 = ?) 
          OR (ID_NGUOI_DUNG_1 = ? AND ID_NGUOI_DUNG_2 = ?)`,
-        [idNguoiGui, idNguoiNhan, idNguoiNhan, idNguoiGui]
+        [ID_NGUOI_DUNG, ID_NGUOI_DUNG_2, ID_NGUOI_DUNG_2, ID_NGUOI_DUNG]
       );
 
       // Nếu chưa có cuộc trò chuyện, tạo mới
@@ -43,7 +43,7 @@ const sendMessage = async (req, res) => {
         const [newConversation] = await connection.execute(
           `INSERT INTO CONVERSATIONS (ID_NGUOI_DUNG_1, ID_NGUOI_DUNG_2, NGAY_TAO)
            VALUES (?, ?, NOW())`,
-          [idNguoiGui, idNguoiNhan]
+          [ID_NGUOI_DUNG, ID_NGUOI_DUNG_2]
         );
 
         conversation = [{ ID_CONVERSATION: newConversation.insertId }];
@@ -55,16 +55,16 @@ const sendMessage = async (req, res) => {
       const [messageResult] = await connection.execute(
         `INSERT INTO TIN_NHAN (ID_CONVERSATION, ID_NGUOI_DUNG, NOI_DUNG_TINNHAN, NGAY_TAO_TIN_NHAN)
          VALUES (?, ?, ?, NOW())`,
-        [conversationId, idNguoiGui, noiDungTinNhan]
+        [conversationId, ID_NGUOI_DUNG, NOI_DUNG_TINNHAN]
       );
 
       if (messageResult.affectedRows > 0) {
         req.io.emit("receive_message", {
           idTinNhan: messageResult.insertId,
-          idNguoiGui,
-          idNguoiNhan,
-          noiDungTinNhan,
-          ngayTaoTinNhan: new Date().toISOString(),
+          ID_NGUOI_DUNG,
+          ID_NGUOI_DUNG_2,
+          NOI_DUNG_TINNHAN,
+          NGAY_TAO_TIN_NHAN: new Date().toISOString(),
         });
       }
     }
@@ -86,9 +86,9 @@ const sendMessage = async (req, res) => {
 
 // Lấy danh sách tin nhắn
 const getMessages = async (req, res) => {
-  const { idNguoiGui } = req.body;
+  const { ID_NGUOI_DUNG } = req.body;
 
-  if (!idNguoiGui) {
+  if (!ID_NGUOI_DUNG) {
     return res.status(400).json({
       EM: "Thiếu thông tin người gửi",
       EC: 0,
@@ -121,7 +121,7 @@ const getMessages = async (req, res) => {
         `SELECT * FROM CONVERSATIONS 
          WHERE (ID_NGUOI_DUNG_1 = ? AND ID_NGUOI_DUNG_2 = ?) 
          OR (ID_NGUOI_DUNG_1 = ? AND ID_NGUOI_DUNG_2 = ?)`,
-        [idNguoiGui, idNguoiNhan, idNguoiNhan, idNguoiGui]
+        [ID_NGUOI_DUNG, idNguoiNhan, idNguoiNhan, ID_NGUOI_DUNG]
       );
 
       if (conversation.length === 0) {
@@ -206,8 +206,8 @@ const sendMessageToUser = async (req, res) => {
       `SELECT VAI_TRO FROM NGUOI_DUNG WHERE ID_NGUOI_DUNG = ?`,
       [idNguoiGui]
     );
-
-    if (sender.length === 0 || sender[0].VAI_TRO !== 1) {
+    console.log("sender", sender[0]);
+    if (sender.length === 0 || sender[0].VAI_TRO !== "1") {
       return res.status(403).json({
         EM: "Bạn không có quyền gửi tin nhắn này",
         EC: 0,
@@ -242,14 +242,17 @@ const sendMessageToUser = async (req, res) => {
        VALUES (?, ?, ?, NOW())`,
       [conversationId, idNguoiGui, noiDungTinNhan]
     );
+    const ID_NGUOI_DUNG = idNguoiGui;
+    const ID_NGUOI_DUNG_2 = idNguoiNhan;
+    const NOI_DUNG_TINNHAN = noiDungTinNhan;
 
     if (messageResult.affectedRows > 0) {
       req.io.emit("receive_message", {
         idTinNhan: messageResult.insertId,
-        idNguoiGui,
-        idNguoiNhan,
-        noiDungTinNhan,
-        ngayTaoTinNhan: new Date().toISOString(),
+        ID_NGUOI_DUNG,
+        ID_NGUOI_DUNG_2,
+        NOI_DUNG_TINNHAN,
+        NGAY_TAO_TIN_NHAN: new Date().toISOString(),
       });
     }
 

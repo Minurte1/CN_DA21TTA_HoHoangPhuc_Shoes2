@@ -19,8 +19,10 @@ import { Grid } from "@mui/material";
 
 import { useSelector } from "react-redux";
 import ChatRealTime from "./web-view/component-view/ComponentChat/ChatRealTime";
+
 function App() {
   const { isAuthenticated, userInfo } = useSelector((state) => state.auth);
+
   return (
     <div
       className="App"
@@ -39,7 +41,10 @@ function App() {
       >
         <Router>
           <Routes>
-            <Route path="/*" element={<MainLayout />} />
+            <Route
+              path="/*"
+              element={<MainLayout isAuthenticated={isAuthenticated} />}
+            />
 
             <Route
               path="/admin/*"
@@ -53,11 +58,20 @@ function App() {
     </div>
   );
 }
-const MainLayout = () => (
+const MainLayout = ({ isAuthenticated }) => (
   <>
     <Header />
     <Navbar />
-    <ChatRealTime />
+
+    {isAuthenticated ? (
+      <>
+        {" "}
+        <ChatRealTime />
+      </>
+    ) : (
+      false
+    )}
+
     <Routes>
       <Route path="/*" element={<RouterView />} />
     </Routes>
