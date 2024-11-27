@@ -18,12 +18,12 @@ const MessengerAdmin = () => {
   const [socket, setSocket] = useState(null);
   const chatContainerRef = useRef(null);
   const [username, setUsername] = useState("");
-  const [IdAdminChat, setIdAdminChat] = useState("");
+
   const [inputMess, setInputMess] = useState(""); // Declare state for message input
 
   useEffect(() => {
     if (isAuthenticated) {
-      const newSocket = io("http://localhost:3002");
+      const newSocket = io(`${api}`);
       setSocket(newSocket);
 
       newSocket.on("connect", () => {
@@ -79,26 +79,22 @@ const MessengerAdmin = () => {
   };
 
   const handleIconCaVoi = async () => {
-    if (IdAdminChat) {
-      try {
-        const response = await axios.post(`${api}/tin-nhan/send`, {
-          idNguoiGui: username,
-          idNguoiNhan: 1,
-          noiDungTinNhan: "🐳",
-        });
+    try {
+      const response = await axios.post(`${api}/tin-nhan/send`, {
+        idNguoiGui: userInfo.ID_NGUOI_DUNG,
+        idNguoiNhan: selectedUser.ID_NGUOI_DUNG,
+        noiDungTinNhan: "🐳",
+      });
 
-        if (response.data.EC === 1) {
-          fetchMessages();
-          //   setTinNhan((prevMessages) => [...prevMessages, response.data.DT]);
-          setInputMess("");
-        } else {
-          console.error("Gửi tin nhắn thất bại:", response.data.EM);
-        }
-      } catch (error) {
-        console.error("Lỗi khi gửi tin nhắn:", error);
+      if (response.data.EC === 1) {
+        fetchMessages();
+        //   setTinNhan((prevMessages) => [...prevMessages, response.data.DT]);
+        setInputMess("");
+      } else {
+        console.error("Gửi tin nhắn thất bại:", response.data.EM);
       }
-    } else {
-      console.warn("Chưa xác định IdAdminChat!");
+    } catch (error) {
+      console.error("Lỗi khi gửi tin nhắn:", error);
     }
   };
 
@@ -146,6 +142,7 @@ const MessengerAdmin = () => {
           selectedUser={selectedUser}
           setSelectedUser={setSelectedUser}
           users={users}
+          userInfo={userInfo}
         />
       </Box>
       <Box sx={{ flex: 4 }}>

@@ -6,15 +6,18 @@ import {
   ListItemText,
   Typography,
   TextField,
+  Avatar,
 } from "@mui/material";
 
-const SidebarMess = ({ selectedUser, setSelectedUser, users }) => {
-  // State lưu giá trị tìm kiếm
+const SidebarMess = ({ selectedUser, setSelectedUser, users, userInfo }) => {
+  const api = process.env.REACT_APP_URL_SERVER;
   const [searchQuery, setSearchQuery] = useState("");
 
   // Lọc người dùng theo tên
-  const filteredUsers = users.filter((user) =>
-    user.HO_TEN.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredUsers = users.filter(
+    (user) =>
+      user.HO_TEN.toLowerCase().includes(searchQuery.toLowerCase()) &&
+      user.ID_NGUOI_DUNG !== userInfo.ID_NGUOI_DUNG // Loại bỏ người dùng hiện tại
   );
 
   return (
@@ -24,7 +27,7 @@ const SidebarMess = ({ selectedUser, setSelectedUser, users }) => {
         top: "60px", // Khoảng cách từ trên
         width: 240,
         height: "95vh", // Chiều cao sidebar
-        bgcolor: "#f5f5f5",
+
         borderRight: "1px solid #ddd",
         display: "flex",
         flexDirection: "column",
@@ -59,10 +62,20 @@ const SidebarMess = ({ selectedUser, setSelectedUser, users }) => {
           {/* Hiển thị danh sách người dùng đã lọc */}
           {filteredUsers.map((user) => (
             <ListItemButton
+              sx={{ color: "#fff", display: "flex", alignItems: "center" }}
               key={user.ID_NGUOI_DUNG}
               selected={selectedUser?.ID_NGUOI_DUNG === user.ID_NGUOI_DUNG}
               onClick={() => setSelectedUser(user)}
             >
+              {/* Avatar người dùng */}
+              <Avatar
+                alt={user.HO_TEN}
+                src={`${api}/images/${user.AVATAR}`} // Đường dẫn ảnh đại diện (nếu có)
+                sx={{ marginRight: 2, bgcolor: "#3f51b5" }} // Màu nền nếu không có ảnh
+              >
+                {user.HO_TEN?.charAt(0)} {/* Chữ cái đầu tiên của tên */}
+              </Avatar>
+              {/* Tên người dùng */}
               <ListItemText primary={user.HO_TEN} />
             </ListItemButton>
           ))}

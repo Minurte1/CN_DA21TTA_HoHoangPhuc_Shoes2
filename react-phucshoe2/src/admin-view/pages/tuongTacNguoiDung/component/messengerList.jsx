@@ -7,6 +7,7 @@ import {
   ListItemText,
   IconButton,
   TextField,
+  Avatar,
 } from "@mui/material";
 
 const MessageList = ({
@@ -18,6 +19,7 @@ const MessageList = ({
   setInputMess,
   userInfo,
 }) => {
+  const api = process.env.REACT_APP_URL_SERVER;
   useEffect(() => {
     if (messages.length > 0 && chatContainerRef.current) {
       setTimeout(() => {
@@ -55,42 +57,65 @@ const MessageList = ({
                   padding: 0,
                   overflowY: "auto",
                   height: "80vh", // Đảm bảo chiều cao cho phần cuộn
-                  backgroundColor: "#fff",
                 }}
                 ref={chatContainerRef}
               >
                 {messages.map((message, index) => (
-                  <Box
-                    key={message._id}
-                    sx={{
-                      marginBottom: 2,
-                      display: "flex",
-                      justifyContent:
-                        message.ID_NGUOI_DUNG === userInfo.ID_NGUOI_DUNG
-                          ? "flex-end"
-                          : "flex-start",
-                    }}
-                  >
-                    <Typography variant="caption" sx={{ textAlign: "right" }}>
+                  <>
+                    {" "}
+                    <Typography
+                      variant="caption"
+                      sx={{ textAlign: "right", color: "#fff" }}
+                    >
                       {new Date(message.NGAY_TAO_TIN_NHAN).toLocaleString()}
                     </Typography>
                     <Box
+                      key={message._id}
                       sx={{
-                        color: "#fff",
-                        maxWidth: "80%",
-                        padding: 1,
-                        backgroundColor:
+                        marginBottom: 2,
+                        display: "flex",
+                        justifyContent:
                           message.ID_NGUOI_DUNG === userInfo.ID_NGUOI_DUNG
-                            ? "#0084ff"
-                            : "#303030",
-                        borderRadius: 2,
+                            ? "flex-end"
+                            : "flex-start",
                       }}
                     >
-                      <Typography variant="body1">
-                        {message.NOI_DUNG_TINNHAN}
-                      </Typography>
+                      {" "}
+                      {/* Avatar người dùng */}
+                      {message.ID_NGUOI_DUNG !== userInfo.ID_NGUOI_DUNG ? (
+                        <>
+                          {" "}
+                          <Avatar
+                            alt={selectedUser.HO_TEN}
+                            src={`${api}/images/${selectedUser.AVATAR}`} // Đường dẫn ảnh đại diện (nếu có)
+                            sx={{ marginRight: 2, bgcolor: "#3f51b5" }} // Màu nền nếu không có ảnh
+                          ></Avatar>
+                        </>
+                      ) : (
+                        <></>
+                      )}
+                      <Box
+                        sx={{
+                          color: "#fff",
+                          maxWidth: "80%",
+                          padding: 1,
+                          backgroundColor:
+                            message.ID_NGUOI_DUNG === userInfo.ID_NGUOI_DUNG
+                              ? "#0084ff"
+                              : "#303030",
+                          borderRadius: 2,
+                        }}
+                      >
+                        {" "}
+                        <Typography variant="body1">
+                          {message.NOI_DUNG_TINNHAN}
+                        </Typography>{" "}
+                        {index === messages.length - 1 && (
+                          <div ref={chatContainerRef} />
+                        )}
+                      </Box>
                     </Box>
-                  </Box>
+                  </>
                 ))}
               </Box>
             </Box>
@@ -105,7 +130,6 @@ const MessageList = ({
                 bottom: 0,
                 left: 0,
                 right: 0,
-                backgroundColor: "#0f7c8f",
               }}
             >
               <TextField
