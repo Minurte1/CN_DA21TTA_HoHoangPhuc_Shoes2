@@ -19,67 +19,81 @@ const MessageList = ({
   userInfo,
 }) => {
   useEffect(() => {
-    if (chatContainerRef.current) {
-      chatContainerRef.current.scrollTop =
-        chatContainerRef.current.scrollHeight;
+    if (messages.length > 0 && chatContainerRef.current) {
+      setTimeout(() => {
+        chatContainerRef.current.scrollTop =
+          chatContainerRef.current.scrollIntoView({ behavior: "smooth" });
+      }, 0);
     }
   }, [messages, selectedUser]);
+
   return (
-    <Box sx={{ flex: 1, p: 3 }}>
+    <Box
+      sx={{
+        flex: 1,
+        p: 3,
+
+        height: "auto",
+      }}
+    >
       {selectedUser ? (
         <>
-          <Typography variant="h6" sx={{ mb: 2 }}>
-            Tin nhắn với {selectedUser.HO_TEN}
-          </Typography>
-          <Box sx={{ flex: 1, display: "flex", flexDirection: "column" }}>
+          <Box
+            sx={{
+              flex: 1,
+              display: "flex",
+              flexDirection: "column",
+              height: "100vh",
+            }}
+          >
             {/* Tin nhắn */}
-            <Box
-              sx={{
-                flex: 1,
-                padding: 0,
-                overflowY: "auto",
-                height: "100%", // Đảm bảo chiều cao đủ lớn
-              }}
-              ref={chatContainerRef}
-            >
-              {messages.map((message) => (
-                <Box
-                  key={message._id}
-                  sx={{
-                    marginBottom: 2,
-
-                    display: "flex",
-                    justifyContent:
-                      message.ID_NGUOI_DUNG === userInfo.ID_NGUOI_DUNG
-                        ? "flex-end"
-                        : "flex-start",
-                  }}
-                >
-                  {" "}
-                  <Typography variant="caption" sx={{ textAlign: "right" }}>
-                    {new Date(message.NGAY_TAO_TIN_NHAN).toLocaleString()}
-                  </Typography>
+            <Box sx={{ flex: 1, display: "flex", flexDirection: "column" }}>
+              {/* Tin nhắn */}
+              <Box
+                sx={{
+                  flex: 1,
+                  padding: 0,
+                  overflowY: "auto",
+                  height: "80vh", // Đảm bảo chiều cao cho phần cuộn
+                  backgroundColor: "#fff",
+                }}
+                ref={chatContainerRef}
+              >
+                {messages.map((message, index) => (
                   <Box
+                    key={message._id}
                     sx={{
-                      color: "#fff",
-
-                      maxWidth: "80%",
-                      padding: 1,
-                      backgroundColor:
+                      marginBottom: 2,
+                      display: "flex",
+                      justifyContent:
                         message.ID_NGUOI_DUNG === userInfo.ID_NGUOI_DUNG
-                          ? "#0084ff"
-                          : "#303030",
-                      borderRadius: 2,
+                          ? "flex-end"
+                          : "flex-start",
                     }}
                   >
-                    <Typography variant="body1">
-                      {message.NOI_DUNG_TINNHAN}
+                    <Typography variant="caption" sx={{ textAlign: "right" }}>
+                      {new Date(message.NGAY_TAO_TIN_NHAN).toLocaleString()}
                     </Typography>
+                    <Box
+                      sx={{
+                        color: "#fff",
+                        maxWidth: "80%",
+                        padding: 1,
+                        backgroundColor:
+                          message.ID_NGUOI_DUNG === userInfo.ID_NGUOI_DUNG
+                            ? "#0084ff"
+                            : "#303030",
+                        borderRadius: 2,
+                      }}
+                    >
+                      <Typography variant="body1">
+                        {message.NOI_DUNG_TINNHAN}
+                      </Typography>
+                    </Box>
                   </Box>
-                </Box>
-              ))}
+                ))}
+              </Box>
             </Box>
-
             {/* Input để gửi tin nhắn */}
             <Box
               sx={{
@@ -87,6 +101,11 @@ const MessageList = ({
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
+                height: "10vh",
+                bottom: 0,
+                left: 0,
+                right: 0,
+                backgroundColor: "#0f7c8f",
               }}
             >
               <TextField

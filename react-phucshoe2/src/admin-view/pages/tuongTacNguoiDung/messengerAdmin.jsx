@@ -131,30 +131,36 @@ const MessengerAdmin = () => {
       event.preventDefault();
     }
   };
-  //   useEffect(() => {
-  //     if (chatContainerRef.current) {
-  //       chatContainerRef.current.scrollTop =
-  //         chatContainerRef.current.scrollHeight;
-  //     }
-  //   }, [messages, selectedUser]);
+
   return (
-    <Box sx={{ display: "flex" }}>
-      <Sidebar
-        selectedUser={selectedUser}
-        setSelectedUser={setSelectedUser}
-        users={users}
-      />
-      <MessageList
-        selectedUser={selectedUser}
-        messages={messages}
-        SendMessNe={SendMessNe}
-        handlePressEnter={handlePressEnter}
-        handleIconCaVoi={handleIconCaVoi}
-        chatContainerRef={chatContainerRef}
-        inputMess={inputMess}
-        setInputMess={setInputMess}
-        userInfo={userInfo}
-      />
+    <Box
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+      }}
+    >
+      <Box sx={{ flex: 1 }}>
+        {" "}
+        <Sidebar
+          selectedUser={selectedUser}
+          setSelectedUser={setSelectedUser}
+          users={users}
+        />
+      </Box>
+      <Box sx={{ flex: 4 }}>
+        <MessageList
+          selectedUser={selectedUser}
+          messages={messages}
+          SendMessNe={SendMessNe}
+          handlePressEnter={handlePressEnter}
+          handleIconCaVoi={handleIconCaVoi}
+          chatContainerRef={chatContainerRef}
+          inputMess={inputMess}
+          setInputMess={setInputMess}
+          userInfo={userInfo}
+        />
+      </Box>
     </Box>
   );
 };
