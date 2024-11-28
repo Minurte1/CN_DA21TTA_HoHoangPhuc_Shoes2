@@ -12,23 +12,48 @@ import TwitterIcon from "@mui/icons-material/Twitter";
 import YouTubeIcon from "@mui/icons-material/YouTube";
 import translations from "../redux/data/translations";
 import { useSelector } from "react-redux";
+import { getThemeConfig } from "../services/themeService";
+
 const Footer = () => {
+  const { isAuthenticated, userInfo } = useSelector((state) => state.auth);
+  const currentTheme = getThemeConfig(userInfo?.THEMES || "dark");
+
   const language = useSelector((state) => state.language.language);
   const t = translations[language].footer;
 
   return (
     <Box
-      sx={{ backgroundColor: "#1a1a1a", color: "white", padding: "40px 20px" }}
+      sx={{
+        backgroundColor: currentTheme.backgroundColor,
+        color: currentTheme.color,
+        padding: "40px 20px",
+        borderTop: `1px solid ${currentTheme.secondaryColor}`,
+      }}
     >
       {/* Social Media Icons */}
       <Box sx={{ textAlign: "center", marginBottom: 3 }}>
-        <IconButton color="inherit">
+        <IconButton
+          sx={{
+            color: currentTheme.accentColor,
+            "&:hover": { color: currentTheme.secondaryColor },
+          }}
+        >
           <FacebookIcon />
         </IconButton>
-        <IconButton color="inherit">
+        <IconButton
+          sx={{
+            color: currentTheme.accentColor,
+            "&:hover": { color: currentTheme.secondaryColor },
+          }}
+        >
           <TwitterIcon />
         </IconButton>
-        <IconButton color="inherit">
+        <IconButton
+          sx={{
+            color: currentTheme.accentColor,
+            "&:hover": { color: currentTheme.secondaryColor },
+          }}
+        >
           <YouTubeIcon />
         </IconButton>
       </Box>
@@ -40,90 +65,105 @@ const Footer = () => {
             {t.resources}
           </Typography>
           <Box>
-            <Link href="#" color="inherit" underline="hover">
+            <Link
+              href="#"
+              underline="hover"
+              sx={{ color: currentTheme.secondaryColor }}
+            >
               {t.support}
             </Link>
             <br />
-            <Link href="#" color="inherit" underline="hover">
+            <Link
+              href="#"
+              underline="hover"
+              sx={{ color: currentTheme.secondaryColor }}
+            >
               {t.distribute}
             </Link>
             <br />
-            <Link href="#" color="inherit" underline="hover">
+            <Link
+              href="#"
+              underline="hover"
+              sx={{ color: currentTheme.secondaryColor }}
+            >
               {t.careers}
             </Link>
             <br />
-            <Link href="#" color="inherit" underline="hover">
+            <Link
+              href="#"
+              underline="hover"
+              sx={{ color: currentTheme.secondaryColor }}
+            >
               {t.company}
             </Link>
           </Box>
         </Grid>
         <Grid item xs={6} sm={3}>
           <Box>
-            <Link href="#" color="inherit" underline="hover">
+            <Link
+              href="#"
+              underline="hover"
+              sx={{ color: currentTheme.secondaryColor }}
+            >
               {t.fanArtPolicy}
             </Link>
             <br />
-            <Link href="#" color="inherit" underline="hover">
+            <Link
+              href="#"
+              underline="hover"
+              sx={{ color: currentTheme.secondaryColor }}
+            >
               {t.uxResearch}
             </Link>
             <br />
-            <Link href="#" color="inherit" underline="hover">
+            <Link
+              href="#"
+              underline="hover"
+              sx={{ color: currentTheme.secondaryColor }}
+            >
               {t.storeEula}
             </Link>
             <br />
-            <Link href="#" color="inherit" underline="hover">
+            <Link
+              href="#"
+              underline="hover"
+              sx={{ color: currentTheme.secondaryColor }}
+            >
               {t.onlineServices}
             </Link>
           </Box>
         </Grid>
         <Grid item xs={6} sm={3}>
           <Box>
-            <Link href="#" color="inherit" underline="hover">
+            <Link
+              href="#"
+              underline="hover"
+              sx={{ color: currentTheme.secondaryColor }}
+            >
               {t.communityRules}
             </Link>
             <br />
-            <Link href="#" color="inherit" underline="hover">
+            <Link
+              href="#"
+              underline="hover"
+              sx={{ color: currentTheme.secondaryColor }}
+            >
               {t.newsroom}
             </Link>
           </Box>
         </Grid>
-        {/* <Grid item xs={6} sm={3}>
-          <Typography variant="h6" sx={{ fontWeight: "bold", marginBottom: 2 }}>
-            {t.madeBy}
-          </Typography>
-          <Box>
-            <Link href="#" color="inherit" underline="hover">
-              Battle Breakers
-            </Link>
-            <br />
-            <Link href="#" color="inherit" underline="hover">
-              Fortnite
-            </Link>
-            <br />
-            <Link href="#" color="inherit" underline="hover">
-              Infinity Blade
-            </Link>
-            <br />
-            <Link href="#" color="inherit" underline="hover">
-              Robo Recall
-            </Link>
-            <br />
-            <Link href="#" color="inherit" underline="hover">
-              Shadow Complex
-            </Link>
-            <br />
-            <Link href="#" color="inherit" underline="hover">
-              Unreal Tournament
-            </Link>
-          </Box>
-        </Grid> */}
       </Grid>
 
-      <Divider sx={{ backgroundColor: "#444", marginY: 4 }} />
+      <Divider
+        sx={{
+          backgroundColor: currentTheme.secondaryColor,
+          marginY: 4,
+        }}
+      />
 
       {/* Copyright Section */}
       <Box sx={{ textAlign: "center", marginBottom: 3 }}>
-        <Typography variant="body2" color="inherit">
+        <Typography variant="body2" sx={{ color: currentTheme.secondaryColor }}>
           {t.copyright}
         </Typography>
       </Box>
@@ -132,21 +172,29 @@ const Footer = () => {
       <Box sx={{ textAlign: "center" }}>
         <Link
           href="#"
-          color="inherit"
           underline="hover"
-          sx={{ marginRight: 2 }}
+          sx={{
+            marginRight: 2,
+            color: currentTheme.secondaryColor,
+          }}
         >
           {t.termsOfService}
         </Link>
         <Link
           href="#"
-          color="inherit"
           underline="hover"
-          sx={{ marginRight: 2 }}
+          sx={{
+            marginRight: 2,
+            color: currentTheme.secondaryColor,
+          }}
         >
           {t.privacyPolicy}
         </Link>
-        <Link href="#" color="inherit" underline="hover">
+        <Link
+          href="#"
+          underline="hover"
+          sx={{ color: currentTheme.secondaryColor }}
+        >
           {t.storeRefundPolicy}
         </Link>
       </Box>

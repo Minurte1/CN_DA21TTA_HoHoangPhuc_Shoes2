@@ -306,9 +306,9 @@ const getMessagesFromUser = async (req, res) => {
     );
 
     if (conversation.length === 0) {
-      return res.status(404).json({
+      return res.status(200).json({
         EM: "Không tìm thấy cuộc trò chuyện với người dùng này",
-        EC: 0,
+        EC: 1,
         DT: [],
       });
     }

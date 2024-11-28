@@ -48,6 +48,12 @@ const PasswordAndSetting = () => {
         THEMES: themesWeb,
       });
       if (response.status === 200) {
+        dispatch(
+          setUserInfo({
+            ...userInfo, // Giữ nguyên các giá trị khác trong userInfo
+            THEMES: themesWeb, // Cập nhật THEMES từ response
+          })
+        );
         console.log("Language updated successfully");
       } else {
         console.error("Failed to update language");
@@ -87,7 +93,7 @@ const PasswordAndSetting = () => {
   };
 
   //themes
-  const [anchorElTheme, setAnchorElTheme] = React.useState(null);
+  const [anchorElTheme, setAnchorElTheme] = useState(null);
   const handleThemeMenu = (event) => {
     setAnchorElTheme(event.currentTarget);
   };

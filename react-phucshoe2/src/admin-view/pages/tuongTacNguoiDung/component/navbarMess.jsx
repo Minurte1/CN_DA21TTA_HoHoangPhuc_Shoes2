@@ -31,11 +31,18 @@ const SidebarMess = ({ selectedUser, setSelectedUser, users, userInfo }) => {
         borderRight: "1px solid #ddd",
         display: "flex",
         flexDirection: "column",
-        zIndex: 1000, // Sidebar luôn ở trên các phần tử khác
+        zIndex: 1000,
       }}
     >
       {/* Trường tìm kiếm */}
-      <Box sx={{ p: 2 }}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          marginRight: 2,
+        }}
+      >
         <TextField
           fullWidth
           variant="outlined"
@@ -43,10 +50,11 @@ const SidebarMess = ({ selectedUser, setSelectedUser, users, userInfo }) => {
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           sx={{
+            height: "50px",
             backgroundColor: "#fff",
-            borderRadius: "25px",
+            borderRadius: "14px",
             "& .MuiOutlinedInput-root": {
-              borderRadius: "25px",
+              borderRadius: "14px",
             },
           }}
         />
