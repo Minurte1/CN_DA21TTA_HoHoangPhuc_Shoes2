@@ -48,6 +48,8 @@ const PasswordAndSetting = () => {
         THEMES: themesWeb,
       });
       if (response.status === 200) {
+        localStorage.setItem("THEMES", themesWeb);
+
         dispatch(
           setUserInfo({
             ...userInfo, // Giữ nguyên các giá trị khác trong userInfo

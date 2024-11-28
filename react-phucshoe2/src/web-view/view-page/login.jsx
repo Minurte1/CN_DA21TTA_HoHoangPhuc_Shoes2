@@ -61,6 +61,7 @@ const LoginPage = () => {
           console.log("check token =>", response.data);
 
           if (response.data.EC === 200) {
+            localStorage.setItem("THEMES", response.data.DT.userInfo.THEMES);
             Cookies.remove("accessToken");
             const accessToken = response.data.DT.accessToken;
             Cookies.set("accessToken", accessToken, { expires: 7 });
@@ -111,6 +112,7 @@ const LoginPage = () => {
         Cookies.remove("accessToken");
         const accessToken = response.data.DT.accessToken;
         Cookies.set("accessToken", accessToken, { expires: 7 });
+        localStorage.setItem("THEMES", response.data.DT.userInfo.THEMES);
 
         // Cập nhật trạng thái người dùng trong Redux
         dispatch(

@@ -19,6 +19,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import translations from "../../redux/data/translations";
+import { getThemeConfig } from "../../services/themeService";
 const api = process.env.REACT_APP_URL_SERVER;
 
 const Home = () => {
@@ -33,6 +34,11 @@ const Home = () => {
   const [loading, setLoading] = useState(true); // State loading
   const navigate = useNavigate();
 
+  //BackgroundColor
+  const { isAuthenticated, userInfo } = useSelector((state) => state.auth);
+  const currentTheme = getThemeConfig(
+    localStorage.getItem("THEMES") || userInfo?.THEMES || "dark"
+  );
   const language = useSelector((state) => state.language.language);
   const t = translations[language].home;
 
@@ -125,7 +131,7 @@ const Home = () => {
           <Box
             sx={{
               padding: 3,
-              backgroundColor: "#101014",
+              backgroundColor: currentTheme.backgroundColor,
             }}
           >
             <Grid container spacing={2}>
@@ -133,8 +139,8 @@ const Home = () => {
                 <Grid item xs={12} sm={6} md={6} key={index}>
                   <Card
                     sx={{
-                      backgroundColor: "#202020",
-                      color: "#fff",
+                      backgroundColor: currentTheme.backgroundColor,
+                      color: currentTheme.color,
                       textAlign: "left",
                       width: "100%",
                       height: "800px",
@@ -203,7 +209,7 @@ const Home = () => {
           />
           <Box
             sx={{
-              backgroundColor: "#101014",
+              backgroundColor: currentTheme.backgroundColor,
               padding: 3,
               width: "100%",
             }}

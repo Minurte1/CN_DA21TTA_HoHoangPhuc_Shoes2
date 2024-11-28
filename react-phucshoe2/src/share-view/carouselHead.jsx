@@ -17,9 +17,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { setTotalCart } from "../redux/authSlice";
 import { enqueueSnackbar } from "notistack";
 import translations from "../redux/data/translations";
+import { getThemeConfig } from "../services/themeService";
 const api = process.env.REACT_APP_URL_SERVER;
 
 const CarouselHead = ({ carouselProducts }) => {
+  const { isAuthenticated, userInfo } = useSelector((state) => state.auth);
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const [isSelected, setIsSelected] = useState(""); // State để theo dõi trạng thái nhấp
@@ -30,6 +32,11 @@ const CarouselHead = ({ carouselProducts }) => {
   // State to manage the current main image
   const [mainImage, setMainImage] = useState("");
   const dispatch = useDispatch();
+
+  const currentTheme = getThemeConfig(
+    localStorage.getItem("THEMES") || userInfo?.THEMES || "dark"
+  );
+
   useEffect(() => {
     // Kiểm tra nếu có sản phẩm trong carouselProducts thì lấy hình ảnh đầu tiên
     if (carouselProducts && carouselProducts.length > 0) {
@@ -54,7 +61,7 @@ const CarouselHead = ({ carouselProducts }) => {
   const handleBuyProduct = (id) => {
     navigate(`/selectShoe/${id}`);
   };
-  const { isAuthenticated, userInfo } = useSelector((state) => state.auth);
+
   const handleAddToCart = async () => {
     // Kiểm tra xem người dùng đã đăng nhập chưa
     if (!isAuthenticated) {
@@ -90,10 +97,11 @@ const CarouselHead = ({ carouselProducts }) => {
       sx={{
         display: "flex",
         flexDirection: { xs: "column", md: "row" },
-        backgroundColor: "#101014",
+        backgroundColor: currentTheme.backgroundColor,
         color: "#fff",
         minHeight: "100vh",
         width: "100%",
+        mt: 4,
       }}
     >
       <Box
@@ -102,7 +110,7 @@ const CarouselHead = ({ carouselProducts }) => {
           display: "flex",
           flexDirection: { xs: "column", md: "row" },
           width: "100%",
-          backgroundColor: "#101014",
+          backgroundColor: currentTheme.backgroundColor,
           backgroundImage: `linear-gradient(to right, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0)), url(${
             selectedProduct
               ? `${api}/images/${selectedProduct.HINH_ANH_NEN_CAROUSEL}`
@@ -229,7 +237,7 @@ const CarouselHead = ({ carouselProducts }) => {
       <Box
         sx={{
           width: { xs: "100%", md: "220px" },
-          backgroundColor: "#101014",
+          backgroundColor: currentTheme.backgroundColor,
           display: "flex",
 
           flexDirection: "column",
@@ -268,7 +276,7 @@ const CarouselHead = ({ carouselProducts }) => {
               <CardContent>
                 <Typography
                   sx={{
-                    color: "#fff",
+                    color: currentTheme.color,
                     fontSize: "13px",
                     textAlign: "left",
                     mb: 2,

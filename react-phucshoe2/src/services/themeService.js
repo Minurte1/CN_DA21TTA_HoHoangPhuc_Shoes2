@@ -2,16 +2,16 @@
 
 const themeConfigs = {
   light: {
-    backgroundColor: "#B5C0D0",
-    color: "#101014",
-    secondaryColor: "#F5E8DD",
-    accentColor: "#EED3D9 ",
+    backgroundColor: "#FFFFFF", // màu nền
+    color: "#343A40", // màu chữ
+    secondaryColor: "#3ccaf0", // màu nhấn mạnh title
+    accentColor: "#c5ebf6 ", //màu backgroundColor hover
   },
   dark: {
     backgroundColor: "#101014",
     color: "#ffffff",
-    secondaryColor: "#1A1A1D",
-    accentColor: "#FF5722",
+    secondaryColor: "#3ccaf0",
+    accentColor: "#515157",
   },
 };
 

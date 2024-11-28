@@ -16,8 +16,9 @@ import { getThemeConfig } from "../services/themeService";
 
 const Footer = () => {
   const { isAuthenticated, userInfo } = useSelector((state) => state.auth);
-  const currentTheme = getThemeConfig(userInfo?.THEMES || "dark");
-
+  const currentTheme = getThemeConfig(
+    localStorage.getItem("THEMES") || userInfo?.THEMES || "dark"
+  );
   const language = useSelector((state) => state.language.language);
   const t = translations[language].footer;
 
@@ -34,7 +35,7 @@ const Footer = () => {
       <Box sx={{ textAlign: "center", marginBottom: 3 }}>
         <IconButton
           sx={{
-            color: currentTheme.accentColor,
+            color: currentTheme.color,
             "&:hover": { color: currentTheme.secondaryColor },
           }}
         >
@@ -42,7 +43,7 @@ const Footer = () => {
         </IconButton>
         <IconButton
           sx={{
-            color: currentTheme.accentColor,
+            color: currentTheme.color,
             "&:hover": { color: currentTheme.secondaryColor },
           }}
         >
@@ -50,7 +51,7 @@ const Footer = () => {
         </IconButton>
         <IconButton
           sx={{
-            color: currentTheme.accentColor,
+            color: currentTheme.color,
             "&:hover": { color: currentTheme.secondaryColor },
           }}
         >
@@ -61,93 +62,60 @@ const Footer = () => {
       {/* Resource Links */}
       <Grid container spacing={4} justifyContent="center" textAlign="center">
         <Grid item xs={6} sm={3}>
-          <Typography variant="h6" sx={{ fontWeight: "bold", marginBottom: 2 }}>
+          <Typography
+            variant="h6"
+            sx={{
+              fontWeight: "bold",
+              marginBottom: 2,
+              color: currentTheme.color,
+            }}
+          >
             {t.resources}
           </Typography>
           <Box>
-            <Link
-              href="#"
-              underline="hover"
-              sx={{ color: currentTheme.secondaryColor }}
-            >
+            <Link href="#" underline="hover" sx={{ color: currentTheme.color }}>
               {t.support}
             </Link>
             <br />
-            <Link
-              href="#"
-              underline="hover"
-              sx={{ color: currentTheme.secondaryColor }}
-            >
+            <Link href="#" underline="hover" sx={{ color: currentTheme.color }}>
               {t.distribute}
             </Link>
             <br />
-            <Link
-              href="#"
-              underline="hover"
-              sx={{ color: currentTheme.secondaryColor }}
-            >
+            <Link href="#" underline="hover" sx={{ color: currentTheme.color }}>
               {t.careers}
             </Link>
             <br />
-            <Link
-              href="#"
-              underline="hover"
-              sx={{ color: currentTheme.secondaryColor }}
-            >
+            <Link href="#" underline="hover" sx={{ color: currentTheme.color }}>
               {t.company}
             </Link>
           </Box>
         </Grid>
         <Grid item xs={6} sm={3}>
           <Box>
-            <Link
-              href="#"
-              underline="hover"
-              sx={{ color: currentTheme.secondaryColor }}
-            >
+            <Link href="#" underline="hover" sx={{ color: currentTheme.color }}>
               {t.fanArtPolicy}
             </Link>
             <br />
-            <Link
-              href="#"
-              underline="hover"
-              sx={{ color: currentTheme.secondaryColor }}
-            >
+            <Link href="#" underline="hover" sx={{ color: currentTheme.color }}>
               {t.uxResearch}
             </Link>
             <br />
-            <Link
-              href="#"
-              underline="hover"
-              sx={{ color: currentTheme.secondaryColor }}
-            >
+            <Link href="#" underline="hover" sx={{ color: currentTheme.color }}>
               {t.storeEula}
             </Link>
             <br />
-            <Link
-              href="#"
-              underline="hover"
-              sx={{ color: currentTheme.secondaryColor }}
-            >
+            <Link href="#" underline="hover" sx={{ color: currentTheme.color }}>
               {t.onlineServices}
             </Link>
           </Box>
         </Grid>
         <Grid item xs={6} sm={3}>
           <Box>
-            <Link
-              href="#"
-              underline="hover"
-              sx={{ color: currentTheme.secondaryColor }}
-            >
+            <Link href="#" underline="hover" sx={{ color: currentTheme.color }}>
               {t.communityRules}
             </Link>
             <br />
-            <Link
-              href="#"
-              underline="hover"
-              sx={{ color: currentTheme.secondaryColor }}
-            >
+            <Link href="#" underline="hover" sx={{ color: currentTheme.color }}>
               {t.newsroom}
             </Link>
           </Box>
@@ -163,7 +131,7 @@ const Footer = () => {
 
       {/* Copyright Section */}
       <Box sx={{ textAlign: "center", marginBottom: 3 }}>
-        <Typography variant="body2" sx={{ color: currentTheme.secondaryColor }}>
+        <Typography variant="body2" sx={{ color: currentTheme.color }}>
           {t.copyright}
         </Typography>
       </Box>

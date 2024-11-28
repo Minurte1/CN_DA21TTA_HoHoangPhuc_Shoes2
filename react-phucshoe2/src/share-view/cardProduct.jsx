@@ -10,7 +10,13 @@ import {
 } from "@mui/material";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { useNavigate } from "react-router-dom";
+import { getThemeConfig } from "../services/themeService";
+import { useSelector } from "react-redux";
 const CartProduct = ({ title, products, api }) => {
+  const { isAuthenticated, userInfo } = useSelector((state) => state.auth);
+  const currentTheme = getThemeConfig(
+    localStorage.getItem("THEMES") || userInfo?.THEMES || "dark"
+  );
   const navigate = useNavigate();
   const handleBuyProduct = (id) => {
     navigate(`/selectShoe/${id}`);
@@ -67,7 +73,7 @@ const CartProduct = ({ title, products, api }) => {
                   onClick={() => handleBuyProduct(product.ID_SAN_PHAM)}
                   sx={{
                     height: "auto",
-                    backgroundColor: "#101014",
+                    backgroundColor: currentTheme.backgroundColor,
                     color: "#fff",
                     filter: "brightness(0.9)",
                     cursor: "pointer",
@@ -88,7 +94,7 @@ const CartProduct = ({ title, products, api }) => {
                     <Typography
                       variant="h6"
                       component="div"
-                      sx={{ textAlign: "left" }}
+                      sx={{ textAlign: "left", color: currentTheme.color }}
                     >
                       {product.TEN_SAN_PHAM}
                     </Typography>
@@ -120,13 +126,14 @@ const CartProduct = ({ title, products, api }) => {
                           textDecoration: "line-through",
                           opacity: 0.7,
                           marginRight: "10px",
+                          color: currentTheme.color,
                         }}
                       >
                         {parseInt(originalPrice).toLocaleString("vi-VN")} ₫
                       </Typography>
 
                       {/* Giá thật, định dạng theo VND */}
-                      <Typography sx={{ color: "#fff" }}>
+                      <Typography sx={{ color: currentTheme.color }}>
                         {parseInt(product.GIA).toLocaleString("vi-VN")} ₫
                       </Typography>
                     </Box>

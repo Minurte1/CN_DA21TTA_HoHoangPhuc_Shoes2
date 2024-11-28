@@ -20,6 +20,7 @@ import axios from "axios";
 import { setTotalCart } from "../redux/authSlice";
 import { enqueueSnackbar } from "notistack";
 import translations from "../redux/data/translations";
+import { getThemeConfig } from "../services/themeService";
 const ProductCarousel = ({ title, products, api }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [productLength, setProductLength] = useState(0);
@@ -28,7 +29,10 @@ const ProductCarousel = ({ title, products, api }) => {
   const dispatch = useDispatch();
   const language = useSelector((state) => state.language.language);
   const t = translations[language].homeProductCarousel;
-
+  const { isAuthenticated, userInfo } = useSelector((state) => state.auth);
+  const currentTheme = getThemeConfig(
+    localStorage.getItem("THEMES") || userInfo?.THEMES || "dark"
+  );
   useEffect(() => {
     if (Array.isArray(products) && products.length > 0) {
       setProductLength(products.length);
@@ -60,7 +64,6 @@ const ProductCarousel = ({ title, products, api }) => {
     navigate(`/selectShoe/${id}`);
   };
 
-  const { isAuthenticated, userInfo } = useSelector((state) => state.auth);
   const handleAddToCart = async (product) => {
     if (!isAuthenticated) {
       // Nếu chưa, chuyển hướng đến trang đăng nhập
@@ -210,16 +213,17 @@ const ProductCarousel = ({ title, products, api }) => {
               <Card
                 key={index}
                 sx={{
-                  backgroundColor: "#101014",
-                  color: "#fff",
+                  backgroundColor: currentTheme.backgroundColor,
+                  color: currentTheme.color,
                   padding: 1,
                   flexShrink: 0,
+                  margin: "2px",
                   cursor: "pointer",
                   width: { xs: "100%", sm: "30%", md: "260px", lg: "260px" },
                   transition: "background-color 0.3s ease, transform 0.3s ease",
                   position: "relative", // Đặt relative để đặt icon ở góc trên bên phải
                   "&:hover": {
-                    backgroundColor: "#181818",
+                    backgroundColor: currentTheme.accentColor,
                     filter: "brightness(1.1)",
                   },
                 }}

@@ -7,6 +7,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import logo from "../../../public/logo/favicon.png";
 import { useDispatch, useSelector } from "react-redux";
+import { getThemeConfig } from "../../../services/themeService";
 const ENDPOINT = "http://localhost:3002"; // Địa chỉ của server Node.js
 
 const ChatRealTime = () => {
@@ -16,6 +17,11 @@ const ChatRealTime = () => {
   const [IdCoversation, setIdCoversation] = useState("");
   const { isAuthenticated, userInfo, itemCart, totalCart } = useSelector(
     (state) => state.auth
+  );
+
+  //BackgroundColor
+  const currentTheme = getThemeConfig(
+    localStorage.getItem("THEMES") || userInfo?.THEMES || "dark"
   );
   const [idValue, setidValue] = useState(null);
   const [socket, setSocket] = useState(null);

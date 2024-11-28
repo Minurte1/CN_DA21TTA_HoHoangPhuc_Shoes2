@@ -28,8 +28,8 @@ import translations from "../redux/data/translations";
 import { getThemeConfig } from "../services/themeService";
 const apiUrl = process.env.REACT_APP_URL_SERVER;
 const Header = () => {
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const [infoUser, setInfoUser] = useState("");
@@ -41,8 +41,9 @@ const Header = () => {
   const { isAuthenticated, userInfo } = useSelector((state) => state.auth);
   const [optionLanguage, setOptionLanguage] = useState("vi");
   //BackgroundColor
-  const currentTheme = getThemeConfig(userInfo?.THEMES || "dark");
-
+  const currentTheme = getThemeConfig(
+    localStorage.getItem("THEMES") || userInfo?.THEMES || "dark"
+  );
   const handleChangeLanguage = (lang) => {
     setOptionLanguage(lang);
     dispatch(setLanguage(lang));
@@ -121,11 +122,11 @@ const Header = () => {
   };
   const menuItems = (
     <>
-      <Button color="inherit">{t.support}</Button>
+      <Button sx={{ color: currentTheme.color }}>{t.support}</Button>
 
       <Box sx={{ display: "flex", alignItems: "center", ml: 2 }}>
         <IconButton
-          color="inherit"
+          sx={{ color: currentTheme.color }}
           aria-label="language menu"
           aria-controls="language-menu"
           aria-haspopup="true"
@@ -133,7 +134,7 @@ const Header = () => {
         >
           <LanguageIcon />
         </IconButton>
-        <Button color="inherit" onClick={handleLanguageMenu}>
+        <Button sx={{ color: currentTheme.color }} onClick={handleLanguageMenu}>
           {optionLanguage === "vi" ? "Tiếng Việt" : "English"}
         </Button>
 
@@ -152,7 +153,10 @@ const Header = () => {
           }}
         >
           <MenuItem
-            sx={{ color: "#fff", "&:hover": { backgroundColor: "#4a494c" } }}
+            sx={{
+              color: currentTheme.color,
+              "&:hover": { backgroundColor: currentTheme.accentColor },
+            }}
             onClick={() => {
               handleChangeLanguage("vi");
               handleLanguageClose();
@@ -162,7 +166,7 @@ const Header = () => {
           </MenuItem>
           <MenuItem
             sx={{
-              color: "#fff",
+              color: currentTheme.color,
               "&:hover": { backgroundColor: currentTheme.accentColor },
             }}
             onClick={() => {
@@ -173,7 +177,7 @@ const Header = () => {
             English
           </MenuItem>
           {/* <MenuItem
-            sx={{ color: "#fff", "&:hover": { backgroundColor: "#4a494c" } }}
+            sx={{ color: currentTheme.color, "&:hover": { backgroundColor: "#4a494c" } }}
             onClick={() => {
               handleChangeLanguage("es");
               handleLanguageClose();
@@ -196,7 +200,7 @@ const Header = () => {
           {isAuthenticated ? <div>{userInfo?.HO_TEN}</div> : <></>}
         </Typography> */}
       </Box>
-      {/* <Button color="inherit">Language</Button> */}
+      {/* <Button sx={{ color: currentTheme.color }}>Language</Button> */}
       <Box sx={{ display: "flex", alignItems: "center", ml: 2 }}>
         <Typography
           onClick={handleMenu}
@@ -218,7 +222,7 @@ const Header = () => {
             aria-controls="menu-appbar"
             aria-haspopup="true"
             onClick={handleMenu}
-            color="inherit"
+            sx={{ color: currentTheme.color }}
           >
             {/* Nếu có avatar, hiển thị avatar, nếu không có, hiển thị icon mặc định */}
             {userInfo?.AVATAR ? (
@@ -238,7 +242,7 @@ const Header = () => {
             aria-controls="menu-appbar"
             aria-haspopup="true"
             onClick={handleMenu}
-            color="inherit"
+            sx={{ color: currentTheme.color }}
           >
             <AccountCircle />
           </IconButton>
@@ -259,7 +263,8 @@ const Header = () => {
           onClose={handleClose}
           PaperProps={{
             sx: {
-              backgroundColor: "#29292d",
+              backgroundColor: currentTheme.backgroundColor,
+              color: currentTheme.color,
               borderRadius: "13px",
               paddingTop: 2,
               paddingBottom: 2,
@@ -275,10 +280,10 @@ const Header = () => {
               paddingBottom: 1,
               paddingRight: 8,
               paddingLeft: 2,
-              color: "#fff",
+              color: currentTheme.color,
               "&:hover": {
-                backgroundColor: "#4a494c", // Màu nền khi hover
-                color: "#fff",
+                backgroundColor: currentTheme.accentColor, // Màu nền khi hover
+                color: currentTheme.color,
               },
             }}
             component={Link}
@@ -295,9 +300,10 @@ const Header = () => {
               paddingRight: 8,
 
               paddingLeft: 2,
-              color: "#fff",
+              color: currentTheme.color,
               "&:hover": {
-                backgroundColor: "#4a494c", // Màu nền khi hover
+                backgroundColor: currentTheme.accentColor, // Màu nền khi hover
+                color: currentTheme.color,
               },
             }}
             onClick={handleClose}
@@ -313,9 +319,10 @@ const Header = () => {
               paddingBottom: 1,
               paddingRight: 8,
               paddingLeft: 2,
-              color: "#fff",
+              color: currentTheme.color,
               "&:hover": {
-                backgroundColor: "#4a494c", // Màu nền khi hover
+                backgroundColor: currentTheme.accentColor, // Màu nền khi hover
+                color: currentTheme.color,
               },
             }}
             onClick={handleClose}
@@ -331,9 +338,10 @@ const Header = () => {
               paddingBottom: 1,
               paddingRight: 8,
               paddingLeft: 2,
-              color: "#fff",
+              color: currentTheme.color,
               "&:hover": {
-                backgroundColor: "#4a494c", // Màu nền khi hover
+                backgroundColor: currentTheme.accentColor, // Màu nền khi hover
+                color: currentTheme.color,
               },
             }}
             onClick={() => {
@@ -388,7 +396,7 @@ const Header = () => {
         {isMobile ? (
           <>
             <IconButton
-              color="inherit"
+              sx={{ color: currentTheme.color }}
               aria-label="open mobile menu"
               onClick={handleMobileMenuOpen}
             >

@@ -16,6 +16,7 @@ import { useNavigate } from "react-router-dom";
 import { enqueueSnackbar } from "notistack";
 import { setTotalCart } from "../redux/authSlice";
 import translations from "../redux/data/translations";
+import { getThemeConfig } from "../services/themeService";
 const ListGame = ({ title, items, api }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -24,8 +25,11 @@ const ListGame = ({ title, items, api }) => {
   };
   const language = useSelector((state) => state.language.language);
   const t = translations[language].homeProductCarousel;
-
   const { isAuthenticated, userInfo } = useSelector((state) => state.auth);
+  const currentTheme = getThemeConfig(
+    localStorage.getItem("THEMES") || userInfo?.THEMES || "dark"
+  );
+
   const handleAddToCart = async (product) => {
     if (!isAuthenticated) {
       // Nếu chưa, chuyển hướng đến trang đăng nhập
@@ -87,7 +91,7 @@ const ListGame = ({ title, items, api }) => {
     <Box>
       <Typography
         variant="h6"
-        sx={{ marginBottom: 1, zIndex: 200, color: "#fff" }}
+        sx={{ marginBottom: 1, zIndex: 200, color: currentTheme.color }}
       >
         {title} &gt;
       </Typography>
@@ -110,11 +114,11 @@ const ListGame = ({ title, items, api }) => {
               cursor: "pointer",
 
               marginBottom: 2,
-              backgroundColor: "#101014",
-              color: "#fff",
+              backgroundColor: currentTheme.backgroundColor,
+              color: currentTheme.color,
               transition: "background-color 0.3s ease", // Thêm hiệu ứng chuyển tiếp cho nền
               "&:hover": {
-                backgroundColor: "#181818", // Tăng độ sáng nền khi hover
+                backgroundColor: currentTheme.accentColor, // Tăng độ sáng nền khi hover
               },
             }}
           >
@@ -147,7 +151,7 @@ const ListGame = ({ title, items, api }) => {
                 <Tooltip title={t.AddToCart} arrow>
                   <IconButton
                     sx={{
-                      color: "#fff",
+                      color: currentTheme.color,
                       position: "relative", // Để áp dụng các hiệu ứng trên icon
                       fontSize: "20px",
                       transition: "transform 0.3s ease", // Thêm hiệu ứng chuyển động khi hover
@@ -168,7 +172,7 @@ const ListGame = ({ title, items, api }) => {
                 <Tooltip title={t.AddToWish} arrow>
                   <IconButton
                     sx={{
-                      color: "#fff",
+                      color: currentTheme.color,
                       position: "relative", // Để áp dụng các hiệu ứng trên icon
                       fontSize: "20px",
                       transition: "transform 0.3s ease", // Thêm hiệu ứng chuyển động khi hover
