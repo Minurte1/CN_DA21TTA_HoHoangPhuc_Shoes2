@@ -25,6 +25,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setUserInfo, logout } from "../../redux/authSlice";
 import { setLanguage } from "../../redux/languageSlice";
 import translations from "../../redux/data/translations";
+import { getThemeConfig } from "../../services/themeService";
 const apiUrl = process.env.REACT_APP_URL_SERVER;
 const Header = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -32,7 +33,7 @@ const Header = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const [infoUser, setInfoUser] = useState("");
-
+  const currentTheme = getThemeConfig(localStorage.getItem("THEMES") || "dark");
   //redux
   const dispatch = useDispatch();
   const language = useSelector((state) => state.language.language);
@@ -114,7 +115,14 @@ const Header = () => {
   const menuItems = (
     <>
       {" "}
-      <Button color="inherit">{t.support}</Button>
+      <Button
+        sx={{
+          backgroundColor: currentTheme.backgroundColor,
+          color: currentTheme.color,
+        }}
+      >
+        {t.support}
+      </Button>
       <Box sx={{ display: "flex", alignItems: "center", ml: 2 }}>
         <IconButton
           color="inherit"
@@ -125,7 +133,13 @@ const Header = () => {
         >
           <LanguageIcon />
         </IconButton>
-        <Button color="inherit" onClick={handleLanguageMenu}>
+        <Button
+          sx={{
+            backgroundColor: currentTheme.backgroundColor,
+            color: currentTheme.color,
+          }}
+          onClick={handleLanguageMenu}
+        >
           {optionLanguage === "vi" ? "Tiếng Việt" : "English"}
         </Button>
 
@@ -194,7 +208,7 @@ const Header = () => {
           sx={{
             ml: 1,
             cursor: "pointer",
-            color: `${userInfo?.VAI_TRO === "1" ? "red" : "white"}`,
+            color: `${userInfo?.VAI_TRO === "1" ? "red" : currentTheme.color}`,
           }}
         >
           {isAuthenticated ? <div>{userInfo?.HO_TEN}</div> : <></>}
@@ -325,13 +339,17 @@ const Header = () => {
   return (
     <AppBar
       position="static"
-      style={{ backgroundColor: "#101014", zIndex: 20 }}
+      style={{ backgroundColor: currentTheme.backgroundColor, zIndex: 20 }}
     >
       <Toolbar>
         <Box
           component={RouterLink}
           to="/"
-          sx={{ textDecoration: "none", color: "#fff", flexGrow: 1 }}
+          sx={{
+            textDecoration: "none",
+            color: currentTheme.color,
+            flexGrow: 1,
+          }}
         >
           <Typography
             variant="h6"

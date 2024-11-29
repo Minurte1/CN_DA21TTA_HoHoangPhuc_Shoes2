@@ -53,7 +53,10 @@ function App() {
               path="/admin/*"
               element={<GuardRoute element={AdminLayout} />}
             />
-            <Route path="/profile/*" element={<RouterUser />} />
+            <Route
+              path="/profile/*"
+              element={<RouterUser currentTheme={currentTheme} />}
+            />
             {/* <Route path="/admin/*" element={<RouterAdmin />} /> */}
           </Routes>
         </Router>{" "}
@@ -81,10 +84,13 @@ const MainLayout = ({ isAuthenticated }) => (
     <Footer />
   </>
 );
-const RouterUser = () => (
+const RouterUser = ({ currentTheme }) => (
   <>
     <HeaderUser />
-    <Grid container style={{ height: "100vh" }}>
+    <Grid
+      container
+      style={{ height: "auto", backgroundColor: currentTheme.backgroundColor }}
+    >
       <Grid item xs={3} md={2.5}>
         <NavBarUser />
       </Grid>

@@ -25,7 +25,9 @@ import translations from "../../redux/data/translations";
 import { useSelector } from "react-redux";
 import InventoryIcon from "@mui/icons-material/Inventory";
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
+import { getThemeConfig } from "../../services/themeService";
 const NavBarUser = () => {
+  const currentTheme = getThemeConfig(localStorage.getItem("THEMES") || "dark");
   const language = useSelector((state) => state.language.language);
   const t = translations[language].profile;
   const [isOpenNeedHelp, setIsOpenNeedHelp] = useState(false);
@@ -33,7 +35,7 @@ const NavBarUser = () => {
     <Box
       sx={{
         width: "250px",
-        backgroundColor: "#0d1117",
+        backgroundColor: currentTheme.backgroundColor,
         padding: "20px",
         borderRight: "1px solid #ddd",
         position: "fixed", // Cố định thanh điều hướng
@@ -43,7 +45,10 @@ const NavBarUser = () => {
         overflowY: "auto", // Cho phép cuộn khi nội dung vượt quá chiều cao
       }}
     >
-      <Typography variant="h6" style={{ marginBottom: "20px", color: "#fff" }}>
+      <Typography
+        variant="h6"
+        style={{ marginBottom: "20px", color: currentTheme.color }}
+      >
         Thông tin
       </Typography>
       <List component="nav">
@@ -51,10 +56,10 @@ const NavBarUser = () => {
           button
           component={Link}
           to="/profile"
-          sx={{ color: "#f0f6fc" }}
+          sx={{ color: currentTheme.color }}
         >
           <ListItemIcon>
-            <AccountCircleIcon sx={{ color: "#f0f6fc" }} />
+            <AccountCircleIcon sx={{ color: currentTheme.color }} />
           </ListItemIcon>
           <ListItemText
             primary={t.UserInfo ? t.UserInfo : "Thông tin người dùng"}
@@ -64,10 +69,10 @@ const NavBarUser = () => {
           button
           component={Link}
           to="/profile/don-hang"
-          sx={{ color: "#f0f6fc" }}
+          sx={{ color: currentTheme.color }}
         >
           <ListItemIcon>
-            <ShoppingBagIcon sx={{ color: "#ffffff" }} />
+            <ShoppingBagIcon sx={{ color: currentTheme.color }} />
           </ListItemIcon>
           <ListItemText primary={t.Oder ? t.Oder : "Đơn hàng"} />
         </ListItem>{" "}
@@ -75,10 +80,10 @@ const NavBarUser = () => {
           button
           component={Link}
           to="/profile/lich-su-mua-hang"
-          sx={{ color: "#f0f6fc" }}
+          sx={{ color: currentTheme.color }}
         >
           <ListItemIcon>
-            <InventoryIcon sx={{ color: "#ffffff" }} />
+            <InventoryIcon sx={{ color: currentTheme.color }} />
           </ListItemIcon>
           <ListItemText
             primary={t.HistoryBuy ? t.HistoryBuy : "Lịch sử mua hàng"}
@@ -88,10 +93,10 @@ const NavBarUser = () => {
         button
         component={Link}
         to="/payment-management"
-        sx={{ color: "#f0f6fc" }}
+        sx={{ color: currentTheme.color }}
       >
         <ListItemIcon>
-          <PaymentIcon sx={{ color: "#ffffff" }} />
+          <PaymentIcon sx={{  color: currentTheme.color }} />
         </ListItemIcon>
         <ListItemText primary="Payment Management" />
       </ListItem> */}
@@ -99,10 +104,10 @@ const NavBarUser = () => {
           button
           component={Link}
           to="/profile/mat-khau-cai-dat"
-          sx={{ color: "#f0f6fc" }}
+          sx={{ color: currentTheme.color }}
         >
           <ListItemIcon>
-            <LockIcon sx={{ color: "#ffffff" }} />
+            <LockIcon sx={{ color: currentTheme.color }} />
           </ListItemIcon>
           <ListItemText
             primary={
@@ -114,7 +119,7 @@ const NavBarUser = () => {
         button
         component={Link}
         to="/epic-rewards"
-        sx={{ color: "#f0f6fc" }}
+        sx={{ color: currentTheme.color }}
       >
         <ListItemIcon>
           <StarIcon sx={{ color: "#fff" }} />

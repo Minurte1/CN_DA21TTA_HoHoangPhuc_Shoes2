@@ -26,6 +26,7 @@ import { setLanguage } from "../../redux/languageSlice";
 import translations from "../../redux/data/translations";
 import axios from "axios";
 import { enqueueSnackbar } from "notistack";
+import { getThemeConfig } from "../../services/themeService";
 
 const PasswordAndSetting = () => {
   const [optionLanguage, setOptionLanguage] = useState("vi");
@@ -33,7 +34,9 @@ const PasswordAndSetting = () => {
   const dispatch = useDispatch();
   const { isAuthenticated, userInfo } = useSelector((state) => state.auth);
   const [themesWeb, setThemesWeb] = useState(userInfo?.THEMES);
-
+  const currentTheme = getThemeConfig(
+    localStorage.getItem("THEMES") || userInfo?.THEMES || "dark"
+  );
   //api change backgroundColor
   useEffect(() => {
     if (themesWeb) {
@@ -187,8 +190,8 @@ const PasswordAndSetting = () => {
         sx={{ textAlign: "left" }}
         style={{
           minHeight: "100vh",
-          backgroundColor: "#101014",
-          color: "#fff",
+          backgroundColor: currentTheme.backgroundColor,
+          color: currentTheme.color,
           flexDirection: "column", // Thêm để căn dọc
           padding: "16px", // Tạo khoảng cách
         }}
@@ -196,7 +199,7 @@ const PasswordAndSetting = () => {
         <Typography variant="h5" className="text-white">
           Mật khẩu & cài đặt
         </Typography>
-        <Divider sx={{ my: 2, backgroundColor: "#ffffff" }} />
+        <Divider sx={{ my: 2, backgroundColor: currentTheme.color }} />
         <Box
           sx={{
             width: "600px", // Giới hạn độ rộng
@@ -213,15 +216,15 @@ const PasswordAndSetting = () => {
             }}
           >
             {" "}
-            <Button variant="text" sx={{ color: "#ffffff" }}>
+            <Button variant="text" sx={{ color: currentTheme.color }}>
               Thay đổi ngôn ngữ
             </Button>
             <Button
               variant="outlined"
               onClick={handleLanguageMenu}
               sx={{
-                backgroundColor: "#ffffff", // Màu nền trắng
-                color: "#101014", // Màu chữ
+                backgroundColor: currentTheme.backgroundColor, // Màu nền trắng
+                color: currentTheme.color, // Màu chữ
               }}
             >
               {optionLanguage === "vi" ? "Tiếng Việt" : "English"}
@@ -238,7 +241,7 @@ const PasswordAndSetting = () => {
             }}
           >
             {" "}
-            <Button variant="text" sx={{ color: "#ffffff" }}>
+            <Button variant="text" sx={{ color: currentTheme.color }}>
               Thay đổi màu nền
             </Button>
             <Box sx={{ ml: 1 }}>
@@ -246,10 +249,8 @@ const PasswordAndSetting = () => {
                 variant="outlined"
                 onClick={handleThemeMenu}
                 sx={{
-                  backgroundColor: `${
-                    themesWeb === "dark" ? "#ffffff" : "#101014"
-                  }`, // Màu nền trắng
-                  color: "#101014", // Màu chữ
+                  backgroundColor: currentTheme.backgroundColor, // Màu nền trắng
+                  color: currentTheme.color, // Màu chữ
                   textTransform: "none", // Giữ nguyên chữ thường
                 }}
               >
@@ -315,7 +316,7 @@ const PasswordAndSetting = () => {
               <Button
                 variant="text"
                 onClick={() => setIsOpenOTP(!isOpenOTP)}
-                sx={{ color: "#ffffff", width: "100%" }}
+                sx={{ color: currentTheme.color, width: "100%" }}
               >
                 Thay đổi mật khẩu
               </Button>
@@ -442,14 +443,14 @@ const PasswordAndSetting = () => {
                         />
                         <Typography
                           variant="body1"
-                          sx={{ color: "#ffffff", textAlign: "right" }}
+                          sx={{ color: currentTheme.color, textAlign: "right" }}
                         >
                           {countdown > 1 ? `${countdown}s` : ""}
                         </Typography>
                         <Button
                           onClick={handleCheckOtp}
                           variant="contained"
-                          color="primary"
+                          sx={{ backgroundColor: currentTheme.secondaryColor }}
                           fullWidth
                           type="submit"
                         >
