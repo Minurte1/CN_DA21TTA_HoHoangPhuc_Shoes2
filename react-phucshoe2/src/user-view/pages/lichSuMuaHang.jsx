@@ -16,6 +16,7 @@ import { useSelector } from "react-redux";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { enqueueSnackbar } from "notistack";
+import { getThemeConfig } from "../../services/themeService";
 
 const LichSuMuaHangUser = () => {
   const [tabIndex, setTabIndex] = useState(0);
@@ -25,9 +26,10 @@ const LichSuMuaHangUser = () => {
   const [openDialog, setOpenDialog] = useState(false); // Trạng thái mở modal
   const [actionType, setActionType] = useState(""); // Loại hành động (success or canceled)
   const [currentOrderId, setCurrentOrderId] = useState(null); // ID đơn hàng hiện tại
+  const currentTheme = getThemeConfig(
+    localStorage.getItem("THEMES") || userInfo?.THEMES || "dark"
+  );
 
-  const color = "#fff";
-  const backgroundColor = " #1a1a1a";
   const navigate = useNavigate();
 
   const handleTabChange = (event, newIndex) => {
@@ -107,25 +109,26 @@ const LichSuMuaHangUser = () => {
     }
     handleCloseDialog();
   };
-  console.log("tabIndex", tabIndex);
+  console.log("order.chiTietHoaDon", dataChiTietHoaDon);
   return (
-    <Box sx={{ p: 2, bgcolor: "#1a1a1a" }}>
+    <Box sx={{ p: 2, bgcolor: currentTheme.backgroundColor, height: "100vh" }}>
       {/* Tabs */}
       <Tabs value={tabIndex} onChange={handleTabChange} variant="fullWidth">
-        <Tab sx={{ color: color }} label="Chờ xác nhận" />
-        <Tab sx={{ color: color }} label="Đã giao" />
-        <Tab sx={{ color: color }} label="Đã hủy" />
+        <Tab sx={{ color: currentTheme.color }} label="Chờ xác nhận" />
+        <Tab sx={{ color: currentTheme.color }} label="Đã giao" />
+        <Tab sx={{ color: currentTheme.color }} label="Đã hủy" />
         {/* <Tab sx={{ color: color }} label="Tất cả" /> */}
-        <Tab sx={{ color: color }} label="Chưa thanh toán" />
+        <Tab sx={{ color: currentTheme.color }} label="Chưa thanh toán" />
       </Tabs>
       {/* Danh sách đơn hàng */}
-      <Box mt={2} sx={{ backgroundColor: "#101014" }}>
+      <Box mt={2} sx={{ backgroundColor: currentTheme.backgroundColor }}>
         {dataChiTietHoaDon?.map((order, index) => (
           <>
             <Box
               sx={{
                 display: "flex",
                 justifyContent: "space-between",
+                backgroundColor: currentTheme.backgroundColor,
               }}
             >
               {" "}
@@ -135,13 +138,20 @@ const LichSuMuaHangUser = () => {
                   mb: 2,
                   p: 2,
                   textAlign: "left",
-                  backgroundColor: "#101014",
-                  color: color,
+                  // backgroundColor: currentTheme.backgroundColorLow,
+                  color: currentTheme.color,
                 }}
               >
+                {" "}
+                <Divider sx={{ my: 1, backgroundColor: "#555" }} />
                 {/* Thông tin đơn hàng */}
-                <Typography variant="h6">{order.ID_ODER}</Typography>
-                <Typography variant="body2" sx={{ mb: 1, color: color }}>
+                <Typography variant="h6" sx={{ color: currentTheme.color }}>
+                  {order.ID_ODER}
+                </Typography>
+                <Typography
+                  variant="body2"
+                  sx={{ mb: 1, color: currentTheme.color }}
+                >
                   Trạng thái:
                   <Typography
                     component="span"
@@ -155,26 +165,30 @@ const LichSuMuaHangUser = () => {
                           ? "yellow"
                           : order.TRANG_THAI_DON_HANG === "Đã hủy"
                           ? "red"
-                          : "white", // Bạn có thể thêm một màu mặc định nếu không khớp với bất kỳ điều kiện nào
+                          : currentTheme.color, // Bạn có thể thêm một màu mặc định nếu không khớp với bất kỳ điều kiện nào
                     }}
                   >
                     {order.TRANG_THAI_DON_HANG} || Với phương thức thanh toán{" "}
                     {order.PHUONG_THUC_THANH_TOAN}
                   </Typography>
                 </Typography>
-
-                <Typography variant="body1" sx={{ mb: 1, color: color }}>
+                <Typography
+                  variant="body1"
+                  sx={{ mb: 1, color: currentTheme.color }}
+                >
                   Tổng tiền: {order.TONG_TIEN.toLocaleString("vi-VN")}₫
                 </Typography>
                 <Divider sx={{ my: 2 }} />
-
                 {/* Danh sách sản phẩm */}
                 {order.chiTietHoaDon?.map((product, prodIndex) => (
                   <Box
                     key={prodIndex}
                     display="flex"
                     alignItems="center"
-                    sx={{ mb: 2 }}
+                    sx={{
+                      mb: 2,
+                      backgroundColor: currentTheme.backgroundColor,
+                    }}
                   >
                     <img
                       src={`${apiUrl}/images/${product.HINH_ANH_SANPHAM}`}
@@ -185,10 +199,16 @@ const LichSuMuaHangUser = () => {
                       <Typography variant="body1">
                         {product.TEN_SAN_PHAM}
                       </Typography>
-                      <Typography variant="body2" sx={{ color: color }}>
+                      <Typography
+                        variant="body2"
+                        sx={{ color: currentTheme.color }}
+                      >
                         Số lượng: {product.SO_LUONG_SP}
                       </Typography>
-                      <Typography variant="body1" sx={{ mt: 1, color: color }}>
+                      <Typography
+                        variant="body1"
+                        sx={{ mt: 1, color: currentTheme.color }}
+                      >
                         Giá:{" "}
                         {product.GIA_SAN_PHAM_CHI_TIET.toLocaleString("vi-VN")}₫
                       </Typography>

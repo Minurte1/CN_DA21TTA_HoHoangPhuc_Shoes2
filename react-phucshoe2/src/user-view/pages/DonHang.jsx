@@ -12,6 +12,7 @@ import {
   Box,
   Button,
   Pagination,
+  Divider,
 } from "@mui/material";
 import moment from "moment";
 import axios from "axios";
@@ -21,6 +22,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore"; // Import icon Expa
 
 import { useSelector } from "react-redux";
 import ProductDetailModal from "../../admin-view/pages/thanhToan/modal/chiTietDonHang";
+import { getThemeConfig } from "../../services/themeService";
 const DonHangUser = () => {
   const [orders, setOrders] = useState([]);
   const [selectedOrderId, setSelectedOrderId] = useState(null);
@@ -28,8 +30,10 @@ const DonHangUser = () => {
   const apiUrl = process.env.REACT_APP_URL_SERVER;
   const { isAuthenticated, userInfo } = useSelector((state) => state.auth);
   const [currentPage, setCurrentPage] = useState(1); // Current page state
-  const [itemsPerPage] = useState(10); // Number of items per page
-
+  const [itemsPerPage] = useState(5); // Number of items per page
+  const currentTheme = getThemeConfig(
+    localStorage.getItem("THEMES") || userInfo?.THEMES || "dark"
+  );
   useEffect(() => {
     fetchOrders();
   }, []);
@@ -69,15 +73,27 @@ const DonHangUser = () => {
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentOrders = orders.slice(indexOfFirstItem, indexOfLastItem);
   return (
-    <Container>
-      <Box sx={{ width: "100%", textAlign: "left", mt: 4, mb: 3 }}>
+    <Container sx={{ height: "100vh" }}>
+      <Box
+        sx={{
+          backgroundColor: currentTheme.backgroundColor,
+          width: "100%",
+          textAlign: "left",
+
+          mt: 4,
+          mb: 3,
+        }}
+      >
         <Typography variant="h5" color="primary">
           Danh Sách Đơn Hàng
         </Typography>
       </Box>
       <TableContainer
         component={Paper}
-        sx={{ backgroundColor: "#1a1a1a", color: "#ffffff" }}
+        sx={{
+          backgroundColor: currentTheme.backgroundColor,
+          color: currentTheme.color,
+        }}
       >
         <Table>
           <TableHead>
@@ -110,23 +126,33 @@ const DonHangUser = () => {
                 <b>Chi Tiết</b>
               </TableCell>
             </TableRow>
-          </TableHead>
+          </TableHead>{" "}
           <TableBody>
             {currentOrders.map((order, index) => (
               <TableRow key={index}>
-                <TableCell sx={{ fontSize: "0.875rem", color: "#ffffff" }}>
+                <TableCell
+                  sx={{ fontSize: "0.875rem", color: currentTheme.color }}
+                >
                   {order.ID_ODER || "Không xác định"}
                 </TableCell>
-                <TableCell sx={{ fontSize: "0.875rem", color: "#ffffff" }}>
+                <TableCell
+                  sx={{ fontSize: "0.875rem", color: currentTheme.color }}
+                >
                   {order.HO_TEN}
                 </TableCell>
-                <TableCell sx={{ fontSize: "0.875rem", color: "#ffffff" }}>
+                <TableCell
+                  sx={{ fontSize: "0.875rem", color: currentTheme.color }}
+                >
                   {order.SO_DIEN_THOAI}
                 </TableCell>
-                <TableCell sx={{ fontSize: "0.875rem", color: "#ffffff" }}>
+                <TableCell
+                  sx={{ fontSize: "0.875rem", color: currentTheme.color }}
+                >
                   {order.DIA_CHI_Provinces}
                 </TableCell>
-                <TableCell sx={{ fontSize: "0.875rem", color: "#ffffff" }}>
+                <TableCell
+                  sx={{ fontSize: "0.875rem", color: currentTheme.color }}
+                >
                   {order.TONG_TIEN.toLocaleString()}đ
                 </TableCell>
                 <TableCell
@@ -145,12 +171,16 @@ const DonHangUser = () => {
                 >
                   {order.TRANG_THAI_DON_HANG}
                 </TableCell>
-                <TableCell sx={{ fontSize: "0.875rem", color: "#ffffff" }}>
+                <TableCell
+                  sx={{ fontSize: "0.875rem", color: currentTheme.color }}
+                >
                   {order.NGAY_TAO_DONHANG
                     ? moment(order.NGAY_TAO_DONHANG).format("DD/MM/YYYY HH:mm")
                     : "N/A"}
                 </TableCell>
-                <TableCell sx={{ fontSize: "0.875rem", color: "#ffffff" }}>
+                <TableCell
+                  sx={{ fontSize: "0.875rem", color: currentTheme.color }}
+                >
                   {order.NGAY_CAP_NHAT_DONHANG
                     ? moment(order.NGAY_CAP_NHAT_DONHANG).format(
                         "DD/MM/YYYY HH:mm"
@@ -186,7 +216,7 @@ const DonHangUser = () => {
             fontWeight: "bold", // Chữ đậm
           },
           ".Mui-selected": {
-            color: "#ffffff", // Màu chữ trắng
+            color: currentTheme.color, // Màu chữ trắng
           },
           ".MuiPaginationItem-ellipsis": {
             color: "#999999", // Màu cho dấu "..."

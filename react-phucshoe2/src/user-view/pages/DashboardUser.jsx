@@ -15,6 +15,7 @@ import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { getThemeConfig } from "../../services/themeService";
 
 const api = process.env.REACT_APP_URL_SERVER;
 
@@ -30,6 +31,10 @@ const UserProfile = () => {
   const [selectedDistrict, setSelectedDistrict] = useState(null);
   const [selectedWards, setSelectedWards] = useState(null);
   const [selectStreetName, setSelectStreetName] = useState(null);
+
+  const currentTheme = getThemeConfig(
+    localStorage.getItem("THEMES") || userInfo?.THEMES || "dark"
+  );
   useEffect(() => {
     if (!isAuthenticated) {
       navigate("/login");
@@ -142,16 +147,16 @@ const UserProfile = () => {
       display="flex"
       style={{
         minHeight: "100vh",
-        backgroundColor: "#101014",
-        color: "#fff",
+        backgroundColor: currentTheme.backgroundColor,
+        color: currentTheme.color,
       }}
     >
       <Container
         maxWidth="md"
         style={{
           padding: "40px",
-          backgroundColor: "#0d1117", // Nền cho container
-          color: "#fff", // Màu chữ
+          backgroundColor: currentTheme.backgroundColorLow, // Nền cho container
+          color: currentTheme.color, // Màu chữ
         }}
       >
         <AvatarChanger
@@ -175,15 +180,15 @@ const UserProfile = () => {
             //   setDataUser({ ...dataUser, EMAIL: e.target.value })
             // }
             InputProps={{
-              style: { color: "#fff" }, // Màu chữ trong TextField
+              style: { color: currentTheme.color }, // Màu chữ trong TextField
             }}
             InputLabelProps={{
-              style: { color: "#fff" }, // Màu chữ nhãn
+              style: { color: currentTheme.color }, // Màu chữ nhãn
             }}
             sx={{
-              backgroundColor: "#151b23", // Màu nền của input
-              "& .MuiInputLabel-root": { color: "#f0ffff" }, // Màu chữ của label
-              "& .MuiInputBase-input": { color: "#f0ffff" }, // Màu chữ của input
+              color: currentTheme.backgroundColor, // Màu nền của input
+              "& .MuiInputLabel-root": { color: currentTheme.color }, // Màu chữ của label
+              "& .MuiInputBase-input": { color: currentTheme.color }, // Màu chữ của input
               "& .MuiOutlinedInput-root": {
                 "& fieldset": { borderColor: "#3d444d" }, // Màu viền
               },
@@ -201,15 +206,15 @@ const UserProfile = () => {
               setDataUser({ ...dataUser, HO_TEN: e.target.value })
             }
             InputProps={{
-              style: { color: "#fff" }, // Màu chữ trong TextField
+              style: { color: currentTheme.color }, // Màu chữ trong TextField
             }}
             InputLabelProps={{
-              style: { color: "#fff" }, // Màu chữ nhãn
+              style: { color: currentTheme.color }, // Màu chữ nhãn
             }}
             sx={{
-              backgroundColor: "#151b23", // Màu nền của input
-              "& .MuiInputLabel-root": { color: "#f0ffff" }, // Màu chữ của label
-              "& .MuiInputBase-input": { color: "#f0ffff" }, // Màu chữ của input
+              color: currentTheme.backgroundColor, // Màu nền của input
+              "& .MuiInputLabel-root": { color: currentTheme.color }, // Màu chữ của label
+              "& .MuiInputBase-input": { color: currentTheme.color }, // Màu chữ của input
               "& .MuiOutlinedInput-root": {
                 "& fieldset": { borderColor: "#3d444d" }, // Màu viền
               },
@@ -235,15 +240,15 @@ const UserProfile = () => {
             }
             fullWidth
             InputProps={{
-              style: { color: "#fff" }, // Màu chữ trong TextField
+              style: { color: currentTheme.color }, // Màu chữ trong TextField
             }}
             InputLabelProps={{
-              style: { color: "#fff" }, // Màu chữ nhãn
+              style: { color: currentTheme.color }, // Màu chữ nhãn
             }}
             sx={{
-              backgroundColor: "#151b23", // Màu nền của input
-              "& .MuiInputLabel-root": { color: "#f0ffff" }, // Màu chữ của label
-              "& .MuiInputBase-input": { color: "#f0ffff" }, // Màu chữ của input
+              color: currentTheme.backgroundColor, // Màu nền của input
+              "& .MuiInputLabel-root": { color: currentTheme.color }, // Màu chữ của label
+              "& .MuiInputBase-input": { color: currentTheme.color }, // Màu chữ của input
               "& .MuiOutlinedInput-root": {
                 "& fieldset": { borderColor: "#3d444d" }, // Màu viền
               },
@@ -257,9 +262,9 @@ const UserProfile = () => {
               label="Ngày sinh"
               value={selectedDate}
               sx={{
-                backgroundColor: "#151b23", // Màu nền của input
-                "& .MuiInputLabel-root": { color: "#f0ffff" }, // Màu chữ của label
-                "& .MuiInputBase-input": { color: "#f0ffff" }, // Màu chữ của input
+                color: currentTheme.backgroundColor, // Màu nền của input
+                "& .MuiInputLabel-root": { color: currentTheme.color }, // Màu chữ của label
+                "& .MuiInputBase-input": { color: currentTheme.color }, // Màu chữ của input
                 "& .MuiOutlinedInput-root": {
                   "& fieldset": { borderColor: "#3d444d" }, // Màu viền
                 },
@@ -282,10 +287,10 @@ const UserProfile = () => {
                   variant="outlined"
                   fullWidth
                   InputProps={{
-                    style: { color: "#fff" }, // Màu chữ trong TextField
+                    style: { color: currentTheme.color }, // Màu chữ trong TextField
                   }}
                   InputLabelProps={{
-                    style: { color: "#fff" }, // Màu chữ nhãn
+                    style: { color: currentTheme.color }, // Màu chữ nhãn
                   }}
                 />
               )}
@@ -308,17 +313,17 @@ const UserProfile = () => {
           fullWidth
           onChange={(e) => setSelectStreetName(e.target.value)}
           InputProps={{
-            style: { color: "#fff" }, // Màu chữ trong TextField
+            style: { color: currentTheme.color }, // Màu chữ trong TextField
           }}
           InputLabelProps={{
-            style: { color: "#fff" }, // Màu chữ nhãn
+            style: { color: currentTheme.color }, // Màu chữ nhãn
             shrink: true,
           }}
           sx={{
             mt: 3,
-            backgroundColor: "#151b23", // Màu nền của input
-            "& .MuiInputLabel-root": { color: "#f0ffff" }, // Màu chữ của label
-            "& .MuiInputBase-input": { color: "#f0ffff" }, // Màu chữ của input
+            backgroundColor: currentTheme.backgroundColorLow, // Màu nền của input
+            "& .MuiInputLabel-root": { color: currentTheme.color }, // Màu chữ của label
+            "& .MuiInputBase-input": { color: currentTheme.color }, // Màu chữ của input
             "& .MuiOutlinedInput-root": {
               "& fieldset": { borderColor: "#3d444d" }, // Màu viền
             },
@@ -331,7 +336,11 @@ const UserProfile = () => {
 
         <Typography
           variant="h6"
-          style={{ marginBottom: "20px", color: "#fff", marginTop: "8px" }}
+          style={{
+            marginBottom: "20px",
+            color: currentTheme.color,
+            marginTop: "8px",
+          }}
         >
           Các thông tin khác
         </Typography>
@@ -351,15 +360,15 @@ const UserProfile = () => {
             defaultValue="9"
             fullWidth
             InputProps={{
-              style: { color: "#fff" }, // Màu chữ trong TextField
+              style: { color: currentTheme.color }, // Màu chữ trong TextField
             }}
             InputLabelProps={{
-              style: { color: "#fff" }, // Màu chữ nhãn
+              style: { color: currentTheme.color }, // Màu chữ nhãn
             }}
             sx={{
-              backgroundColor: "#151b23", // Màu nền của input
-              "& .MuiInputLabel-root": { color: "#f0ffff" }, // Màu chữ của label
-              "& .MuiInputBase-input": { color: "#f0ffff" }, // Màu chữ của input
+              color: currentTheme.backgroundColor, // Màu nền của input
+              "& .MuiInputLabel-root": { color: currentTheme.color }, // Màu chữ của label
+              "& .MuiInputBase-input": { color: currentTheme.color }, // Màu chữ của input
               "& .MuiOutlinedInput-root": {
                 "& fieldset": { borderColor: "#3d444d" }, // Màu viền
               },
@@ -383,15 +392,15 @@ const UserProfile = () => {
             defaultValue="H***g"
             fullWidth
             InputProps={{
-              style: { color: "#fff" }, // Màu chữ trong TextField
+              style: { color: currentTheme.color }, // Màu chữ trong TextField
             }}
             InputLabelProps={{
-              style: { color: "#fff" }, // Màu chữ nhãn
+              style: { color: currentTheme.color }, // Màu chữ nhãn
             }}
             sx={{
-              backgroundColor: "#151b23", // Màu nền của input
-              "& .MuiInputLabel-root": { color: "#f0ffff" }, // Màu chữ của label
-              "& .MuiInputBase-input": { color: "#f0ffff" }, // Màu chữ của input
+              color: currentTheme.backgroundColor, // Màu nền của input
+              "& .MuiInputLabel-root": { color: currentTheme.color }, // Màu chữ của label
+              "& .MuiInputBase-input": { color: currentTheme.color }, // Màu chữ của input
               "& .MuiOutlinedInput-root": {
                 "& fieldset": { borderColor: "#3d444d" }, // Màu viền
               },
@@ -409,15 +418,15 @@ const UserProfile = () => {
             value={dataUser?.NGAY_CAP_NHAT_USER || ""} // Đảm bảo giá trị mặc định là chuỗi rỗng nếu không có dataUser hoặc EMAIL
             fullWidth
             InputProps={{
-              style: { color: "#fff" }, // Màu chữ trong TextField
+              style: { color: currentTheme.color }, // Màu chữ trong TextField
             }}
             InputLabelProps={{
-              style: { color: "#fff" }, // Màu chữ nhãn
+              style: { color: currentTheme.color }, // Màu chữ nhãn
             }}
             sx={{
-              backgroundColor: "#151b23", // Màu nền của input
-              "& .MuiInputLabel-root": { color: "#f0ffff" }, // Màu chữ của label
-              "& .MuiInputBase-input": { color: "#f0ffff" }, // Màu chữ của input
+              color: currentTheme.backgroundColor, // Màu nền của input
+              "& .MuiInputLabel-root": { color: currentTheme.color }, // Màu chữ của label
+              "& .MuiInputBase-input": { color: currentTheme.color }, // Màu chữ của input
               "& .MuiOutlinedInput-root": {
                 "& fieldset": { borderColor: "#3d444d" }, // Màu viền
               },
@@ -433,15 +442,15 @@ const UserProfile = () => {
             fullWidth
             value={formattedDate || ""} // Hiển thị ngày đã được định dạng // Đảm bảo giá trị mặc định là chuỗi rỗng nếu không có dataUser hoặc EMAIL
             InputProps={{
-              style: { color: "#fff" }, // Màu chữ trong TextField
+              style: { color: currentTheme.color }, // Màu chữ trong TextField
             }}
             InputLabelProps={{
-              style: { color: "#fff" }, // Màu chữ nhãn
+              style: { color: currentTheme.color }, // Màu chữ nhãn
             }}
             sx={{
-              backgroundColor: "#151b23", // Màu nền của input
-              "& .MuiInputLabel-root": { color: "#f0ffff" }, // Màu chữ của label
-              "& .MuiInputBase-input": { color: "#f0ffff" }, // Màu chữ của input
+              color: currentTheme.backgroundColor, // Màu nền của input
+              "& .MuiInputLabel-root": { color: currentTheme.color }, // Màu chữ của label
+              "& .MuiInputBase-input": { color: currentTheme.color }, // Màu chữ của input
               "& .MuiOutlinedInput-root": {
                 "& fieldset": { borderColor: "#3d444d" }, // Màu viền
               },
