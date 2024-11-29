@@ -12,6 +12,7 @@ import {
   Select,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { getThemeConfig } from "../../services/themeService";
 
 const CommentsSection = ({ reviews }) => {
   const [expanded, setExpanded] = useState(false);
@@ -20,6 +21,7 @@ const CommentsSection = ({ reviews }) => {
   const [starFilter, setStarFilter] = useState("Tất cả"); // Lọc theo số sao
   const [timeFilter, setTimeFilter] = useState("latest"); // Lọc theo thời gian
 
+  const currentTheme = getThemeConfig(localStorage.getItem("THEMES") || "dark");
   const api = process.env.REACT_APP_URL_SERVER;
 
   // Hàm lọc theo số sao
@@ -78,7 +80,10 @@ const CommentsSection = ({ reviews }) => {
   return (
     <Box sx={{ width: "100%" }}>
       <Accordion
-        sx={{ backgroundColor: "#101014", color: "#fff" }}
+        sx={{
+          backgroundColor: currentTheme.backgroundColor,
+          color: currentTheme.color,
+        }}
         expanded={expanded}
         onChange={() => setExpanded(!expanded)}
       >
@@ -90,7 +95,12 @@ const CommentsSection = ({ reviews }) => {
           <Typography variant="h6">Xem bình luận ({reviews.length})</Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <Box sx={{ paddingBottom: 2, backgroundColor: "#101014" }}>
+          <Box
+            sx={{
+              paddingBottom: 2,
+              backgroundColor: currentTheme.backgroundColor,
+            }}
+          >
             {/* Bộ lọc */}
             <Box sx={{ marginBottom: 2, display: "flex" }}>
               <Box>

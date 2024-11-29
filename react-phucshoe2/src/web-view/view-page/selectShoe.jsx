@@ -25,6 +25,7 @@ import { v4 as uuidv4 } from "uuid"; // Thêm thư viện UUID nếu bạn muố
 import RecommenderProductCarousel from "../../share-view/productCarousel-recommender";
 import AddressSelector from "../../user-view/components/addressUser";
 import CommentsSection from "../component-view/binhLuan";
+import { getThemeConfig } from "../../services/themeService";
 const api = process.env.REACT_APP_URL_SERVER;
 
 const SelectShoe = () => {
@@ -37,7 +38,9 @@ const SelectShoe = () => {
   const { isAuthenticated, userInfo } = useSelector((state) => state.auth);
   const [selectPhuongThucThanhToan, setSelectPhuongThucThanhToan] =
     useState("");
-
+  const currentTheme = getThemeConfig(
+    localStorage.getItem("THEMES") || userInfo?.THEMES || "dark"
+  );
   useEffect(() => {
     if (id) {
       fetchProduct(id);
@@ -251,7 +254,7 @@ const SelectShoe = () => {
               mt: 2,
             }}
           >
-            <Typography sx={{ color: "#fff" }}>
+            <Typography sx={{ color: currentTheme.color }}>
               Mô tả: {product.MO_TA_SAN_PHAM} {/* Product Description */}
             </Typography>
           </Box>{" "}
@@ -264,7 +267,7 @@ const SelectShoe = () => {
               mt: 2,
             }}
           >
-            <Typography sx={{ color: "#fff" }}>
+            <Typography sx={{ color: currentTheme.color }}>
               Mô tả chất liệu: {product.MO_TA_CHAT_LIEU}{" "}
               {/* Product Description */}
             </Typography>
@@ -278,7 +281,7 @@ const SelectShoe = () => {
               mt: 2,
             }}
           >
-            <Typography sx={{ color: "#fff" }}>
+            <Typography sx={{ color: currentTheme.color }}>
               Mô tả thể loại: {product.MO_TA_LOAI_DANH_MUC}{" "}
             </Typography>
           </Box>{" "}
@@ -302,8 +305,8 @@ const SelectShoe = () => {
             sx={{
               textAlign: "left",
               borderRadius: 1,
-              backgroundColor: "#2c2c2e",
-              color: "#fff",
+              backgroundColor: currentTheme.backgroundColorLow,
+              color: currentTheme.color,
               padding: 2,
               display: "flex",
               flexDirection: "column",
@@ -316,14 +319,14 @@ const SelectShoe = () => {
               {product.TEN_SAN_PHAM}
             </Typography>
             <Box>
-              <Typography variant="body2">
+              <Typography sx={{ color: currentTheme.color }} variant="body2">
                 Size: {product.KICH_CO || "N/A"}
               </Typography>
-              <Typography variant="caption" sx={{ color: "#ccc" }}>
+              <Typography variant="caption" sx={{ color: currentTheme.color }}>
                 Chất liệu: {product.TEN_CHAT_LIEU_ || "N/A"} {/* Material */}
               </Typography>
             </Box>
-            <Typography variant="h6">
+            <Typography sx={{ color: currentTheme.color }} variant="h6">
               {product.GIA.toLocaleString()} VND
             </Typography>{" "}
             {/* Price */}
@@ -383,12 +386,12 @@ const SelectShoe = () => {
             >
               Add To Cart
             </Button>
-            <FormControl sx={{ mb: 2 }}>
+            <FormControl sx={{ mb: 2, mt: 2 }}>
               <InputLabel
                 sx={{
                   display: "flex",
                   alignItems: "center",
-                  color: "#fff",
+                  color: currentTheme.color,
                   fontWeight: "500",
                 }}
               >
@@ -399,7 +402,10 @@ const SelectShoe = () => {
                 value={selectPhuongThucThanhToan}
                 label="Icon Phương thức thanh toán"
                 onChange={(e) => setSelectPhuongThucThanhToan(e.target.value)}
-                sx={{ backgroundColor: "#343437", color: "#fff" }}
+                sx={{
+                  backgroundColor: currentTheme.backgroundColorLow,
+                  color: currentTheme.color,
+                }}
               >
                 {" "}
                 <MenuItem value="">Xem tất cả</MenuItem>
@@ -422,7 +428,7 @@ const SelectShoe = () => {
                     <Typography
                       variant="body2"
                       color="white"
-                      sx={{ fontSize: "11px" }}
+                      sx={{ fontSize: "11px", color: currentTheme.color }}
                     >
                       {`Địa chỉ: ${userInfo.DIA_CHI_STREETNAME}, ${userInfo?.DIA_CHI_Wards}, 
               ${userInfo?.DIA_CHI_Districts}, ${userInfo?.DIA_CHI_Provinces}`}
@@ -432,11 +438,19 @@ const SelectShoe = () => {
               </Box>
             ) : (
               <>
-                {/* <Switch
+                <Switch
                   checked={isSwitchOn} // Liên kết trạng thái với Switch
                   onChange={handleSwitchChange}
                   color="primary"
-                /> */}
+                />{" "}
+                <Typography
+                  variant="body2"
+                  color="white"
+                  sx={{ fontSize: "11px", color: currentTheme.color }}
+                >
+                  {`Địa chỉ: ${selectStreetName || ""} ${selectedWards || ""} 
+        ${selectedDistrict || ""} ${selectedProvince || ""}`}
+                </Typography>
                 <AddressSelector
                   selectedProvince={selectedProvince}
                   selectedDistrict={selectedDistrict}
@@ -454,16 +468,16 @@ const SelectShoe = () => {
                   value={selectStreetName} // Đảm bảo giá trị mặc định là chuỗi rỗng nếu không có dataUser hoặc EMAIL
                   fullWidth
                   InputProps={{
-                    style: { color: "#fff" }, // Màu chữ trong TextField
+                    style: { color: currentTheme.color }, // Màu chữ trong TextField
                   }}
                   onChange={(e) => setSelectStreetName(e.target.value)}
                   InputLabelProps={{
-                    style: { color: "#fff" }, // Màu chữ nhãn
+                    style: { color: currentTheme.color }, // Màu chữ nhãn
                   }}
                   sx={{
-                    backgroundColor: "#343437", // Màu nền của input
-                    "& .MuiInputLabel-root": { color: "#fff" }, // Màu chữ của label
-                    "& .MuiInputBase-input": { color: "#fff" }, // Màu chữ của input
+                    backgroundColor: currentTheme.backgroundColorLow, // Màu nền của input
+                    "& .MuiInputLabel-root": { color: currentTheme.color }, // Màu chữ của label
+                    "& .MuiInputBase-input": { color: currentTheme.color }, // Màu chữ của input
                     "& .MuiOutlinedInput-root": {
                       "& fieldset": { borderColor: "#00000" }, // Màu viền
                     },
@@ -479,16 +493,16 @@ const SelectShoe = () => {
                   value={soDienThoai} // Đảm bảo giá trị mặc định là chuỗi rỗng nếu không có dataUser hoặc EMAIL
                   fullWidth
                   InputProps={{
-                    style: { color: "#fff" }, // Màu chữ trong TextField
+                    style: { color: currentTheme.color }, // Màu chữ trong TextField
                   }}
                   onChange={(e) => setSoDienThoai(e.target.value)}
                   InputLabelProps={{
-                    style: { color: "#fff" }, // Màu chữ nhãn
+                    style: { color: currentTheme.color }, // Màu chữ nhãn
                   }}
                   sx={{
-                    backgroundColor: "#343437", // Màu nền của input
-                    "& .MuiInputLabel-root": { color: "#fff" }, // Màu chữ của label
-                    "& .MuiInputBase-input": { color: "#fff" }, // Màu chữ của input
+                    backgroundColor: currentTheme.backgroundColorLow, // Màu nền của input
+                    "& .MuiInputLabel-root": { color: currentTheme.color }, // Màu chữ của label
+                    "& .MuiInputBase-input": { color: currentTheme.color }, // Màu chữ của input
                     "& .MuiOutlinedInput-root": {
                       "& fieldset": { borderColor: "#00000" }, // Màu viền
                     },
@@ -504,6 +518,7 @@ const SelectShoe = () => {
               <Typography
                 variant="body2"
                 sx={{
+                  color: currentTheme.color,
                   borderBottom: "1px solid rgba(204, 204, 204, 0.5)",
                   paddingTop: 3,
                   paddingBottom: 1,
@@ -514,6 +529,7 @@ const SelectShoe = () => {
               <Typography
                 variant="body2"
                 sx={{
+                  color: currentTheme.color,
                   borderBottom: "1px solid rgba(204, 204, 204, 0.5)",
                   paddingTop: 3,
                   paddingBottom: 1,
@@ -524,6 +540,7 @@ const SelectShoe = () => {
               <Typography
                 variant="body2"
                 sx={{
+                  color: currentTheme.color,
                   borderBottom: "1px solid rgba(204, 204, 204, 0.5)",
                   paddingTop: 3,
                   paddingBottom: 1,
@@ -534,6 +551,7 @@ const SelectShoe = () => {
               <Typography
                 variant="body2"
                 sx={{
+                  color: currentTheme.color,
                   borderBottom: "1px solid rgba(204, 204, 204, 0.5)",
                   paddingTop: 3,
                   paddingBottom: 1,
@@ -545,6 +563,7 @@ const SelectShoe = () => {
               <Typography
                 variant="body2"
                 sx={{
+                  color: currentTheme.color,
                   borderBottom: "1px solid rgba(204, 204, 204, 0.5)",
                   paddingTop: 3,
                   paddingBottom: 1,
@@ -555,6 +574,7 @@ const SelectShoe = () => {
               <Typography
                 variant="body2"
                 sx={{
+                  color: currentTheme.color,
                   borderBottom: "1px solid rgba(204, 204, 204, 0.5)",
                   paddingTop: 3,
                   paddingBottom: 1,
@@ -566,6 +586,7 @@ const SelectShoe = () => {
               <Typography
                 variant="body2"
                 sx={{
+                  color: currentTheme.color,
                   borderBottom: "1px solid rgba(204, 204, 204, 0.5)",
                   paddingTop: 3,
                   paddingBottom: 1,

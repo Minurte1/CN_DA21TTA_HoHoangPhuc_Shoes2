@@ -6,6 +6,7 @@ import {
   Stack,
 } from "@mui/material";
 import axios from "axios";
+import { getThemeConfig } from "../../services/themeService";
 
 const AddressSelector = ({
   selectedProvince,
@@ -28,7 +29,7 @@ const AddressSelector = ({
   const [loadingProvinces, setLoadingProvinces] = useState(false);
   const [loadingDistricts, setLoadingDistricts] = useState(false);
   const [loadingWards, setLoadingWards] = useState(false);
-
+  const currentTheme = getThemeConfig(localStorage.getItem("THEMES") || "dark");
   // Fetch provinces
   useEffect(() => {
     const fetchProvinces = async () => {
@@ -114,9 +115,9 @@ const AddressSelector = ({
                 : "Chọn tỉnh"
             }
             sx={{
-              backgroundColor: backgroundColor || "#151b23", // Màu nền của input
+              backgroundColor: currentTheme.backgroundColorLow || "#151b23", // Màu nền của input
               "& .MuiInputLabel-root": {
-                color: color || "#f0ffff", // Màu chữ của label
+                color: currentTheme.color || "#f0ffff", // Màu chữ của label
               },
               "& .MuiInputBase-input": {
                 color: "#f0ffff", // Màu chữ của input
@@ -159,9 +160,9 @@ const AddressSelector = ({
                 : "Chọn huyện"
             }
             sx={{
-              backgroundColor: backgroundColor || "#151b23", // Màu nền của input
+              backgroundColor: currentTheme.backgroundColorLow || "#151b23", // Màu nền của input
               "& .MuiInputLabel-root": {
-                color: color || "#f0ffff", // Màu chữ của label
+                color: currentTheme.color || "#f0ffff", // Màu chữ của label
               },
               "& .MuiInputBase-input": {
                 color: "#f0ffff", // Màu chữ của input
@@ -205,9 +206,9 @@ const AddressSelector = ({
                 : "Chọn phường xã"
             }
             sx={{
-              backgroundColor: backgroundColor || "#151b23", // Màu nền của input
+              backgroundColor: currentTheme.backgroundColorLow || "#151b23", // Màu nền của input
               "& .MuiInputLabel-root": {
-                color: color || "#f0ffff", // Màu chữ của label
+                color: currentTheme.color || "#f0ffff", // Màu chữ của label
               },
               "& .MuiInputBase-input": {
                 color: "#f0ffff", // Màu chữ của input

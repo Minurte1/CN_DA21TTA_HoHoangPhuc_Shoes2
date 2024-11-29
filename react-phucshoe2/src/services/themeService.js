@@ -6,12 +6,14 @@ const themeConfigs = {
     color: "#343A40", // màu chữ
     secondaryColor: "#3ccaf0", // màu nhấn mạnh title
     accentColor: "#c5ebf6 ", //màu backgroundColor hover
+    backgroundColorLow: "#dddddd",
   },
   dark: {
     backgroundColor: "#101014",
     color: "#ffffff",
     secondaryColor: "#3ccaf0",
     accentColor: "#515157",
+    backgroundColorLow: "#dddddd",
   },
 };
 
