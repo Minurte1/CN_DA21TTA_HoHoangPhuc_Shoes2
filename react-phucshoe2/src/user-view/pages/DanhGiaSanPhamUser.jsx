@@ -12,6 +12,7 @@ import {
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { enqueueSnackbar } from "notistack";
+import { getThemeConfig } from "../../services/themeService";
 
 const DanhGiaSanPhamUser = () => {
   const { id } = useParams(); // Nhận ID đơn hàng từ URL
@@ -21,7 +22,7 @@ const DanhGiaSanPhamUser = () => {
   const [dataChiTietHoaDon, setDataChiTietHoaDon] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-
+  const currentTheme = getThemeConfig(localStorage.getItem("THEMES") || "dark");
   // Hàm lấy thông tin chi tiết sản phẩm
   const fetchProductDetails = async () => {
     try {
@@ -104,7 +105,17 @@ const DanhGiaSanPhamUser = () => {
             }}
           >
             Trở về
-          </Button>
+          </Button>{" "}
+          <Typography
+            variant="h5"
+            sx={{
+              textAlign: "center",
+
+              color: "#efefefe",
+            }}
+          >
+            Đánh giá sản phẩm
+          </Typography>
           {/* Thông tin đơn hàng */}
           {loading ? (
             <Skeleton variant="text" width="80%" height={40} />
