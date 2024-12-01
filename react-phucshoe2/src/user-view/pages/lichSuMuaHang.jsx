@@ -138,7 +138,7 @@ const LichSuMuaHangUser = () => {
                   mb: 2,
                   p: 2,
                   textAlign: "left",
-                  // backgroundColor: currentTheme.backgroundColorLow,
+                  backgroundColor: currentTheme.backgroundColor,
                   color: currentTheme.color,
                 }}
               >
@@ -157,12 +157,15 @@ const LichSuMuaHangUser = () => {
                     component="span"
                     sx={{
                       ml: 2,
+                      fontWeight: 600,
                       color:
                         order.TRANG_THAI_DON_HANG === "Giao dịch thành công"
-                          ? "#73ec8b"
+                          ? "#5ab96c"
                           : order.TRANG_THAI_DON_HANG ===
                             "Đã thanh toán thành công và đang chờ giao hàng"
-                          ? "yellow"
+                          ? "#cc7c2c"
+                          : order.TRANG_THAI_DON_HANG === "Đang chờ thanh toán"
+                          ? "#cc7c2c"
                           : order.TRANG_THAI_DON_HANG === "Đã hủy"
                           ? "red"
                           : currentTheme.color, // Bạn có thể thêm một màu mặc định nếu không khớp với bất kỳ điều kiện nào

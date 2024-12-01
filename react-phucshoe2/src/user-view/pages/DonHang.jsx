@@ -158,14 +158,15 @@ const DonHangUser = () => {
                 <TableCell
                   sx={{
                     fontSize: "0.875rem",
+                    fontWeight: 600,
                     color:
                       order.TRANG_THAI_DON_HANG ===
                       "Đã thanh toán thành công và đang chờ giao hàng"
                         ? "yellow"
                         : order.TRANG_THAI_DON_HANG === "Giao dịch thành công"
-                        ? "#73ec8b"
+                        ? "#5ab96c"
                         : order.TRANG_THAI_DON_HANG === "Đang chờ thanh toán"
-                        ? "yellow"
+                        ? "#cc7c2c"
                         : "red",
                   }}
                 >

@@ -13,7 +13,7 @@ const themeConfigs = {
     color: "#ffffff",
     secondaryColor: "#3ccaf0",
     accentColor: "#515157",
-    backgroundColorLow: "#dddddd",
+    backgroundColorLow: "#1f1f1f",
   },
 };
 

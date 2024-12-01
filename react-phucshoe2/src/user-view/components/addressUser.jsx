@@ -119,7 +119,7 @@ const AddressSelector = ({
                 color: currentTheme.color || "#f0ffff", // Màu chữ của label
               },
               "& .MuiInputBase-input": {
-                color: "#f0ffff", // Màu chữ của input
+                color: currentTheme.color, // Màu chữ của input
               },
               "& .MuiOutlinedInput-root": {
                 "& fieldset": {
@@ -164,7 +164,7 @@ const AddressSelector = ({
                 color: currentTheme.color || "#f0ffff", // Màu chữ của label
               },
               "& .MuiInputBase-input": {
-                color: "#f0ffff", // Màu chữ của input
+                color: currentTheme.color, // Màu chữ của input
               },
               "& .MuiOutlinedInput-root": {
                 "& fieldset": {
@@ -210,7 +210,7 @@ const AddressSelector = ({
                 color: currentTheme.color || "#f0ffff", // Màu chữ của label
               },
               "& .MuiInputBase-input": {
-                color: "#f0ffff", // Màu chữ của input
+                color: currentTheme.color, // Màu chữ của input
               },
               "& .MuiOutlinedInput-root": {
                 "& fieldset": {
