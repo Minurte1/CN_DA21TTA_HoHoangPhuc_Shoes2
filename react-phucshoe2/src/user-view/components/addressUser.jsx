@@ -20,6 +20,7 @@ const AddressSelector = ({
   backgroundColor,
   color,
 }) => {
+  const apiAddress = process.env.SERVER_ADDRESS;
   const [provinces, setProvinces] = useState([]);
   const [districts, setDistricts] = useState([]);
   const [wards, setWards] = useState([]);
@@ -35,11 +36,9 @@ const AddressSelector = ({
     const fetchProvinces = async () => {
       setLoadingProvinces(true);
       try {
-        const response = await axios.get(
-          "https://vn-public-apis.fpo.vn/provinces/getAll?limit=-1"
-        );
+        const response = await axios.get(`http://localhost:3003/provinces`);
 
-        setProvinces(response.data.data.data || []);
+        setProvinces(response.data.data || []);
       } catch (error) {
         console.error("Error fetching provinces:", error);
       } finally {
@@ -56,9 +55,9 @@ const AddressSelector = ({
         setLoadingDistricts(true);
         try {
           const response = await axios.get(
-            `https://vn-public-apis.fpo.vn/districts/getByProvince?provinceCode=${selectedProvince.code}&limit=-1`
+            `http://localhost:3003/districts/${selectedProvince.code}`
           );
-          setDistricts(response.data.data.data || []);
+          setDistricts(response.data.data || []);
         } catch (error) {
           console.error("Error fetching districts:", error);
         } finally {
@@ -78,9 +77,9 @@ const AddressSelector = ({
         setLoadingWards(true);
         try {
           const response = await axios.get(
-            `https://vn-public-apis.fpo.vn/wards/getByDistrict?districtCode=${selectedDistrict.code}&limit=-1`
+            `http://localhost:3003/wards/${selectedDistrict.code}`
           );
-          setWards(response.data.data.data || []);
+          setWards(response.data.data || []);
         } catch (error) {
           console.error("Error fetching wards:", error);
         } finally {
@@ -111,7 +110,7 @@ const AddressSelector = ({
             {...params}
             label={
               selectedProvince
-                ? selectedProvince.name_with_type || selectedProvince
+                ? selectedProvince.full_name || selectedProvince
                 : "Chọn tỉnh"
             }
             sx={{
@@ -147,7 +146,7 @@ const AddressSelector = ({
       {/* District Selector */}
       <Autocomplete
         options={districts}
-        getOptionLabel={(option) => option.name_with_type || option.name || ""}
+        getOptionLabel={(option) => option.full_name || option.name || ""}
         value={selectedDistrict}
         onChange={(event, newValue) => setSelectedDistrict(newValue)}
         loading={loadingDistricts}
@@ -156,7 +155,7 @@ const AddressSelector = ({
             {...params}
             label={
               selectedDistrict
-                ? selectedDistrict.name_with_type || selectedDistrict
+                ? selectedDistrict.full_name || selectedDistrict
                 : "Chọn huyện"
             }
             sx={{
@@ -193,7 +192,7 @@ const AddressSelector = ({
       {/* Ward Selector */}
       <Autocomplete
         options={wards}
-        getOptionLabel={(option) => option.name_with_type || option.name || ""}
+        getOptionLabel={(option) => option.full_name || option.name || ""}
         loading={loadingWards}
         value={selectedWards}
         onChange={(event, newValue) => setSelectedWards(newValue)}
@@ -202,7 +201,7 @@ const AddressSelector = ({
             {...params}
             label={
               selectedWards
-                ? selectedWards.name_with_type || selectedWards
+                ? selectedWards.full_name || selectedWards
                 : "Chọn phường xã"
             }
             sx={{
