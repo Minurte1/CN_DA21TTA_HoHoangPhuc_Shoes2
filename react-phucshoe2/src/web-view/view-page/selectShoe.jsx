@@ -448,7 +448,7 @@ const SelectShoe = () => {
                   color="white"
                   sx={{ fontSize: "11px", color: currentTheme.color }}
                 >
-                  {`Địa chỉ: ${selectStreetName || ""} ${selectedWards || ""} 
+                  {`Địa chỉ: ${selectStreetName || " "} ${selectedWards || ""} 
         ${selectedDistrict || ""} ${selectedProvince || ""}`}
                 </Typography>
                 <AddressSelector

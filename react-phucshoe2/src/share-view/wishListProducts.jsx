@@ -20,6 +20,7 @@ import dayjs from "dayjs";
 import FilterShoes from "../admin-view/pages/quanLySanPham/component/FilterShoe";
 import { enqueueSnackbar } from "notistack";
 import { setTotalCart } from "../redux/authSlice";
+import { getThemeConfig } from "../services/themeService";
 const api = process.env.REACT_APP_URL_SERVER;
 const WishlistItem = ({
   name,
@@ -38,6 +39,7 @@ const WishlistItem = ({
   idProduct,
   removeFromFavorites,
 }) => {
+  const currentTheme = getThemeConfig(localStorage.getItem("THEMES") || "dark");
   return (
     <Card
       sx={{
@@ -45,7 +47,7 @@ const WishlistItem = ({
         display: "flex",
         justifyContent: "space-between",
         p: 2,
-        backgroundColor: "#202024",
+        backgroundColor: currentTheme.backgroundColorLow,
       }}
     >
       <Box sx={{ display: "flex", alignItems: "center", textAlign: "left" }}>
@@ -55,7 +57,7 @@ const WishlistItem = ({
           style={{ marginRight: 16, width: "80px", borderRadius: "13px" }}
         />
         <Box>
-          <Typography variant="h6" color="white">
+          <Typography variant="h6" sx={{ color: currentTheme.color }}>
             {name}
           </Typography>
           <Typography variant="body2" color="gray">
@@ -67,7 +69,7 @@ const WishlistItem = ({
         </Box>
       </Box>
       <Box sx={{ textAlign: "right" }}>
-        <Typography variant="h6" color="white">
+        <Typography variant="h6" sx={{ color: currentTheme.color }}>
           {new Intl.NumberFormat("vi-VN", {
             style: "currency",
             currency: "VND",
@@ -77,11 +79,11 @@ const WishlistItem = ({
           variant="text"
           onClick={() => removeFromFavorites(idProduct)}
           sx={{
-            color: "#c9d1d9",
+            color: currentTheme.color,
             textTransform: "none",
             mr: 2,
             "&:hover": {
-              color: "#fffff", // Change text color on hover
+              color: currentTheme.color, // Change text color on hover
             },
           }}
         >
@@ -142,9 +144,15 @@ const WishlistFilters = ({
   mauSac,
   mucDichSuDung,
   kichCo,
+  currentTheme,
 }) => (
   <Box
-    sx={{ backgroundColor: "#202024", p: 2, borderRadius: 2, color: "white" }}
+    sx={{
+      backgroundColor: currentTheme.backgroundColor,
+      p: 2,
+      borderRadius: 2,
+      color: "white",
+    }}
   >
     <FilterShoes
       thuongHieu={thuongHieu}
@@ -182,6 +190,7 @@ const WishlistFilters = ({
 );
 
 const WishlistProducts = () => {
+  const currentTheme = getThemeConfig(localStorage.getItem("THEMES") || "dark");
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const { isAuthenticated, userInfo } = useSelector((state) => state.auth);
@@ -446,19 +455,23 @@ const WishlistProducts = () => {
     <Grid
       container
       spacing={2}
-      sx={{ p: 4, backgroundColor: "#121212", justifyContent: "center" }}
+      sx={{
+        p: 4,
+        backgroundColor: currentTheme.backgroundColor,
+        justifyContent: "center",
+      }}
     >
       <Grid item xs={12}>
-        <Typography variant="h4" color="white">
+        <Typography variant="h4" sx={{ color: currentTheme.color }}>
           My Wishlist
         </Typography>
         <Box sx={{ display: "flex", alignItems: "center", mt: 2, mb: 2 }}>
           <Switch defaultChecked color="primary" />
-          <Typography variant="body2" color="white">
+          <Typography variant="body2" sx={{ color: currentTheme.color }}>
             Sort by:{" "}
           </Typography>
           <FormControl sx={{ ml: 1, minWidth: 120 }}>
-            <Select sx={{ color: "#c9d1d9" }} defaultValue="Newest">
+            <Select sx={{ color: currentTheme.color }} defaultValue="Newest">
               <MenuItem value="Newest">Newest</MenuItem>
               <MenuItem value="On Sale">On Sale</MenuItem>
               <MenuItem value="Popular">Popular</MenuItem>
@@ -467,7 +480,7 @@ const WishlistProducts = () => {
         </Box>
         <Divider sx={{ backgroundColor: "#555", mb: 2 }} />
       </Grid>
-      <Grid item xs={12} md={7} lg={7}>
+      <Grid item xs={12} md={8} lg={7}>
         {loading ? (
           <Typography color="white">Loading...</Typography>
         ) : (
@@ -494,7 +507,7 @@ const WishlistProducts = () => {
           ))
         )}
       </Grid>
-      <Grid item xs={12} md={4}>
+      <Grid item xs={12} md={3}>
         <WishlistFilters
           thuongHieu={thuongHieu}
           chatLieu={chatLieu}
@@ -524,6 +537,8 @@ const WishlistProducts = () => {
           mauSac={mauSac}
           mucDichSuDung={mucDichSuDung}
           kichCo={kichCo}
+          //
+          currentTheme={currentTheme}
         />
       </Grid>
     </Grid>

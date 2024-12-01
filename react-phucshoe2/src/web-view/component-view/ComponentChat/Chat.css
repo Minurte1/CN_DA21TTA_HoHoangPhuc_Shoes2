@@ -141,17 +141,6 @@
     margin-top: 10px;
 }
 
-.noidungtinnhan2 {
-    color: white;
-    width: auto;
-    height: auto;
-    margin-left: 10px;
-    font-size: 14px;
-    text-align: right;
-    width: auto;
-    height: auto;
-}
-
 
 
 .container-noidungtinnhan {
@@ -174,6 +163,17 @@
     width: auto;
     height: auto;
 }
+
+.noidungtinnhan2 {
+    color: white;
+    width: auto;
+    height: auto;
+    margin-left: 10px;
+    font-size: 13px;
+    text-align: right;
+
+}
+
 
 .container-noidungtinnhan2 {
     width: auto;

@@ -23,9 +23,11 @@ import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { setTotalCart } from "../../redux/authSlice";
 import { enqueueSnackbar } from "notistack";
+import { getThemeConfig } from "../../services/themeService";
 const api = process.env.REACT_APP_URL_SERVER;
 
 const BrowseProduct = () => {
+  const currentTheme = getThemeConfig(localStorage.getItem("THEMES") || "dark");
   const [mobileOpen, setMobileOpen] = useState(false);
   const [products, setProducts] = useState([]);
 
@@ -479,7 +481,7 @@ const BrowseProduct = () => {
               padding: "4px 8px", // Khoảng cách bên trong
             },
             ".MuiPaginationItem-root": {
-              color: "#c9d1d9", // Màu chữ đen
+              color: currentTheme.color, // Màu chữ đen
               fontWeight: "bold", // Chữ đậm
             },
             ".Mui-selected": {

@@ -7,6 +7,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import logo from "../../../public/logo/favicon.png";
 import { useDispatch, useSelector } from "react-redux";
+import SendIcon from "@mui/icons-material/Send";
 import { getThemeConfig } from "../../../services/themeService";
 const ENDPOINT = "http://localhost:3002"; // Địa chỉ của server Node.js
 
@@ -225,7 +226,7 @@ const ChatRealTime = () => {
                 ))}
               </div>
             </div>
-            <div className="container-chat-realtime-send">
+            <div className="container-chat-realtime-send ">
               <div className="NoiDungChat-thanhChat-Input">
                 <input
                   className="NoiDungChat-thanhChat-Input-1"
@@ -237,12 +238,7 @@ const ChatRealTime = () => {
                 ></input>
               </div>
               <div className="NoiDungChat-thanhChat-3">
-                <img
-                  onClick={handleIconCaVoi}
-                  className="CavoiCute"
-                  alt="🐳"
-                  src="https://static.xx.fbcdn.net/images/emoji.php/v9/tde/1.5/20/1f433.png"
-                ></img>
+                <SendIcon sx={{ color: "#2ccaff" }} />
               </div>
             </div>
           </div>

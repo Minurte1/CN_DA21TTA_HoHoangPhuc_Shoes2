@@ -20,6 +20,7 @@ import {
 } from "@mui/icons-material";
 import { useSelector } from "react-redux";
 import translations from "../../../../redux/data/translations";
+import { getThemeConfig } from "../../../../services/themeService";
 
 const FilterShoes = ({
   thuongHieu,
@@ -55,7 +56,7 @@ const FilterShoes = ({
 }) => {
   const language = useSelector((state) => state.language.language);
   const t = translations[language].products;
-
+  const currentTheme = getThemeConfig(localStorage.getItem("THEMES") || "dark");
   return (
     <>
       {" "}
@@ -69,27 +70,27 @@ const FilterShoes = ({
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
-                  <Search sx={{ color: "#c9d1d9" }} />
+                  <Search sx={{ color: currentTheme.color }} />
                 </InputAdornment>
               ),
             }}
             sx={{
-              color: "#c9d1d9", // Text color for input value
+              color: currentTheme.color, // Text color for input value
               width: "100%",
               "& .MuiInputBase-input": {
-                color: "#c9d1d9",
+                color: currentTheme.color,
               },
               "& .MuiInputBase-input::placeholder": {
-                color: "#c9d1d9", // Placeholder color
+                color: currentTheme.color, // Placeholder color
               },
               "& .MuiOutlinedInput-root fieldset": {
-                borderColor: "#c9d1d9", // Border color when not focused
+                borderColor: currentTheme.color, // Border color when not focused
               },
               "& .Mui-focused .MuiInputLabel-root": {
-                color: "#c9d1d9", // Focused label color
+                color: currentTheme.color, // Focused label color
               },
               "& .MuiInputLabel-root": {
-                color: "#c9d1d9", // Default label color
+                color: currentTheme.color, // Default label color
               },
             }}
           />
@@ -97,7 +98,11 @@ const FilterShoes = ({
         {/* Thương hiệu */}
         <FormControl sx={{ mb: 2, width: 250, ml: 2 }}>
           <InputLabel
-            sx={{ display: "flex", alignItems: "center", color: "#c9d1d9" }}
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              color: currentTheme.color,
+            }}
           >
             <Apartment sx={{ mr: 1 }} /> {t.brands ? t.brands : "Thương hiệu"}
           </InputLabel>
@@ -105,7 +110,7 @@ const FilterShoes = ({
             value={selectedThuongHieu}
             label="Apart Thương hiệu"
             onChange={(e) => setSelectedThuongHieu(e.target.value)}
-            sx={{ color: "#c9d1d9" }}
+            sx={{ color: currentTheme.color }}
           >
             {" "}
             <MenuItem value="">{t.SeeAll ? t.SeeAll : "Xem tất cả"}</MenuItem>
@@ -123,7 +128,11 @@ const FilterShoes = ({
         {/* Chất liệu */}
         <FormControl sx={{ mb: 2, width: 250, ml: 2 }}>
           <InputLabel
-            sx={{ display: "flex", alignItems: "center", color: "#c9d1d9" }}
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              color: currentTheme.color,
+            }}
           >
             <FormatListBulleted sx={{ mr: 1 }} />{" "}
             {t.material ? t.material : "Chất liệu"}
@@ -131,7 +140,7 @@ const FilterShoes = ({
           <Select
             value={selectedChatLieu}
             onChange={(e) => setSelectedChatLieu(e.target.value)}
-            sx={{ color: "#c9d1d9" }}
+            sx={{ color: currentTheme.color }}
             label="Icon Chất liệu"
           >
             {" "}
@@ -153,7 +162,11 @@ const FilterShoes = ({
             {" "}
             <FormControl sx={{ mb: 2, width: 250, ml: 2 }}>
               <InputLabel
-                sx={{ display: "flex", alignItems: "center", color: "#c9d1d9" }}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  color: currentTheme.color,
+                }}
               >
                 <ToggleOn sx={{ mr: 1 }} /> Trạng thái
               </InputLabel>
@@ -161,7 +174,7 @@ const FilterShoes = ({
                 value={selectedTrangThai}
                 label="Icon Trạng thái"
                 onChange={(e) => setSelectedTrangThai(e.target.value)}
-                sx={{ color: "#c9d1d9" }}
+                sx={{ color: currentTheme.color }}
               >
                 {" "}
                 <MenuItem value="">Xem tất cả</MenuItem>
@@ -178,7 +191,11 @@ const FilterShoes = ({
         {/* Thương hiệu */}
         <FormControl sx={{ mb: 2, width: 250, ml: 2 }}>
           <InputLabel
-            sx={{ display: "flex", alignItems: "center", color: "#c9d1d9" }}
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              color: currentTheme.color,
+            }}
           >
             <ColorLens sx={{ mr: 1 }} /> {t.Color ? t.Color : "Màu sắc"}
           </InputLabel>
@@ -186,7 +203,7 @@ const FilterShoes = ({
             value={selectedMauSac}
             label="Apart Màu Sắc"
             onChange={(e) => setSelectedMauSac(e.target.value)}
-            sx={{ color: "#c9d1d9" }}
+            sx={{ color: currentTheme.color }}
           >
             {" "}
             <MenuItem value="">{t.SeeAll ? t.SeeAll : "Xem tất cả"}</MenuItem>
@@ -201,14 +218,18 @@ const FilterShoes = ({
         {/* Chất liệu */}
         <FormControl sx={{ mb: 2, width: 250, ml: 2 }}>
           <InputLabel
-            sx={{ display: "flex", alignItems: "center", color: "#c9d1d9" }}
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              color: currentTheme.color,
+            }}
           >
             <AdsClick sx={{ mr: 1 }} /> {t.purpose ? t.purpose : "Mục đích"}
           </InputLabel>
           <Select
             value={selectMucDichSuDung}
             onChange={(e) => setSelectMucDichSuDung(e.target.value)}
-            sx={{ color: "#c9d1d9" }}
+            sx={{ color: currentTheme.color }}
             label="Icon Mục đích"
           >
             {" "}
@@ -227,7 +248,11 @@ const FilterShoes = ({
         {/* Trạng thái */}
         <FormControl sx={{ mb: 2, width: 250, ml: 2 }}>
           <InputLabel
-            sx={{ display: "flex", alignItems: "center", color: "#c9d1d9" }}
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              color: currentTheme.color,
+            }}
           >
             <FormatSize sx={{ mr: 1 }} /> {t.Size ? t.Size : "Kích cỡ"}
           </InputLabel>
@@ -235,7 +260,7 @@ const FilterShoes = ({
             value={selectKichCo}
             label="Icon  Kích cỡ"
             onChange={(e) => setSelectKichCo(e.target.value)}
-            sx={{ color: "#c9d1d9" }}
+            sx={{ color: currentTheme.color }}
           >
             <MenuItem value="">{t.SeeAll ? t.SeeAll : "Xem tất cả"}</MenuItem>
             {kichCo.map((item) => (
@@ -249,7 +274,11 @@ const FilterShoes = ({
         {/* Trạng thái */}
         <FormControl sx={{ mb: 2, width: 250, ml: 2 }}>
           <InputLabel
-            sx={{ display: "flex", alignItems: "center", color: "#c9d1d9" }}
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              color: currentTheme.color,
+            }}
           >
             <BorderStyle sx={{ mr: 1 }} />
             {t.Style ? t.Style : "Phong cách"}
@@ -258,7 +287,7 @@ const FilterShoes = ({
             value={selectPhongCach}
             label="Icon Phong cách"
             onChange={(e) => setSelectPhongCach(e.target.value)}
-            sx={{ color: "#c9d1d9" }}
+            sx={{ color: currentTheme.color }}
           >
             {" "}
             <MenuItem value="">{t.SeeAll ? t.SeeAll : "Xem tất cả"}</MenuItem>

@@ -222,11 +222,13 @@ const getChiTietHoaDonTheoNguoiDung_Success = async (req, res) => {
         DT: [],
       });
     }
-    // Lấy danh sách ID_DON_HANG để dùng trong truy vấn chi tiết hóa đơn
-    const donHangIds = donHangResults.map((dh) => dh.ID_DON_HANG);
-    // Truy vấn bảng CHI_TIET_HOA_DON với danh sách ID_DON_HANG
-    const [chiTietHoaDonResults] = await connection.execute(
-      `SELECT 
+    // Kết quả cuối cùng
+    const results = [];
+
+    for (const donHang of donHangResults) {
+      // Lấy chi tiết hóa đơn của từng đơn hàng
+      const [chiTietHoaDonResults] = await connection.execute(
+        `SELECT 
         sp.ID_SAN_PHAM, 
         sp.ID_THUONG_HIEU, 
         sp.ID_DANH_MUC, 
@@ -290,20 +292,21 @@ const getChiTietHoaDonTheoNguoiDung_Success = async (req, res) => {
         CHI_TIET_HOA_DON cthd ON cthd.ID_SAN_PHAM = sp.ID_SAN_PHAM
       WHERE 
         cthd.ID_DON_HANG IN (?)`,
-      [donHangIds[0]]
-    );
-    // Ghép kết quả lại với nhau
-    const result = donHangResults.map((donHang) => ({
-      ...donHang,
-      chiTietHoaDon: chiTietHoaDonResults.filter(
-        (cthd) => cthd.ID_DON_HANG === donHang.ID_DON_HANG
-      ),
-    }));
+        [donHang.ID_DON_HANG]
+      );
+      // Ghép kết quả lại với nhau
+      // Thêm thông tin chi tiết hóa đơn vào từng đơn hàng
+      results.push({
+        ...donHang,
+        chiTietHoaDon: chiTietHoaDonResults,
+      });
+    }
 
+    // Trả về kết quả
     return res.status(200).json({
       EM: "Lấy chi tiết hóa đơn thành công",
       EC: 1,
-      DT: result,
+      DT: results,
     });
   } catch (error) {
     console.error("Error fetching chi tiet hoa don:", error);
@@ -368,11 +371,13 @@ const getChiTietHoaDonTheoNguoiDung_Cancel = async (req, res) => {
         DT: [],
       });
     }
-    // Lấy danh sách ID_DON_HANG để dùng trong truy vấn chi tiết hóa đơn
-    const donHangIds = donHangResults.map((dh) => dh.ID_DON_HANG);
-    // Truy vấn bảng CHI_TIET_HOA_DON với danh sách ID_DON_HANG
-    const [chiTietHoaDonResults] = await connection.execute(
-      `SELECT 
+    // Kết quả cuối cùng
+    const results = [];
+
+    for (const donHang of donHangResults) {
+      // Lấy chi tiết hóa đơn của từng đơn hàng
+      const [chiTietHoaDonResults] = await connection.execute(
+        `SELECT 
         sp.ID_SAN_PHAM, 
         sp.ID_THUONG_HIEU, 
         sp.ID_DANH_MUC, 
@@ -434,20 +439,20 @@ const getChiTietHoaDonTheoNguoiDung_Cancel = async (req, res) => {
         CHI_TIET_HOA_DON cthd ON cthd.ID_SAN_PHAM = sp.ID_SAN_PHAM
       WHERE 
         cthd.ID_DON_HANG IN (?)`,
-      [donHangIds[0]]
-    );
-    // Ghép kết quả lại với nhau
-    const result = donHangResults.map((donHang) => ({
-      ...donHang,
-      chiTietHoaDon: chiTietHoaDonResults.filter(
-        (cthd) => cthd.ID_DON_HANG === donHang.ID_DON_HANG
-      ),
-    }));
+        [donHang.ID_DON_HANG]
+      );
+      // Thêm thông tin chi tiết hóa đơn vào từng đơn hàng
+      results.push({
+        ...donHang,
+        chiTietHoaDon: chiTietHoaDonResults,
+      });
+    }
 
+    // Trả về kết quả
     return res.status(200).json({
       EM: "Lấy chi tiết hóa đơn thành công",
       EC: 1,
-      DT: result,
+      DT: results,
     });
   } catch (error) {
     console.error("Error fetching chi tiet hoa don:", error);
@@ -465,42 +470,42 @@ const getChiTietHoaDonTheoNguoiDung_WaitingThanhToan = async (req, res) => {
   try {
     // Truy vấn bảng DON_HANG với điều kiện TRANG_THAI_DON_HANG
     const [donHangResults] = await connection.execute(
-      `SELECT 
-          dh.ID_ODER, 
-          dh.ID_NGUOI_DUNG, 
-          dh.ID_THANH_TOAN, 
+      `SELECT
+          dh.ID_ODER,
+          dh.ID_NGUOI_DUNG,
+          dh.ID_THANH_TOAN,
           dh.ID_DON_HANG,
           dh.TONG_TIEN,   dh.DIA_CHI_DON_HANG,
         dh.SO_DIEN_THOAI_DON_HANG,
-          dh.TRANG_THAI_DON_HANG, 
-          dh.GHI_CHU_DONHANG, 
-          dh.NGAY_CAP_NHAT_DONHANG, 
+          dh.TRANG_THAI_DON_HANG,
+          dh.GHI_CHU_DONHANG,
+          dh.NGAY_CAP_NHAT_DONHANG,
           dh.NGAY_TAO_DONHANG,
-          tt.PHUONG_THUC_THANH_TOAN, 
-          nd.EMAIL, 
-          nd.VAI_TRO, 
-          nd.HO_TEN, 
-          nd.SO_DIEN_THOAI, 
-          nd.DIA_CHI, 
-          nd.TRANG_THAI_USER, 
-          nd.NGAY_TAO_USER, 
-          nd.NGAY_CAP_NHAT_USER, 
-          nd.AVATAR, 
-          nd.NGAY_SINH, 
-          nd.DIA_CHI_Provinces, 
-          nd.DIA_CHI_Districts, 
-          nd.DIA_CHI_Wards, 
-          nd.THEMES, 
+          tt.PHUONG_THUC_THANH_TOAN,
+          nd.EMAIL,
+          nd.VAI_TRO,
+          nd.HO_TEN,
+          nd.SO_DIEN_THOAI,
+          nd.DIA_CHI,
+          nd.TRANG_THAI_USER,
+          nd.NGAY_TAO_USER,
+          nd.NGAY_CAP_NHAT_USER,
+          nd.AVATAR,
+          nd.NGAY_SINH,
+          nd.DIA_CHI_Provinces,
+          nd.DIA_CHI_Districts,
+          nd.DIA_CHI_Wards,
+          nd.THEMES,
           nd.LANGUAGE
-        FROM 
+        FROM
           DON_HANG dh
-        LEFT JOIN 
+        LEFT JOIN
           THANH_TOAN tt ON dh.ID_THANH_TOAN = tt.ID_THANH_TOAN
-        LEFT JOIN 
+        LEFT JOIN
           NGUOI_DUNG nd ON dh.ID_NGUOI_DUNG = nd.ID_NGUOI_DUNG
-        WHERE 
-          dh.ID_NGUOI_DUNG = ? AND dh.TRANG_THAI_DON_HANG = 'Đang chờ thanh toán'  
-          ORDER BY 
+        WHERE
+          dh.ID_NGUOI_DUNG = ? AND dh.TRANG_THAI_DON_HANG = 'Đang chờ thanh toán'
+          ORDER BY
           dh.NGAY_CAP_NHAT_DONHANG DESC`,
       [id]
     );
@@ -513,85 +518,85 @@ const getChiTietHoaDonTheoNguoiDung_WaitingThanhToan = async (req, res) => {
       });
     }
     // Lấy danh sách ID_DON_HANG để dùng trong truy vấn chi tiết hóa đơn
-    const donHangIds = donHangResults.map((dh) => dh.ID_DON_HANG);
-    // Truy vấn bảng CHI_TIET_HOA_DON với danh sách ID_DON_HANG
-    const [chiTietHoaDonResults] = await connection.execute(
-      `SELECT 
-        sp.ID_SAN_PHAM, 
-        sp.ID_THUONG_HIEU, 
-        sp.ID_DANH_MUC, 
-        sp.GIOI_TINH_ID, 
+    const results = [];
+    for (const donHang of donHangResults) {
+      const [chiTietHoaDonResults] = await connection.execute(
+        `SELECT
+        sp.ID_SAN_PHAM,
+        sp.ID_THUONG_HIEU,
+        sp.ID_DANH_MUC,
+        sp.GIOI_TINH_ID,
         sp.CHAT_LIEU_ID_,
-        sp.TEN_SAN_PHAM, 
-        sp.GIA, 
-        sp.MO_TA_SAN_PHAM, 
-        sp.HINH_ANH_SANPHAM, 
-        sp.TRANG_THAI_SANPHAM, 
-        sp.NGAY_TAO_SANPHAM, 
-        sp.NGAY_CAP_NHAT_SANPHAM, 
+        sp.TEN_SAN_PHAM,
+        sp.GIA,
+        sp.MO_TA_SAN_PHAM,
+        sp.HINH_ANH_SANPHAM,
+        sp.TRANG_THAI_SANPHAM,
+        sp.NGAY_TAO_SANPHAM,
+        sp.NGAY_CAP_NHAT_SANPHAM,
         sp.SO_LUONG_SANPHAM,
         gt.TEN_GIOI_TINH,
-        dm.TEN_DANH_MUC, 
+        dm.TEN_DANH_MUC,
         dm.MO_TA_LOAI_DANH_MUC,
-        cl.TEN_CHAT_LIEU_, 
+        cl.TEN_CHAT_LIEU_,
         cl.MO_TA_CHAT_LIEU,
         th.TEN_THUONG_HIEU,
-        pc.ID_PHUONG_CACH, 
-        pc.TEN_PHONG_CACH, 
-        ms.MAU_SAC_ID, 
-        ms.TEN_MAU_SAC, 
-        mdsd.ID_MUC_DICH_SU_DUNG, 
-        mdsd.TEN_MUC_DICH_SU_DUNG, 
-        kc.ID_KICH_CO, 
+        pc.ID_PHUONG_CACH,
+        pc.TEN_PHONG_CACH,
+        ms.MAU_SAC_ID,
+        ms.TEN_MAU_SAC,
+        mdsd.ID_MUC_DICH_SU_DUNG,
+        mdsd.TEN_MUC_DICH_SU_DUNG,
+        kc.ID_KICH_CO,
         kc.KICH_CO,
-        cthd.ID_CHI_TIET_HOA_DON, 
-        cthd.SO_LUONG_SP, 
+        cthd.ID_CHI_TIET_HOA_DON,
+        cthd.SO_LUONG_SP,
         cthd.GIA_SAN_PHAM_CHI_TIET,
         cthd.ID_DON_HANG
-      FROM 
+      FROM
         SAN_PHAM sp
-      LEFT JOIN 
+      LEFT JOIN
         GIOI_TINH gt ON sp.GIOI_TINH_ID = gt.GIOI_TINH_ID
-      LEFT JOIN 
+      LEFT JOIN
         LOAI_DANH_MUC dm ON sp.ID_DANH_MUC = dm.ID_DANH_MUC
-      LEFT JOIN 
+      LEFT JOIN
         CHAT_LIEU cl ON sp.CHAT_LIEU_ID_ = cl.CHAT_LIEU_ID_
-      LEFT JOIN 
+      LEFT JOIN
         THUONG_HIEU th ON sp.ID_THUONG_HIEU = th.ID_THUONG_HIEU
-      LEFT JOIN 
+      LEFT JOIN
         PHONG_CACH_SAN_PHAM pcs ON sp.ID_SAN_PHAM = pcs.ID_SAN_PHAM
-      LEFT JOIN 
+      LEFT JOIN
         PHONG_CACH pc ON pcs.ID_PHUONG_CACH = pc.ID_PHUONG_CACH
-      LEFT JOIN 
+      LEFT JOIN
         MAU_SAC_SAN_PHAM mss ON sp.ID_SAN_PHAM = mss.ID_SAN_PHAM
-      LEFT JOIN 
+      LEFT JOIN
         MAU_SAC ms ON mss.MAU_SAC_ID = ms.MAU_SAC_ID
-      LEFT JOIN 
+      LEFT JOIN
         MUC_DICH_SU_DUNG_SAN_PHAM mdsds ON sp.ID_SAN_PHAM = mdsds.ID_SAN_PHAM
-      LEFT JOIN 
+      LEFT JOIN
         MUC_DICH_SU_DUNG mdsd ON mdsds.ID_MUC_DICH_SU_DUNG = mdsd.ID_MUC_DICH_SU_DUNG
-      LEFT JOIN 
+      LEFT JOIN
         CO_KICH_CO ckc ON sp.ID_SAN_PHAM = ckc.ID_SAN_PHAM
-      LEFT JOIN 
+      LEFT JOIN
         KICH_CO kc ON ckc.ID_KICH_CO = kc.ID_KICH_CO
-      LEFT JOIN 
+      LEFT JOIN
         CHI_TIET_HOA_DON cthd ON cthd.ID_SAN_PHAM = sp.ID_SAN_PHAM
-      WHERE 
+      WHERE
         cthd.ID_DON_HANG IN (?)`,
-      [donHangIds[0]]
-    );
-    // Ghép kết quả lại với nhau
-    const result = donHangResults.map((donHang) => ({
-      ...donHang,
-      chiTietHoaDon: chiTietHoaDonResults.filter(
-        (cthd) => cthd.ID_DON_HANG === donHang.ID_DON_HANG
-      ),
-    }));
+        [donHang.ID_DON_HANG]
+      );
+      // Ghép kết quả lại với nhau
+      // Thêm thông tin chi tiết hóa đơn vào từng đơn hàng
+      results.push({
+        ...donHang,
+        chiTietHoaDon: chiTietHoaDonResults,
+      });
+    }
 
     return res.status(200).json({
       EM: "Lấy chi tiết hóa đơn thành công",
       EC: 1,
-      DT: result,
+      DT: results,
     });
   } catch (error) {
     console.error("Error fetching chi tiet hoa don:", error);
@@ -607,7 +612,7 @@ const getChiTietHoaDonTheoNguoiDung_WaitingThanhToan = async (req, res) => {
 const getPaidOrdersAwaitingProcessing = async (req, res) => {
   const { id } = req.params; // ID_NGUOI_DUNG được truyền vào
   try {
-    // Truy vấn bảng DON_HANG với điều kiện TRANG_THAI_DON_HANG
+    // Lấy tất cả các đơn hàng của người dùng
     const [donHangResults] = await connection.execute(
       `SELECT 
           dh.ID_ODER, 
@@ -646,10 +651,10 @@ const getPaidOrdersAwaitingProcessing = async (req, res) => {
   dh.ID_NGUOI_DUNG = ? AND dh.TRANG_THAI_DON_HANG IN ('Đang chờ thanh toán', 'Đã thanh toán thành công và đang chờ giao hàng')
    ORDER BY 
           dh.NGAY_CAP_NHAT_DONHANG DESC`,
-
       [id]
     );
-    // Nếu không có đơn hàng nào, trả về thông báo lỗi
+
+    // Nếu không có đơn hàng nào, trả về thông báo
     if (donHangResults.length === 0) {
       return res.status(200).json({
         EM: "Không tìm thấy đơn hàng cho người dùng này",
@@ -657,11 +662,11 @@ const getPaidOrdersAwaitingProcessing = async (req, res) => {
         DT: [],
       });
     }
-    // Lấy danh sách ID_DON_HANG để dùng trong truy vấn chi tiết hóa đơn
-    const donHangIds = donHangResults.map((dh) => dh.ID_DON_HANG);
-    // Truy vấn bảng CHI_TIET_HOA_DON với danh sách ID_DON_HANG
-    const [chiTietHoaDonResults] = await connection.execute(
-      `SELECT 
+
+    // Vòng lặp lấy chi tiết sản phẩm liên quan đến từng đơn hàng
+    for (const donHang of donHangResults) {
+      const [chiTietHoaDonResults] = await connection.execute(
+        `SELECT 
         sp.ID_SAN_PHAM, 
         sp.ID_THUONG_HIEU, 
         sp.ID_DANH_MUC, 
@@ -724,20 +729,18 @@ const getPaidOrdersAwaitingProcessing = async (req, res) => {
         CHI_TIET_HOA_DON cthd ON cthd.ID_SAN_PHAM = sp.ID_SAN_PHAM
       WHERE 
         cthd.ID_DON_HANG IN (?)`,
-      [donHangIds[0]]
-    );
-    // Ghép kết quả lại với nhau
-    const result = donHangResults.map((donHang) => ({
-      ...donHang,
-      chiTietHoaDon: chiTietHoaDonResults.filter(
-        (cthd) => cthd.ID_DON_HANG === donHang.ID_DON_HANG
-      ),
-    }));
+        [donHang.ID_DON_HANG]
+      );
 
+      // Gắn chi tiết hóa đơn vào từng đơn hàng
+      donHang.chiTietHoaDon = chiTietHoaDonResults;
+    }
+
+    // Trả dữ liệu kết quả
     return res.status(200).json({
       EM: "Lấy chi tiết hóa đơn thành công",
       EC: 1,
-      DT: result,
+      DT: donHangResults,
     });
   } catch (error) {
     console.error("Error fetching chi tiet hoa don:", error);

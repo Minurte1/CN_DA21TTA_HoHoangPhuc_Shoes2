@@ -327,6 +327,25 @@ const Header = () => {
             }}
             onClick={handleClose}
             component={Link}
+            to="/profile/lich-su-mua-hang"
+          >
+            Lịch sử mua hàng
+          </MenuItem>{" "}
+          <MenuItem
+            sx={{
+              borderRadius: "8px",
+              paddingTop: 1,
+              paddingBottom: 1,
+              paddingRight: 8,
+              paddingLeft: 2,
+              color: currentTheme.color,
+              "&:hover": {
+                backgroundColor: currentTheme.accentColor, // Màu nền khi hover
+                color: currentTheme.color,
+              },
+            }}
+            onClick={handleClose}
+            component={Link}
             to="/profile/mat-khau-cai-dat"
           >
             Mật khẩu & cài đặt
