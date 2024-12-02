@@ -28,9 +28,11 @@ import { enqueueSnackbar } from "notistack";
 import axios from "axios";
 import ReplayIcon from "@mui/icons-material/Replay";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
+import { getThemeConfig } from "../../services/themeService";
 const api = process.env.REACT_APP_URL_SERVER;
 
 const RegistrationForm = () => {
+  const currentTheme = getThemeConfig(localStorage.getItem("THEMES") || "dark");
   const [selectedDate, setSelectedDate] = useState(null);
   const [isOpenThongTinUser, setIsOpenThongTinUser] = useState(true);
   const language = useSelector((state) => state.language.language);
@@ -145,7 +147,7 @@ const RegistrationForm = () => {
   return (
     <Box
       sx={{
-        backgroundColor: "#1c1c1e",
+        backgroundColor: currentTheme.backgroundColorLow,
         height: "160vh",
         display: "flex",
         justifyContent: "center",
@@ -157,9 +159,9 @@ const RegistrationForm = () => {
           elevation={3}
           sx={{
             padding: 4,
-            backgroundColor: "#101014",
+            backgroundColor: currentTheme.backgroundColor,
             textAlign: "center",
-            color: "#c1c1c1",
+            color: currentTheme.color,
           }}
           ref={scrollRef} // Gán ref cho phần tử này
         >
@@ -186,14 +188,14 @@ const RegistrationForm = () => {
                   sx={{
                     mt: 2,
                     "& .MuiInputBase-input": {
-                      color: "#c1c1c1", // Màu chữ
+                      color: currentTheme.color, // Màu chữ
                     },
                     "& .MuiInputLabel-root": {
-                      color: "#c1c1c1", // Màu chữ label
+                      color: currentTheme.color, // Màu chữ label
                     },
                     "& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline":
                       {
-                        borderColor: "#c1c1c1", // Màu viền
+                        borderColor: currentTheme.color, // Màu viền
                       },
                     "&:hover .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline":
                       {
@@ -204,7 +206,7 @@ const RegistrationForm = () => {
                         borderColor: "#c1c1c1", // Màu viền khi focused
                       },
                     "& .MuiSvgIcon-root": {
-                      color: "#c1c1c1", // Màu của icon lịch
+                      color: currentTheme.color, // Màu của icon lịch
                     },
                   }}
                   onChange={(newValue) => setSelectedDate(newValue)}
@@ -229,12 +231,20 @@ const RegistrationForm = () => {
                   ? t.alreadyHaveAccount
                   : "Bạn đã có tài khoản chưa?"}{" "}
                 &nbsp;
-                <Link href="#" underline="hover" sx={{ color: "#0070f3" }}>
+                <Link
+                  href="#"
+                  underline="hover"
+                  sx={{ color: currentTheme.color }}
+                >
                   {t.signIn ? t.signIn : "Đăng nhập"}
                 </Link>
               </Typography>
               <Typography variant="body2" sx={{ mt: 1 }}>
-                <Link href="#" underline="hover" sx={{ color: "#0070f3" }}>
+                <Link
+                  href="#"
+                  underline="hover"
+                  sx={{ color: currentTheme.color }}
+                >
                   {t.privacyPolicy
                     ? t.privacyPolicy
                     : "Chính Sách Quyền Riêng Tư"}
@@ -250,14 +260,14 @@ const RegistrationForm = () => {
                     maxWidth="xs"
                     style={{
                       marginTop: "50px",
-                      backgroundColor: "#101014",
+                      backgroundColor: currentTheme.backgroundColor,
                       padding: "20px",
                       borderRadius: "8px",
                     }}
                   >
                     <Typography
                       variant="h5"
-                      style={{ color: "#c1c1c1", textAlign: "center" }}
+                      style={{ color: currentTheme.color, textAlign: "center" }}
                     >
                       Create Account
                     </Typography>
@@ -270,13 +280,13 @@ const RegistrationForm = () => {
                       value={formData.email}
                       onChange={handleInputChange}
                       InputProps={{
-                        style: { color: "#c1c1c1" },
+                        style: { color: currentTheme.color },
                       }}
-                      InputLabelProps={{ style: { color: "#c1c1c1" } }}
+                      InputLabelProps={{ style: { color: currentTheme.color } }}
                       sx={{
                         "& .MuiOutlinedInput-root": {
                           "& fieldset": {
-                            borderColor: "#c1c1c1",
+                            borderColor: currentTheme.color,
                           },
                           "&:hover fieldset": {
                             borderColor: "#26bbff",
@@ -296,12 +306,12 @@ const RegistrationForm = () => {
                       value={formData.fullName}
                       onChange={handleInputChange}
                       required
-                      InputProps={{ style: { color: "#c1c1c1" } }}
-                      InputLabelProps={{ style: { color: "#c1c1c1" } }}
+                      InputProps={{ style: { color: currentTheme.color } }}
+                      InputLabelProps={{ style: { color: currentTheme.color } }}
                       sx={{
                         "& .MuiOutlinedInput-root": {
                           "& fieldset": {
-                            borderColor: "#c1c1c1",
+                            borderColor: currentTheme.color,
                           },
                           "&:hover fieldset": {
                             borderColor: "#26bbff",
@@ -320,12 +330,12 @@ const RegistrationForm = () => {
                       name="phone"
                       value={formData.phone}
                       onChange={handleInputChange}
-                      InputProps={{ style: { color: "#c1c1c1" } }}
-                      InputLabelProps={{ style: { color: "#c1c1c1" } }}
+                      InputProps={{ style: { color: currentTheme.color } }}
+                      InputLabelProps={{ style: { color: currentTheme.color } }}
                       sx={{
                         "& .MuiOutlinedInput-root": {
                           "& fieldset": {
-                            borderColor: "#c1c1c1",
+                            borderColor: currentTheme.color,
                           },
                           "&:hover fieldset": {
                             borderColor: "#26bbff",
@@ -345,12 +355,12 @@ const RegistrationForm = () => {
                       name="password"
                       value={formData.password}
                       onChange={handleInputChange}
-                      InputProps={{ style: { color: "#c1c1c1" } }}
-                      InputLabelProps={{ style: { color: "#c1c1c1" } }}
+                      InputProps={{ style: { color: currentTheme.color } }}
+                      InputLabelProps={{ style: { color: currentTheme.color } }}
                       sx={{
                         "& .MuiOutlinedInput-root": {
                           "& fieldset": {
-                            borderColor: "#c1c1c1",
+                            borderColor: currentTheme.color,
                           },
                           "&:hover fieldset": {
                             borderColor: "#26bbff",
@@ -369,12 +379,12 @@ const RegistrationForm = () => {
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       fullWidth
                       margin="normal"
-                      InputProps={{ style: { color: "#c1c1c1" } }}
-                      InputLabelProps={{ style: { color: "#c1c1c1" } }}
+                      InputProps={{ style: { color: currentTheme.color } }}
+                      InputLabelProps={{ style: { color: currentTheme.color } }}
                       sx={{
                         "& .MuiOutlinedInput-root": {
                           "& fieldset": {
-                            borderColor: "#c1c1c1",
+                            borderColor: currentTheme.color,
                           },
                           "&:hover fieldset": {
                             borderColor: "#26bbff",
@@ -395,11 +405,11 @@ const RegistrationForm = () => {
                           <Checkbox
                             checked={isSubscribed}
                             onChange={(e) => setIsSubscribed(e.target.checked)}
-                            style={{ color: "#c1c1c1" }}
+                            style={{ color: currentTheme.color }}
                           />
                         }
                         label={
-                          <Typography style={{ color: "#c1c1c1" }}>
+                          <Typography style={{ color: currentTheme.color }}>
                             Send me news, surveys and special offers from
                             PhucShoe
                           </Typography>
@@ -410,11 +420,11 @@ const RegistrationForm = () => {
                           <Checkbox
                             checked={isAgreed}
                             onChange={(e) => setIsAgreed(e.target.checked)}
-                            style={{ color: "#c1c1c1" }}
+                            style={{ color: currentTheme.color }}
                           />
                         }
                         label={
-                          <Typography style={{ color: "#c1c1c1" }}>
+                          <Typography style={{ color: currentTheme.color }}>
                             I have read and agree to the terms of service
                           </Typography>
                         }
@@ -456,7 +466,7 @@ const RegistrationForm = () => {
                     </Button>
                     <Typography
                       align="center"
-                      style={{ color: "#c1c1c1", marginTop: "20px" }}
+                      style={{ color: currentTheme.color, marginTop: "20px" }}
                     >
                       Already have an account?{" "}
                       <a href="#" style={{ color: "#26bbff" }}>
@@ -488,15 +498,15 @@ const RegistrationForm = () => {
                       onClick={() => setIsOpenOTP(true)}
                       sx={{
                         marginRight: 1,
-                        color: "#c9d1d9", // Màu mặc định
+                        color: currentTheme.color, // Màu mặc định
                         cursor: "pointer", // Hiệu ứng con trỏ khi hover
                         "&:hover": {
-                          color: "#ffffff", // Màu sáng hơn khi hover
+                          color: currentTheme.backgroundColorLow, // Màu sáng hơn khi hover
                         },
                       }}
                     />
 
-                    <Typography variant="h7" sx={{ color: "#c9d1d9" }}>
+                    <Typography variant="h7" sx={{ color: currentTheme.color }}>
                       Kiểm tra tài khoản email của bạn
                     </Typography>
                   </Box>
@@ -505,22 +515,22 @@ const RegistrationForm = () => {
                     variant="outlined"
                     fullWidth
                     sx={{
-                      color: "#c9d1d9", // Text color for input value
+                      color: currentTheme.color, // Text color for input value
                       width: "100%",
                       "& .MuiInputBase-input": {
-                        color: "#c9d1d9",
+                        color: currentTheme.color,
                       },
                       "& .MuiInputBase-input::placeholder": {
-                        color: "#c9d1d9", // Placeholder color
+                        color: currentTheme.color, // Placeholder color
                       },
                       "& .MuiOutlinedInput-root fieldset": {
-                        borderColor: "#c9d1d9", // Border color when not focused
+                        borderColor: currentTheme.color, // Border color when not focused
                       },
                       "& .Mui-focused .MuiInputLabel-root": {
-                        color: "#c9d1d9", // Focused label color
+                        color: currentTheme.color, // Focused label color
                       },
                       "& .MuiInputLabel-root": {
-                        color: "#c9d1d9", // Default label color
+                        color: currentTheme.color, // Default label color
                       },
                     }}
                     value={otp}
@@ -533,7 +543,7 @@ const RegistrationForm = () => {
                             onClick={handleSendOtp}
                             disabled={countdown > 0}
                           >
-                            <ReplayIcon sx={{ color: "#c9d1d9" }} />
+                            <ReplayIcon sx={{ color: currentTheme.color }} />
                           </IconButton>
                         </InputAdornment>
                       ),

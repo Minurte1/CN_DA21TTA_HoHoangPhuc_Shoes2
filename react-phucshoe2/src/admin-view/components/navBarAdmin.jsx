@@ -20,12 +20,13 @@ import InventoryIcon from "@mui/icons-material/Inventory"; // Quản lý sản p
 import GroupIcon from "@mui/icons-material/Group"; // Tương tác người dùng
 import ExpandLess from "@mui/icons-material/ExpandLess"; // Import đúng từ đây
 import ExpandMore from "@mui/icons-material/ExpandMore"; // Import đúng từ đây
-
+import BarChartIcon from "@mui/icons-material/BarChart";
 import { Link, useLocation } from "react-router-dom";
+import { getThemeConfig } from "../../services/themeService";
 const NavBarAdmin = () => {
   const [openSection, setOpenSection] = useState(null);
   const location = useLocation();
-
+  const currentTheme = getThemeConfig(localStorage.getItem("THEMES") || "dark");
   const toggleSection = (section) => {
     setOpenSection((prev) => (prev === section ? null : section));
   };
@@ -40,7 +41,7 @@ const NavBarAdmin = () => {
       <Box
         sx={{
           width: "250px",
-          backgroundColor: "#0d1117",
+          backgroundColor: currentTheme.backgroundColor,
           padding: "30px 20px",
           borderRight: "1px solid #ddd",
           position: "fixed",
@@ -59,7 +60,7 @@ const NavBarAdmin = () => {
             borderRadius: "4px",
           },
           "&::-webkit-scrollbar-thumb:hover": {
-            background: "#555",
+            background: "#fff",
           },
         }}
       >
@@ -67,7 +68,7 @@ const NavBarAdmin = () => {
           variant="h6"
           style={{
             marginBottom: "20px",
-            color: "#fff",
+            color: currentTheme.color,
           }}
         >
           Quản lý hệ thống
@@ -76,21 +77,25 @@ const NavBarAdmin = () => {
           <ListItem
             button
             component={Link}
-            to="/admin/"
+            to="/admin"
             sx={{
               borderRadius: "12px",
-              color: "#f0f6fc",
+              color: currentTheme.color,
               cursor: "pointer",
               userSelect: "none",
               backgroundColor:
-                location.pathname === "/admin" ? "#3c3f41" : "transparent", // Kiểm tra nếu đang ở trang này
-              "&:hover": { backgroundColor: "#3c3f41" },
+                location.pathname === "/admin"
+                  ? currentTheme.accentColor
+                  : "transparent", // Kiểm tra nếu đang ở trang này
+              "&:hover": { backgroundColor: currentTheme.accentColor },
             }}
           >
             <ListItemIcon>
-              <AccountCircleIcon sx={{ color: "#f0f6fc" }} />
+              {" "}
+              <BarChartIcon sx={{ color: currentTheme.color }} />
             </ListItemIcon>
-            <ListItemText primary="Thông Tin Admin" />
+
+            <ListItemText primary="Thống kê cơ bản" />
           </ListItem>
           {/* //----------------------- */}
           <List>
@@ -100,15 +105,19 @@ const NavBarAdmin = () => {
               onClick={() => toggleSection("nguoiDung")}
               sx={{
                 borderRadius: "12px",
-                color: "#f0f6fc",
+                color: currentTheme.color,
+
                 cursor: "pointer",
                 userSelect: "none",
               }}
             >
               <ListItemIcon>
-                <PeopleIcon sx={{ color: "#ffffff" }} />
+                <PeopleIcon sx={{ color: currentTheme.color }} />
               </ListItemIcon>
-              <ListItemText primary="Quản lý người dùng" />
+              <ListItemText
+                primary="Quản lý người dùng"
+                sx={{ color: currentTheme.color }}
+              />
               {openSection === "nguoiDung" ? <ExpandLess /> : <ExpandMore />}
             </ListItem>
             <Collapse
@@ -117,14 +126,6 @@ const NavBarAdmin = () => {
               unmountOnExit
             >
               <List component="div" disablePadding>
-                {/* <ListItem
-                  button
-                  component={Link}
-                  to="/user/nguoi-dung/add"
-                  sx={{ pl: 4, color: "#f0f6fc" }}
-                >
-                  <ListItemText primary="Thêm người dùng" />
-                </ListItem> */}
                 <ListItem
                   button
                   component={Link}
@@ -132,14 +133,16 @@ const NavBarAdmin = () => {
                   sx={{
                     borderRadius: "12px",
                     pl: 4,
-                    color: "#f0f6fc",
+                    mt: 1,
+                    mb: 1,
+                    color: currentTheme.color,
                     cursor: "pointer",
                     userSelect: "none",
                     backgroundColor:
                       location.pathname === "/admin/nguoi-dung/danh-sach"
-                        ? "#3c3f41"
+                        ? currentTheme.accentColor
                         : "transparent", // Kiểm tra nếu đang ở trang này
-                    "&:hover": { backgroundColor: "#3c3f41" },
+                    "&:hover": { backgroundColor: currentTheme.accentColor },
                   }}
                 >
                   <ListItemText primary="Danh sách người dùng" />
@@ -148,7 +151,18 @@ const NavBarAdmin = () => {
                   button
                   component={Link}
                   to="/user/nguoi-dung/roles"
-                  sx={{ pl: 4, color: "#f0f6fc" }}
+                  sx={{
+                    pl: 4,
+                    mt: 1,
+                    mb: 1,
+                    borderRadius: "13px",
+                    color: currentTheme.color,
+                    backgroundColor:
+                      location.pathname === "/admin213"
+                        ? currentTheme.accentColor
+                        : "transparent", // Kiểm tra nếu đang ở trang này
+                    "&:hover": { backgroundColor: currentTheme.accentColor },
+                  }}
                 >
                   <ListItemText primary="Phân quyền" />
                 </ListItem>
@@ -160,15 +174,18 @@ const NavBarAdmin = () => {
               onClick={() => toggleSection("sanPham")}
               sx={{
                 borderRadius: "12px",
-                color: "#f0f6fc",
+                color: currentTheme.color,
                 cursor: "pointer",
                 userSelect: "none",
               }}
             >
               <ListItemIcon>
-                <InventoryIcon sx={{ color: "#ffffff" }} />
+                <InventoryIcon sx={{ color: currentTheme.color }} />
               </ListItemIcon>
-              <ListItemText primary="Quản lý sản phẩm" />
+              <ListItemText
+                primary="Quản lý sản phẩm"
+                sx={{ color: currentTheme.color }}
+              />
               {openSection === "sanPham" ? <ExpandLess /> : <ExpandMore />}
             </ListItem>
             <Collapse
@@ -180,14 +197,17 @@ const NavBarAdmin = () => {
                 <ListItem
                   button
                   component={Link}
-                  to="/admin/san-pham/add"
-                  sx={{ pl: 4, color: "#f0f6fc" }}
-                ></ListItem>
-                <ListItem
-                  button
-                  component={Link}
                   to="/admin/san-pham/them-san-pham"
-                  sx={{ pl: 4, color: "#f0f6fc" }}
+                  sx={{
+                    pl: 4,
+                    color: currentTheme.color,
+                    borderRadius: "13px",
+                    backgroundColor:
+                      location.pathname === "/admin/san-pham/them-san-pham"
+                        ? currentTheme.accentColor
+                        : "transparent", // Kiểm tra nếu đang ở trang này
+                    "&:hover": { backgroundColor: currentTheme.accentColor },
+                  }}
                 >
                   <ListItemText primary="Thêm sản phẩm" />
                 </ListItem>{" "}
@@ -195,7 +215,18 @@ const NavBarAdmin = () => {
                   button
                   component={Link}
                   to="/admin/san-pham/carousel-product"
-                  sx={{ pl: 4, color: "#f0f6fc" }}
+                  sx={{
+                    pl: 4,
+                    mt: 1,
+                    mb: 1,
+                    color: currentTheme.color,
+                    borderRadius: "13px",
+                    backgroundColor:
+                      location.pathname === "/admin/san-pham/carousel-product"
+                        ? currentTheme.accentColor
+                        : "transparent", // Kiểm tra nếu đang ở trang này
+                    "&:hover": { backgroundColor: currentTheme.accentColor },
+                  }}
                 >
                   <ListItemText primary="Carousel Sản Phẩm" />
                 </ListItem>
@@ -203,13 +234,17 @@ const NavBarAdmin = () => {
                   <ListItem
                     button
                     onClick={handleClick}
-                    sx={{ pl: 4, color: "#f0f6fc" }}
+                    sx={{
+                      pl: 4,
+                      color: currentTheme.color,
+                      borderRadius: "13px",
+                    }}
                   >
                     <ListItemText
                       primary="Danh mục sản phẩm"
                       sx={{
-                        borderRadius: "12px",
-                        color: "#f0f6fc",
+                        borderRadius: "13px",
+                        color: currentTheme.color,
                         cursor: "pointer",
                         userSelect: "none",
                       }}
@@ -224,7 +259,20 @@ const NavBarAdmin = () => {
                         button
                         component={Link}
                         to="/admin/san-pham/danh-muc/chat-lieu"
-                        sx={{ pl: 6, color: "#f0f6fc" }}
+                        sx={{
+                          pl: 6,
+                          mt: 1,
+                          color: currentTheme.color,
+                          borderRadius: "13px",
+                          backgroundColor:
+                            location.pathname ===
+                            "/admin/san-pham/danh-muc/chat-lieu"
+                              ? currentTheme.accentColor
+                              : "transparent", // Kiểm tra nếu đang ở trang này
+                          "&:hover": {
+                            backgroundColor: currentTheme.accentColor,
+                          },
+                        }}
                       >
                         <ListItemText primary="Chất liệu giày" />
                       </ListItem>
@@ -232,7 +280,21 @@ const NavBarAdmin = () => {
                         button
                         component={Link}
                         to="/admin/san-pham/danh-muc/gioi-tinh"
-                        sx={{ pl: 6, color: "#f0f6fc" }}
+                        sx={{
+                          pl: 6,
+                          color: currentTheme.color,
+                          mt: 1,
+                          mb: 1,
+                          borderRadius: "13px",
+                          backgroundColor:
+                            location.pathname ===
+                            "/admin/san-pham/danh-muc/gioi-tinh"
+                              ? currentTheme.accentColor
+                              : "transparent", // Kiểm tra nếu đang ở trang này
+                          "&:hover": {
+                            backgroundColor: currentTheme.accentColor,
+                          },
+                        }}
                       >
                         <ListItemText primary="Giới tính giày " />
                       </ListItem>
@@ -240,7 +302,21 @@ const NavBarAdmin = () => {
                         button
                         component={Link}
                         to="/admin/san-pham/danh-muc/kich-co"
-                        sx={{ pl: 6, color: "#f0f6fc" }}
+                        sx={{
+                          pl: 6,
+                          color: currentTheme.color,
+                          mt: 1,
+                          mb: 1,
+                          borderRadius: "13px",
+                          backgroundColor:
+                            location.pathname ===
+                            "/admin/san-pham/danh-muc/kich-co"
+                              ? currentTheme.accentColor
+                              : "transparent", // Kiểm tra nếu đang ở trang này
+                          "&:hover": {
+                            backgroundColor: currentTheme.accentColor,
+                          },
+                        }}
                       >
                         <ListItemText primary="Kích cỡ giày" />
                       </ListItem>
@@ -248,7 +324,21 @@ const NavBarAdmin = () => {
                         button
                         component={Link}
                         to="/admin/san-pham/danh-muc/the-loai"
-                        sx={{ pl: 6, color: "#f0f6fc" }}
+                        sx={{
+                          pl: 6,
+                          color: currentTheme.color,
+                          mt: 1,
+                          mb: 1,
+                          borderRadius: "13px",
+                          backgroundColor:
+                            location.pathname ===
+                            "/admin/san-pham/danh-muc/the-loai"
+                              ? currentTheme.accentColor
+                              : "transparent", // Kiểm tra nếu đang ở trang này
+                          "&:hover": {
+                            backgroundColor: currentTheme.accentColor,
+                          },
+                        }}
                       >
                         <ListItemText primary="Thể loại giày" />
                       </ListItem>
@@ -256,7 +346,21 @@ const NavBarAdmin = () => {
                         button
                         component={Link}
                         to="/admin/san-pham/danh-muc/mau-sac"
-                        sx={{ pl: 6, color: "#f0f6fc" }}
+                        sx={{
+                          pl: 6,
+                          color: currentTheme.color,
+                          mt: 1,
+                          mb: 1,
+                          borderRadius: "13px",
+                          backgroundColor:
+                            location.pathname ===
+                            "/admin/san-pham/danh-muc/mau-sac"
+                              ? currentTheme.accentColor
+                              : "transparent", // Kiểm tra nếu đang ở trang này
+                          "&:hover": {
+                            backgroundColor: currentTheme.accentColor,
+                          },
+                        }}
                       >
                         <ListItemText primary="Màu sắc giày" />
                       </ListItem>
@@ -264,7 +368,21 @@ const NavBarAdmin = () => {
                         button
                         component={Link}
                         to="/admin/san-pham/danh-muc/muc-dich"
-                        sx={{ pl: 6, color: "#f0f6fc" }}
+                        sx={{
+                          pl: 6,
+                          color: currentTheme.color,
+                          mt: 1,
+                          mb: 1,
+                          borderRadius: "13px",
+                          backgroundColor:
+                            location.pathname ===
+                            "/admin/san-pham/danh-muc/muc-dich"
+                              ? currentTheme.accentColor
+                              : "transparent", // Kiểm tra nếu đang ở trang này
+                          "&:hover": {
+                            backgroundColor: currentTheme.accentColor,
+                          },
+                        }}
                       >
                         <ListItemText primary="Mục đích sử dụng" />
                       </ListItem>
@@ -272,7 +390,21 @@ const NavBarAdmin = () => {
                         button
                         component={Link}
                         to="/admin/san-pham/danh-muc/phong-cach"
-                        sx={{ pl: 6, color: "#f0f6fc" }}
+                        sx={{
+                          pl: 6,
+                          color: currentTheme.color,
+                          mt: 1,
+                          mb: 1,
+                          borderRadius: "13px",
+                          backgroundColor:
+                            location.pathname ===
+                            "/admin/san-pham/danh-muc/phong-cach"
+                              ? currentTheme.accentColor
+                              : "transparent", // Kiểm tra nếu đang ở trang này
+                          "&:hover": {
+                            backgroundColor: currentTheme.accentColor,
+                          },
+                        }}
                       >
                         <ListItemText primary="Phong cách giày" />
                       </ListItem>
@@ -280,7 +412,21 @@ const NavBarAdmin = () => {
                         button
                         component={Link}
                         to="/admin/san-pham/danh-muc/thuong-hieu"
-                        sx={{ pl: 6, color: "#f0f6fc" }}
+                        sx={{
+                          pl: 6,
+                          color: currentTheme.color,
+                          mt: 1,
+                          mb: 1,
+                          borderRadius: "13px",
+                          backgroundColor:
+                            location.pathname ===
+                            "/admin/san-pham/danh-muc/thuong-hieu"
+                              ? currentTheme.accentColor
+                              : "transparent", // Kiểm tra nếu đang ở trang này
+                          "&:hover": {
+                            backgroundColor: currentTheme.accentColor,
+                          },
+                        }}
                       >
                         <ListItemText primary="Thương hiệu giày" />
                       </ListItem>
@@ -294,10 +440,14 @@ const NavBarAdmin = () => {
             <ListItem
               button
               onClick={() => toggleSection("donHang")}
-              sx={{ color: "#f0f6fc" }}
+              sx={{
+                color: currentTheme.color,
+                borderRadius: "13px",
+                cursor: "pointer",
+              }}
             >
               <ListItemIcon>
-                <ShoppingCartIcon sx={{ color: "#ffffff" }} />
+                <ShoppingCartIcon sx={{ color: currentTheme.color }} />
               </ListItemIcon>
               <ListItemText primary="Quản lý đơn hàng" />
               {openSection === "donHang" ? <ExpandLess /> : <ExpandMore />}
@@ -312,7 +462,21 @@ const NavBarAdmin = () => {
                   button
                   component={Link}
                   to="/admin/don-hang/dang-xu-ly"
-                  sx={{ pl: 4, color: "#f0f6fc" }}
+                  sx={{
+                    pl: 4,
+                    color: currentTheme.color,
+                    mt: 1,
+                    mb: 1,
+                    borderRadius: "13px",
+                    backgroundColor:
+                      location.pathname ===
+                      "/admin/san-pham/don-hang/dang-xu-ly"
+                        ? currentTheme.accentColor
+                        : "transparent", // Kiểm tra nếu đang ở trang này
+                    "&:hover": {
+                      backgroundColor: currentTheme.accentColor,
+                    },
+                  }}
                 >
                   <ListItemText primary="Đơn hàng đang xử lý" />
                 </ListItem>
@@ -320,7 +484,20 @@ const NavBarAdmin = () => {
                   button
                   component={Link}
                   to="/admin/don-hang/tat-ca"
-                  sx={{ pl: 4, color: "#f0f6fc" }}
+                  sx={{
+                    pl: 4,
+                    color: currentTheme.color,
+                    mt: 1,
+                    mb: 1,
+                    borderRadius: "13px",
+                    backgroundColor:
+                      location.pathname === "/admin/don-hang/tat-ca"
+                        ? currentTheme.accentColor
+                        : "transparent", // Kiểm tra nếu đang ở trang này
+                    "&:hover": {
+                      backgroundColor: currentTheme.accentColor,
+                    },
+                  }}
                 >
                   <ListItemText primary="Tất cả đơn hàng" />
                 </ListItem>
@@ -328,7 +505,20 @@ const NavBarAdmin = () => {
                   button
                   component={Link}
                   to="/admin/don-hang/da-giao"
-                  sx={{ pl: 4, color: "#f0f6fc" }}
+                  sx={{
+                    pl: 4,
+                    color: currentTheme.color,
+                    mt: 1,
+                    mb: 1,
+                    borderRadius: "13px",
+                    backgroundColor:
+                      location.pathname === "/admin/don-hang/tat-ca"
+                        ? currentTheme.accentColor
+                        : "transparent", // Kiểm tra nếu đang ở trang này
+                    "&:hover": {
+                      backgroundColor: currentTheme.accentColor,
+                    },
+                  }}
                 >
                   <ListItemText primary="Đơn hàng đã giao" />
                 </ListItem>{" "}
@@ -336,7 +526,20 @@ const NavBarAdmin = () => {
                   button
                   component={Link}
                   to="/admin/don-hang/da-huy"
-                  sx={{ pl: 4, color: "#f0f6fc" }}
+                  sx={{
+                    pl: 4,
+                    color: currentTheme.color,
+                    mt: 1,
+                    mb: 1,
+                    borderRadius: "13px",
+                    backgroundColor:
+                      location.pathname === "/admin/don-hang/tat-ca"
+                        ? currentTheme.accentColor
+                        : "transparent", // Kiểm tra nếu đang ở trang này
+                    "&:hover": {
+                      backgroundColor: currentTheme.accentColor,
+                    },
+                  }}
                 >
                   <ListItemText primary="Đơn hàng đã hủy" />
                 </ListItem>{" "}
@@ -344,7 +547,20 @@ const NavBarAdmin = () => {
                   button
                   component={Link}
                   to="/admin/thanh-toan/them-thanh-toan"
-                  sx={{ pl: 4, color: "#f0f6fc" }}
+                  sx={{
+                    pl: 4,
+                    color: currentTheme.color,
+                    mt: 1,
+                    mb: 1,
+                    borderRadius: "13px",
+                    backgroundColor:
+                      location.pathname === "/admin/don-hang/tat-ca"
+                        ? currentTheme.accentColor
+                        : "transparent", // Kiểm tra nếu đang ở trang này
+                    "&:hover": {
+                      backgroundColor: currentTheme.accentColor,
+                    },
+                  }}
                 >
                   <ListItemText primary="Phương Thức Thanh Toán" />
                 </ListItem>
@@ -355,10 +571,14 @@ const NavBarAdmin = () => {
             <ListItem
               button
               onClick={() => toggleSection("tuongTac")}
-              sx={{ color: "#f0f6fc" }}
+              sx={{
+                color: currentTheme.color,
+                borderRadius: "13px",
+                cursor: "pointer",
+              }}
             >
               <ListItemIcon>
-                <GroupIcon sx={{ color: "#ffffff" }} />
+                <GroupIcon sx={{ color: currentTheme.color }} />
               </ListItemIcon>
               <ListItemText primary="Tương tác người dùng" />
               {openSection === "tuongTac" ? <ExpandLess /> : <ExpandMore />}
@@ -373,7 +593,21 @@ const NavBarAdmin = () => {
                   button
                   component={Link}
                   to="/admin/tuong-tac-nguoi-dung/comments"
-                  sx={{ pl: 4, color: "#f0f6fc" }}
+                  sx={{
+                    pl: 4,
+                    color: currentTheme.color,
+                    mt: 1,
+                    mb: 1,
+                    borderRadius: "13px",
+                    backgroundColor:
+                      location.pathname ===
+                      "/admin/tuong-tac-nguoi-dung/comments"
+                        ? currentTheme.accentColor
+                        : "transparent", // Kiểm tra nếu đang ở trang này
+                    "&:hover": {
+                      backgroundColor: currentTheme.accentColor,
+                    },
+                  }}
                 >
                   <ListItemText primary="Quản lý bình luận" />
                 </ListItem>
@@ -381,7 +615,21 @@ const NavBarAdmin = () => {
                   button
                   component={Link}
                   to="/admin/tuong-tac-nguoi-dung/reviews"
-                  sx={{ pl: 4, color: "#f0f6fc" }}
+                  sx={{
+                    pl: 4,
+                    color: currentTheme.color,
+                    mt: 1,
+                    mb: 1,
+                    borderRadius: "13px",
+                    backgroundColor:
+                      location.pathname ===
+                      "/admin/tuong-tac-nguoi-dung/reviews"
+                        ? currentTheme.accentColor
+                        : "transparent", // Kiểm tra nếu đang ở trang này
+                    "&:hover": {
+                      backgroundColor: currentTheme.accentColor,
+                    },
+                  }}
                 >
                   <ListItemText primary="Quản lý đánh giá" />
                 </ListItem>
@@ -389,7 +637,21 @@ const NavBarAdmin = () => {
                   button
                   component={Link}
                   to="/admin/tuong-tac-nguoi-dung/messages"
-                  sx={{ pl: 4, color: "#f0f6fc" }}
+                  sx={{
+                    pl: 4,
+                    color: currentTheme.color,
+                    mt: 1,
+                    mb: 1,
+                    borderRadius: "13px",
+                    backgroundColor:
+                      location.pathname ===
+                      "/admin/tuong-tac-nguoi-dung/messages"
+                        ? currentTheme.accentColor
+                        : "transparent", // Kiểm tra nếu đang ở trang này
+                    "&:hover": {
+                      backgroundColor: currentTheme.accentColor,
+                    },
+                  }}
                 >
                   <ListItemText primary="Tin nhắn người dùng" />
                 </ListItem>
@@ -401,10 +663,22 @@ const NavBarAdmin = () => {
             button
             component={Link}
             to="/admin/thong-ke"
-            sx={{ color: "#f0f6fc" }}
+            sx={{
+              color: currentTheme.color,
+              mt: 1,
+              mb: 1,
+              borderRadius: "13px",
+              backgroundColor:
+                location.pathname === "/admin/thong-ke"
+                  ? currentTheme.accentColor
+                  : "transparent", // Kiểm tra nếu đang ở trang này
+              "&:hover": {
+                backgroundColor: currentTheme.accentColor,
+              },
+            }}
           >
             <ListItemIcon>
-              <PaymentIcon sx={{ color: "#ffffff" }} />
+              <PaymentIcon sx={{ color: currentTheme.color }} />
             </ListItemIcon>
             <ListItemText primary="Thống kê" />
           </ListItem>
@@ -412,10 +686,22 @@ const NavBarAdmin = () => {
             button
             component={Link}
             to="/password-security"
-            sx={{ color: "#f0f6fc" }}
+            sx={{
+              color: currentTheme.color,
+              mt: 1,
+              mb: 1,
+              borderRadius: "13px",
+              backgroundColor:
+                location.pathname === "/admin/password-security"
+                  ? currentTheme.accentColor
+                  : "transparent", // Kiểm tra nếu đang ở trang này
+              "&:hover": {
+                backgroundColor: currentTheme.accentColor,
+              },
+            }}
           >
             <ListItemIcon>
-              <LockIcon sx={{ color: "#ffffff" }} />
+              <LockIcon sx={{ color: currentTheme.color }} />
             </ListItemIcon>
             <ListItemText primary="Password & Security" />
           </ListItem>
@@ -423,10 +709,22 @@ const NavBarAdmin = () => {
             button
             component={Link}
             to="/epic-rewards"
-            sx={{ color: "#f0f6fc" }}
+            sx={{
+              color: currentTheme.color,
+              mt: 1,
+              mb: 1,
+              borderRadius: "13px",
+              backgroundColor:
+                location.pathname === "/admin/epic-rewards"
+                  ? currentTheme.accentColor
+                  : "transparent", // Kiểm tra nếu đang ở trang này
+              "&:hover": {
+                backgroundColor: currentTheme.accentColor,
+              },
+            }}
           >
             <ListItemIcon>
-              <StarIcon sx={{ color: "#fff" }} />
+              <StarIcon sx={{ color: currentTheme.color }} />
             </ListItemIcon>
             <ListItemText primary="Epic Rewards" />
           </ListItem>

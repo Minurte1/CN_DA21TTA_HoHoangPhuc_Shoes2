@@ -5,8 +5,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 
 import { GoogleLogin, useGoogleLogin } from "@react-oauth/google";
-import { jwtDecode } from "jwt-decode"; // Import jwtDecode trực tiếp thay vì từ jwt-decode
-import axiosInstance from "../../authentication/axiosInstance";
+
 import logo from "../../public/logo/favicon.png";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
@@ -15,10 +14,11 @@ import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { login } from "../../redux/authSlice";
 import { enqueueSnackbar } from "notistack";
+import { getThemeConfig } from "../../services/themeService";
 const LoginPage = () => {
   const [user, setUser] = useState(null);
   const [tokenGoogle, setTokenGoogle] = useState(null);
-
+  const currentTheme = getThemeConfig(localStorage.getItem("THEMES") || "dark");
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -143,7 +143,7 @@ const LoginPage = () => {
         justifyContent: "center",
         alignItems: "center",
         minHeight: "100vh", // Full height
-        backgroundColor: "#202020",
+        backgroundColor: currentTheme.backgroundColorLow,
         padding: 2, // Thêm padding cho màn hình nhỏ
       }}
     >
@@ -153,8 +153,8 @@ const LoginPage = () => {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          backgroundColor: "#121212",
-          color: "#fff",
+          backgroundColor: currentTheme.backgroundColor,
+          color: currentTheme.color,
           width: { xs: "100%", sm: "80%", md: "450px" }, // Responsive width
           maxWidth: "500px",
           padding: { xs: 2, sm: 3, md: 4 }, // Responsive padding
@@ -185,8 +185,8 @@ const LoginPage = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             sx={{ marginBottom: 2 }}
-            InputLabelProps={{ style: { color: "#ccc" } }}
-            inputProps={{ style: { color: "#fff" } }}
+            InputLabelProps={{ style: { color: currentTheme.color } }}
+            inputProps={{ style: { color: currentTheme.color } }}
           />
 
           <TextField
@@ -197,8 +197,8 @@ const LoginPage = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             sx={{ marginBottom: 2 }}
-            InputLabelProps={{ style: { color: "#ccc" } }}
-            inputProps={{ style: { color: "#fff" } }}
+            InputLabelProps={{ style: { color: currentTheme.color } }}
+            inputProps={{ style: { color: currentTheme.color } }}
           />
 
           <Typography
@@ -206,7 +206,7 @@ const LoginPage = () => {
             component={Link}
             variant="body2"
             sx={{
-              color: "#ccc",
+              color: currentTheme.color,
               cursor: "pointer",
               marginBottom: 2,
               textDecoration: "none",
@@ -233,7 +233,10 @@ const LoginPage = () => {
           </Button>
         </form>
 
-        <Typography variant="body2" sx={{ margin: "20px 0", color: "#ccc" }}>
+        <Typography
+          variant="body2"
+          sx={{ margin: "20px 0", color: currentTheme.color }}
+        >
           or sign in with
         </Typography>
 
@@ -267,7 +270,10 @@ const LoginPage = () => {
         </Grid>
 
         <Link to="/register" style={{ textDecoration: "none" }}>
-          <Typography variant="body2" sx={{ marginTop: 3, color: "#ccc" }}>
+          <Typography
+            variant="body2"
+            sx={{ marginTop: 3, color: currentTheme.color }}
+          >
             Create account
           </Typography>
         </Link>
