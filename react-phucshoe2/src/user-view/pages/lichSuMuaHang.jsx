@@ -111,7 +111,7 @@ const LichSuMuaHangUser = () => {
   };
   console.log("order.chiTietHoaDon", dataChiTietHoaDon);
   return (
-    <Box sx={{ p: 2, bgcolor: currentTheme.backgroundColor, height: "100vh" }}>
+    <Box sx={{ p: 2, bgcolor: currentTheme.backgroundColor, height: "auto" }}>
       {/* Tabs */}
       <Tabs value={tabIndex} onChange={handleTabChange} variant="fullWidth">
         <Tab sx={{ color: currentTheme.color }} label="Chờ xác nhận" />

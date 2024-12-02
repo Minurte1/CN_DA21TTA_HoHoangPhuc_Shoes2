@@ -20,6 +20,7 @@ import axios from "axios";
 import { setTotalCart } from "../redux/authSlice";
 import { enqueueSnackbar } from "notistack";
 import translations from "../redux/data/translations";
+import { getThemeConfig } from "../services/themeService";
 const RecommenderProductCarousel = ({ ID_SAN_PHAM }) => {
   const api = process.env.REACT_APP_URL_SERVER;
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -32,6 +33,7 @@ const RecommenderProductCarousel = ({ ID_SAN_PHAM }) => {
   const [products, setProducts] = useState([]); // Lưu trữ danh sách sản phẩm gợi ý
   const [isLoading, setIsLoading] = useState(true);
   const [productLength, setProductLength] = useState(0);
+  const currentTheme = getThemeConfig(localStorage.getItem("THEMES") || "dark");
   // Fetch dữ liệu từ API khi ID_SAN_PHAM thay đổi
   useEffect(() => {
     const fetchRecommendedProducts = async () => {
@@ -196,7 +198,7 @@ const RecommenderProductCarousel = ({ ID_SAN_PHAM }) => {
         variant="h6"
         sx={{
           textAlign: "left",
-          color: "#fff",
+          color: currentTheme.color,
           cursor: "pointer",
           display: "inline-flex", // Thay đổi cách hiển thị để mũi tên nằm cạnh chữ
           alignItems: "center", // Căn giữa chữ và mũi tên theo chiều dọc
@@ -209,7 +211,11 @@ const RecommenderProductCarousel = ({ ID_SAN_PHAM }) => {
         Gợi ý{" "}
         <ArrowForwardIosIcon
           className="arrow-icon"
-          sx={{ fontSize: "19px", color: "#fff", marginLeft: "10px" }}
+          sx={{
+            fontSize: "19px",
+            color: currentTheme.color,
+            marginLeft: "10px",
+          }}
         />{" "}
       </Typography>
       <Box
@@ -233,17 +239,17 @@ const RecommenderProductCarousel = ({ ID_SAN_PHAM }) => {
               <Card
                 key={index}
                 sx={{
-                  backgroundColor: "#101014",
-                  color: "#fff",
+                  backgroundColor: currentTheme.backgroundColorLow,
+                  color: currentTheme.color,
                   padding: 1,
                   flexShrink: 0,
+                  margin: "3px",
                   cursor: "pointer",
                   width: { xs: "100%", sm: "30%", md: "260px", lg: "260px" },
                   transition: "background-color 0.3s ease, transform 0.3s ease",
                   position: "relative", // Đặt relative để đặt icon ở góc trên bên phải
                   "&:hover": {
-                    backgroundColor: "#181818",
-                    filter: "brightness(1.1)",
+                    backgroundColor: currentTheme.accentColor,
                   },
                 }}
                 onClick={() => handleBuyProduct(product.ID_SAN_PHAM)}

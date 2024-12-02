@@ -25,6 +25,7 @@ import { Add, Remove } from "@mui/icons-material";
 import axios from "axios";
 import { setItemCart, setTotalCart, setIdOder } from "../redux/authSlice";
 import { enqueueSnackbar } from "notistack";
+import { getThemeConfig } from "../services/themeService";
 const api = process.env.REACT_APP_URL_SERVER;
 const CartItem = ({
   id, // Assuming each item has a unique id
@@ -47,6 +48,7 @@ const CartItem = ({
   kichCo,
   quantity,
   handleRemoveProduct,
+  currentTheme,
 }) => {
   return (
     <Card
@@ -55,7 +57,7 @@ const CartItem = ({
         display: "flex",
         justifyContent: "space-between",
         p: 2,
-        backgroundColor: "#202024",
+        backgroundColor: currentTheme.backgroundColorLow,
       }}
     >
       <Box sx={{ display: "flex", alignItems: "center", textAlign: "left" }}>
@@ -65,7 +67,7 @@ const CartItem = ({
           style={{ marginRight: 16, width: "80px", borderRadius: "13px" }}
         />
         <Box>
-          <Typography variant="h6" color="white">
+          <Typography variant="h6" sx={{ color: currentTheme.color }}>
             {name}
           </Typography>
           <Typography variant="body2" color="gray">
@@ -89,14 +91,14 @@ const CartItem = ({
         </Box>
       </Box>
       <Box sx={{ textAlign: "right" }}>
-        <Typography color="white">
+        <Typography sx={{ color: currentTheme.color }}>
           {new Intl.NumberFormat("vi-VN", {
             style: "currency",
             currency: "VND",
           }).format(price)}
         </Typography>
 
-        <Typography variant="body2" color="gray">
+        <Typography variant="body2" sx={{ color: currentTheme.color }}>
           Số lượng trong giỏ:
         </Typography>
         <Box
@@ -115,7 +117,7 @@ const CartItem = ({
           >
             <Remove />
           </IconButton>
-          <Typography variant="body1" color="white">
+          <Typography variant="body1" sx={{ color: currentTheme.color }}>
             {quantity}
           </Typography>
           <IconButton
@@ -147,13 +149,20 @@ const CartSummary = ({
   selectPhuongThucThanhToan,
   setSelectPhuongThucThanhToan,
   handleSummitThanhToan,
+  currentTheme,
 }) => (
-  <Box sx={{ backgroundColor: "#202024", p: 2, borderRadius: 2 }}>
-    <Typography variant="h6" color="white">
+  <Box
+    sx={{
+      backgroundColor: currentTheme.backgroundColorLow,
+      p: 2,
+      borderRadius: 2,
+    }}
+  >
+    <Typography variant="h6" sx={{ color: currentTheme.color }}>
       Giỏ hàng
     </Typography>
     <Divider sx={{ my: 1, backgroundColor: "#555" }} />
-    <Typography color="white">
+    <Typography sx={{ color: currentTheme.color }}>
       {tongTienCart ? (
         <>
           {" "}
@@ -166,10 +175,16 @@ const CartSummary = ({
         <>0đ</>
       )}
     </Typography>
-    <Typography color="white">Các hình thức thanh toán</Typography>{" "}
+    <Typography sx={{ color: currentTheme.color }}>
+      Các hình thức thanh toán
+    </Typography>{" "}
     <FormControl sx={{ mb: 2, minWidth: 300, mt: 2 }}>
       <InputLabel
-        sx={{ display: "flex", alignItems: "center", color: "#c9d1d9" }}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          color: currentTheme.color,
+        }}
       >
         <Payments sx={{ mr: 1 }} />
         Phương thức thanh toán
@@ -178,7 +193,7 @@ const CartSummary = ({
         value={selectPhuongThucThanhToan}
         label="Icon Phương thức thanh toán"
         onChange={(e) => setSelectPhuongThucThanhToan(e.target.value)}
-        sx={{ color: "#c9d1d9" }}
+        sx={{ color: currentTheme.color }}
       >
         {" "}
         <MenuItem value="">Xem tất cả</MenuItem>
@@ -223,7 +238,7 @@ const Cart = () => {
     useState("");
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
+  const currentTheme = getThemeConfig(localStorage.getItem("THEMES") || "dark");
   useEffect(() => {
     if (!isAuthenticated || !userInfo) {
       // Redirect to login if user is not authenticated or userInfo is missing
@@ -393,7 +408,7 @@ const Cart = () => {
       spacing={2}
       sx={{
         p: 4,
-        backgroundColor: "#121212",
+        backgroundColor: currentTheme.backgroundColor,
         justifyContent: "center",
       }}
     >
@@ -401,18 +416,18 @@ const Cart = () => {
       <Grid item xs={12}>
         <Box sx={{ textAlign: "left", paddingLeft: 2 }}>
           {" "}
-          <Typography variant="h4" color="white">
+          <Typography variant="h4" sx={{ color: currentTheme.color }}>
             My Cart
           </Typography>
         </Box>
 
         <Box sx={{ display: "flex", alignItems: "center", mt: 2, mb: 2 }}>
           <Switch defaultChecked color="primary" />
-          <Typography variant="body2" color="white">
+          <Typography variant="body2" sx={{ color: currentTheme.color }}>
             Sort by:{" "}
           </Typography>
           <FormControl sx={{ ml: 1, minWidth: 120 }}>
-            <Select sx={{ color: "#c9d1d9" }} defaultValue="Newest">
+            <Select sx={{ color: currentTheme.color }} defaultValue="Newest">
               <MenuItem value="Newest">Newest</MenuItem>
               <MenuItem value="On Sale">On Sale</MenuItem>
               <MenuItem value="Popular">Popular</MenuItem>
@@ -444,6 +459,7 @@ const Cart = () => {
             phongCach={item.TEN_PHONG_CACH}
             mucDich={item.TEN_MUC_DICH_SU_DUNG}
             kichCo={item.KICH_CO}
+            currentTheme={currentTheme}
           />
         ))}
       </Grid>
@@ -456,6 +472,7 @@ const Cart = () => {
           //
           selectPhuongThucThanhToan={selectPhuongThucThanhToan}
           setSelectPhuongThucThanhToan={setSelectPhuongThucThanhToan}
+          currentTheme={currentTheme}
         />
       </Grid>
     </Grid>
