@@ -54,7 +54,7 @@ const phongCachRoute = require("./routers/sanPhamRouters/categoryRouter/phongCac
 const thuongHieuRoute = require("./routers/sanPhamRouters/categoryRouter/thuonghieuRouter.js");
 const sanPhamRoute = require("./routers/sanPhamRouters/SanPhamRouter.js");
 const carouselProductsRoute = require("./routers/sanPhamRouters/carouselProductsRoute.js");
-
+const thongKeRoute = require("./routers/sanPhamRouters/thongKeRoute.js");
 //api thanh toán
 const thanhToanRoute = require("./routers/thanhToanRouter/thanhToanRouter.js");
 const donHangRoute = require("./routers/thanhToanRouter/donHangRouter.js");
@@ -77,6 +77,7 @@ app.use("/phong-cach", phongCachRoute);
 app.use("/thuong-hieu", thuongHieuRoute);
 app.use("/san-pham", sanPhamRoute);
 app.use("/carousel-products", carouselProductsRoute);
+app.use("/thong-ke", thongKeRoute);
 //
 app.use("/thanh-toan/", thanhToanRoute);
 app.use("/gio-hang/", gioHangRoute);
