@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
+import { Grid, Typography } from "@mui/material";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -102,10 +103,16 @@ const RevenueDashboard = () => {
   };
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h2>Thống kê doanh thu</h2>
-      <Line data={chartData} options={{ responsive: true }} />
-    </div>
+    <Grid container spacing={3} style={{ padding: "20px" }}>
+      <Grid item xs={12}>
+        <Typography variant="h4" align="center" gutterBottom>
+          Thống kê doanh thu
+        </Typography>
+      </Grid>
+      <Grid item xs={12} md={12}>
+        <Line data={chartData} options={{ responsive: true }} />
+      </Grid>
+    </Grid>
   );
 };
 

@@ -376,6 +376,7 @@ const getProductsByMaterial = async (req, res) => {
   }
 };
 
+// 10. Thống kê sản phẩm theo kích cỡ
 const getProductsBySize = async (req, res) => {
   try {
     const query = `
@@ -410,6 +411,7 @@ const getProductsBySize = async (req, res) => {
     });
   }
 };
+// 11. Thống kê tin nhắn theo ngày
 const getMessagesByDate = async (req, res) => {
   try {
     const query = `
@@ -440,6 +442,8 @@ const getMessagesByDate = async (req, res) => {
     });
   }
 };
+
+// 12. Thống kê sản phẩm theo phong cách
 const getProductsByStyle = async (req, res) => {
   try {
     const query = `
@@ -474,6 +478,8 @@ const getProductsByStyle = async (req, res) => {
     });
   }
 };
+
+// 13. Thống kê sản phẩm theo mục đích sử dụng
 const getProductsByUsagePurpose = async (req, res) => {
   try {
     const query = `

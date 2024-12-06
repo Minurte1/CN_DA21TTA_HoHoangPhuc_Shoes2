@@ -61,7 +61,6 @@ const DashboardAdmin = () => {
           {tabIndex === 0 && (
             <>
               {" "}
-              <Typography variant="h6">This is the Overview tab.</Typography>
               <RevenueDashboard />
             </>
           )}
