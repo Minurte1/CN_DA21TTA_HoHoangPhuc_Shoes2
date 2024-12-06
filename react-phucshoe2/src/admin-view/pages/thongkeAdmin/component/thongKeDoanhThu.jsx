@@ -10,7 +10,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-
+import axios from "axios";
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -21,57 +21,85 @@ ChartJS.register(
 );
 
 const RevenueDashboard = () => {
+  const api = process.env.REACT_APP_URL_SERVER;
   const [combinedData, setCombinedData] = useState([]);
+  const [paymentData, setPaymentData] = useState([]);
 
   useEffect(() => {
     fetchCombinedData();
+    fetchRevenueByPaymentMethod(); // Fetch doanh thu theo phương thức thanh toán
   }, []);
 
   const fetchCombinedData = async () => {
-    const monthlyResponse = [{ monthYear: "2024-11", totalRevenue: 3240000 }];
-    const dailyResponse = [
-      { date: "2024-11-20T17:00:00.000Z", totalRevenue: 1650000 },
-      { date: "2024-11-21T17:00:00.000Z", totalRevenue: 1050000 },
-      { date: "2024-11-25T17:00:00.000Z", totalRevenue: 540000 },
-      { date: "2024-12-05T17:00:00.000Z", totalRevenue: 230000 },
-    ];
-    const yearlyResponse = [{ year: 2024, totalRevenue: 3470000 }];
+    try {
+      // Gửi các yêu cầu song song để lấy dữ liệu
+      const [monthlyResponse, dailyResponse, yearlyResponse] =
+        await Promise.all([
+          axios.get(`${api}/thong-ke/doanh-thu/thang`),
+          axios.get(`${api}/thong-ke/doanh-thu/ngay`),
+          axios.get(`${api}/thong-ke/doanh-thu/nam`),
+        ]);
 
-    const allLabels = [
-      ...monthlyResponse.map((item) => item.monthYear),
-      ...dailyResponse.map((item) =>
-        new Date(item.date).toLocaleDateString("vi-VN")
-      ),
-      ...yearlyResponse.map((item) => item.year.toString()),
-    ];
+      // Lấy dữ liệu từ phản hồi
+      const monthlyData = monthlyResponse.data.DT;
+      const dailyData = dailyResponse.data.DT;
+      const yearlyData = yearlyResponse.data.DT;
 
-    const uniqueLabels = [...new Set(allLabels)].sort();
+      // Chuẩn hóa dữ liệu thành labels chung
+      const allLabels = [
+        ...monthlyData.map((item) => item.monthYear),
+        ...dailyData.map((item) =>
+          new Date(item.date).toLocaleDateString("vi-VN")
+        ),
+        ...yearlyData.map((item) => item.year.toString()),
+      ];
 
-    const monthlyData = uniqueLabels.map(
-      (label) =>
-        monthlyResponse.find((item) => item.monthYear === label)
-          ?.totalRevenue || 0
-    );
-    const dailyData = uniqueLabels.map(
-      (label) =>
-        dailyResponse.find(
-          (item) => new Date(item.date).toLocaleDateString("vi-VN") === label
-        )?.totalRevenue || 0
-    );
-    const yearlyData = uniqueLabels.map(
-      (label) =>
-        yearlyResponse.find((item) => item.year.toString() === label)
-          ?.totalRevenue || 0
-    );
+      // Loại bỏ nhãn trùng lặp
+      const uniqueLabels = [...new Set(allLabels)].sort();
 
-    setCombinedData({
-      labels: uniqueLabels,
-      monthlyData,
-      dailyData,
-      yearlyData,
-    });
+      // Gộp dữ liệu
+      const monthlyDataset = uniqueLabels.map(
+        (label) =>
+          monthlyData.find((item) => item.monthYear === label)?.totalRevenue ||
+          0
+      );
+      const dailyDataset = uniqueLabels.map(
+        (label) =>
+          dailyData.find(
+            (item) => new Date(item.date).toLocaleDateString("vi-VN") === label
+          )?.totalRevenue || 0
+      );
+      const yearlyDataset = uniqueLabels.map(
+        (label) =>
+          yearlyData.find((item) => item.year.toString() === label)
+            ?.totalRevenue || 0
+      );
+
+      // Cập nhật state
+      setCombinedData({
+        labels: uniqueLabels,
+        monthlyData: monthlyDataset,
+        dailyData: dailyDataset,
+        yearlyData: yearlyDataset,
+      });
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
   };
 
+  const fetchRevenueByPaymentMethod = async () => {
+    try {
+      const response = await axios.get(
+        `${api}/thong-ke/revenue-by-payment-method`
+      );
+      const data = response.data.DT;
+      setPaymentData(data); // Cập nhật dữ liệu doanh thu theo phương thức thanh toán
+    } catch (error) {
+      console.error("Error fetching revenue by payment method:", error);
+    }
+  };
+
+  // Dữ liệu biểu đồ cho doanh thu theo tháng, ngày và năm
   const chartData = {
     labels: combinedData.labels,
     datasets: [
@@ -80,8 +108,8 @@ const RevenueDashboard = () => {
         data: combinedData.monthlyData,
         borderColor: "rgba(54, 162, 235, 1)",
         backgroundColor: "rgba(54, 162, 235, 0.2)",
-        tension: 0.4, // Đường cong mềm mại
-        fill: true, // Làm đầy màu
+        tension: 0.4,
+        fill: true,
       },
       {
         label: "Doanh thu theo ngày",
@@ -102,17 +130,45 @@ const RevenueDashboard = () => {
     ],
   };
 
+  // Dữ liệu biểu đồ cho doanh thu theo phương thức thanh toán
+  const paymentChartData = {
+    labels: paymentData.map((item) => item.paymentMethod),
+    datasets: [
+      {
+        label: "Doanh thu theo phương thức thanh toán",
+        data: paymentData.map((item) => item.totalRevenue),
+        borderColor: "rgba(153, 102, 255, 1)",
+        backgroundColor: "rgba(153, 102, 255, 0.2)",
+        tension: 0.4,
+        fill: true,
+      },
+    ],
+  };
+
   return (
-    <Grid container spacing={3} style={{ padding: "20px" }}>
-      <Grid item xs={12}>
-        <Typography variant="h4" align="center" gutterBottom>
-          Thống kê doanh thu
-        </Typography>
+    <>
+      <Grid container spacing={3} style={{ padding: "20px" }}>
+        <Grid item xs={12}>
+          <Typography variant="h4" align="center" gutterBottom>
+            Thống kê doanh thu
+          </Typography>
+        </Grid>
+        <Grid item xs={12} md={12}>
+          <Line data={chartData} options={{ responsive: true }} />
+        </Grid>
       </Grid>
-      <Grid item xs={12} md={12}>
-        <Line data={chartData} options={{ responsive: true }} />
+
+      <Grid container spacing={3} style={{ padding: "20px" }}>
+        <Grid item xs={12}>
+          <Typography variant="h4" align="center" gutterBottom>
+            Thống kê doanh thu theo phương thức thanh toán
+          </Typography>
+        </Grid>
+        <Grid item xs={12} md={12}>
+          <Line data={paymentChartData} options={{ responsive: true }} />
+        </Grid>
       </Grid>
-    </Grid>
+    </>
   );
 };
 

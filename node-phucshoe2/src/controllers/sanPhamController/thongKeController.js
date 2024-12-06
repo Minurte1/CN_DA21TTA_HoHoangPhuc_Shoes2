@@ -318,7 +318,7 @@ const getProductsByColor = async (req, res) => {
         JOIN 
           MAU_SAC_SAN_PHAM mssp ON sp.ID_SAN_PHAM = mssp.ID_SAN_PHAM
         JOIN 
-          MAU_SAC ms ON mssp.ID_MAU_SAC = ms.ID_MAU_SAC
+          MAU_SAC ms ON mssp.MAU_SAC_ID = ms.MAU_SAC_ID
         GROUP BY 
           ms.TEN_MAU_SAC
         ORDER BY 
@@ -347,14 +347,14 @@ const getProductsByMaterial = async (req, res) => {
   try {
     const query = `
         SELECT 
-          cl.TEN_CHAT_LIEU AS materialName,
+          cl.TEN_CHAT_LIEU_ AS materialName,
           COUNT(sp.ID_SAN_PHAM) AS productCount
         FROM 
           SAN_PHAM sp
         JOIN 
-          CHAT_LIEU cl ON sp.ID_CHAT_LIEU = cl.ID_CHAT_LIEU
+          CHAT_LIEU cl ON sp.CHAT_LIEU_ID_ = cl.CHAT_LIEU_ID_
         GROUP BY 
-          cl.TEN_CHAT_LIEU
+          cl.TEN_CHAT_LIEU_
         ORDER BY 
           productCount DESC;
       `;
@@ -455,7 +455,7 @@ const getProductsByStyle = async (req, res) => {
         JOIN 
           PHONG_CACH_SAN_PHAM pcsp ON sp.ID_SAN_PHAM = pcsp.ID_SAN_PHAM
         JOIN 
-          PHONG_CACH pc ON pcsp.ID_PHONG_CACH = pc.ID_PHONG_CACH
+          PHONG_CACH pc ON pcsp.ID_PHUONG_CACH = pc.ID_PHUONG_CACH
         GROUP BY 
           pc.TEN_PHONG_CACH
         ORDER BY 
@@ -514,6 +514,106 @@ const getProductsByUsagePurpose = async (req, res) => {
     });
   }
 };
+const getProductsByGender = async (req, res) => {
+  try {
+    const query = `
+      SELECT 
+        gt.TEN_GIOI_TINH AS genderName,
+        COUNT(sp.ID_SAN_PHAM) AS productCount
+      FROM 
+        SAN_PHAM sp
+      JOIN 
+        GIOI_TINH gt ON sp.GIOI_TINH_ID = gt.GIOI_TINH_ID
+      GROUP BY 
+        gt.TEN_GIOI_TINH
+      ORDER BY 
+        productCount DESC;
+    `;
+
+    const [results] = await connection.execute(query);
+
+    return res.status(200).json({
+      EM: "Thống kê sản phẩm theo giới tính thành công",
+      EC: 1,
+      DT: results,
+    });
+  } catch (error) {
+    console.error("Error getting products by gender:", error);
+    return res.status(500).json({
+      EM: "Có lỗi xảy ra khi thống kê sản phẩm theo giới tính",
+      EC: 0,
+      DT: [],
+    });
+  }
+};
+const getProductsByCategoryType = async (req, res) => {
+  try {
+    const query = `
+      SELECT 
+        ld.TEN_DANH_MUC AS categoryTypeName,
+        COUNT(sp.ID_SAN_PHAM) AS productCount
+      FROM 
+        SAN_PHAM sp
+      JOIN 
+        LOAI_DANH_MUC ld ON sp.ID_DANH_MUC = ld.ID_DANH_MUC
+      GROUP BY 
+        ld.TEN_DANH_MUC
+      ORDER BY 
+        productCount DESC;
+    `;
+
+    const [results] = await connection.execute(query);
+
+    return res.status(200).json({
+      EM: "Thống kê sản phẩm theo loại danh mục thành công",
+      EC: 1,
+      DT: results,
+    });
+  } catch (error) {
+    console.error("Error getting products by category type:", error);
+    return res.status(500).json({
+      EM: "Có lỗi xảy ra khi thống kê sản phẩm theo loại danh mục",
+      EC: 0,
+      DT: [],
+    });
+  }
+};
+
+//14. Thống kê người dùng theo tỉnh/thành phố
+const getUsersByProvince = async (req, res) => {
+  try {
+    // Truy vấn SQL để thống kê số lượng người dùng theo tỉnh/thành phố
+    const query = `
+      SELECT 
+        DIA_CHI_Provinces AS province,
+        COUNT(ID_NGUOI_DUNG) AS userCount
+      FROM 
+        NGUOI_DUNG
+      GROUP BY 
+        DIA_CHI_Provinces
+      ORDER BY 
+        userCount DESC;
+    `;
+
+    // Thực thi truy vấn
+    const [results] = await connection.execute(query);
+
+    // Trả về kết quả
+    return res.status(200).json({
+      EM: "Thống kê người dùng theo tỉnh/thành phố thành công",
+      EC: 1,
+      DT: results,
+    });
+  } catch (error) {
+    // Xử lý lỗi
+    console.error("Error getting users by province:", error);
+    return res.status(500).json({
+      EM: "Có lỗi xảy ra khi thống kê người dùng",
+      EC: 0,
+      DT: [],
+    });
+  }
+};
 
 module.exports = {
   getProductStatisticsByCategory,
@@ -531,4 +631,7 @@ module.exports = {
   getMessagesByDate,
   getProductsByStyle,
   getProductsByUsagePurpose,
+  getProductsByCategoryType,
+  getProductsByGender,
+  getUsersByProvince,
 };

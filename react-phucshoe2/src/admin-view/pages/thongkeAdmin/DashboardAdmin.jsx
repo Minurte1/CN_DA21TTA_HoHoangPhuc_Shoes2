@@ -11,6 +11,9 @@ import {
 } from "@mui/material";
 import { getThemeConfig } from "../../../services/themeService";
 import RevenueDashboard from "./component/thongKeDoanhThu";
+import MostLikedProductsChart from "./component/thongKeSanPham";
+import CategoryProductsChart from "./component/thongKeTheLoai";
+import UsersByProvinceChart from "./component/thongKeNguoiDung";
 
 const DashboardAdmin = () => {
   const currentTheme = getThemeConfig(localStorage.getItem("THEMES") || "dark");
@@ -43,16 +46,40 @@ const DashboardAdmin = () => {
             color: currentTheme.color,
           }}
         >
-          <Tab sx={{ color: currentTheme.color }} label="Overview" />
-          <Tab sx={{ color: currentTheme.color }} label="Manage Users" />
-          <Tab sx={{ color: currentTheme.color }} label="Settings" />
-          <Tab sx={{ color: currentTheme.color }} label="Settings" />
-          <Tab sx={{ color: currentTheme.color }} label="Settings" />
-          <Tab sx={{ color: currentTheme.color }} label="Settings" />
-          <Tab sx={{ color: currentTheme.color }} label="Settings" />
-          <Tab sx={{ color: currentTheme.color }} label="Settings" />
-          <Tab sx={{ color: currentTheme.color }} label="Settings" />
-          <Tab sx={{ color: currentTheme.color }} label="Settings" />
+          <Tab
+            sx={{ color: currentTheme.color, fontSize: "12px" }}
+            label="Doanh thu"
+          />
+          <Tab
+            sx={{ color: currentTheme.color, fontSize: "12px" }}
+            label="Sản phẩm"
+          />
+          <Tab
+            sx={{ color: currentTheme.color, fontSize: "12px" }}
+            label="Đơn hàng"
+          />
+          <Tab
+            sx={{ color: currentTheme.color, fontSize: "12px" }}
+            label="Thể loại"
+          />
+          <Tab
+            sx={{ color: currentTheme.color, fontSize: "12px" }}
+            label="Người dùng"
+          />
+          <Tab
+            sx={{ color: currentTheme.color, fontSize: "12px" }}
+            label="Khác"
+          />
+
+          <Tab
+            sx={{ color: currentTheme.color, fontSize: "12px" }}
+            label="Settings"
+          />
+          <Tab
+            sx={{ color: currentTheme.color, fontSize: "12px" }}
+            label="Settings"
+          />
+
           <Tab sx={{ color: currentTheme.color }} label="Settings" />
         </Tabs>
 
@@ -65,16 +92,22 @@ const DashboardAdmin = () => {
             </>
           )}
           {tabIndex === 1 && (
-            <Typography variant="h6">This is the Manage Users tab.</Typography>
+            <>
+              <MostLikedProductsChart />
+            </>
           )}
           {tabIndex === 2 && (
             <Typography variant="h6">This is the Settings tab.</Typography>
           )}
           {tabIndex === 3 && (
-            <Typography variant="h6">This is the Settings tab.</Typography>
+            <>
+              <CategoryProductsChart />
+            </>
           )}
           {tabIndex === 4 && (
-            <Typography variant="h6">This is the Settings tab.</Typography>
+            <>
+              <UsersByProvinceChart />
+            </>
           )}
 
           {tabIndex === 5 && (
