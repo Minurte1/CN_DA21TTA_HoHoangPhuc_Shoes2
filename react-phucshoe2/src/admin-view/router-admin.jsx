@@ -1,5 +1,5 @@
 import { useRoutes, Navigate } from "react-router-dom";
-import DashboardAdmin from "./pages/DashboardAdmin";
+import DashboardAdmin from "./pages/thongkeAdmin/DashboardAdmin";
 
 import DanhSachNguoiDungAdmin from "./pages/quanLyNguoiDung/DanhSachNguoiDungAdmin";
 import ChatLieuManager from "./pages/quanLySanPham/category/chatLieu";

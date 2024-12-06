@@ -21,6 +21,7 @@ const {
   getProductsByUsagePurpose,
 } = require("../../controllers/sanPhamController/thongKeController");
 router.get("/danh-muc", getProductStatisticsByCategory);
+
 router.get("/doanh-thu/ngay", getRevenueByDay);
 router.get("/doanh-thu/thang", getRevenueByMonth);
 router.get("/doanh-thu/nam", getRevenueByYear);

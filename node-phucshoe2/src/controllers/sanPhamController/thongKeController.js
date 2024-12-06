@@ -83,7 +83,7 @@ const getRevenueByDay = async (req, res) => {
         FROM 
           DON_HANG dh
         WHERE 
-          dh.TRANG_THAI_DON_HANG = 'Hoàn thành'
+          dh.TRANG_THAI_DON_HANG = 'Giao dịch thành công'
         GROUP BY 
           DATE(dh.NGAY_TAO_DONHANG)
         ORDER BY 
@@ -117,7 +117,7 @@ const getRevenueByYear = async (req, res) => {
         FROM 
           DON_HANG dh
         WHERE 
-          dh.TRANG_THAI_DON_HANG = 'Hoàn thành'
+          dh.TRANG_THAI_DON_HANG = 'Giao dịch thành công'
         GROUP BY 
           YEAR(dh.NGAY_TAO_DONHANG)
         ORDER BY 

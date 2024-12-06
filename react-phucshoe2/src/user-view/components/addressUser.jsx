@@ -97,7 +97,7 @@ const AddressSelector = ({
       {/* Province Selector */}
       <Autocomplete
         options={provinces}
-        getOptionLabel={(option) => option.name_with_type || option.name || ""}
+        getOptionLabel={(option) => option.full_name || option.name || ""}
         value={selectedProvince}
         onChange={(event, newValue) => {
           setSelectedProvince(newValue);
