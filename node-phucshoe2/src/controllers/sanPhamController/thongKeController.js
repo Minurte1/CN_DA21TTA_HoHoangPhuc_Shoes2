@@ -615,6 +615,46 @@ const getUsersByProvince = async (req, res) => {
   }
 };
 
+const getProductsByStatus = async (req, res) => {
+  try {
+    const query = `
+      SELECT 
+        TRANG_THAI_SANPHAM AS productStatus,
+        TEN_SAN_PHAM AS productName,
+        COUNT(ID_SAN_PHAM) AS productCount,
+        SUM(SO_LUONG_SANPHAM) AS totalProductQuantity
+      FROM 
+        SAN_PHAM
+      GROUP BY 
+        TRANG_THAI_SANPHAM, TEN_SAN_PHAM
+      ORDER BY 
+        productCount DESC;
+    `;
+
+    const [results] = await connection.execute(query);
+
+    // Chuyển đổi giá trị của productStatus từ 0, 1 thành "Ngưng hoạt động", "Đang hoạt động"
+    const formattedResults = results.map((item) => ({
+      ...item,
+      productStatus:
+        item.productStatus === 1 ? "Đang hoạt động" : "Ngưng hoạt động",
+    }));
+
+    return res.status(200).json({
+      EM: "Thống kê số lượng sản phẩm theo trạng thái và tên sản phẩm thành công",
+      EC: 1,
+      DT: formattedResults,
+    });
+  } catch (error) {
+    console.error("Error getting products by status and name:", error);
+    return res.status(500).json({
+      EM: "Có lỗi xảy ra khi thống kê sản phẩm theo trạng thái và tên sản phẩm",
+      EC: 0,
+      DT: [],
+    });
+  }
+};
+
 module.exports = {
   getProductStatisticsByCategory,
   getRevenueByMonth,
@@ -634,4 +674,5 @@ module.exports = {
   getProductsByCategoryType,
   getProductsByGender,
   getUsersByProvince,
+  getProductsByStatus,
 };

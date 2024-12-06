@@ -22,6 +22,7 @@ const {
   getProductsByCategoryType,
   getProductsByGender,
   getUsersByProvince,
+  getProductsByStatus,
 } = require("../../controllers/sanPhamController/thongKeController");
 router.get("/danh-muc", getProductStatisticsByCategory);
 
@@ -47,5 +48,7 @@ router.get("/products-by-gender", getProductsByGender); // Thống kê sản ph�
 
 router.get("/messages-by-date", getMessagesByDate); // 11. Thống kê tin nhắn theo ngày
 router.get("/users-by-province", getUsersByProvince); // 14. Thống kê người dùng theo tỉnh/thành phố
+
+router.get("/statistics/products-by-status", getProductsByStatus); //15. Thống kê số lượng sản phẩm theo trạng thái
 
 module.exports = router;
