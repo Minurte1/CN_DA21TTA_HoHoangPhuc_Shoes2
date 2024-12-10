@@ -19,11 +19,13 @@ import {
   Box,
   Select,
   MenuItem,
+  Divider,
 } from "@mui/material";
 import moment from "moment";
 
 import { Add, Edit, Delete } from "@mui/icons-material";
 import axios from "axios";
+import { getThemeConfig } from "../../../../services/themeService";
 const api = process.env.REACT_APP_URL_SERVER;
 const ChatLieuManager = () => {
   const [materials, setMaterials] = useState([]);
@@ -32,7 +34,7 @@ const ChatLieuManager = () => {
   const [tenChatLieu, setTenChatLieu] = useState("");
   const [moTaChatLieu, setMoTaChatLieu] = useState("");
   const [trangThaiChatLieu, setTrangThaiChatLieu] = useState(1); // Mặc định
-
+  const currentTheme = getThemeConfig(localStorage.getItem("THEMES") || "dark");
   useEffect(() => {
     fetchMaterials();
   }, []);
@@ -123,60 +125,74 @@ const ChatLieuManager = () => {
           onClick={() => handleOpenDialog()}
           sx={{
             marginBottom: 2,
-            backgroundColor: "#fff",
-            color: "black",
+            backgroundColor: currentTheme.backgroundColor,
+            color: currentTheme.color,
             textAlign: "left",
           }}
         >
           Thêm chất liệu
         </Button>
       </Box>
-
-      <TableContainer component={Paper} sx={{ backgroundColor: "#101014" }}>
+      <Divider sx={{ my: 1, color: "#000", width: "100%" }} />
+      <TableContainer
+        component={Paper}
+        sx={{ backgroundColor: currentTheme.backgroundColor }}
+      >
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell sx={{ color: "#26bbff" }}>ID</TableCell>
-              <TableCell sx={{ color: "#26bbff" }}>
+              <TableCell sx={{ color: currentTheme.colorTitle }}>ID</TableCell>
+              <TableCell sx={{ color: currentTheme.colorTitle }}>
                 Tên chất liệu
               </TableCell>{" "}
-              <TableCell sx={{ color: "#26bbff" }}>Trạng Thái</TableCell>{" "}
-              <TableCell sx={{ color: "#26bbff" }}>Mô tả</TableCell>
-              <TableCell sx={{ color: "#26bbff" }}>
+              <TableCell sx={{ color: currentTheme.colorTitle }}>
+                Mô tả
+              </TableCell>
+              <TableCell sx={{ color: currentTheme.colorTitle }}>
                 Ngày tạo chất liệu
               </TableCell>{" "}
-              <TableCell sx={{ color: "#26bbff" }}>
+              <TableCell sx={{ color: currentTheme.colorTitle }}>
                 Ngày cập nhật chất liệu gần nhất
+              </TableCell>{" "}
+              <TableCell sx={{ color: currentTheme.colorTitle }}>
+                Trạng Thái
+              </TableCell>{" "}
+              <TableCell sx={{ color: currentTheme.colorTitle }}>
+                Actions
               </TableCell>
-              <TableCell sx={{ color: "#26bbff" }}>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {materials.map((material) => (
               <TableRow key={material.CHAT_LIEU_ID_}>
-                <TableCell sx={{ color: "#c9d1d9" }}>
+                <TableCell sx={{ color: currentTheme.color }}>
                   {material.CHAT_LIEU_ID_}
                 </TableCell>
-                <TableCell sx={{ color: "#c9d1d9" }}>
+                <TableCell sx={{ color: currentTheme.color }}>
                   {material.TEN_CHAT_LIEU_}
                 </TableCell>{" "}
-                <TableCell sx={{ color: "#c9d1d9" }}>
-                  {material.TRANG_THAI_CHAT_LIEU == 1
-                    ? "Đang sử dụng"
-                    : "Ngưng sử dụng"}
-                </TableCell>{" "}
-                <TableCell sx={{ color: "#c9d1d9" }}>
+                <TableCell sx={{ color: currentTheme.color }}>
                   {material.MO_TA_CHAT_LIEU}
                 </TableCell>{" "}
-                <TableCell sx={{ color: "#c9d1d9" }}>
+                <TableCell sx={{ color: currentTheme.color }}>
                   {moment(material.CREATED_TEN_CHAT_LIEU_).format(
                     "HH:mm:ss - DD/MM/YYYY"
                   )}
                 </TableCell>
-                <TableCell sx={{ color: "#c9d1d9" }}>
+                <TableCell sx={{ color: currentTheme.color }}>
                   {moment(material.UPDATE_CHAT_LIEU).format(
                     "HH:mm:ss - DD/MM/YYYY"
                   )}
+                </TableCell>{" "}
+                <TableCell
+                  sx={{
+                    color:
+                      material.TRANG_THAI_CHAT_LIEU === 1 ? "#008000" : "red",
+                  }}
+                >
+                  {material.TRANG_THAI_CHAT_LIEU == 1
+                    ? "Đang sử dụng"
+                    : "Ngưng sử dụng"}
                 </TableCell>{" "}
                 <TableCell>
                   <IconButton

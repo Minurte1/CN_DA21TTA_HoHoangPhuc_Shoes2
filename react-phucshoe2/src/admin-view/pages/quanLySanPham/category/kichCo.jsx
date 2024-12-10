@@ -19,10 +19,12 @@ import {
   Box,
   Select,
   MenuItem,
+  Divider,
 } from "@mui/material";
 import { Add, Edit, Delete } from "@mui/icons-material";
 import axios from "axios";
 import moment from "moment";
+import { getThemeConfig } from "../../../../services/themeService";
 
 const api = process.env.REACT_APP_URL_SERVER;
 
@@ -32,7 +34,7 @@ const KichCoManager = () => {
   const [currentKichCo, setCurrentKichCo] = useState(null);
   const [kichCo, setKichCo] = useState("");
   const [trangThaiKichCo, setTrangThaiKichCo] = useState(1);
-
+  const currentTheme = getThemeConfig(localStorage.getItem("THEMES") || "dark");
   useEffect(() => {
     fetchKichCoList();
   }, []);
@@ -98,55 +100,82 @@ const KichCoManager = () => {
 
   return (
     <Container>
-      <Box sx={{ width: "100%", textAlign: "left" }}>
-        <Typography variant="h5" color="primary" gutterBottom>
-          Danh sách kích cỡ
+      <Box sx={{ width: "100%", textAlign: "left", mt: 4 }}>
+        <Typography
+          variant="h5"
+          color="primary"
+          gutterBottom
+          sx={{ textAlign: "left" }}
+        >
+          DANH SÁCH KÍCH CỠ
         </Typography>
         <Button
           variant="outlined"
           startIcon={<Add />}
           onClick={() => handleOpenDialog()}
-          sx={{ marginBottom: 2, backgroundColor: "#fff", color: "black" }}
+          sx={{
+            marginBottom: 2,
+            backgroundColor: currentTheme.backgroundColor,
+            color: currentTheme.color,
+          }}
         >
           Thêm kích cỡ
         </Button>
       </Box>
-
-      <TableContainer component={Paper} sx={{ backgroundColor: "#101014" }}>
+      <Divider sx={{ my: 1, color: "#000", width: "100%" }} />
+      <TableContainer
+        component={Paper}
+        sx={{ backgroundColor: currentTheme.backgroundColor }}
+      >
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell sx={{ color: "#26bbff" }}>ID</TableCell>
-              <TableCell sx={{ color: "#26bbff" }}>Tên Kích Cỡ</TableCell>
-              <TableCell sx={{ color: "#26bbff" }}>Trạng Thái</TableCell>
-              <TableCell sx={{ color: "#26bbff" }}>Ngày Tạo</TableCell>
-              <TableCell sx={{ color: "#26bbff" }}>Ngày Cập Nhật</TableCell>
-              <TableCell sx={{ color: "#26bbff" }}>Actions</TableCell>
+              <TableCell sx={{ color: currentTheme.colorTitle }}>ID</TableCell>
+              <TableCell sx={{ color: currentTheme.colorTitle }}>
+                Tên Kích Cỡ
+              </TableCell>
+              <TableCell sx={{ color: currentTheme.colorTitle }}>
+                Ngày Tạo
+              </TableCell>
+              <TableCell sx={{ color: currentTheme.colorTitle }}>
+                Ngày Cập Nhật
+              </TableCell>{" "}
+              <TableCell sx={{ color: currentTheme.colorTitle }}>
+                Trạng Thái
+              </TableCell>
+              <TableCell sx={{ color: currentTheme.colorTitle }}>
+                Actions
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {kichCoList.map((kichCoItem) => (
               <TableRow key={kichCoItem.ID_KICH_CO}>
-                <TableCell sx={{ color: "#c9d1d9" }}>
+                <TableCell sx={{ color: currentTheme.color }}>
                   {kichCoItem.ID_KICH_CO}
                 </TableCell>
-                <TableCell sx={{ color: "#c9d1d9" }}>
+                <TableCell sx={{ color: currentTheme.color }}>
                   {kichCoItem.KICH_CO}
                 </TableCell>
-                <TableCell sx={{ color: "#c9d1d9" }}>
-                  {kichCoItem.TRANG_THAI_KICH_CO === 1
-                    ? "Đang sử dụng"
-                    : "Ngưng sử dụng"}
-                </TableCell>
-                <TableCell sx={{ color: "#c9d1d9" }}>
+                <TableCell sx={{ color: currentTheme.color }}>
                   {moment(kichCoItem.CREATED_KICH_CO).format(
                     "HH:mm:ss - DD/MM/YYYY"
                   )}
                 </TableCell>
-                <TableCell sx={{ color: "#c9d1d9" }}>
+                <TableCell sx={{ color: currentTheme.color }}>
                   {moment(kichCoItem.UPDATE_KICH_CO).format(
                     "HH:mm:ss - DD/MM/YYYY"
                   )}
+                </TableCell>{" "}
+                <TableCell
+                  sx={{
+                    color:
+                      kichCoItem.TRANG_THAI_KICH_CO === "1" ? "#008000" : "red",
+                  }}
+                >
+                  {kichCoItem.TRANG_THAI_KICH_CO === "1"
+                    ? "Đang sử dụng"
+                    : "Ngưng sử dụng"}
                 </TableCell>
                 <TableCell>
                   <IconButton

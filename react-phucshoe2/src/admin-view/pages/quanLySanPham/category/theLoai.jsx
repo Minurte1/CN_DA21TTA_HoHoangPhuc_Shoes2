@@ -19,14 +19,17 @@ import {
   Box,
   Select,
   MenuItem,
+  Divider,
 } from "@mui/material";
 import { Add, Edit, Delete } from "@mui/icons-material";
 import axios from "axios";
 import moment from "moment";
+import { getThemeConfig } from "../../../../services/themeService";
 
 const api = process.env.REACT_APP_URL_SERVER;
 
 const LoaiDanhMucManager = () => {
+  const currentTheme = getThemeConfig(localStorage.getItem("THEMES") || "dark");
   const [loaiDanhMucList, setLoaiDanhMucList] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
   const [currentLoaiDanhMuc, setCurrentLoaiDanhMuc] = useState(null);
@@ -109,61 +112,85 @@ const LoaiDanhMucManager = () => {
 
   return (
     <Container>
-      <Box sx={{ width: "100%", textAlign: "left" }}>
+      <Box sx={{ width: "100%", textAlign: "left", mt: 4 }}>
         <Typography variant="h5" color="primary" gutterBottom>
-          Danh sách Loại Danh Mục
+          DANH SÁCH LOẠI DANH MỤC
         </Typography>
         <Button
           variant="outlined"
           startIcon={<Add />}
           onClick={() => handleOpenDialog()}
-          sx={{ marginBottom: 2, backgroundColor: "#fff", color: "black" }}
+          sx={{
+            marginBottom: 2,
+            backgroundColor: currentTheme.backgroundColor,
+            color: currentTheme.color,
+          }}
         >
           Thêm Loại Danh Mục
         </Button>
       </Box>
-
-      <TableContainer component={Paper} sx={{ backgroundColor: "#101014" }}>
+      <Divider sx={{ my: 1, color: currentTheme.color, width: "100%" }} />
+      <TableContainer
+        component={Paper}
+        sx={{ backgroundColor: currentTheme.backgroundColor }}
+      >
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell sx={{ color: "#26bbff" }}>ID</TableCell>
-              <TableCell sx={{ color: "#26bbff" }}>Tên Loại Danh Mục</TableCell>
-              <TableCell sx={{ color: "#26bbff" }}>
+              <TableCell sx={{ color: currentTheme.colorTitle }}>ID</TableCell>
+              <TableCell sx={{ color: currentTheme.colorTitle }}>
+                Tên Loại Danh Mục
+              </TableCell>
+              <TableCell sx={{ color: currentTheme.colorTitle }}>
                 Mô Tả Danh Mục
               </TableCell>{" "}
-              <TableCell sx={{ color: "#26bbff" }}>Trạng Thái</TableCell>
-              <TableCell sx={{ color: "#26bbff" }}>Ngày Tạo</TableCell>
-              <TableCell sx={{ color: "#26bbff" }}>Ngày Cập Nhật</TableCell>
-              <TableCell sx={{ color: "#26bbff" }}>Actions</TableCell>
+              <TableCell sx={{ color: currentTheme.colorTitle }}>
+                Ngày Tạo
+              </TableCell>
+              <TableCell sx={{ color: currentTheme.colorTitle }}>
+                Ngày Cập Nhật
+              </TableCell>{" "}
+              <TableCell sx={{ color: currentTheme.colorTitle }}>
+                Trạng Thái
+              </TableCell>
+              <TableCell sx={{ color: currentTheme.colorTitle }}>
+                Actions
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {loaiDanhMucList.map((loaiDanhMucItem) => (
               <TableRow key={loaiDanhMucItem.ID_DANH_MUC}>
-                <TableCell sx={{ color: "#c9d1d9" }}>
+                <TableCell sx={{ color: currentTheme.color }}>
                   {loaiDanhMucItem.ID_DANH_MUC}
                 </TableCell>
-                <TableCell sx={{ color: "#c9d1d9" }}>
+                <TableCell sx={{ color: currentTheme.color }}>
                   {loaiDanhMucItem.TEN_DANH_MUC}
                 </TableCell>{" "}
-                <TableCell sx={{ color: "#c9d1d9" }}>
+                <TableCell sx={{ color: currentTheme.color }}>
                   {loaiDanhMucItem.MO_TA_LOAI_DANH_MUC}
                 </TableCell>
-                <TableCell sx={{ color: "#c9d1d9" }}>
-                  {loaiDanhMucItem.TRANG_THAI_DANHMUC === 1
-                    ? "Đang sử dụng"
-                    : "Ngưng sử dụng"}
-                </TableCell>
-                <TableCell sx={{ color: "#c9d1d9" }}>
+                <TableCell sx={{ color: currentTheme.color }}>
                   {moment(loaiDanhMucItem.CREATED_DANHMUC).format(
                     "HH:mm:ss - DD/MM/YYYY"
                   )}
                 </TableCell>
-                <TableCell sx={{ color: "#c9d1d9" }}>
+                <TableCell sx={{ color: currentTheme.color }}>
                   {moment(loaiDanhMucItem.UPDATE_DANHMUC).format(
                     "HH:mm:ss - DD/MM/YYYY"
                   )}
+                </TableCell>{" "}
+                <TableCell
+                  sx={{
+                    color:
+                      loaiDanhMucItem.TRANG_THAI_DANHMUC === 1
+                        ? "#008000"
+                        : "red",
+                  }}
+                >
+                  {loaiDanhMucItem.TRANG_THAI_DANHMUC === 1
+                    ? "Đang sử dụng"
+                    : "Ngưng sử dụng"}
                 </TableCell>
                 <TableCell>
                   <IconButton

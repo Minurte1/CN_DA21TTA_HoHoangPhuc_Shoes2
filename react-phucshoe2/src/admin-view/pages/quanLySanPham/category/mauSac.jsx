@@ -23,9 +23,11 @@ import {
 import { Add, Edit, Delete } from "@mui/icons-material";
 import axios from "axios";
 import moment from "moment";
+import { getThemeConfig } from "../../../../services/themeService";
 const api = process.env.REACT_APP_URL_SERVER;
 
 const MauSacManager = () => {
+  const currentTheme = getThemeConfig(localStorage.getItem("THEMES") || "dark");
   const [mauSacList, setMauSacList] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
   const [currentMauSac, setCurrentMauSac] = useState(null);
@@ -93,54 +95,77 @@ const MauSacManager = () => {
 
   return (
     <Container>
-      <Box sx={{ width: "100%", textAlign: "left" }}>
+      <Box sx={{ width: "100%", textAlign: "left", mt: 4 }}>
         <Typography variant="h5" color="primary" gutterBottom>
-          Danh sách Màu Sắc
+          DANH SÁCH MÀU SẮC
         </Typography>
         <Button
           variant="outlined"
           startIcon={<Add />}
           onClick={() => handleOpenDialog()}
-          sx={{ marginBottom: 2, backgroundColor: "#fff", color: "black" }}
+          sx={{
+            marginBottom: 2,
+            backgroundColor: currentTheme.backgroundColor,
+            color: currentTheme.color,
+          }}
         >
           Thêm Màu Sắc
         </Button>
       </Box>
 
-      <TableContainer component={Paper} sx={{ backgroundColor: "#101014" }}>
+      <TableContainer
+        component={Paper}
+        sx={{ backgroundColor: currentTheme.backgroundColor }}
+      >
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell sx={{ color: "#26bbff" }}>ID</TableCell>
-              <TableCell sx={{ color: "#26bbff" }}>Tên Màu Sắc</TableCell>{" "}
-              <TableCell sx={{ color: "#26bbff" }}>Ngày Tạo Ra</TableCell>{" "}
-              <TableCell sx={{ color: "#26bbff" }}>Ngày Cập Nhật</TableCell>
-              <TableCell sx={{ color: "#26bbff" }}>Actions</TableCell>
+              <TableCell sx={{ color: currentTheme.colorTitle }}>ID</TableCell>
+              <TableCell sx={{ color: currentTheme.colorTitle }}>
+                Tên Màu Sắc
+              </TableCell>{" "}
+              <TableCell sx={{ color: currentTheme.colorTitle }}>
+                Ngày Tạo Ra
+              </TableCell>{" "}
+              <TableCell sx={{ color: currentTheme.colorTitle }}>
+                Ngày Cập Nhật
+              </TableCell>{" "}
+              <TableCell sx={{ color: currentTheme.colorTitle }}>
+                Trạng thái
+              </TableCell>
+              <TableCell sx={{ color: currentTheme.colorTitle }}>
+                Actions
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {mauSacList.map((mauSacItem) => (
               <TableRow key={mauSacItem.MAU_SAC_ID}>
-                <TableCell sx={{ color: "#c9d1d9" }}>
+                <TableCell sx={{ color: currentTheme.color }}>
                   {mauSacItem.MAU_SAC_ID}
                 </TableCell>
-                <TableCell sx={{ color: "#c9d1d9" }}>
+                <TableCell sx={{ color: currentTheme.color }}>
                   {mauSacItem.TEN_MAU_SAC}
                 </TableCell>
-                <TableCell sx={{ color: "#c9d1d9" }}>
-                  {mauSacItem.TRANG_THAI_MAU_SAC === 1
-                    ? "Đang sử dụng"
-                    : "Ngưng sử dụng"}
-                </TableCell>
-                <TableCell sx={{ color: "#c9d1d9" }}>
+                <TableCell sx={{ color: currentTheme.color }}>
                   {moment(mauSacItem.CREATE_MAU_SAC).format(
                     "HH:mm:ss - DD/MM/YYYY"
                   )}
                 </TableCell>{" "}
-                <TableCell sx={{ color: "#c9d1d9" }}>
+                <TableCell sx={{ color: currentTheme.color }}>
                   {moment(mauSacItem.UPDATE_MAU_SAC).format(
                     "HH:mm:ss - DD/MM/YYYY"
                   )}
+                </TableCell>{" "}
+                <TableCell
+                  sx={{
+                    color:
+                      mauSacItem.TRANG_THAI_MAU_SAC === 1 ? "#008000" : "red",
+                  }}
+                >
+                  {mauSacItem.TRANG_THAI_MAU_SAC === 1
+                    ? "Đang sử dụng"
+                    : "Ngưng sử dụng"}
                 </TableCell>
                 <TableCell>
                   <IconButton

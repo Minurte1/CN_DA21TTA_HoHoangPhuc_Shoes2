@@ -7,6 +7,7 @@ const themeConfigs = {
     secondaryColor: "#3ccaf0", // màu nhấn mạnh title
     accentColor: "#c5ebf6 ", //màu backgroundColor hover
     backgroundColorLow: "#dddddd",
+    colorTitle: "#1976d2", //Nhấn đậm title
   },
   dark: {
     backgroundColor: "#101014",
@@ -14,6 +15,7 @@ const themeConfigs = {
     secondaryColor: "#3ccaf0",
     accentColor: "#515157",
     backgroundColorLow: "#1f1f1f",
+    colorTitle: "#1976d2", //Nhấn đậm title
   },
 };
 

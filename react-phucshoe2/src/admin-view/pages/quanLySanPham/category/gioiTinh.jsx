@@ -19,14 +19,17 @@ import {
   Box,
   Select,
   MenuItem,
+  Divider,
 } from "@mui/material";
 import { Add, Edit, Delete } from "@mui/icons-material";
 import axios from "axios";
 import moment from "moment";
+import { getThemeConfig } from "../../../../services/themeService";
 
 const api = process.env.REACT_APP_URL_SERVER;
 
 const GioiTinhManager = () => {
+  const currentTheme = getThemeConfig(localStorage.getItem("THEMES") || "dark");
   const [genders, setGenders] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
   const [currentGender, setCurrentGender] = useState(null);
@@ -98,55 +101,85 @@ const GioiTinhManager = () => {
 
   return (
     <Container>
-      <Box sx={{ width: "100%", textAlign: "left" }}>
-        <Typography variant="h5" color="primary" gutterBottom>
-          Danh sách giới tính
+      <Box sx={{ width: "100%", textAlign: "left", mt: 4 }}>
+        <Typography
+          variant="h5"
+          color="primary"
+          gutterBottom
+          sx={{ textAlign: "left" }}
+        >
+          GIỚI TÍNH CỦA GIÀY
         </Typography>
         <Button
           variant="outlined"
           startIcon={<Add />}
           onClick={() => handleOpenDialog()}
-          sx={{ marginBottom: 2, backgroundColor: "#fff", color: "black" }}
+          sx={{
+            marginBottom: 2,
+            backgroundColor: currentTheme.backgroundColor,
+            color: currentTheme.color,
+          }}
         >
           Thêm giới tính
         </Button>
       </Box>
-
-      <TableContainer component={Paper} sx={{ backgroundColor: "#101014" }}>
+      <Divider sx={{ my: 1, color: "#000", width: "100%" }} />
+      <TableContainer
+        component={Paper}
+        sx={{
+          backgroundColor: currentTheme.backgroundColor,
+          color: currentTheme.color,
+        }}
+      >
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell sx={{ color: "#26bbff" }}>ID</TableCell>
-              <TableCell sx={{ color: "#26bbff" }}>Tên Giới Tính</TableCell>
-              <TableCell sx={{ color: "#26bbff" }}>Trạng Thái</TableCell>
-              <TableCell sx={{ color: "#26bbff" }}>Ngày Tạo</TableCell>
-              <TableCell sx={{ color: "#26bbff" }}>Ngày Cập Nhật</TableCell>
-              <TableCell sx={{ color: "#26bbff" }}>Actions</TableCell>
+              <TableCell sx={{ color: currentTheme.colorTitle }}>ID</TableCell>
+              <TableCell sx={{ color: currentTheme.colorTitle }}>
+                Tên Giới Tính
+              </TableCell>
+              <TableCell sx={{ color: currentTheme.colorTitle }}>
+                Ngày Tạo
+              </TableCell>
+              <TableCell sx={{ color: currentTheme.colorTitle }}>
+                Ngày Cập Nhật
+              </TableCell>{" "}
+              <TableCell sx={{ color: currentTheme.colorTitle }}>
+                Trạng Thái
+              </TableCell>
+              <TableCell sx={{ color: currentTheme.colorTitle }}>
+                Actions
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {genders.map((gender) => (
               <TableRow key={gender.GIOI_TINH_ID}>
-                <TableCell sx={{ color: "#c9d1d9" }}>
+                <TableCell sx={{ color: currentTheme.color }}>
                   {gender.GIOI_TINH_ID}
                 </TableCell>
-                <TableCell sx={{ color: "#c9d1d9" }}>
+                <TableCell sx={{ color: currentTheme.color }}>
                   {gender.TEN_GIOI_TINH}
                 </TableCell>
-                <TableCell sx={{ color: "#c9d1d9" }}>
-                  {gender.TRANG_THAI_GIOI_TINH === 1
-                    ? "Đang sử dụng"
-                    : "Ngưng sử dụng"}
-                </TableCell>
-                <TableCell sx={{ color: "#c9d1d9" }}>
+                <TableCell sx={{ color: currentTheme.color }}>
                   {moment(gender.CREATED_GIOI_TINH).format(
                     "HH:mm:ss - DD/MM/YYYY"
                   )}
                 </TableCell>
-                <TableCell sx={{ color: "#c9d1d9" }}>
+                <TableCell sx={{ color: currentTheme.color }}>
                   {moment(gender.UPDATE_GIOI_TINH).format(
                     "HH:mm:ss - DD/MM/YYYY"
                   )}
+                </TableCell>{" "}
+                <TableCell
+                  sx={{
+                    color:
+                      gender.TRANG_THAI_GIOI_TINH === 1 ? "#008000" : "red",
+                  }}
+                >
+                  {gender.TRANG_THAI_GIOI_TINH === 1
+                    ? "Đang sử dụng"
+                    : "Ngưng sử dụng"}
                 </TableCell>
                 <TableCell>
                   <IconButton
