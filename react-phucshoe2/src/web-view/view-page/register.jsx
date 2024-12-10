@@ -43,7 +43,7 @@ const RegistrationForm = () => {
   const scrollRef = useRef(null); // Tạo ref cho phần tử cuộn tới
 
   const [isOtpSent, setIsOtpSent] = useState(false); // Track OTP sent status
-  const naviagte = useNavigate();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     fullName: "",
     phone: "",
@@ -78,22 +78,31 @@ const RegistrationForm = () => {
       enqueueSnackbar("Bạn phải trên 18 tuổi để tạo tài khoản.");
     }
   };
+
+  //Register
   const handleRegister = async () => {
-    if (formData.password === confirmPassword) {
-      try {
-        const response = await axios.post(`${api}/register`, { formData });
-        if (response.data.EC === 1) {
-          enqueueSnackbar(response.data.EM);
-          naviagte("/login");
-        } else {
-          enqueueSnackbar(response.data.EM);
-        }
-      } catch (error) {
-        enqueueSnackbar("Có lỗi xảy ra!");
-        console.error(error);
+    if (formData.password !== confirmPassword) {
+      enqueueSnackbar("Mật khẩu không trùng khớp!", { variant: "error" });
+      return;
+    }
+
+    try {
+      const response = await axios.post(`${api}/register`, { formData });
+      const { EC, EM } = response.data;
+
+      enqueueSnackbar(EM, { variant: EC === 1 ? "success" : "error" });
+
+      if (EC === 1) {
+        setCountdown(0);
+        navigate("/login");
       }
-    } else {
-      enqueueSnackbar("Mật khẩu không trùng khớp!");
+    } catch (error) {
+      enqueueSnackbar(error.response?.data?.EM || "Đã xảy ra lỗi", {
+        variant: "error",
+      });
+      console.error(error);
+    } finally {
+      setCountdown(0);
     }
   };
 
@@ -124,12 +133,16 @@ const RegistrationForm = () => {
         otp: otp,
       });
       if (response.data.EC === 1) {
-        enqueueSnackbar(response.data.EM);
+        // enqueueSnackbar(response.data.EM);
         handleRegister();
       } else {
         enqueueSnackbar(response.data.EM);
       }
-    } catch (error) {}
+    } catch (error) {
+      enqueueSnackbar(error.response?.data?.EM || "Đã xảy ra lỗi", {
+        variant: "error",
+      });
+    }
   };
   // Start countdown timer
   useEffect(() => {

@@ -55,8 +55,14 @@ function App() {
             />
             <Route
               path="/profile/*"
-              element={<RouterUser currentTheme={currentTheme} />}
+              element={
+                <RouterUser
+                  currentTheme={currentTheme}
+                  isAuthenticated={isAuthenticated}
+                />
+              }
             />
+
             {/* <Route path="/admin/*" element={<RouterAdmin />} /> */}
           </Routes>
         </Router>{" "}
@@ -84,9 +90,17 @@ const MainLayout = ({ isAuthenticated }) => (
     <Footer />
   </>
 );
-const RouterUser = ({ currentTheme }) => (
+const RouterUser = ({ currentTheme, isAuthenticated }) => (
   <>
-    <HeaderUser />
+    <HeaderUser />{" "}
+    {isAuthenticated ? (
+      <>
+        {" "}
+        <ChatRealTime />
+      </>
+    ) : (
+      false
+    )}
     <Grid
       container
       style={{ height: "auto", backgroundColor: currentTheme.backgroundColor }}

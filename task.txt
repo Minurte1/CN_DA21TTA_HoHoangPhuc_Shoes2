@@ -1,0 +1,3 @@
+đồ án chuyên ngành 
+
+register khi tạo thành công thì  nếu trùng tài khoản thì nên thông báo, giờ nó đang bị "cái gì đó sai sai "

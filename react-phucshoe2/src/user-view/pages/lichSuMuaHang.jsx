@@ -121,7 +121,10 @@ const LichSuMuaHangUser = () => {
         <Tab sx={{ color: currentTheme.color }} label="Chưa thanh toán" />
       </Tabs>
       {/* Danh sách đơn hàng */}
-      <Box mt={2} sx={{ backgroundColor: currentTheme.backgroundColor }}>
+      <Box
+        mt={2}
+        sx={{ backgroundColor: currentTheme.backgroundColor, height: "100vh" }}
+      >
         {dataChiTietHoaDon?.map((order, index) => (
           <>
             <Box

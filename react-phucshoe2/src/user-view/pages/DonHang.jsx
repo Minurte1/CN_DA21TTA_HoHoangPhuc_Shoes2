@@ -73,7 +73,9 @@ const DonHangUser = () => {
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentOrders = orders.slice(indexOfFirstItem, indexOfLastItem);
   return (
-    <Container sx={{ height: "100vh" }}>
+    <Container
+      sx={{ height: "100vh", backgroundColor: currentTheme.backgroundColor }}
+    >
       <Box
         sx={{
           backgroundColor: currentTheme.backgroundColor,

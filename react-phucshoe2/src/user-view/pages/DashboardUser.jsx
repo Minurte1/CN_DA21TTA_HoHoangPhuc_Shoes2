@@ -145,10 +145,11 @@ const UserProfile = () => {
   return (
     <Box
       display="flex"
-      style={{
+      sx={{
         minHeight: "100vh",
-        backgroundColor: currentTheme.backgroundColor,
+        backgroundColor: currentTheme.backgroundColorLow,
         color: currentTheme.color,
+        width: "100%",
       }}
     >
       <Container

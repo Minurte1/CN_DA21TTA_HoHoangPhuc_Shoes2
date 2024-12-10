@@ -76,7 +76,7 @@ const SelectShoe = () => {
   };
 
   // THÊM VÀO GIỎ HÀNG
-  const handleAddToCart = async () => {
+  const handleAddToCart = async (isAddCart) => {
     if (!isAuthenticated) {
       enqueueSnackbar("Vui lòng đăng nhập để tiếp tục!");
       navigate("/login"); // Đảm bảo '/login' là đường dẫn đúng tới trang đăng nhập của bạn
@@ -93,17 +93,21 @@ const SelectShoe = () => {
       const response = await axios.post(`${api}/gio-hang/`, payload);
 
       if (response.data.EC === 1) {
-        enqueueSnackbar(response.data.EM);
+        enqueueSnackbar(response.data.EM, { variant: "success" });
         dispatch(setTotalCart(response.data.totalQuantity));
 
         console.log(response.data.EM); // Thêm vào giỏ hàng thành công
       } else {
         console.log("Lỗi:", response.data.EM); // Xử lý lỗi nếu có
-        enqueueSnackbar(response.data.EM);
+        enqueueSnackbar(response.data.EM, { variant: "error" });
       }
     } catch (error) {
       console.error("Lỗi hệ thống:", error);
-      enqueueSnackbar(error.response.data.EM);
+      enqueueSnackbar(error.response.data.EM, { variant: "error" });
+    } finally {
+      if (!isAddCart) {
+        navigate("/cart");
+      }
     }
   }; // Hàm handleAddToWish
   const handleAddToWish = async (product) => {
@@ -123,15 +127,15 @@ const SelectShoe = () => {
       const response = await axios.post(`${api}/yeu-thich/`, payload);
 
       if (response.data.EC === 1) {
-        enqueueSnackbar(response.data.EM);
+        enqueueSnackbar(response.data.EM, { variant: "success" });
         console.log(response.data.EM); // Thêm vào yêu thích thành công
       } else {
         console.log("Lỗi:", response.data.EM); // Xử lý lỗi nếu có
-        enqueueSnackbar(response.data.EM);
+        enqueueSnackbar(response.data.EM, { variant: "error" });
       }
     } catch (error) {
       console.error("Lỗi hệ thống:", error);
-      enqueueSnackbar(error.response.data.EM);
+      enqueueSnackbar(error.response.data.EM, { variant: "error" });
     }
   };
 
@@ -332,7 +336,7 @@ const SelectShoe = () => {
             {/* Price */}
             <Button
               variant="contained"
-              onClick={handleSummitThanhToan}
+              onClick={() => handleAddToCart(false)}
               sx={{
                 borderRadius: "14px",
                 paddingTop: "13px",
@@ -369,7 +373,7 @@ const SelectShoe = () => {
               Add To Wish
             </Button>
             <Button
-              onClick={() => handleAddToCart()}
+              onClick={() => handleAddToCart(true)}
               sx={{
                 borderRadius: "14px",
                 paddingTop: "13px",
@@ -386,7 +390,8 @@ const SelectShoe = () => {
             >
               Add To Cart
             </Button>
-            <FormControl sx={{ mb: 2, mt: 2 }}>
+            {/* ----------------- Cmt Code địa chỉ phương thức thanh toán ------------------ */}
+            {/* <FormControl sx={{ mb: 2, mt: 2 }}>
               <InputLabel
                 sx={{
                   display: "flex",
@@ -512,7 +517,7 @@ const SelectShoe = () => {
                   }}
                 />
               </>
-            )}
+            )} */}
             <Divider sx={{ backgroundColor: "#555", mb: 2 }} />
             <Box>
               <Typography
