@@ -147,7 +147,8 @@ const NavBarAdmin = () => {
                 >
                   <ListItemText primary="Danh sách người dùng" />
                 </ListItem>
-                <ListItem
+
+                {/* <ListItem
                   button
                   component={Link}
                   to="/user/nguoi-dung/roles"
@@ -165,7 +166,7 @@ const NavBarAdmin = () => {
                   }}
                 >
                   <ListItemText primary="Phân quyền" />
-                </ListItem>
+                </ListItem> */}
               </List>
             </Collapse>
             {/* Quản lý sản phẩm */}

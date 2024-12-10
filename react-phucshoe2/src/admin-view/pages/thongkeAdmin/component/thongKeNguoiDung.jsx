@@ -11,6 +11,7 @@ import {
 } from "chart.js";
 import axios from "axios";
 import { CircularProgress } from "@mui/material"; // Dùng CircularProgress từ MUI để hiển thị loading
+import { getThemeConfig } from "../../../../services/themeService";
 
 // Đăng ký các thành phần của Chart.js
 ChartJS.register(
@@ -26,7 +27,7 @@ const UsersByProvinceChart = () => {
   const [chartData, setChartData] = useState({});
   const [loading, setLoading] = useState(true); // Thêm state loading
   const api = process.env.REACT_APP_URL_SERVER;
-
+  const currentTheme = getThemeConfig(localStorage.getItem("THEMES") || "dark");
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -67,9 +68,16 @@ const UsersByProvinceChart = () => {
   }, []);
 
   return (
-    <div>
+    <div
+      style={{
+        backgroundColor: currentTheme.backgroundColor,
+        height: "auto",
+        width: "100%",
+        color: currentTheme.color,
+      }}
+    >
       <h2>Thống kê người dùng theo tỉnh/thành phố</h2>
-      <div style={{ width: "80%", height: "400px", margin: "0 auto" }}>
+      <div style={{ width: "100%", height: "400px", margin: "0 auto" }}>
         {loading ? (
           <div
             style={{
@@ -126,7 +134,65 @@ const UsersByProvinceChart = () => {
             />
           </div>
         )}
-      </div>
+      </div>{" "}
+      <div style={{ width: "100%", height: "400px", margin: "0 auto" }}>
+        {loading ? (
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              marginTop: "100px",
+            }}
+          >
+            <CircularProgress /> {/* Hiển thị vòng quay khi đang tải */}
+          </div>
+        ) : (
+          <div
+            style={{
+              width: "100%",
+              height: "400px",
+              overflowX: "auto",
+              margin: "0 auto",
+            }}
+          >
+            <Bar
+              data={chartData}
+              options={{
+                responsive: true,
+                plugins: {
+                  title: {
+                    display: true,
+                    text: "Biểu đồ số lượng người dùng theo tỉnh/thành phố",
+                  },
+                  tooltip: {
+                    mode: "index",
+                    intersect: false,
+                  },
+                },
+                scales: {
+                  x: {
+                    title: {
+                      display: true,
+                      text: "Tỉnh/Thành phố",
+                    },
+                    ticks: {
+                      maxRotation: 90, // Xoay nhãn nếu cần thiết
+                      minRotation: 45,
+                    },
+                  },
+                  y: {
+                    title: {
+                      display: true,
+                      text: "Số lượng người dùng",
+                    },
+                    beginAtZero: true,
+                  },
+                },
+              }}
+            />
+          </div>
+        )}
+      </div>{" "}
     </div>
   );
 };

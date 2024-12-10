@@ -199,7 +199,9 @@ const PasswordAndSetting = () => {
         <Typography variant="h5" className="text-white">
           Mật khẩu & cài đặt
         </Typography>
-        <Divider sx={{ my: 2, backgroundColor: currentTheme.color }} />
+        <Divider
+          sx={{ my: 1, backgroundColor: currentTheme.color, width: "18%" }}
+        />
         <Box
           sx={{
             width: "600px", // Giới hạn độ rộng
@@ -294,7 +296,7 @@ const PasswordAndSetting = () => {
                   }}
                 >
                   Nền trắng
-                </MenuItem>
+                </MenuItem>{" "}
               </Menu>
             </Box>
           </Box>

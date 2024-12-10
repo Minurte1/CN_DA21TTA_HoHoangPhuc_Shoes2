@@ -117,20 +117,33 @@ const RouterUser = ({ currentTheme, isAuthenticated }) => (
   </>
 );
 
-const AdminLayout = () => (
-  <>
-    <HeaderAdmin />
-    <Grid container style={{ height: "100vh" }}>
-      <Grid item xs={3} md={2.5}>
-        <NavBarAdmin />
+const AdminLayout = () => {
+  const { isAuthenticated, userInfo } = useSelector((state) => state.auth);
+  const currentTheme = getThemeConfig(
+    localStorage.getItem("THEMES") || userInfo?.THEMES || "dark"
+  );
+  return (
+    <>
+      <HeaderAdmin />
+      <Grid
+        container
+        sx={{
+          height: "auto",
+
+          backgroundColor: currentTheme.backgroundColor,
+        }}
+      >
+        <Grid item xs={3} md={2.5}>
+          <NavBarAdmin />
+        </Grid>
+        <Grid item xs={9} md={9}>
+          <Routes>
+            <Route path="/*" element={<RouterAdmin />} />
+          </Routes>
+        </Grid>
       </Grid>
-      <Grid item xs={9} md={9}>
-        <Routes>
-          <Route path="/*" element={<RouterAdmin />} />
-        </Routes>
-      </Grid>
-    </Grid>
-  </>
-);
+    </>
+  );
+};
 
 export default App;

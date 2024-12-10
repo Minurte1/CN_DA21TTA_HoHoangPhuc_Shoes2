@@ -26,8 +26,9 @@ const DashboardAdmin = () => {
   return (
     <Box
       display="flex"
-      style={{
-        minHeight: "100vh",
+      sx={{
+        height: "auto",
+        width: "100%",
         backgroundColor: currentTheme.backgroundColor,
         color: currentTheme.color,
       }}
@@ -84,7 +85,14 @@ const DashboardAdmin = () => {
         </Tabs>
 
         {/* Tab Content */}
-        <Box style={{ marginTop: "20px" }}>
+        <Box
+          sx={{
+            marginTop: "20px",
+            backgroundColor: currentTheme.backgroundColor,
+            width: "100%",
+            color: currentTheme.color,
+          }}
+        >
           {tabIndex === 0 && (
             <>
               {" "}
@@ -96,9 +104,7 @@ const DashboardAdmin = () => {
               <MostLikedProductsChart />
             </>
           )}
-          {tabIndex === 2 && (
-            <Typography variant="h6">This is the Settings tab.</Typography>
-          )}
+          {tabIndex === 2 && <MostLikedProductsChart />}
           {tabIndex === 3 && (
             <>
               <CategoryProductsChart />

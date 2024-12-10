@@ -331,6 +331,31 @@ const Header = () => {
           >
             Mật khẩu & cài đặt
           </MenuItem>{" "}
+          {userInfo?.VAI_TRO === "1" ? (
+            <>
+              {" "}
+              <MenuItem
+                sx={{
+                  borderRadius: "8px",
+                  paddingTop: 1,
+                  paddingBottom: 1,
+                  paddingRight: 8,
+                  paddingLeft: 2,
+                  color: "#fff",
+                  "&:hover": {
+                    backgroundColor: "#4a494c", // Màu nền khi hover
+                  },
+                }}
+                onClick={handleClose}
+                component={Link}
+                to="/admin"
+              >
+                Admin
+              </MenuItem>{" "}
+            </>
+          ) : (
+            false
+          )}
           <MenuItem
             sx={{
               borderRadius: "8px",
@@ -357,7 +382,11 @@ const Header = () => {
   return (
     <AppBar
       position="static"
-      style={{ backgroundColor: currentTheme.backgroundColor, zIndex: 20 }}
+      sx={{
+        backgroundColor: currentTheme.backgroundColor,
+        zIndex: 20,
+        borderBottom: `0.5px solid ${currentTheme.color}`,
+      }}
     >
       <Toolbar>
         <Box

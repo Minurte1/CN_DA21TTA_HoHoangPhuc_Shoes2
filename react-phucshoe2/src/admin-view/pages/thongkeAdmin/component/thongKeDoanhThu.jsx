@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
-import { Grid, Typography } from "@mui/material";
+import { Grid, Typography, Box } from "@mui/material";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -11,6 +11,7 @@ import {
   Legend,
 } from "chart.js";
 import axios from "axios";
+import { getThemeConfig } from "../../../../services/themeService";
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -24,7 +25,7 @@ const RevenueDashboard = () => {
   const api = process.env.REACT_APP_URL_SERVER;
   const [combinedData, setCombinedData] = useState([]);
   const [paymentData, setPaymentData] = useState([]);
-
+  const currentTheme = getThemeConfig(localStorage.getItem("THEMES") || "dark");
   useEffect(() => {
     fetchCombinedData();
     fetchRevenueByPaymentMethod(); // Fetch doanh thu theo phương thức thanh toán
@@ -147,27 +148,36 @@ const RevenueDashboard = () => {
 
   return (
     <>
-      <Grid container spacing={3} style={{ padding: "20px" }}>
-        <Grid item xs={12}>
-          <Typography variant="h4" align="center" gutterBottom>
-            Thống kê doanh thu
-          </Typography>
+      <Box
+        sx={{
+          width: "100%",
+          height: "auto",
+          backgroundColor: currentTheme.backgroundColor,
+          color: currentTheme.color,
+        }}
+      >
+        <Grid container spacing={3} style={{ padding: "20px" }}>
+          <Grid item xs={12}>
+            <Typography variant="h4" align="center" gutterBottom>
+              Thống kê doanh thu
+            </Typography>
+          </Grid>
+          <Grid item xs={12} md={12}>
+            <Line data={chartData} options={{ responsive: true }} />
+          </Grid>
         </Grid>
-        <Grid item xs={12} md={12}>
-          <Line data={chartData} options={{ responsive: true }} />
-        </Grid>
-      </Grid>
 
-      <Grid container spacing={3} style={{ padding: "20px" }}>
-        <Grid item xs={12}>
-          <Typography variant="h4" align="center" gutterBottom>
-            Thống kê doanh thu theo phương thức thanh toán
-          </Typography>
+        <Grid container spacing={3} style={{ padding: "20px" }}>
+          <Grid item xs={12}>
+            <Typography variant="h4" align="center" gutterBottom>
+              Thống kê doanh thu theo phương thức thanh toán
+            </Typography>
+          </Grid>
+          <Grid item xs={12} md={12}>
+            <Line data={paymentChartData} options={{ responsive: true }} />
+          </Grid>
         </Grid>
-        <Grid item xs={12} md={12}>
-          <Line data={paymentChartData} options={{ responsive: true }} />
-        </Grid>
-      </Grid>
+      </Box>
     </>
   );
 };

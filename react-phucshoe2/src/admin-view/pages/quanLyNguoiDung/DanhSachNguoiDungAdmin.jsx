@@ -19,6 +19,7 @@ import {
   DialogTitle,
 } from "@mui/material";
 import PeopleIcon from "@mui/icons-material/People";
+import { getThemeConfig } from "../../../services/themeService";
 
 const DanhSachNguoiDungAdmin = () => {
   const [users, setUsers] = useState([]);
@@ -26,7 +27,8 @@ const DanhSachNguoiDungAdmin = () => {
   const [error, setError] = useState(null);
   const [selectedUser, setSelectedUser] = useState(null); // User được chọn để chỉnh sửa
   const [isDialogOpen, setIsDialogOpen] = useState(false); // Trạng thái mở/đóng của form
-
+  const currentTheme = getThemeConfig(localStorage.getItem("THEMES") || "dark");
+  const api = process.env.REACT_APP_URL_SERVER;
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -104,18 +106,28 @@ const DanhSachNguoiDungAdmin = () => {
 
   return (
     <Box
-      display="flex"
+      // display="flex"
       style={{
         minHeight: "100vh",
-        backgroundColor: "#101014",
-        color: "#fff",
+        backgroundColor: currentTheme.backgroundColor,
+        color: currentTheme.color,
       }}
     >
+      <Typography
+        variant="h5"
+        mt={4}
+        color="primary"
+        sx={{ textAlign: "left" }}
+        gutterBottom
+      >
+        Quản lý Carousel Sản Phẩm
+      </Typography>
+
       <TableContainer
         component={Paper}
         sx={{
-          backgroundColor: "#101014",
-          color: "#fff",
+          backgroundColor: currentTheme.backgroundColor,
+          color: currentTheme.color,
           borderRadius: "8px",
           boxShadow: "none",
         }}
@@ -123,30 +135,44 @@ const DanhSachNguoiDungAdmin = () => {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell sx={{ color: "#f0f6fc" }}>Avatar</TableCell>
-              <TableCell sx={{ color: "#f0f6fc" }}>Họ Tên</TableCell>
-              <TableCell sx={{ color: "#f0f6fc" }}>Email</TableCell>
-              <TableCell sx={{ color: "#f0f6fc" }}>Ngày Tạo</TableCell>
-              <TableCell sx={{ color: "#f0f6fc" }}>Vai Trò</TableCell>
-              <TableCell sx={{ color: "#f0f6fc" }}>Actions</TableCell>
+              <TableCell sx={{ color: currentTheme.color }}>Avatar</TableCell>
+              <TableCell sx={{ color: currentTheme.color }}>Họ Tên</TableCell>
+              <TableCell sx={{ color: currentTheme.color }}>Email</TableCell>
+              <TableCell sx={{ color: currentTheme.color }}>Ngày Tạo</TableCell>
+              <TableCell sx={{ color: currentTheme.color }}>Vai Trò</TableCell>
+              <TableCell sx={{ color: currentTheme.color }}>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {users.map((user) => (
               <TableRow key={user.ID_NGUOI_DUNG}>
                 <TableCell>
-                  <Avatar>
-                    <PeopleIcon />
+                  <Avatar
+                    src={user.AVATAR ? `${api}/images/${user.AVATAR}` : ""}
+                    alt={user.name || "User"}
+                  >
+                    {!user.AVATAR && <PeopleIcon />}
                   </Avatar>
                 </TableCell>
-                <TableCell sx={{ color: "#f0f6fc" }}>{user.HO_TEN}</TableCell>
-                <TableCell sx={{ color: "#f0f6fc" }}>{user.EMAIL}</TableCell>
-                <TableCell sx={{ color: "#f0f6fc" }}>
+
+                <TableCell sx={{ color: currentTheme.color }}>
+                  {user.HO_TEN}
+                </TableCell>
+                <TableCell sx={{ color: currentTheme.color }}>
+                  {user.EMAIL}
+                </TableCell>
+                <TableCell sx={{ color: currentTheme.color }}>
                   {new Date(user.NGAY_TAO_USER).toLocaleDateString("vi-VN")}
                 </TableCell>
-                <TableCell sx={{ color: "#f0f6fc" }}>
+                <TableCell
+                  sx={{
+                    color: user.VAI_TRO === "1" ? "red" : "green",
+                    fontWeight: "bold",
+                  }}
+                >
                   {user.VAI_TRO === "1" ? "Quản Trị Viên" : "Người Dùng Thường"}
                 </TableCell>
+
                 <TableCell>
                   <Button
                     variant="outlined"
@@ -161,7 +187,6 @@ const DanhSachNguoiDungAdmin = () => {
           </TableBody>
         </Table>
       </TableContainer>
-
       {/* Dialog cập nhật người dùng */}
       <Dialog open={isDialogOpen} onClose={handleCloseDialog}>
         <DialogTitle>Cập nhật thông tin người dùng</DialogTitle>
