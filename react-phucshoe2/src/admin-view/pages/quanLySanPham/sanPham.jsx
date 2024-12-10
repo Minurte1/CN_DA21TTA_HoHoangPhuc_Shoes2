@@ -5,10 +5,12 @@ import axios from "axios";
 import FilterShoes from "./component/FilterShoe";
 import TableShoes from "./component/TableShoes";
 import DialogShoes from "./component/DialogShoes";
+import { getThemeConfig } from "../../../services/themeService";
 
 const api = process.env.REACT_APP_URL_SERVER;
 
 const SanPhamManager = () => {
+  const currentTheme = getThemeConfig(localStorage.getItem("THEMES") || "dark");
   const [products, setProducts] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
   const [currentProduct, setCurrentProduct] = useState(null);
@@ -321,7 +323,15 @@ const SanPhamManager = () => {
 
   return (
     <Container>
-      <Box sx={{ width: "100%", textAlign: "left", mt: 4 }}>
+      <Box
+        sx={{
+          width: "100%",
+          textAlign: "left",
+          mt: 4,
+          backgroundColor: currentTheme.backgroundColor,
+          color: currentTheme.color,
+        }}
+      >
         <Typography variant="h5" color="primary" gutterBottom>
           Quản lý sản phẩm
         </Typography>

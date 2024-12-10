@@ -67,16 +67,42 @@ const DanhGiaSanPhamUser = () => {
 
   const handleSubmit = async () => {
     try {
-      // Gửi đánh giá và bình luận cho tất cả các sản phẩm
+      // Kiểm tra dữ liệu từng sản phẩm
+      const invalidProducts = dataChiTietHoaDon.chiTietHoaDon.filter(
+        (product) => {
+          const { rating, comments } = product;
+          return (
+            !rating ||
+            rating < 1 ||
+            rating > 5 || // Rating không hợp lệ
+            !comments ||
+            comments.trim() === "" // Bình luận rỗng
+          );
+        }
+      );
+
+      // Nếu có sản phẩm không hợp lệ, hiển thị thông báo và dừng
+      if (invalidProducts.length > 0) {
+        enqueueSnackbar(
+          "Vui lòng nhập đánh giá và bình luận hợp lệ cho tất cả sản phẩm.",
+          {
+            variant: "warning",
+          }
+        );
+        return;
+      }
+
+      // Nếu dữ liệu hợp lệ, gửi yêu cầu
       const response = await axios.post(`${api}/chi-tiet-hoa-don/danh-gia`, {
         ID_HOA_DON: id,
         products: dataChiTietHoaDon.chiTietHoaDon.map((product) => ({
           id: product.ID_CHI_TIET_HOA_DON,
-          rating: product.rating, // Giá trị rating cho từng sản phẩm
-          comments: product.comments, // Bình luận cho từng sản phẩm
+          rating: product.rating,
+          comments: product.comments,
         })),
       });
 
+      // Kiểm tra kết quả từ server
       if (response.data.EC === 1) {
         enqueueSnackbar("Cập nhật đánh giá và bình luận thành công!");
         navigate(-1);
@@ -85,7 +111,7 @@ const DanhGiaSanPhamUser = () => {
       }
     } catch (error) {
       console.error("Lỗi khi gửi yêu cầu:", error);
-      enqueueSnackbar("Có lỗi xảy ra khi gửi yêu cầu.");
+      enqueueSnackbar("Có lỗi xảy ra khi gửi yêu cầu.", { variant: "error" });
     }
   };
 

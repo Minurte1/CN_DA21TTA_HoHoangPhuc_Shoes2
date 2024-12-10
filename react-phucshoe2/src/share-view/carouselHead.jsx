@@ -93,204 +93,215 @@ const CarouselHead = ({ carouselProducts }) => {
     }
   };
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: { xs: "column", md: "row" },
-        backgroundColor: currentTheme.backgroundColor,
-        color: "#fff",
-        minHeight: "100vh",
-        width: "100%",
-        mt: 4,
-      }}
-    >
-      <Box
-        className="main-image-container"
-        sx={{
-          display: "flex",
-          flexDirection: { xs: "column", md: "row" },
-          width: "100%",
-          backgroundColor: currentTheme.backgroundColor,
-          backgroundImage: `linear-gradient(to right, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0)), url(${
-            selectedProduct
-              ? `${api}/images/${selectedProduct.HINH_ANH_NEN_CAROUSEL}`
-              : "default-image-path"
-          })`,
-          backgroundSize: "cover", // Để ảnh phủ toàn bộ
-          backgroundPosition: "center", // Căn giữa ảnh nền
-        }}
-      >
-        <Box
-          sx={{
-            flex: 1, // Chiếm 50% chiều rộng
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "flex-end", // Căn dưới cùng theo chiều dọc
-            alignItems: "flex-start", // Căn bên trái theo chiều ngang
-            padding: 4,
-            color: "#f50057",
-          }}
-        >
-          {selectedProduct && (
-            <img
-              src={
-                selectedProduct.HINH_ANH_ICON_CAROUSEL
-                  ? `${api}/images/${selectedProduct.HINH_ANH_ICON_CAROUSEL}`
-                  : "default-image-path" // Thay thế bằng đường dẫn ảnh mặc định nếu không tìm thấy
-              }
-              alt={`${
-                selectedProduct.HINH_ANH_NEN_CAROUSEL
-                  ? selectedProduct.HINH_ANH_NEN_CAROUSEL
-                  : "Product"
-              } Logo`}
-              className={`${animateLogo ? "slide-in" : ""}`} // Áp dụng class animation
-              style={{
-                maxWidth: "150px", // Kích thước tối đa cho logo
-                marginBottom: "16px", // Khoảng cách phía dưới logo
-                zIndex: 3,
-                borderRadius: "10px",
-              }}
-            />
-          )}
-
-          {carouselProducts.map((products, index) =>
-            isSelected === index ? (
-              <React.Fragment key={index}>
-                <Typography
-                  className={`component-game-description-background  ${
-                    animateLogo ? "fade-in-up-text" : ""
-                  }`}
-                  variant="subtitle1"
-                  sx={{
-                    textAlign: "left",
-                    mt: 1,
-                    fontSize: { xs: "0.9rem", md: "1.25rem" },
-                  }}
-                >
-                  {products.MO_TA_CAROUSEL}
-                </Typography>
-                <Typography
-                  className="component-game-description-background"
-                  variant="body1"
-                  sx={{ mt: 1, mb: 2 }}
-                >
-                  {new Intl.NumberFormat("vi-VN", {
-                    style: "currency",
-                    currency: "VND",
-                  }).format(products.GIA)}
-                </Typography>
-              </React.Fragment>
-            ) : null
-          )}
+    <>
+      {carouselProducts.length > 0 ? (
+        <>
+          {" "}
           <Box
             sx={{
               display: "flex",
-              flexDirection: { xs: "column", sm: "row" },
-              gap: 2,
+              flexDirection: { xs: "column", md: "row" },
+              backgroundColor: currentTheme.backgroundColor,
+              color: "#fff",
+              minHeight: "100vh",
+              width: "100%",
+              mt: 4,
             }}
           >
-            <Button
-              className="component-game-btn-play"
-              variant="contained"
-              onClick={() => handleBuyProduct(selectedProduct.ID_SAN_PHAM)}
+            <Box
+              className="main-image-container"
               sx={{
-                zIndex: 2,
-                backgroundColor: "white",
-                color: "black",
-                width: "250px",
-                height: "50px",
-                borderRadius: "14px",
+                display: "flex",
+                flexDirection: { xs: "column", md: "row" },
+                width: "100%",
+                backgroundColor: currentTheme.backgroundColor,
+                backgroundImage: `linear-gradient(to right, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0)), url(${
+                  selectedProduct
+                    ? `${api}/images/${selectedProduct.HINH_ANH_NEN_CAROUSEL}`
+                    : "default-image-path"
+                })`,
+                backgroundSize: "cover", // Để ảnh phủ toàn bộ
+                backgroundPosition: "center", // Căn giữa ảnh nền
               }}
             >
-              {t.BuyNow ? t.BuyNow : " Mua Ngay"}
-            </Button>
-            <Button
-              variant="text"
-              fullWidth
-              onClick={handleAddToCart}
-              sx={{
-                zIndex: 2,
-                color: "white",
-                borderRadius: "14px",
-                backgroundColor: "transparent",
-                "&:hover": {
-                  backgroundColor: "rgba(255, 255, 255, 0.1)",
-                },
-              }}
-            >
-              <AddCircleOutlineIcon
-                sx={{ marginRight: "10px", fontSize: "18px" }}
-              />
-              {t.AddToCart ? t.AddToCart : "Thêm vào giỏ hàng"}
-            </Button>
-          </Box>
-        </Box>
-        <Box
-          sx={{
-            flex: 1, // Chiếm 50% chiều rộng bên phải
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-          }}
-        ></Box>
-      </Box>
-
-      <Box
-        sx={{
-          width: { xs: "100%", md: "220px" },
-          backgroundColor: currentTheme.backgroundColor,
-          display: "flex",
-
-          flexDirection: "column",
-          // padding: 2,
-          paddingBottom: 2,
-          paddingLeft: 2,
-          paddingTop: 1,
-
-          borderRadius: "3%",
-
-          mt: { xs: 2, md: 0 },
-        }}
-      >
-        {carouselProducts.map((product, index) => (
-          <div
-            key={index}
-            className={`component-game-slider-card ${
-              isSelected === index ? "slider-game-active" : ""
-            }`}
-            onClick={() => {
-              handleClick(product, index);
-            }} // Gọi hàm khi nhấp vào
-          >
-            <div className="slider-select-game">
-              <img
-                component="img"
-                src={`${api}/images/${product.HINH_ANH_SANPHAM}`}
-                className="component-game-img-slide"
-                alt={product.HINH_ANH_SANPHAM}
+              <Box
                 sx={{
-                  objectFit: "contain",
+                  flex: 1, // Chiếm 50% chiều rộng
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "flex-end", // Căn dưới cùng theo chiều dọc
+                  alignItems: "flex-start", // Căn bên trái theo chiều ngang
+                  padding: 4,
+                  color: "#f50057",
                 }}
-                style={{ height: "70px" }}
-              />
+              >
+                {selectedProduct && (
+                  <img
+                    src={
+                      selectedProduct.HINH_ANH_ICON_CAROUSEL
+                        ? `${api}/images/${selectedProduct.HINH_ANH_ICON_CAROUSEL}`
+                        : "default-image-path" // Thay thế bằng đường dẫn ảnh mặc định nếu không tìm thấy
+                    }
+                    alt={`${
+                      selectedProduct.HINH_ANH_NEN_CAROUSEL
+                        ? selectedProduct.HINH_ANH_NEN_CAROUSEL
+                        : "Product"
+                    } Logo`}
+                    className={`${animateLogo ? "slide-in" : ""}`} // Áp dụng class animation
+                    style={{
+                      maxWidth: "150px", // Kích thước tối đa cho logo
+                      marginBottom: "16px", // Khoảng cách phía dưới logo
+                      zIndex: 3,
+                      borderRadius: "10px",
+                    }}
+                  />
+                )}
 
-              <CardContent>
-                <Typography
+                {carouselProducts.map((products, index) =>
+                  isSelected === index ? (
+                    <React.Fragment key={index}>
+                      <Typography
+                        className={`component-game-description-background  ${
+                          animateLogo ? "fade-in-up-text" : ""
+                        }`}
+                        variant="subtitle1"
+                        sx={{
+                          textAlign: "left",
+                          mt: 1,
+                          fontSize: { xs: "0.9rem", md: "1.25rem" },
+                        }}
+                      >
+                        {products.MO_TA_CAROUSEL}
+                      </Typography>
+                      <Typography
+                        className="component-game-description-background"
+                        variant="body1"
+                        sx={{ mt: 1, mb: 2 }}
+                      >
+                        {new Intl.NumberFormat("vi-VN", {
+                          style: "currency",
+                          currency: "VND",
+                        }).format(products.GIA)}
+                      </Typography>
+                    </React.Fragment>
+                  ) : null
+                )}
+                <Box
                   sx={{
-                    color: currentTheme.color,
-                    fontSize: "13px",
-                    textAlign: "left",
-                    mb: 2,
+                    display: "flex",
+                    flexDirection: { xs: "column", sm: "row" },
+                    gap: 2,
                   }}
-                  variant="body2"
                 >
-                  {product.TEN_SAN_PHAM}
-                </Typography>
-              </CardContent>
-            </div>
-          </div>
-        ))}
-      </Box>
-    </Box>
+                  <Button
+                    className="component-game-btn-play"
+                    variant="contained"
+                    onClick={() =>
+                      handleBuyProduct(selectedProduct.ID_SAN_PHAM)
+                    }
+                    sx={{
+                      zIndex: 2,
+                      backgroundColor: "white",
+                      color: "black",
+                      width: "250px",
+                      height: "50px",
+                      borderRadius: "14px",
+                    }}
+                  >
+                    {t.BuyNow ? t.BuyNow : " Mua Ngay"}
+                  </Button>
+                  <Button
+                    variant="text"
+                    fullWidth
+                    onClick={handleAddToCart}
+                    sx={{
+                      zIndex: 2,
+                      color: "white",
+                      borderRadius: "14px",
+                      backgroundColor: "transparent",
+                      "&:hover": {
+                        backgroundColor: "rgba(255, 255, 255, 0.1)",
+                      },
+                    }}
+                  >
+                    <AddCircleOutlineIcon
+                      sx={{ marginRight: "10px", fontSize: "18px" }}
+                    />
+                    {t.AddToCart ? t.AddToCart : "Thêm vào giỏ hàng"}
+                  </Button>
+                </Box>
+              </Box>
+              <Box
+                sx={{
+                  flex: 1, // Chiếm 50% chiều rộng bên phải
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                }}
+              ></Box>
+            </Box>
+
+            <Box
+              sx={{
+                width: { xs: "100%", md: "220px" },
+                backgroundColor: currentTheme.backgroundColor,
+                display: "flex",
+
+                flexDirection: "column",
+                // padding: 2,
+                paddingBottom: 2,
+                paddingLeft: 2,
+                paddingTop: 1,
+
+                borderRadius: "3%",
+
+                mt: { xs: 2, md: 0 },
+              }}
+            >
+              {carouselProducts.map((product, index) => (
+                <div
+                  key={index}
+                  className={`component-game-slider-card ${
+                    isSelected === index ? "slider-game-active" : ""
+                  }`}
+                  onClick={() => {
+                    handleClick(product, index);
+                  }} // Gọi hàm khi nhấp vào
+                >
+                  <div className="slider-select-game">
+                    <img
+                      component="img"
+                      src={`${api}/images/${product.HINH_ANH_SANPHAM}`}
+                      className="component-game-img-slide"
+                      alt={product.HINH_ANH_SANPHAM}
+                      sx={{
+                        objectFit: "contain",
+                      }}
+                      style={{ height: "70px" }}
+                    />
+
+                    <CardContent>
+                      <Typography
+                        sx={{
+                          color: currentTheme.color,
+                          fontSize: "13px",
+                          textAlign: "left",
+                          mb: 2,
+                        }}
+                        variant="body2"
+                      >
+                        {product.TEN_SAN_PHAM}
+                      </Typography>
+                    </CardContent>
+                  </div>
+                </div>
+              ))}
+            </Box>
+          </Box>
+        </>
+      ) : (
+        false
+      )}
+    </>
   );
 };
 

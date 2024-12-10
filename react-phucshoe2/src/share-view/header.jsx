@@ -350,6 +350,32 @@ const Header = () => {
           >
             Mật khẩu & cài đặt
           </MenuItem>{" "}
+          {userInfo?.VAI_TRO === "1" ? (
+            <>
+              {" "}
+              <MenuItem
+                sx={{
+                  borderRadius: "8px",
+                  paddingTop: 1,
+                  paddingBottom: 1,
+                  paddingRight: 8,
+                  paddingLeft: 2,
+                  color: currentTheme.color,
+                  "&:hover": {
+                    backgroundColor: currentTheme.accentColor, // Màu nền khi hover
+                    color: currentTheme.color,
+                  },
+                }}
+                onClick={handleClose}
+                component={Link}
+                to="/admin"
+              >
+                Admin
+              </MenuItem>{" "}
+            </>
+          ) : (
+            false
+          )}
           <MenuItem
             sx={{
               borderRadius: "8px",

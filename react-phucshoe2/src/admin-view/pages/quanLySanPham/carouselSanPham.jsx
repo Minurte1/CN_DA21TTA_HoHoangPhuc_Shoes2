@@ -27,10 +27,12 @@ import {
 import moment from "moment";
 import { Add, Edit, Delete, Search } from "@mui/icons-material";
 import axios from "axios";
+import { getThemeConfig } from "../../../services/themeService";
 
 const api = process.env.REACT_APP_URL_SERVER;
 
 const CarouselManager = () => {
+  const currentTheme = getThemeConfig(localStorage.getItem("THEMES") || "dark");
   const [carouselProducts, setCarouselProducts] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
   const [currentCarouselProduct, setCurrentCarouselProduct] = useState(null);
@@ -156,7 +158,15 @@ const CarouselManager = () => {
   }, [searchTerm, products]);
   return (
     <Container>
-      <Box sx={{ width: "100%", textAlign: "left", mt: 4 }}>
+      <Box
+        sx={{
+          width: "100%",
+          textAlign: "left",
+          mt: 4,
+          backgroundColor: currentTheme.backgroundColor,
+          color: currentTheme.color,
+        }}
+      >
         <Typography variant="h5" color="primary" gutterBottom>
           Quản lý Carousel Sản Phẩm
         </Typography>
@@ -174,24 +184,38 @@ const CarouselManager = () => {
         </Button>
       </Box>
 
-      <TableContainer component={Paper} sx={{ backgroundColor: "#101014" }}>
+      <TableContainer
+        component={Paper}
+        sx={{
+          backgroundColor: currentTheme.backgroundColor,
+          color: currentTheme.color,
+        }}
+      >
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell sx={{ color: "#26bbff" }}>ID</TableCell>
-              <TableCell sx={{ color: "#26bbff" }}>Hình ảnh nền</TableCell>{" "}
-              <TableCell sx={{ color: "#26bbff" }}>Hình ảnh icon</TableCell>
-              <TableCell sx={{ color: "#26bbff" }}>Mô tả</TableCell>{" "}
-              <TableCell sx={{ color: "#26bbff" }}>Trạng thái</TableCell>
-              <TableCell sx={{ color: "#26bbff" }}>Ngày tạo</TableCell>
-              <TableCell sx={{ color: "#26bbff" }}>Ngày cập nhật</TableCell>
-              <TableCell sx={{ color: "#26bbff" }}>Actions</TableCell>
+              <TableCell sx={{ color: currentTheme.color }}>ID</TableCell>
+              <TableCell sx={{ color: currentTheme.color }}>
+                Hình ảnh nền
+              </TableCell>{" "}
+              <TableCell sx={{ color: currentTheme.color }}>
+                Hình ảnh icon
+              </TableCell>
+              <TableCell sx={{ color: currentTheme.color }}>Mô tả</TableCell>{" "}
+              <TableCell sx={{ color: currentTheme.color }}>
+                Trạng thái
+              </TableCell>
+              <TableCell sx={{ color: currentTheme.color }}>Ngày tạo</TableCell>
+              <TableCell sx={{ color: currentTheme.color }}>
+                Ngày cập nhật
+              </TableCell>
+              <TableCell sx={{ color: currentTheme.color }}>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {carouselProducts.map((product) => (
               <TableRow key={product.ID_CAROUSEL}>
-                <TableCell sx={{ color: "#c9d1d9" }}>
+                <TableCell sx={{ color: currentTheme.color }}>
                   {product.ID_CAROUSEL}
                 </TableCell>{" "}
                 <TableCell>
@@ -208,20 +232,25 @@ const CarouselManager = () => {
                     width="50"
                   />
                 </TableCell>
-                <TableCell sx={{ color: "#c9d1d9" }}>
+                <TableCell sx={{ color: currentTheme.color }}>
                   {product.MO_TA_CAROUSEL}
                 </TableCell>{" "}
-                <TableCell sx={{ color: "#c9d1d9" }}>
+                <TableCell
+                  sx={{
+                    color:
+                      product.TRANG_THAI_CAROUSEL === 1 ? "#008000" : "red",
+                  }}
+                >
                   {product.TRANG_THAI_CAROUSEL === 1
                     ? "Đang sử dụng"
                     : "Ngưng sử dụng"}
                 </TableCell>
-                <TableCell sx={{ color: "#c9d1d9" }}>
+                <TableCell sx={{ color: currentTheme.color }}>
                   {moment(product.NGAY_TAO_CAROUSEL).format(
                     "HH:mm:ss - DD/MM/YYYY"
                   )}
                 </TableCell>
-                <TableCell sx={{ color: "#c9d1d9" }}>
+                <TableCell sx={{ color: currentTheme.color }}>
                   {moment(product.NGAY_CAP_NHAT_CAROUSEL).format(
                     "HH:mm:ss - DD/MM/YYYY"
                   )}

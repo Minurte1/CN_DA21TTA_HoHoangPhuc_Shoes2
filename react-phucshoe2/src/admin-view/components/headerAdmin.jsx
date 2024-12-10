@@ -343,7 +343,8 @@ const Header = () => {
                   paddingLeft: 2,
                   color: "#fff",
                   "&:hover": {
-                    backgroundColor: "#4a494c", // Màu nền khi hover
+                    backgroundColor: currentTheme.accentColor, // Màu nền khi hover
+                    color: currentTheme.color,
                   },
                 }}
                 onClick={handleClose}
