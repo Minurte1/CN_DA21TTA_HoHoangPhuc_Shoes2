@@ -9,6 +9,7 @@ import {
   TextField,
   Avatar,
 } from "@mui/material";
+import { getThemeConfig } from "../../../../services/themeService";
 
 const MessageList = ({
   selectedUser,
@@ -19,6 +20,7 @@ const MessageList = ({
   setInputMess,
   userInfo,
 }) => {
+  const currentTheme = getThemeConfig(localStorage.getItem("THEMES") || "dark");
   const api = process.env.REACT_APP_URL_SERVER;
   useEffect(() => {
     if (messages.length > 0 && chatContainerRef.current) {
@@ -34,7 +36,8 @@ const MessageList = ({
       sx={{
         flex: 1,
         p: 3,
-
+        backgroundColor: currentTheme.backgroundColorLow,
+        color: currentTheme.color,
         height: "auto",
       }}
     >
@@ -45,7 +48,9 @@ const MessageList = ({
               flex: 1,
               display: "flex",
               flexDirection: "column",
-              height: "100vh",
+              height: "auto",
+              backgroundColor: currentTheme.backgroundColorLow,
+              color: currentTheme.color,
             }}
           >
             {/* Tin nhắn */}
@@ -65,7 +70,7 @@ const MessageList = ({
                     {" "}
                     <Typography
                       variant="caption"
-                      sx={{ textAlign: "right", color: "#fff" }}
+                      sx={{ textAlign: "right", color: currentTheme.color }}
                     >
                       {new Date(message.NGAY_TAO_TIN_NHAN).toLocaleString()}
                     </Typography>

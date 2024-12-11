@@ -23,10 +23,12 @@ import {
 import moment from "moment";
 import { Add, Edit, Delete } from "@mui/icons-material";
 import axios from "axios";
+import { getThemeConfig } from "../../../../services/themeService";
 
 const api = process.env.REACT_APP_URL_SERVER;
 
 const PhongCachManager = () => {
+  const currentTheme = getThemeConfig(localStorage.getItem("THEMES") || "dark");
   const [phongCachList, setPhongCachList] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
   const [currentPhongCach, setCurrentPhongCach] = useState(null);
@@ -106,47 +108,69 @@ const PhongCachManager = () => {
           variant="outlined"
           startIcon={<Add />}
           onClick={() => handleOpenDialog()}
-          sx={{ marginBottom: 2, backgroundColor: "#fff", color: "black" }}
+          sx={{
+            marginBottom: 2,
+            backgroundColor: currentTheme.backgroundColor,
+            color: currentTheme.color,
+          }}
         >
           Thêm Phong Cách
         </Button>
       </Box>
 
-      <TableContainer component={Paper} sx={{ backgroundColor: "#101014" }}>
+      <TableContainer
+        component={Paper}
+        sx={{ backgroundColor: currentTheme.backgroundColor }}
+      >
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell sx={{ color: "#26bbff" }}>ID</TableCell>
-              <TableCell sx={{ color: "#26bbff" }}>Tên Phong Cách</TableCell>
-              <TableCell sx={{ color: "#26bbff" }}>Trạng Thái</TableCell>
-              <TableCell sx={{ color: "#26bbff" }}>Ngày Tạo</TableCell>
-              <TableCell sx={{ color: "#26bbff" }}>Ngày Cập Nhật</TableCell>
-              <TableCell sx={{ color: "#26bbff" }}>Actions</TableCell>
+              <TableCell sx={{ color: currentTheme.colorTitle }}>ID</TableCell>
+              <TableCell sx={{ color: currentTheme.colorTitle }}>
+                Tên Phong Cách
+              </TableCell>
+              <TableCell sx={{ color: currentTheme.colorTitle }}>
+                Ngày Tạo
+              </TableCell>
+              <TableCell sx={{ color: currentTheme.colorTitle }}>
+                Ngày Cập Nhật
+              </TableCell>{" "}
+              <TableCell sx={{ color: currentTheme.colorTitle }}>
+                Trạng Thái
+              </TableCell>
+              <TableCell sx={{ color: currentTheme.colorTitle }}>
+                Actions
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {phongCachList.map((phongCach) => (
               <TableRow key={phongCach.ID_PHUONG_CACH}>
-                <TableCell sx={{ color: "#c9d1d9" }}>
+                <TableCell sx={{ color: currentTheme.color }}>
                   {phongCach.ID_PHUONG_CACH}
                 </TableCell>
-                <TableCell sx={{ color: "#c9d1d9" }}>
+                <TableCell sx={{ color: currentTheme.color }}>
                   {phongCach.TEN_PHONG_CACH}
                 </TableCell>
-                <TableCell sx={{ color: "#c9d1d9" }}>
-                  {phongCach.TRANG_THAI_PHONG_CACH === 1
-                    ? "Hoạt động"
-                    : "Không hoạt động"}
-                </TableCell>
-                <TableCell sx={{ color: "#c9d1d9" }}>
+                <TableCell sx={{ color: currentTheme.color }}>
                   {moment(phongCach.CREATED_PHONG_CACH).format(
                     "HH:mm:ss - DD/MM/YYYY"
                   )}
                 </TableCell>
-                <TableCell sx={{ color: "#c9d1d9" }}>
+                <TableCell sx={{ color: currentTheme.color }}>
                   {moment(phongCach.UPDATE_PHONG_CACH).format(
                     "HH:mm:ss - DD/MM/YYYY"
                   )}
+                </TableCell>{" "}
+                <TableCell
+                  sx={{
+                    color:
+                      phongCach.TRANG_THAI_PHONG_CACH === 1 ? "#008000" : "red",
+                  }}
+                >
+                  {phongCach.TRANG_THAI_PHONG_CACH === 1
+                    ? "Hoạt động"
+                    : "Không hoạt động"}
                 </TableCell>
                 <TableCell>
                   <IconButton

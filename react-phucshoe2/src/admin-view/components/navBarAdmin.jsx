@@ -470,8 +470,7 @@ const NavBarAdmin = () => {
                     mb: 1,
                     borderRadius: "13px",
                     backgroundColor:
-                      location.pathname ===
-                      "/admin/san-pham/don-hang/dang-xu-ly"
+                      location.pathname === "/admin/don-hang/dang-xu-ly"
                         ? currentTheme.accentColor
                         : "transparent", // Kiểm tra nếu đang ở trang này
                     "&:hover": {
@@ -513,7 +512,7 @@ const NavBarAdmin = () => {
                     mb: 1,
                     borderRadius: "13px",
                     backgroundColor:
-                      location.pathname === "/admin/don-hang/tat-ca"
+                      location.pathname === "/admin/don-hang/da-giao"
                         ? currentTheme.accentColor
                         : "transparent", // Kiểm tra nếu đang ở trang này
                     "&:hover": {
@@ -534,7 +533,7 @@ const NavBarAdmin = () => {
                     mb: 1,
                     borderRadius: "13px",
                     backgroundColor:
-                      location.pathname === "/admin/don-hang/tat-ca"
+                      location.pathname === "/admin/don-hang/da-huy"
                         ? currentTheme.accentColor
                         : "transparent", // Kiểm tra nếu đang ở trang này
                     "&:hover": {
@@ -555,7 +554,7 @@ const NavBarAdmin = () => {
                     mb: 1,
                     borderRadius: "13px",
                     backgroundColor:
-                      location.pathname === "/admin/don-hang/tat-ca"
+                      location.pathname === "/admin/don-hang/them-thanh-toan"
                         ? currentTheme.accentColor
                         : "transparent", // Kiểm tra nếu đang ở trang này
                     "&:hover": {
@@ -660,7 +659,7 @@ const NavBarAdmin = () => {
             </Collapse>
           </List>
           {/* //----------------------- */}
-          <ListItem
+          {/* <ListItem
             button
             component={Link}
             to="/admin/thong-ke"
@@ -728,7 +727,7 @@ const NavBarAdmin = () => {
               <StarIcon sx={{ color: currentTheme.color }} />
             </ListItemIcon>
             <ListItemText primary="Epic Rewards" />
-          </ListItem>
+          </ListItem> */}
           <Divider style={{ margin: "20px 0" }} />
           <Typography
             variant="body2"

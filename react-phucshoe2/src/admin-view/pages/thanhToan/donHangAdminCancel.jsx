@@ -18,8 +18,10 @@ import axios from "axios";
 import VisibilityIcon from "@mui/icons-material/Visibility"; // Import icon Visibility
 
 import ProductDetailModal from "./modal/chiTietDonHang";
+import { getThemeConfig } from "../../../services/themeService";
 const api = process.env.REACT_APP_URL_SERVER;
 const TatCaDonHangAdminCancel = () => {
+  const currentTheme = getThemeConfig(localStorage.getItem("THEMES") || "dark");
   const [orders, setOrders] = useState([]);
   const [selectedOrderId, setSelectedOrderId] = useState(null);
   const [openModal, setOpenModal] = useState(false);
@@ -64,41 +66,62 @@ const TatCaDonHangAdminCancel = () => {
     <Container>
       <Box sx={{ width: "100%", textAlign: "left", mt: 4, mb: 3 }}>
         <Typography variant="h5" color="primary">
-          Danh Sách Đơn Hàng
+          DANH SÁCH ĐƠN HÀNG ĐÃ HỦY
         </Typography>
       </Box>
       <TableContainer
         component={Paper}
-        sx={{ backgroundColor: "#1a1a1a", color: "#ffffff" }}
+        sx={{
+          backgroundColor: currentTheme.backgroundColor,
+          color: currentTheme.color,
+        }}
       >
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell sx={{ fontSize: "0.875rem", color: "#26bbff" }}>
+              <TableCell
+                sx={{ fontSize: "0.875rem", color: currentTheme.colorTitle }}
+              >
                 <b>ID Đơn Hàng</b>
               </TableCell>
-              <TableCell sx={{ fontSize: "0.875rem", color: "#26bbff" }}>
+              <TableCell
+                sx={{ fontSize: "0.875rem", color: currentTheme.colorTitle }}
+              >
                 <b>Người dùng</b>
               </TableCell>
-              <TableCell sx={{ fontSize: "0.875rem", color: "#26bbff" }}>
+              <TableCell
+                sx={{ fontSize: "0.875rem", color: currentTheme.colorTitle }}
+              >
                 <b>Số điện thoại</b>
               </TableCell>
-              <TableCell sx={{ fontSize: "0.875rem", color: "#26bbff" }}>
+              <TableCell
+                sx={{ fontSize: "0.875rem", color: currentTheme.colorTitle }}
+              >
                 <b>Tỉnh thành</b>
               </TableCell>
-              <TableCell sx={{ fontSize: "0.875rem", color: "#26bbff" }}>
+              <TableCell
+                sx={{ fontSize: "0.875rem", color: currentTheme.colorTitle }}
+              >
                 <b>Tổng Tiền</b>
               </TableCell>
-              <TableCell sx={{ fontSize: "0.875rem", color: "#26bbff" }}>
+              <TableCell
+                sx={{ fontSize: "0.875rem", color: currentTheme.colorTitle }}
+              >
                 <b>Trạng Thái</b>
               </TableCell>
-              <TableCell sx={{ fontSize: "0.875rem", color: "#26bbff" }}>
+              <TableCell
+                sx={{ fontSize: "0.875rem", color: currentTheme.colorTitle }}
+              >
                 <b>Ngày Tạo</b>
               </TableCell>
-              <TableCell sx={{ fontSize: "0.875rem", color: "#26bbff" }}>
+              <TableCell
+                sx={{ fontSize: "0.875rem", color: currentTheme.colorTitle }}
+              >
                 <b>Ngày Cập Nhật</b>
               </TableCell>{" "}
-              <TableCell sx={{ fontSize: "0.875rem", color: "#26bbff" }}>
+              <TableCell
+                sx={{ fontSize: "0.875rem", color: currentTheme.colorTitle }}
+              >
                 <b>Chi Tiết</b>
               </TableCell>
             </TableRow>
@@ -106,19 +129,29 @@ const TatCaDonHangAdminCancel = () => {
           <TableBody>
             {currentOrders.map((order, index) => (
               <TableRow key={index}>
-                <TableCell sx={{ fontSize: "0.875rem", color: "#ffffff" }}>
+                <TableCell
+                  sx={{ fontSize: "0.875rem", color: currentTheme.color }}
+                >
                   {order.ID_ODER || "Không xác định"}
                 </TableCell>
-                <TableCell sx={{ fontSize: "0.875rem", color: "#ffffff" }}>
+                <TableCell
+                  sx={{ fontSize: "0.875rem", color: currentTheme.color }}
+                >
                   {order.HO_TEN}
                 </TableCell>
-                <TableCell sx={{ fontSize: "0.875rem", color: "#ffffff" }}>
+                <TableCell
+                  sx={{ fontSize: "0.875rem", color: currentTheme.color }}
+                >
                   {order.SO_DIEN_THOAI}
                 </TableCell>
-                <TableCell sx={{ fontSize: "0.875rem", color: "#ffffff" }}>
+                <TableCell
+                  sx={{ fontSize: "0.875rem", color: currentTheme.color }}
+                >
                   {order.DIA_CHI_Provinces}
                 </TableCell>
-                <TableCell sx={{ fontSize: "0.875rem", color: "#ffffff" }}>
+                <TableCell
+                  sx={{ fontSize: "0.875rem", color: currentTheme.color }}
+                >
                   {order.TONG_TIEN.toLocaleString()}đ
                 </TableCell>
                 <TableCell
@@ -135,22 +168,30 @@ const TatCaDonHangAdminCancel = () => {
                 >
                   {order.TRANG_THAI_DON_HANG}
                 </TableCell>
-                <TableCell sx={{ fontSize: "0.875rem", color: "#ffffff" }}>
+                <TableCell
+                  sx={{ fontSize: "0.875rem", color: currentTheme.color }}
+                >
                   {order.NGAY_TAO_DONHANG
                     ? moment(order.NGAY_TAO_DONHANG).format("DD/MM/YYYY HH:mm")
                     : "N/A"}
                 </TableCell>
-                <TableCell sx={{ fontSize: "0.875rem", color: "#ffffff" }}>
+                <TableCell
+                  sx={{ fontSize: "0.875rem", color: currentTheme.color }}
+                >
                   {order.NGAY_CAP_NHAT_DONHANG
                     ? moment(order.NGAY_CAP_NHAT_DONHANG).format(
                         "DD/MM/YYYY HH:mm"
                       )
                     : "N/A"}
                 </TableCell>{" "}
-                <TableCell sx={{ fontSize: "0.875rem", color: "#26bbff" }}>
+                <TableCell
+                  sx={{ fontSize: "0.875rem", color: currentTheme.colorTitle }}
+                >
                   <Button
                     onClick={() => handleViewDetails(order.ID_DON_HANG)}
-                    startIcon={<VisibilityIcon sx={{ color: "#26bbff" }} />}
+                    startIcon={
+                      <VisibilityIcon sx={{ color: currentTheme.colorTitle }} />
+                    }
                   ></Button>{" "}
                 </TableCell>
               </TableRow>
@@ -176,7 +217,7 @@ const TatCaDonHangAdminCancel = () => {
             fontWeight: "bold", // Chữ đậm
           },
           ".Mui-selected": {
-            color: "#ffffff", // Màu chữ trắng
+            color: currentTheme.color, // Màu chữ trắng
           },
           ".MuiPaginationItem-ellipsis": {
             color: "#999999", // Màu cho dấu "..."

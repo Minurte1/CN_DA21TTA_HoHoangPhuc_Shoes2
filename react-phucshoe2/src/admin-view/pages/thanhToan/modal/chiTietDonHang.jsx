@@ -20,8 +20,10 @@ import {
   TableCell,
   TableBody,
 } from "@mui/material";
+import { getThemeConfig } from "../../../../services/themeService";
 
 const ProductDetailModal = ({ productId, onClose }) => {
+  const currentTheme = getThemeConfig(localStorage.getItem("THEMES") || "dark");
   const [productDetails, setProductDetails] = useState(null);
   const api = process.env.REACT_APP_URL_SERVER;
 
@@ -52,7 +54,7 @@ const ProductDetailModal = ({ productId, onClose }) => {
     <Dialog
       open={Boolean(productId)}
       onClose={onClose}
-      maxWidth="md" // Tăng kích thước modal (md = medium, bạn có thể thay đổi thành lg để modal rộng hơn)
+      maxWidth="lg" // Tăng kích thước modal (md = medium, bạn có thể thay đổi thành lg để modal rộng hơn)
       fullWidth // Để modal chiếm hết chiều rộng có thể
     >
       <DialogTitle>Chi Tiết Đơn Hàng</DialogTitle>

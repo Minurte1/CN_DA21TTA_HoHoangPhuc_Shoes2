@@ -6,11 +6,13 @@ import Sidebar from "./component/navbarMess";
 import MessageList from "./component/messengerList";
 import { useDispatch, useSelector } from "react-redux";
 import { Co2Sharp } from "@mui/icons-material";
+import { getThemeConfig } from "../../../services/themeService";
 
 const MessengerAdmin = () => {
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [messages, setMessages] = useState([]);
+  const currentTheme = getThemeConfig(localStorage.getItem("THEMES") || "dark");
   const { isAuthenticated, userInfo, itemCart, totalCart } = useSelector(
     (state) => state.auth
   );
@@ -134,6 +136,8 @@ const MessengerAdmin = () => {
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
+        backgroundColor: currentTheme.backgroundColorLow,
+        color: currentTheme.color,
       }}
     >
       <Box sx={{ flex: 1 }}>

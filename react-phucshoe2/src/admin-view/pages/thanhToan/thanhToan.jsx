@@ -23,9 +23,11 @@ import {
 import moment from "moment";
 import { Add, Edit, Delete } from "@mui/icons-material";
 import axios from "axios";
+import { getThemeConfig } from "../../../services/themeService";
 
 const api = process.env.REACT_APP_URL_SERVER;
 const ThanhToanManager = () => {
+  const currentTheme = getThemeConfig(localStorage.getItem("THEMES") || "dark");
   const [openDialog, setOpenDialog] = useState(false);
   const [currentMethod, setCurrentMethod] = useState(null);
   const [phuongThucThanhToan, setPhuongThucThanhToan] = useState("");
@@ -105,7 +107,7 @@ const ThanhToanManager = () => {
           gutterBottom
           sx={{ textAlign: "left" }}
         >
-          Phương Thức Thanh Toán
+          PHƯƠNG THỨC THANH TOÁN
         </Typography>
         <Button
           variant="outlined"
@@ -121,24 +123,37 @@ const ThanhToanManager = () => {
         </Button>
       </Box>
 
-      <TableContainer component={Paper} sx={{ backgroundColor: "#101014" }}>
+      <TableContainer
+        component={Paper}
+        sx={{ backgroundColor: currentTheme.backgroundColor }}
+      >
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell sx={{ color: "#26bbff" }}>ID</TableCell>
-              <TableCell sx={{ color: "#26bbff" }}>Thương thức</TableCell>
-              <TableCell sx={{ color: "#26bbff" }}>Trạng Thái</TableCell>
-              <TableCell sx={{ color: "#26bbff" }}>Ngày thanh toán</TableCell>
-              <TableCell sx={{ color: "#26bbff" }}>Actions</TableCell>
+              <TableCell sx={{ color: currentTheme.colorTitle }}>ID</TableCell>
+              <TableCell sx={{ color: currentTheme.colorTitle }}>
+                Thương thức
+              </TableCell>
+              <TableCell sx={{ color: currentTheme.colorTitle }}>
+                Trạng Thái
+              </TableCell>
+              <TableCell sx={{ color: currentTheme.colorTitle }}>
+                Ngày thanh toán
+              </TableCell>
+              <TableCell sx={{ color: currentTheme.colorTitle }}>
+                Actions
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {paymentMethods.map((method) => (
               <TableRow key={method.ID_THANH_TOAN}>
-                <TableCell sx={{ color: "#c9d1d9" }}>
+                <TableCell sx={{ color: currentTheme.color }}>
                   {method.ID_THANH_TOAN}
                 </TableCell>
-                <TableCell sx={{ color: "#e6edf3", fontWeight: "bold" }}>
+                <TableCell
+                  sx={{ color: currentTheme.color, fontWeight: "bold" }}
+                >
                   {method.PHUONG_THUC_THANH_TOAN}
                 </TableCell>
 
@@ -152,7 +167,7 @@ const ThanhToanManager = () => {
                     ? "Đang hoạt động"
                     : "Ngưng hoạt động"}
                 </TableCell>
-                <TableCell sx={{ color: "#c9d1d9" }}>
+                <TableCell sx={{ color: currentTheme.color }}>
                   {moment(method.NGAY_THANH_TOAN).format(
                     "HH:mm:ss - DD/MM/YYYY"
                   )}

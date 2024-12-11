@@ -23,10 +23,12 @@ import {
 import { Add, Edit, Delete } from "@mui/icons-material";
 import axios from "axios";
 import moment from "moment";
+import { getThemeConfig } from "../../../../services/themeService";
 
 const api = process.env.REACT_APP_URL_SERVER;
 
 const ThuongHieuManager = () => {
+  const currentTheme = getThemeConfig(localStorage.getItem("THEMES") || "dark");
   const [brands, setBrands] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
   const [currentBrand, setCurrentBrand] = useState(null);
@@ -108,42 +110,64 @@ const ThuongHieuManager = () => {
           variant="outlined"
           startIcon={<Add />}
           onClick={() => handleOpenDialog()}
-          sx={{ marginBottom: 2, backgroundColor: "#fff", color: "black" }}
+          sx={{
+            marginBottom: 2,
+            backgroundColor: currentTheme.backgroundColor,
+            color: currentTheme.color,
+          }}
         >
           Thêm thương hiệu
         </Button>
       </Box>
 
-      <TableContainer component={Paper} sx={{ backgroundColor: "#101014" }}>
+      <TableContainer
+        component={Paper}
+        sx={{ backgroundColor: currentTheme.backgroundColor }}
+      >
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell sx={{ color: "#26bbff" }}>ID</TableCell>
-              <TableCell sx={{ color: "#26bbff" }}>Tên thương hiệu</TableCell>
-              <TableCell sx={{ color: "#26bbff" }}>Trạng thái</TableCell>
-              <TableCell sx={{ color: "#26bbff" }}>Ngày tạo</TableCell>
-              <TableCell sx={{ color: "#26bbff" }}>Ngày cập nhật</TableCell>
-              <TableCell sx={{ color: "#26bbff" }}>Actions</TableCell>
+              <TableCell sx={{ color: currentTheme.colorTitle }}>ID</TableCell>
+              <TableCell sx={{ color: currentTheme.colorTitle }}>
+                Tên thương hiệu
+              </TableCell>
+              <TableCell sx={{ color: currentTheme.colorTitle }}>
+                Trạng thái
+              </TableCell>
+              <TableCell sx={{ color: currentTheme.colorTitle }}>
+                Ngày tạo
+              </TableCell>
+              <TableCell sx={{ color: currentTheme.colorTitle }}>
+                Ngày cập nhật
+              </TableCell>
+              <TableCell sx={{ color: currentTheme.colorTitle }}>
+                Actions
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {brands.map((brand) => (
               <TableRow key={brand.ID_THUONG_HIEU}>
-                <TableCell sx={{ color: "#c9d1d9" }}>
+                <TableCell sx={{ color: currentTheme.color }}>
                   {brand.ID_THUONG_HIEU}
                 </TableCell>
-                <TableCell sx={{ color: "#c9d1d9" }}>
+                <TableCell sx={{ color: currentTheme.color }}>
                   {brand.TEN_THUONG_HIEU}
                 </TableCell>
-                <TableCell sx={{ color: "#c9d1d9" }}>
+                <TableCell
+                  sx={{
+                    color:
+                      brand.TRANG_THAI_THUONG_HIEU === 1 ? "#008000" : "red",
+                  }}
+                >
                   {brand.TRANG_THAI_THUONG_HIEU === 1
                     ? "Đang sử dụng"
                     : "Ngưng sử dụng"}
                 </TableCell>
-                <TableCell sx={{ color: "#c9d1d9" }}>
+                <TableCell sx={{ color: currentTheme.color }}>
                   {moment(brand.CREATE_THUONG_HIEU).format("DD/MM/YYYY")}
                 </TableCell>
-                <TableCell sx={{ color: "#c9d1d9" }}>
+                <TableCell sx={{ color: currentTheme.color }}>
                   {moment(brand.UPDATE_THUONG_HIEU).format("DD/MM/YYYY")}
                 </TableCell>
                 <TableCell>
