@@ -136,6 +136,7 @@ const MessengerAdmin = () => {
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
+        height: "auto",
         backgroundColor: currentTheme.backgroundColorLow,
         color: currentTheme.color,
       }}

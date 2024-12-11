@@ -101,7 +101,7 @@ const ThuongHieuManager = () => {
   };
 
   return (
-    <Container>
+    <Container sx={{ height: "100vh" }}>
       <Box sx={{ width: "100%", textAlign: "left", mt: 4 }}>
         <Typography variant="h5" color="primary" gutterBottom>
           Đối Tác Thương Hiệu

@@ -38,7 +38,7 @@ const MessageList = ({
         p: 3,
         backgroundColor: currentTheme.backgroundColorLow,
         color: currentTheme.color,
-        height: "auto",
+        height: `${messages.length > 10 ? "auto" : "100vh"}`,
       }}
     >
       {selectedUser ? (

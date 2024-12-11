@@ -77,19 +77,22 @@ const SidebarMess = ({ selectedUser, setSelectedUser, users, userInfo }) => {
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           sx={{
-            height: "50px",
+            height: "45px",
             backgroundColor: currentTheme.backgroundColor,
             color: currentTheme.color,
-            borderRadius: "14px",
+            borderRadius: "10px",
             "& .MuiOutlinedInput-root": {
-              borderRadius: "14px",
+              borderRadius: "10px",
+              "& fieldset": { borderColor: currentTheme.color },
             },
+            "& .MuiInputBase-input": { color: currentTheme.color },
           }}
         />
       </Box>
 
       <Box
         sx={{
+          mt: 2,
           backgroundColor: currentTheme.backgroundColor,
           color: currentTheme.color,
           flex: 1, // Tự động chiếm phần còn lại của chiều cao sidebar

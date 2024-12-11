@@ -99,7 +99,7 @@ const PhongCachManager = () => {
   };
 
   return (
-    <Container>
+    <Container sx={{ height: "100vh" }}>
       <Box sx={{ width: "100%", textAlign: "left", mt: 4 }}>
         <Typography variant="h5" color="primary" gutterBottom>
           Danh Sách Phong Cách
