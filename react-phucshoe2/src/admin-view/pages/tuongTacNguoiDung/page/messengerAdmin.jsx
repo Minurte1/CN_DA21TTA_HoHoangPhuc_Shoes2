@@ -2,11 +2,11 @@ import React, { useState, useEffect, useRef } from "react";
 import axios from "axios"; // Import Axios
 import { Box, IconButton, TextField } from "@mui/material";
 import { io } from "socket.io-client"; // Import socket.io client
-import Sidebar from "./component/navbarMess";
-import MessageList from "./component/messengerList";
+import Sidebar from "../component/navbarMess";
+import MessageList from "../component/messengerList";
 import { useDispatch, useSelector } from "react-redux";
 import { Co2Sharp } from "@mui/icons-material";
-import { getThemeConfig } from "../../../services/themeService";
+import { getThemeConfig } from "../../../../services/themeService";
 
 const MessengerAdmin = () => {
   const [users, setUsers] = useState([]);

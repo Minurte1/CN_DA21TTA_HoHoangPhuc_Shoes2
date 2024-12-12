@@ -658,6 +658,27 @@ const NavBarAdmin = () => {
               </List>
             </Collapse>
           </List>
+          <ListItem
+            button
+            component={Link}
+            to="/admin/blog"
+            sx={{
+              borderRadius: "12px",
+              pl: 4,
+              mt: 1,
+              mb: 1,
+              color: currentTheme.color,
+              cursor: "pointer",
+              userSelect: "none",
+              backgroundColor:
+                location.pathname === "/admin/blog"
+                  ? currentTheme.accentColor
+                  : "transparent", // Kiểm tra nếu đang ở trang này
+              "&:hover": { backgroundColor: currentTheme.accentColor },
+            }}
+          >
+            <ListItemText primary="Blog" />
+          </ListItem>
           {/* //----------------------- */}
           {/* <ListItem
             button

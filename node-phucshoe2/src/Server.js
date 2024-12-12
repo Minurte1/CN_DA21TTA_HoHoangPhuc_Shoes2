@@ -42,7 +42,7 @@ app.use(bodyParser.json());
 
 //api user
 const userRoute = require("./routers/nguoiDungRouter/userRouters.js");
-
+const baiVietRoute = require("./routers/nguoiDungRouter/baiVietRouter.js");
 //api products
 const chatLieuRoute = require("./routers/sanPhamRouters/categoryRouter/chatLieuRouter.js");
 const gioiTinhRoute = require("./routers/sanPhamRouters/categoryRouter/gioiTinhRouter.js");
@@ -88,7 +88,7 @@ app.use("/don-hang/", donHangRoute);
 app.use("/binh-luan/", binhLuanRoute);
 
 app.use("/tin-nhan/", tinNhanRoute);
-
+app.use("/bai-viet/", baiVietRoute);
 // Socket.IO logic
 const userSockets = {}; // Lưu trữ socket.id của từng user theo userId
 

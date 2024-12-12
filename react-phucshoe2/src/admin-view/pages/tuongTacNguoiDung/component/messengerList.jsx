@@ -178,7 +178,7 @@ const MessageList = ({
           </Box>
         </>
       ) : (
-        <Typography variant="h6" color="white">
+        <Typography variant="h6" sx={{ color: currentTheme.color }}>
           Vui lòng chọn người dùng để xem tin nhắn.
         </Typography>
       )}

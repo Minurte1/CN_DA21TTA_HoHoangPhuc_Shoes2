@@ -18,7 +18,8 @@ import TatCaDonHangAdmin from "./pages/thanhToan/donHangAdmin";
 import TatCaDonHangAdminSuccess from "./pages/thanhToan/donHangAdminSuccess";
 import TatCaDonHangAdminCancel from "./pages/thanhToan/donHangAdminCancel";
 import TatCaDonHangAdminProcess from "./pages/thanhToan/donHangAdminProcess";
-import MessengerAdmin from "./pages/tuongTacNguoiDung/messengerAdmin";
+import MessengerAdmin from "./pages/tuongTacNguoiDung/page/messengerAdmin";
+import BlogManager from "./pages/tuongTacNguoiDung/page/blogAdmin";
 
 // import QuanLySanPham from "./pages/QuanLySanPham";
 // import TuongTacNguoiDung from "./pages/TuongTacNguoiDung";
@@ -97,6 +98,10 @@ const RouterAdmin = () => {
     {
       path: "/tuong-tac-nguoi-dung/messages",
       element: <MessengerAdmin />,
+    },
+    {
+      path: "/blog",
+      element: <BlogManager />,
     },
     // {
     //   path: "/san-pham",

@@ -7,12 +7,12 @@ const {
   deleteBaiViet,
 } = require("../../controllers/nguoiDungController/baiVietController");
 
-router.get("/baiviet", getBaiViet);
+router.get("/", getBaiViet);
 
-router.post("/baiviet", createBaiViet);
+router.post("/", createBaiViet);
 
-router.put("/baiviet/:id", updateBaiViet);
+router.put("/:id", updateBaiViet);
 
-router.delete("/baiviet/:id", deleteBaiViet);
+router.delete("/:id", deleteBaiViet);
 
 module.exports = router;

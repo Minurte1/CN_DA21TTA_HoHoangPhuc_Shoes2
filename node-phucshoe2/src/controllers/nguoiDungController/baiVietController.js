@@ -16,20 +16,19 @@ const createBaiViet = async (req, res) => {
   const {
     ID_NGUOI_DUNG,
     TIEU_DE,
-    NGAY_TAO_BLOG,
-    NGAY_CAP_NHAT_BAIVIET,
+
     NOI_DUNG_BAIVIET,
-    TRANG_THAI_BAIVIET,
+
     HINH_ANH_BAIVIET,
   } = req.body;
+  console.log("req.body", req.body);
+  const TRANG_THAI_BAIVIET = "Đang hoạt động";
   try {
     const [results] = await connection.execute(
-      "INSERT INTO `BAI_VIET` (ID_NGUOI_DUNG, TIEU_DE, NGAY_TAO_BLOG, NGAY_CAP_NHAT_BAIVIET, NOI_DUNG_BAIVIET, TRANG_THAI_BAIVIET, HINH_ANH_BAIVIET) VALUES (?, ?, ?, ?, ?, ?, ?)",
+      "INSERT INTO `BAI_VIET` (ID_NGUOI_DUNG, TIEU_DE, NGAY_TAO_BLOG, NGAY_CAP_NHAT_BAIVIET, NOI_DUNG_BAIVIET, TRANG_THAI_BAIVIET, HINH_ANH_BAIVIET) VALUES (?, ?, NOW(), NOW(), ?, ?, ?)",
       [
         ID_NGUOI_DUNG,
         TIEU_DE,
-        NGAY_TAO_BLOG,
-        NGAY_CAP_NHAT_BAIVIET,
         NOI_DUNG_BAIVIET,
         TRANG_THAI_BAIVIET,
         HINH_ANH_BAIVIET,
