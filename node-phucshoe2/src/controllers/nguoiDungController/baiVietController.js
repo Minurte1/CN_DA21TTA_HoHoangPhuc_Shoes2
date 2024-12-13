@@ -2,7 +2,7 @@ const connection = require("../../config/database"); // Đảm bảo `connection
 
 const getBaiViet = async (req, res) => {
   try {
-    const [results] = await connection.execute("SELECT * FROM `BAI_VIET`");
+    const [results] = await connection.execute("SELECT * FROM `ID_BAI_VIET`");
     res
       .status(200)
       .json({ EM: "Lấy danh sách bài viết thành công", EC: 1, DT: results });
@@ -18,21 +18,13 @@ const createBaiViet = async (req, res) => {
     TIEU_DE,
 
     NOI_DUNG_BAIVIET,
-
-    HINH_ANH_BAIVIET,
   } = req.body;
   console.log("req.body", req.body);
   const TRANG_THAI_BAIVIET = "Đang hoạt động";
   try {
     const [results] = await connection.execute(
-      "INSERT INTO `BAI_VIET` (ID_NGUOI_DUNG, TIEU_DE, NGAY_TAO_BLOG, NGAY_CAP_NHAT_BAIVIET, NOI_DUNG_BAIVIET, TRANG_THAI_BAIVIET, HINH_ANH_BAIVIET) VALUES (?, ?, NOW(), NOW(), ?, ?, ?)",
-      [
-        ID_NGUOI_DUNG,
-        TIEU_DE,
-        NOI_DUNG_BAIVIET,
-        TRANG_THAI_BAIVIET,
-        HINH_ANH_BAIVIET,
-      ]
+      "INSERT INTO `ID_BAI_VIET` (ID_NGUOI_DUNG, TIEU_DE, NGAY_TAO_BLOG, NGAY_CAP_NHAT_BAIVIET, NOI_DUNG_BAIVIET, TRANG_THAI_BAIVIET) VALUES (?, ?, NOW(), NOW(), ?, ?)",
+      [ID_NGUOI_DUNG, TIEU_DE, NOI_DUNG_BAIVIET, TRANG_THAI_BAIVIET]
     );
     res
       .status(201)
@@ -54,7 +46,7 @@ const updateBaiViet = async (req, res) => {
   } = req.body;
   try {
     const [results] = await connection.execute(
-      "UPDATE `BAI_VIET` SET TIEU_DE = ?, NGAY_CAP_NHAT_BAIVIET = ?, NOI_DUNG_BAIVIET = ?, TRANG_THAI_BAIVIET = ?, HINH_ANH_BAIVIET = ? WHERE ID_BAI_VIET = ?",
+      "UPDATE `ID_BAI_VIET` SET TIEU_DE = ?, NGAY_CAP_NHAT_BAIVIET = ?, NOI_DUNG_BAIVIET = ?, TRANG_THAI_BAIVIET = ?, HINH_ANH_BAIVIET = ? WHERE ID_BAI_VIET = ?",
       [
         TIEU_DE,
         NGAY_CAP_NHAT_BAIVIET,
@@ -77,7 +69,7 @@ const deleteBaiViet = async (req, res) => {
   const { id } = req.params;
   try {
     const [results] = await connection.execute(
-      "DELETE FROM `BAI_VIET` WHERE ID_BAI_VIET = ?",
+      "DELETE FROM `ID_BAI_VIET` WHERE ID_BAI_VIET = ?",
       [id]
     );
     res.status(200).json({ EM: "Xóa bài viết thành công", EC: 1, DT: results });

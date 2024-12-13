@@ -54,6 +54,7 @@ const formats = [
 const BlogManager = () => {
   const api = process.env.REACT_APP_URL_SERVER;
   const [content, setContent] = useState("");
+  const [title, setTitle] = useState("");
   const [editId, setEditId] = useState(null); // Để lưu trữ ID của bài viết khi chỉnh sửa
   const { isAuthenticated, userInfo } = useSelector((state) => state.auth);
 
@@ -75,7 +76,8 @@ const BlogManager = () => {
       // Tạo mới bài viết
       axios
         .post(`${api}/bai-viet`, {
-          content,
+          NOI_DUNG_BAIVIET: content,
+          TIEU_DE: title,
           ID_NGUOI_DUNG: userInfo.ID_NGUOI_DUNG,
         })
         .then((response) => {
@@ -92,7 +94,7 @@ const BlogManager = () => {
   // Hàm xử lý xóa bài viết
   const handleDelete = (id) => {
     axios
-      .delete(`/api/posts/${id}`)
+      .delete(`/bai-viet/${id}`)
       .then((response) => {
         console.log("Deleted Content:", response.data);
         alert("Content Deleted");
@@ -106,7 +108,7 @@ const BlogManager = () => {
   // Hàm tải bài viết để chỉnh sửa
   const handleEdit = (id) => {
     axios
-      .get(`/api/posts/${id}`)
+      .get(`/bai-viet/${id}`)
       .then((response) => {
         setEditId(id);
         setContent(response.data.content);
@@ -118,24 +120,32 @@ const BlogManager = () => {
   };
 
   // Hàm tải danh sách bài viết
-  const [posts, setPosts] = useState([]);
-  useEffect(() => {
-    axios
-      .get("/api/posts")
-      .then((response) => {
-        setPosts(response.data);
-      })
-      .catch((error) => {
-        console.error(error);
-        alert("Failed to load posts");
-      });
-  }, []);
+  // const [posts, setPosts] = useState([]);
+  // useEffect(() => {
+  //   axios
+  //     .get("/api/posts")
+  //     .then((response) => {
+  //       setPosts(response.data);
+  //     })
+  //     .catch((error) => {
+  //       console.error(error);
+  //       alert("Failed to load posts");
+  //     });
+  // }, []);
   const handleQuillChange = (value) => {
     setContent(value);
   };
   return (
     <Container>
       <h2>Blog Editor</h2>
+      <TextField
+        fullWidth
+        label="Tiêu đề bài viết"
+        name="title"
+        value={title || ""}
+        onChange={(e) => setTitle(e.target.value)}
+        margin="normal"
+      />
       <ReactQuill
         theme="snow"
         value={content}
@@ -144,6 +154,8 @@ const BlogManager = () => {
         formats={formats}
         className="custom-quill"
       />
+
+      <Button onClick={handleSave}>Save</Button>
     </Container>
   );
 };
