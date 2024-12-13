@@ -6,19 +6,56 @@ import { useDropzone } from "react-dropzone"; // Dùng thư viện react-dropzon
 import axios from "axios";
 import { Button, Container, Box, TextField } from "@mui/material";
 import { useSelector } from "react-redux";
+import "react-quill/dist/quill.snow.css";
+import ReactQuill from "react-quill";
+const modules = {
+  toolbar: [
+    // Tùy chỉnh tiêu đề
+    [{ header: [1, 2, 3, 4, 5, 6, false] }],
+    // Kiểu chữ
+    [{ font: [] }],
+    // Kích thước chữ
+    [{ size: [] }],
+    // Định dạng văn bản
+    ["bold", "italic", "underline", "strike"], // In đậm, nghiêng, gạch chân, gạch ngang
+    [{ color: [] }, { background: [] }], // Màu chữ và màu nền
+    [{ script: "sub" }, { script: "super" }], // Chỉ số trên/dưới
+    [{ list: "ordered" }, { list: "bullet" }], // Danh sách
+    [{ indent: "-1" }, { indent: "+1" }], // Thụt lề
+    [{ align: [] }], // Căn lề
+    ["link", "image", "video"], // Link, ảnh, video
+    ["blockquote", "code-block"], // Trích dẫn, đoạn mã
+    ["clean"], // Xóa định dạng
+  ],
+};
+
+const formats = [
+  "header",
+  "font",
+  "size",
+  "bold",
+  "italic",
+  "underline",
+  "strike",
+  "color",
+  "background",
+  "script",
+  "list",
+  "bullet",
+  "indent",
+  "align",
+  "link",
+  "image",
+  "video",
+  "blockquote",
+  "code-block",
+];
+
 const BlogManager = () => {
   const api = process.env.REACT_APP_URL_SERVER;
   const [content, setContent] = useState("");
   const [editId, setEditId] = useState(null); // Để lưu trữ ID của bài viết khi chỉnh sửa
   const { isAuthenticated, userInfo } = useSelector((state) => state.auth);
-  // Khởi tạo editor với extension Image
-  const editor = useEditor({
-    extensions: [StarterKit, Image], // Thêm Image extension
-    content: content, // Nội dung ban đầu (khi sửa hoặc tạo mới)
-    onUpdate: ({ editor }) => {
-      setContent(editor.getHTML()); // Cập nhật nội dung mỗi khi có sự thay đổi
-    },
-  });
 
   // Hàm xử lý lưu bài viết mới
   const handleSave = () => {
@@ -73,7 +110,6 @@ const BlogManager = () => {
       .then((response) => {
         setEditId(id);
         setContent(response.data.content);
-        editor.commands.setContent(response.data.content); // Cập nhật nội dung cho editor
       })
       .catch((error) => {
         console.error(error);
@@ -94,88 +130,20 @@ const BlogManager = () => {
         alert("Failed to load posts");
       });
   }, []);
-
-  // Xử lý kéo và thả hình ảnh vào editor
-  const onDrop = (acceptedFiles) => {
-    const file = acceptedFiles[0];
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      const imageUrl = reader.result;
-      editor.commands.setImage({ src: imageUrl });
-    };
-    reader.readAsDataURL(file);
+  const handleQuillChange = (value) => {
+    setContent(value);
   };
-  const handleInsertImage = (url) => {
-    if (url) {
-      editor.commands.setImage({ src: url });
-    }
-  };
-
-  const { getRootProps, getInputProps } = useDropzone({
-    onDrop,
-    accept: "image/*",
-  });
-
   return (
     <Container>
       <h2>Blog Editor</h2>
-
-      <Box
-        component="div"
-        style={{
-          border: "1px solid #ccc",
-          padding: "10px",
-          marginBottom: "20px",
-        }}
-      >
-        <EditorContent editor={editor} />
-      </Box>
-
-      <Button variant="contained" color="primary" onClick={handleSave}>
-        {editId ? "Update Post" : "Create Post"}
-      </Button>
-
-      <TextField
-        label="Image URL"
-        variant="outlined"
-        fullWidth
-        margin="normal"
-        onChange={(e) => handleInsertImage(e.target.value)}
+      <ReactQuill
+        theme="snow"
+        value={content}
+        onChange={handleQuillChange} // Gọi hàm handleQuillChange
+        modules={modules}
+        formats={formats}
+        className="custom-quill"
       />
-
-      <div
-        {...getRootProps()}
-        style={{
-          border: "2px dashed #ccc",
-          padding: "20px",
-          textAlign: "center",
-          marginBottom: "20px",
-        }}
-      >
-        <input {...getInputProps()} />
-        <p>Drag and drop an image here, or click to select one</p>
-      </div>
-
-      <div>
-        <h3>Posts</h3>
-        <ul>
-          {posts.map((post) => (
-            <li key={post.id}>
-              <div dangerouslySetInnerHTML={{ __html: post.content }} />
-              <Button variant="outlined" onClick={() => handleEdit(post.id)}>
-                Edit
-              </Button>
-              <Button
-                variant="outlined"
-                color="secondary"
-                onClick={() => handleDelete(post.id)}
-              >
-                Delete
-              </Button>
-            </li>
-          ))}
-        </ul>
-      </div>
     </Container>
   );
 };
