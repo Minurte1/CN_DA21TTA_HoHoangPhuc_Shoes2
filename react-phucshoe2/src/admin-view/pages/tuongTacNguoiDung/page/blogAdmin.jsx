@@ -1,8 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useEditor, EditorContent } from "@tiptap/react";
-import { StarterKit } from "@tiptap/starter-kit";
-import { Image } from "@tiptap/extension-image"; // Import extension Image
-import { useDropzone } from "react-dropzone"; // Dùng thư viện react-dropzone
 import axios from "axios";
 import { Button, Container, Box, TextField } from "@mui/material";
 import { useSelector } from "react-redux";
@@ -53,17 +49,25 @@ const formats = [
 
 const BlogManager = () => {
   const api = process.env.REACT_APP_URL_SERVER;
+  const { isAuthenticated, userInfo } = useSelector((state) => state.auth);
   const [content, setContent] = useState("");
   const [title, setTitle] = useState("");
   const [editId, setEditId] = useState(null); // Để lưu trữ ID của bài viết khi chỉnh sửa
-  const { isAuthenticated, userInfo } = useSelector((state) => state.auth);
 
+  const [images, setImages] = useState(null);
+  const [descriptionTitle, setDecripttionTitle] = useState("");
   // Hàm xử lý lưu bài viết mới
   const handleSave = () => {
+    const formData = new FormData();
+
     if (editId) {
-      // Cập nhật bài viết khi có editId
+      // Truyền dữ liệu cập nhật vào formData
+      formData.append("content", content);
+
       axios
-        .put(`${api}/bai-viet/${editId}`, { content })
+        .put(`${api}/bai-viet/${editId}`, formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        })
         .then((response) => {
           console.log("Updated Content:", response.data);
           alert("Content Updated");
@@ -73,12 +77,16 @@ const BlogManager = () => {
           alert("Failed to update content");
         });
     } else {
-      // Tạo mới bài viết
+      // Truyền dữ liệu tạo mới vào formData
+      formData.append("NOI_DUNG_BAIVIET", content);
+      formData.append("TIEU_DE", title);
+      formData.append("ID_NGUOI_DUNG", userInfo.ID_NGUOI_DUNG);
+      formData.append("HINH_ANH_BAIVIET", images); // Hình ảnh
+      formData.append("NOI_DUNG_TIEU_DE", descriptionTitle);
+
       axios
-        .post(`${api}/bai-viet`, {
-          NOI_DUNG_BAIVIET: content,
-          TIEU_DE: title,
-          ID_NGUOI_DUNG: userInfo.ID_NGUOI_DUNG,
+        .post(`${api}/bai-viet`, formData, {
+          headers: { "Content-Type": "multipart/form-data" },
         })
         .then((response) => {
           console.log("Created Content:", response.data);
@@ -132,6 +140,12 @@ const BlogManager = () => {
   //       alert("Failed to load posts");
   //     });
   // }, []);
+
+  const handleFileChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      setImages(e.target.files[0]);
+    }
+  };
   const handleQuillChange = (value) => {
     setContent(value);
   };
@@ -143,8 +157,32 @@ const BlogManager = () => {
         label="Tiêu đề bài viết"
         name="title"
         value={title || ""}
+        sx={{ width: "400px" }}
         onChange={(e) => setTitle(e.target.value)}
         margin="normal"
+      />
+
+      <TextField
+        multiline
+        margin="dense"
+        label="Nôi dung tiêu đề"
+        type="text"
+        fullWidth
+        name="NOI_DUNG_TIEU_DE"
+        minRows={5}
+        // sx={{ width: "400px" }}
+        InputLabelProps={{ shrink: true }}
+        onChange={(e) => setDecripttionTitle(e.target.value)}
+      />
+      <TextField
+        margin="dense"
+        label="Hình ảnh bài viết"
+        type="file"
+        fullWidth
+        name="images"
+        sx={{ width: "400px" }}
+        InputLabelProps={{ shrink: true }}
+        onChange={handleFileChange}
       />
       <ReactQuill
         theme="snow"
@@ -154,7 +192,6 @@ const BlogManager = () => {
         formats={formats}
         className="custom-quill"
       />
-
       <Button onClick={handleSave}>Save</Button>
     </Container>
   );

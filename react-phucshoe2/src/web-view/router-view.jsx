@@ -10,6 +10,7 @@ import Cart from "../share-view/cartProduct.jsx";
 import WishlistProducts from "../share-view/wishListProducts.jsx";
 import BrowseProduct from "./view-page/browseShoes.jsx";
 import ForgotPassword from "./view-page/forgetPassword.jsx";
+import NewsComponent from "./view-page/newsShoes.jsx";
 
 const RouterView = () => {
   const element = useRoutes([
@@ -62,7 +63,10 @@ const RouterView = () => {
       path: "/home",
       element: <Home />,
     },
-
+    {
+      path: "/news",
+      element: <NewsComponent />,
+    },
     {
       path: "*",
       element: <Navigate to="/contact" replace />,

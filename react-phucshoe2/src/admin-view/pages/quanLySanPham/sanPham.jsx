@@ -341,7 +341,7 @@ const SanPhamManager = () => {
           onClick={() => handleOpenDialog()}
           sx={{ marginBottom: 2, backgroundColor: "#fff", color: "black" }}
         >
-          Add Product
+          Thêm sản phẩm
         </Button>
       </Box>
 
