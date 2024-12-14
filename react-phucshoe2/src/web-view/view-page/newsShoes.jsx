@@ -137,10 +137,10 @@ const NewsComponent = () => {
         {/* Render các bài viết còn lại */}
         <Grid container spacing={2} mt={2}>
           {remainingNews.map((news) => (
-            <Grid item xs={12} md={12} key={news.ID_BAI_VIET}>
+            <Grid item xs={12} md={12} key={news.ID_BAI_VIET} mt={4}>
               <Divider
                 sx={{
-                  my: 2,
+                  my: 1,
                   width: "100%",
                   opacity: "0.5",
                   backgroundColor: "#fff",
