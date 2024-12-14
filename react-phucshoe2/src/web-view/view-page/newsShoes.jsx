@@ -40,7 +40,7 @@ const NewsComponent = () => {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: "#124124",
+        // backgroundColor: "#124124",
       }}
     >
       <Box
@@ -138,32 +138,80 @@ const NewsComponent = () => {
         <Grid container spacing={2} mt={2}>
           {remainingNews.map((news) => (
             <Grid item xs={12} md={12} key={news.ID_BAI_VIET}>
-              <Divider sx={{ my: 2, width: "100%" }} />
-              <Card sx={{ bgcolor: "#1e1e1e", height: "100%" }}>
+              <Divider
+                sx={{
+                  my: 2,
+                  width: "100%",
+                  opacity: "0.5",
+                  backgroundColor: "#fff",
+                }}
+              />
+
+              <Card
+                sx={{
+                  bgcolor: "#1e1e1e",
+                  height: "100%",
+                  display: "flex",
+                }}
+              >
                 {news.HINH_ANH_BAIVIET && (
                   <CardMedia
                     component="img"
-                    sx={{ width: 150 }}
+                    sx={{
+                      width: "200px",
+                      height: "110px",
+                      paddingLeft: "20px",
+                      marginTop: "20px",
+                    }}
                     image={`http://localhost:3002/images/${news.HINH_ANH_BAIVIET}`}
                   />
                 )}
-                <Box sx={{ flexDirection: "column" }}>
-                  <CardContent>
-                    <Typography variant="subtitle2" color="text.secondary">
+                <Box>
+                  <CardContent sx={{ textAlign: " left" }}>
+                    <Typography
+                      variant="subtitle2"
+                      sx={{ color: "#fff", opacity: 0.5, fontSize: "0.7rem" }}
+                      color="text.secondary"
+                    >
                       {new Date(news.NGAY_TAO_BLOG).toLocaleDateString("vi-VN")}
                     </Typography>
                     <Typography variant="h6" sx={{ color: "#fff", mt: 1 }}>
                       {news.TIEU_DE}
                     </Typography>
-
-                    <Button
-                      sx={{ mt: 2 }}
-                      size="small"
-                      variant="outlined"
-                      color="primary"
+                    <Typography
+                      variant="h6"
+                      sx={{
+                        color: "#fff",
+                        mt: 1,
+                        width: "70%",
+                        display: "-webkit-box", // Tạo kiểu dáng box để cắt chữ
+                        overflow: "hidden", // Ẩn phần vượt ra ngoài
+                        WebkitBoxOrient: "vertical", // Đảm bảo sử dụng định dạng theo chiều dọc
+                        WebkitLineClamp: 2, // Chỉ hiển thị tối đa 2 dòng
+                        fontSize: "0.7rem", // Giảm kích thước chữ khi chữ vượt qua 2 dòng
+                        opacity: 0.4, // Làm mờ chữ khi có nhiều dòng
+                        textOverflow: "ellipsis", // Thêm dấu ba chấm khi nội dung bị cắt
+                        fontFamily: "'Inter', sans-serif",
+                      }}
+                    >
+                      {news.NOI_DUNG_TIEU_DE}
+                    </Typography>
+                    <Typography
+                      sx={{
+                        mt: 4,
+                        size: "small",
+                        variant: "text", // Dùng kiểu text thay vì outlined
+                        color: "#fff", // Màu chữ chính
+                        textTransform: "none", // Để chữ không bị viết hoa
+                        fontSize: "1rem", // Tùy chỉnh kích thước chữ nếu cần
+                        borderBottom: "1px solid", // Thêm đường viền dưới
+                        borderColor: "primary.main", // Đặt màu đường viền là màu chính của theme
+                        padding: 0, // Không có padding
+                        display: "inline", // Để nút không chiếm hết chiều rộng
+                      }}
                     >
                       Xem chi tiết
-                    </Button>
+                    </Typography>
                   </CardContent>
                 </Box>
               </Card>
