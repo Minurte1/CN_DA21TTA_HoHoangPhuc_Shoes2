@@ -10,16 +10,22 @@ import {
   Divider,
 } from "@mui/material";
 import axios from "axios";
+import { getThemeConfig } from "../../services/themeService";
+import { useNavigate } from "react-router-dom";
 
 const NewsComponent = () => {
   const [newsData, setNewsData] = useState([]);
-
+  const api = process.env.REACT_APP_URL_SERVER;
+  const navigate = useNavigate();
+  const currentTheme = getThemeConfig(localStorage.getItem("THEMES") || "dark");
   // Fetch dữ liệu từ API
   useEffect(() => {
     const fetchNewsData = async () => {
       try {
-        const response = await axios.get("http://localhost:3002/bai-viet/use");
-        setNewsData(response.data.DT); // Lưu dữ liệu từ API vào state
+        const response = await axios.get(`${api}/bai-viet/use`);
+        if (response.data.EC === 1) {
+          setNewsData(response.data.DT); // Lưu dữ liệu từ API vào state
+        }
       } catch (error) {
         console.error("Error fetching news data:", error);
       }
@@ -27,7 +33,9 @@ const NewsComponent = () => {
 
     fetchNewsData(); // Gọi hàm bất đồng bộ bên trong useEffect
   }, []);
-
+  const handleSelectNewsShoes = (id) => {
+    navigate(`/selectNewsShoe/${id}`);
+  };
   // Lấy 2 bài viết đầu tiên
   const firstTwoNews = newsData.slice(0, 2);
   // Các bài viết còn lại
@@ -45,8 +53,8 @@ const NewsComponent = () => {
     >
       <Box
         sx={{
-          bgcolor: "#121212",
-          color: "#fff",
+          bgcolor: currentTheme.backgroundColorLow,
+          color: currentTheme.color,
           width: "80%",
           p: 4,
         }}
@@ -60,7 +68,15 @@ const NewsComponent = () => {
           {firstTwoNews.map((news) => (
             <Grid item xs={12} md={6} key={news.ID_BAI_VIET}>
               <Card
-                sx={{ bgcolor: "#1e1e1e", textAlign: "left", width: "100%" }}
+                onClick={() => handleSelectNewsShoes(news.ID_BAI_VIET)}
+                sx={{
+                  bgcolor: currentTheme.backgroundColor,
+                  color: currentTheme.color,
+                  textAlign: "left",
+                  width: "100%",
+                  borderRadius: "13px",
+                  cursor: "pointer",
+                }}
               >
                 {/* Hiển thị hình ảnh nếu có */}
                 {news.HINH_ANH_BAIVIET && (
@@ -75,7 +91,7 @@ const NewsComponent = () => {
                   <CardContent>
                     <Typography
                       sx={{
-                        color: "#fff",
+                        color: currentTheme.color,
                         fontSize: "0.875rem",
                         mt: 1,
                         fontFamily: "'Inter', sans-serif",
@@ -88,8 +104,9 @@ const NewsComponent = () => {
                     <Typography
                       variant="h5"
                       sx={{
-                        color: "#fff",
+                        color: currentTheme.color,
                         mt: 1,
+                        fontWeight: "600",
                         fontFamily: "'Inter', sans-serif",
                       }}
                     >
@@ -98,16 +115,17 @@ const NewsComponent = () => {
                     <Typography
                       variant="h6"
                       sx={{
-                        color: "#fff",
-                        mt: 1,
+                        color: currentTheme.color,
+                        mt: 2,
                         display: "-webkit-box", // Tạo kiểu dáng box để cắt chữ
                         overflow: "hidden", // Ẩn phần vượt ra ngoài
                         WebkitBoxOrient: "vertical", // Đảm bảo sử dụng định dạng theo chiều dọc
                         WebkitLineClamp: 2, // Chỉ hiển thị tối đa 2 dòng
                         fontSize: "0.875rem", // Giảm kích thước chữ khi chữ vượt qua 2 dòng
-                        opacity: 0.4, // Làm mờ chữ khi có nhiều dòng
+                        opacity: 0.5, // Làm mờ chữ khi có nhiều dòng
                         textOverflow: "ellipsis", // Thêm dấu ba chấm khi nội dung bị cắt
                         fontFamily: "'Inter', sans-serif",
+                        fontWeight: "600",
                       }}
                     >
                       {news.NOI_DUNG_TIEU_DE}
@@ -119,14 +137,23 @@ const NewsComponent = () => {
                       __html: news.NOI_DUNG_BAIVIET, // Render HTML từ API
                     }}
                   ></Typography> */}
-                    <Button
-                      sx={{ mt: 2 }}
-                      size="small"
-                      variant="outlined"
-                      color="primary"
+                    <Typography
+                      sx={{
+                        size: "small",
+                        variant: "text", // Dùng kiểu text thay vì outlined
+                        color: currentTheme.secondaryColor, // Màu chữ chính
+                        textTransform: "none", // Để chữ không bị viết hoa
+                        fontSize: "1rem", // Tùy chỉnh kích thước chữ nếu cần
+                        borderBottom: "1px solid", // Thêm đường viền dưới
+                        borderColor: "primary.main", // Đặt màu đường viền là màu chính của theme
+                        padding: 0, // Không có padding
+                        display: "inline", // Để nút không chiếm hết chiều rộng
+                        cursor: "pointer",
+                        fontWeight: "600",
+                      }}
                     >
                       Xem chi tiết
-                    </Button>
+                    </Typography>
                   </CardContent>
                 </Box>
               </Card>
@@ -143,15 +170,17 @@ const NewsComponent = () => {
                   my: 1,
                   width: "100%",
                   opacity: "0.5",
-                  backgroundColor: "#fff",
+                  backgroundColor: currentTheme.color,
                 }}
               />
 
               <Card
+                onClick={() => handleSelectNewsShoes(news.ID_BAI_VIET)}
                 sx={{
-                  bgcolor: "#1e1e1e",
+                  backgroundColor: currentTheme.backgroundColor,
                   height: "100%",
                   display: "flex",
+                  cursor: "pointer",
                 }}
               >
                 {news.HINH_ANH_BAIVIET && (
@@ -170,18 +199,28 @@ const NewsComponent = () => {
                   <CardContent sx={{ textAlign: " left" }}>
                     <Typography
                       variant="subtitle2"
-                      sx={{ color: "#fff", opacity: 0.5, fontSize: "0.7rem" }}
-                      color="text.secondary"
+                      sx={{
+                        color: currentTheme.color,
+                        opacity: 0.5,
+                        fontSize: "0.7rem",
+                      }}
                     >
                       {new Date(news.NGAY_TAO_BLOG).toLocaleDateString("vi-VN")}
                     </Typography>
-                    <Typography variant="h6" sx={{ color: "#fff", mt: 1 }}>
+                    <Typography
+                      variant="h6"
+                      sx={{
+                        color: currentTheme.color,
+                        mt: 1,
+                        fontWeight: "600",
+                      }}
+                    >
                       {news.TIEU_DE}
                     </Typography>
                     <Typography
                       variant="h6"
                       sx={{
-                        color: "#fff",
+                        color: currentTheme.color,
                         mt: 1,
                         width: "70%",
                         display: "-webkit-box", // Tạo kiểu dáng box để cắt chữ
@@ -189,9 +228,10 @@ const NewsComponent = () => {
                         WebkitBoxOrient: "vertical", // Đảm bảo sử dụng định dạng theo chiều dọc
                         WebkitLineClamp: 2, // Chỉ hiển thị tối đa 2 dòng
                         fontSize: "0.7rem", // Giảm kích thước chữ khi chữ vượt qua 2 dòng
-                        opacity: 0.4, // Làm mờ chữ khi có nhiều dòng
+                        opacity: 0.5, // Làm mờ chữ khi có nhiều dòng
                         textOverflow: "ellipsis", // Thêm dấu ba chấm khi nội dung bị cắt
                         fontFamily: "'Inter', sans-serif",
+                        fontWeight: "600",
                       }}
                     >
                       {news.NOI_DUNG_TIEU_DE}
@@ -201,13 +241,15 @@ const NewsComponent = () => {
                         mt: 4,
                         size: "small",
                         variant: "text", // Dùng kiểu text thay vì outlined
-                        color: "#fff", // Màu chữ chính
+                        color: currentTheme.secondaryColor,
                         textTransform: "none", // Để chữ không bị viết hoa
                         fontSize: "1rem", // Tùy chỉnh kích thước chữ nếu cần
                         borderBottom: "1px solid", // Thêm đường viền dưới
                         borderColor: "primary.main", // Đặt màu đường viền là màu chính của theme
                         padding: 0, // Không có padding
                         display: "inline", // Để nút không chiếm hết chiều rộng
+                        fontWeight: "600",
+                        cursor: "pointer",
                       }}
                     >
                       Xem chi tiết

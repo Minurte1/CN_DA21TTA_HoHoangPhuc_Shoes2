@@ -20,6 +20,21 @@ const getBaiVietUse = async (req, res) => {
     );
     res
       .status(200)
+      .json({ EM: "Lấy bài viết theo ID thành công", EC: 1, DT: results });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ EM: "Lỗi hệ thống", EC: -1 });
+  }
+};
+const getBaiVietUseById = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const [results] = await connection.execute(
+      "SELECT * FROM `ID_BAI_VIET` WHERE TRANG_THAI_BAIVIET = 'Đang hoạt động' AND ID_BAI_VIET = ? ",
+      [id]
+    );
+    res
+      .status(200)
       .json({ EM: "Lấy danh sách bài viết thành công", EC: 1, DT: results });
   } catch (error) {
     console.error(error);
@@ -108,5 +123,6 @@ module.exports = {
   createBaiViet,
   updateBaiViet,
   deleteBaiViet,
+  getBaiVietUseById,
   getBaiVietUse,
 };

@@ -11,6 +11,7 @@ import WishlistProducts from "../share-view/wishListProducts.jsx";
 import BrowseProduct from "./view-page/browseShoes.jsx";
 import ForgotPassword from "./view-page/forgetPassword.jsx";
 import NewsComponent from "./view-page/newsShoes.jsx";
+import SelectNewsShoes from "./view-page/selectNewsShoes.jsx";
 
 const RouterView = () => {
   const element = useRoutes([
@@ -58,7 +59,10 @@ const RouterView = () => {
       path: "/selectShoe/:id",
       element: <SelectShoe />,
     },
-
+    {
+      path: "/selectNewsShoe/:id",
+      element: <SelectNewsShoes />,
+    },
     {
       path: "/home",
       element: <Home />,
@@ -67,6 +71,7 @@ const RouterView = () => {
       path: "/news",
       element: <NewsComponent />,
     },
+
     {
       path: "*",
       element: <Navigate to="/contact" replace />,

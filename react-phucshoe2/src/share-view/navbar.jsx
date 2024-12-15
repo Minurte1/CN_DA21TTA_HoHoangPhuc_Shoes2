@@ -65,6 +65,7 @@ const Navbar = () => {
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
+
   const handleBuyProduct = (id) => {
     setSearchTerm("");
     setProducts([]);

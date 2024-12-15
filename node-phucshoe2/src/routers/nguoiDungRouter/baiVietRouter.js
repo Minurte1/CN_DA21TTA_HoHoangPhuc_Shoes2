@@ -6,10 +6,12 @@ const {
   updateBaiViet,
   deleteBaiViet,
   getBaiVietUse,
+  getBaiVietUseById,
 } = require("../../controllers/nguoiDungController/baiVietController");
 const uploads = require("../../config/multerConfig");
 router.get("/", getBaiViet);
 router.get("/use/", getBaiVietUse);
+router.get("/use/:id", getBaiVietUseById);
 
 router.post("/", uploads.single("HINH_ANH_BAIVIET"), createBaiViet);
 
