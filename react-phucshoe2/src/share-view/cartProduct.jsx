@@ -13,6 +13,8 @@ import {
   IconButton,
   InputLabel,
   Skeleton,
+  TextField,
+  isSwitchOn,
 } from "@mui/material";
 import { v4 as uuidv4 } from "uuid"; // Thêm thư viện UUID nếu bạn muốn tạo mã đơn hàng duy nhất
 
@@ -26,6 +28,7 @@ import axios from "axios";
 import { setItemCart, setTotalCart, setIdOder } from "../redux/authSlice";
 import { enqueueSnackbar } from "notistack";
 import { getThemeConfig } from "../services/themeService";
+import AddressSelector from "../user-view/components/addressUser";
 const api = process.env.REACT_APP_URL_SERVER;
 const CartItem = ({
   id, // Assuming each item has a unique id
@@ -150,6 +153,23 @@ const CartSummary = ({
   setSelectPhuongThucThanhToan,
   handleSummitThanhToan,
   currentTheme,
+
+  userInfo,
+  isSwitchOn,
+
+  selectedWards,
+  setSelectedDistrict,
+  setSelectedProvince,
+  setSelectStreetName,
+  handleSwitchChange,
+
+  setSoDienThoai,
+  soDienThoai,
+
+  selectStreetName,
+  setSelectedWards,
+  selectedDistrict,
+  selectedProvince,
 }) => (
   <Box
     sx={{
@@ -203,7 +223,135 @@ const CartSummary = ({
           </MenuItem>
         ))}
       </Select>
-    </FormControl>
+    </FormControl>{" "}
+    {/* ----------------- Cmt Code địa chỉ phương thức thanh toán ------------------ */}
+    <FormControl sx={{ mb: 2, mt: 2 }}>
+      <InputLabel
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          color: currentTheme.color,
+          fontWeight: "500",
+        }}
+      >
+        <Payments sx={{ mr: 1 }} />
+        Phương thức thanh toán
+      </InputLabel>
+      <Select
+        value={selectPhuongThucThanhToan}
+        label="Icon Phương thức thanh toán"
+        onChange={(e) => setSelectPhuongThucThanhToan(e.target.value)}
+        sx={{
+          backgroundColor: currentTheme.backgroundColorLow,
+          color: currentTheme.color,
+        }}
+      >
+        {" "}
+        <MenuItem value="">Xem tất cả</MenuItem>
+        {paymentMethods.map((item) => (
+          <MenuItem key={item.ID_THANH_TOAN} value={item.ID_THANH_TOAN}>
+            {item.PHUONG_THUC_THANH_TOAN}
+          </MenuItem>
+        ))}
+      </Select>
+    </FormControl>{" "}
+    {isSwitchOn ? (
+      <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+        <Switch
+          checked={isSwitchOn} // Liên kết trạng thái với Switch
+          onChange={handleSwitchChange}
+          color="primary"
+        />
+        {userInfo && (
+          <>
+            <Typography
+              variant="body2"
+              color="white"
+              sx={{ fontSize: "11px", color: currentTheme.color }}
+            >
+              {`Địa chỉ: ${userInfo.DIA_CHI_STREETNAME}, ${userInfo?.DIA_CHI_Wards}, 
+              ${userInfo?.DIA_CHI_Districts}, ${userInfo?.DIA_CHI_Provinces}`}
+            </Typography>
+          </>
+        )}
+      </Box>
+    ) : (
+      <>
+        <Switch
+          checked={isSwitchOn} // Liên kết trạng thái với Switch
+          onChange={handleSwitchChange}
+          color="primary"
+        />{" "}
+        <Typography
+          variant="body2"
+          color="white"
+          sx={{ fontSize: "11px", color: currentTheme.color }}
+        >
+          {`Địa chỉ: ${selectStreetName || " "} ${selectedWards || ""} 
+        ${selectedDistrict || ""} ${selectedProvince || ""}`}
+        </Typography>
+        <AddressSelector
+          selectedProvince={selectedProvince}
+          selectedDistrict={selectedDistrict}
+          selectedWards={selectedWards}
+          //
+          setSelectedProvince={setSelectedProvince}
+          setSelectedDistrict={setSelectedDistrict}
+          setSelectedWards={setSelectedWards}
+          backgroundColor={"#343437"}
+          color={"#fff"}
+        />{" "}
+        <TextField
+          label="Tên đường"
+          variant="outlined"
+          value={selectStreetName} // Đảm bảo giá trị mặc định là chuỗi rỗng nếu không có dataUser hoặc EMAIL
+          fullWidth
+          InputProps={{
+            style: { color: currentTheme.color }, // Màu chữ trong TextField
+          }}
+          onChange={(e) => setSelectStreetName(e.target.value)}
+          InputLabelProps={{
+            style: { color: currentTheme.color }, // Màu chữ nhãn
+          }}
+          sx={{
+            backgroundColor: currentTheme.backgroundColorLow, // Màu nền của input
+            "& .MuiInputLabel-root": { color: currentTheme.color }, // Màu chữ của label
+            "& .MuiInputBase-input": { color: currentTheme.color }, // Màu chữ của input
+            "& .MuiOutlinedInput-root": {
+              "& fieldset": { borderColor: "#00000" }, // Màu viền
+            },
+            "& .MuiInputBase-root": {
+              borderRadius: "4px", // Làm tròn góc nếu muốn
+            },
+          }}
+        />{" "}
+        <TextField
+          label="Số điện thoại"
+          variant="outlined"
+          type="number"
+          value={soDienThoai} // Đảm bảo giá trị mặc định là chuỗi rỗng nếu không có dataUser hoặc EMAIL
+          fullWidth
+          InputProps={{
+            style: { color: currentTheme.color }, // Màu chữ trong TextField
+          }}
+          onChange={(e) => setSoDienThoai(e.target.value)}
+          InputLabelProps={{
+            style: { color: currentTheme.color }, // Màu chữ nhãn
+          }}
+          sx={{
+            backgroundColor: currentTheme.backgroundColorLow, // Màu nền của input
+            "& .MuiInputLabel-root": { color: currentTheme.color }, // Màu chữ của label
+            "& .MuiInputBase-input": { color: currentTheme.color }, // Màu chữ của input
+            "& .MuiOutlinedInput-root": {
+              "& fieldset": { borderColor: "#00000" }, // Màu viền
+            },
+            "& .MuiInputBase-root": {
+              borderRadius: "4px", // Làm tròn góc nếu muốn
+            },
+          }}
+        />
+      </>
+    )}
     <Divider sx={{ my: 1, backgroundColor: "#555" }} />
     <Button
       variant="contained"
@@ -238,6 +386,7 @@ const Cart = () => {
     useState("");
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [isSwitchOn, setIsSwitchOn] = useState(true);
   const currentTheme = getThemeConfig(localStorage.getItem("THEMES") || "dark");
   useEffect(() => {
     if (!isAuthenticated || !userInfo) {
@@ -343,6 +492,16 @@ const Cart = () => {
       console.error("Error removing product completely:", error);
     }
   };
+
+  const handleSwitchChange = (event) => {
+    setIsSwitchOn(event.target.checked); // Cập nhật trạng thái
+  };
+  const [selectedProvince, setSelectedProvince] = useState(null);
+  const [selectedDistrict, setSelectedDistrict] = useState(null);
+  const [selectedWards, setSelectedWards] = useState(null);
+  const [selectStreetName, setSelectStreetName] = useState(null);
+  const [soDienThoai, setSoDienThoai] = useState(null);
+
   const handleSummitThanhToan = async () => {
     if (selectPhuongThucThanhToan === "") {
       enqueueSnackbar("Vui lòng chọn phương thức thanh toán!!");
@@ -362,8 +521,12 @@ const Cart = () => {
       ID_ODER: orderInfo,
       items: items,
       email: userInfo.EMAIL,
-      DIA_CHI_DON_HANG: `${userInfo.DIA_CHI_Wards}, ${userInfo.DIA_CHI_Districts}, ${userInfo.DIA_CHI_Provinces}`,
-      SO_DIEN_THOAI_DON_HANG: userInfo.SO_DIEN_THOAI,
+      DIA_CHI_DON_HANG: isSwitchOn
+        ? `${selectStreetName}, ${userInfo.DIA_CHI_Wards?.name}, ${userInfo.DIA_CHI_Districts?.name}, ${userInfo.DIA_CHI_Provinces?.name}`
+        : `${selectStreetName}, ${selectedWards?.name}, ${selectedDistrict?.name}, ${selectedProvince?.name}`,
+      SO_DIEN_THOAI_DON_HANG: isSwitchOn
+        ? `${userInfo.SO_DIEN_THOAI}`
+        : `${soDienThoai}`,
     };
     console.log("selectPhuongThucThanhToan", selectPhuongThucThanhToan);
     if (selectPhuongThucThanhToan === 1) {
@@ -473,6 +636,20 @@ const Cart = () => {
           selectPhuongThucThanhToan={selectPhuongThucThanhToan}
           setSelectPhuongThucThanhToan={setSelectPhuongThucThanhToan}
           currentTheme={currentTheme}
+          //
+          userInfo={userInfo}
+          isSwitchOn={isSwitchOn}
+          selectedWards={selectedWards}
+          setSelectedDistrict={setSelectedDistrict}
+          setSelectedProvince={setSelectedProvince}
+          setSelectStreetName={setSelectStreetName}
+          handleSwitchChange={handleSwitchChange}
+          setSoDienThoai={setSoDienThoai}
+          soDienThoai={soDienThoai}
+          selectStreetName={selectStreetName}
+          setSelectedWards={setSelectedWards}
+          selectedDistrict={selectedDistrict}
+          selectedProvince={selectedProvince}
         />
       </Grid>
     </Grid>

@@ -46,7 +46,7 @@ const SelectShoe = () => {
       fetchProduct(id);
     }
     if (!isAuthenticated) {
-      setIsSwitchOn(false);
+      navigate("/login");
     }
   }, [id, isAuthenticated]);
 
@@ -139,71 +139,6 @@ const SelectShoe = () => {
     }
   };
 
-  //THAY ĐỔI ĐỊA CHỈ
-  const [isSwitchOn, setIsSwitchOn] = useState(true); // Trạng thái của Switch
-  const handleSwitchChange = (event) => {
-    setIsSwitchOn(event.target.checked); // Cập nhật trạng thái
-  };
-  const [selectedProvince, setSelectedProvince] = useState(null);
-  const [selectedDistrict, setSelectedDistrict] = useState(null);
-  const [selectedWards, setSelectedWards] = useState(null);
-  const [selectStreetName, setSelectStreetName] = useState(null);
-  const [soDienThoai, setSoDienThoai] = useState(null);
-
-  const handleSummitThanhToan = async () => {
-    if (!isAuthenticated) {
-      enqueueSnackbar("Vui lòng đăng nhập để tiếp tục!");
-      return;
-    }
-    if (selectPhuongThucThanhToan === "") {
-      enqueueSnackbar("Vui lòng chọn phương thức thanh toán!!");
-      return;
-    }
-
-    // Tạo mã đơn hàng duy nhất
-    const orderId = uuidv4();
-    const orderInfo = `PhucShoes - Mã đơn hàng: ${orderId}`;
-    const requestData = {
-      idNguoiDung: userInfo.ID_NGUOI_DUNG,
-      idThanhToan: selectPhuongThucThanhToan,
-      tongTien: product.GIA,
-      trangThaiDonHang: "Đang chờ thanh toán",
-      ID_ODER: orderInfo,
-      items: [product],
-      email: userInfo.EMAIL,
-      DIA_CHI_DON_HANG: isSwitchOn
-        ? `${selectStreetName}, ${userInfo.DIA_CHI_Wards?.name}, ${userInfo.DIA_CHI_Districts?.name}, ${userInfo.DIA_CHI_Provinces?.name}`
-        : `${selectStreetName}, ${selectedWards?.name}, ${selectedDistrict?.name}, ${selectedProvince?.name}`,
-      SO_DIEN_THOAI_DON_HANG: isSwitchOn
-        ? `${userInfo.SO_DIEN_THOAI}`
-        : `${soDienThoai}`,
-    };
-
-    console.log("selectPhuongThucThanhToan", selectPhuongThucThanhToan);
-    if (selectPhuongThucThanhToan === 1) {
-      try {
-        const responsive = await axios.post(
-          "http://emailserivce.somee.com/api/Momo/CreatePaymentUrl",
-          {
-            fullName: userInfo.HO_TEN,
-            orderId: orderInfo,
-            options: "mutil",
-            orderInfo: orderInfo,
-            returnUrl: "http://localhost:3000/checkout",
-            amount: product.GIA, // Gửi tổng tiền trong giỏ hàng
-          }
-        );
-        axios.post(`${api}/don-hang`, requestData);
-        const paymentUrl = responsive.data.url;
-
-        window.location.href = paymentUrl;
-      } catch (error) {
-        console.error("Error during payment creation:", error);
-      }
-    } else if (selectPhuongThucThanhToan === 2) {
-      const response = await axios.post(`${api}/don-hang`, requestData);
-    }
-  };
   if (!product) {
     return <div>Loading...</div>; // Add a loading state
   }
@@ -390,134 +325,6 @@ const SelectShoe = () => {
             >
               Add To Cart
             </Button>
-            {/* ----------------- Cmt Code địa chỉ phương thức thanh toán ------------------ */}
-            {/* <FormControl sx={{ mb: 2, mt: 2 }}>
-              <InputLabel
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  color: currentTheme.color,
-                  fontWeight: "500",
-                }}
-              >
-                <Payments sx={{ mr: 1 }} />
-                Phương thức thanh toán
-              </InputLabel>
-              <Select
-                value={selectPhuongThucThanhToan}
-                label="Icon Phương thức thanh toán"
-                onChange={(e) => setSelectPhuongThucThanhToan(e.target.value)}
-                sx={{
-                  backgroundColor: currentTheme.backgroundColorLow,
-                  color: currentTheme.color,
-                }}
-              >
-                {" "}
-                <MenuItem value="">Xem tất cả</MenuItem>
-                {paymentMethods.map((item) => (
-                  <MenuItem key={item.ID_THANH_TOAN} value={item.ID_THANH_TOAN}>
-                    {item.PHUONG_THUC_THANH_TOAN}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>{" "}
-            {isSwitchOn ? (
-              <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-                <Switch
-                  checked={isSwitchOn} // Liên kết trạng thái với Switch
-                  onChange={handleSwitchChange}
-                  color="primary"
-                />
-                {userInfo && (
-                  <>
-                    <Typography
-                      variant="body2"
-                      color="white"
-                      sx={{ fontSize: "11px", color: currentTheme.color }}
-                    >
-                      {`Địa chỉ: ${userInfo.DIA_CHI_STREETNAME}, ${userInfo?.DIA_CHI_Wards}, 
-              ${userInfo?.DIA_CHI_Districts}, ${userInfo?.DIA_CHI_Provinces}`}
-                    </Typography>
-                  </>
-                )}
-              </Box>
-            ) : (
-              <>
-                <Switch
-                  checked={isSwitchOn} // Liên kết trạng thái với Switch
-                  onChange={handleSwitchChange}
-                  color="primary"
-                />{" "}
-                <Typography
-                  variant="body2"
-                  color="white"
-                  sx={{ fontSize: "11px", color: currentTheme.color }}
-                >
-                  {`Địa chỉ: ${selectStreetName || " "} ${selectedWards || ""} 
-        ${selectedDistrict || ""} ${selectedProvince || ""}`}
-                </Typography>
-                <AddressSelector
-                  selectedProvince={selectedProvince}
-                  selectedDistrict={selectedDistrict}
-                  selectedWards={selectedWards}
-                  //
-                  setSelectedProvince={setSelectedProvince}
-                  setSelectedDistrict={setSelectedDistrict}
-                  setSelectedWards={setSelectedWards}
-                  backgroundColor={"#343437"}
-                  color={"#fff"}
-                />{" "}
-                <TextField
-                  label="Tên đường"
-                  variant="outlined"
-                  value={selectStreetName} // Đảm bảo giá trị mặc định là chuỗi rỗng nếu không có dataUser hoặc EMAIL
-                  fullWidth
-                  InputProps={{
-                    style: { color: currentTheme.color }, // Màu chữ trong TextField
-                  }}
-                  onChange={(e) => setSelectStreetName(e.target.value)}
-                  InputLabelProps={{
-                    style: { color: currentTheme.color }, // Màu chữ nhãn
-                  }}
-                  sx={{
-                    backgroundColor: currentTheme.backgroundColorLow, // Màu nền của input
-                    "& .MuiInputLabel-root": { color: currentTheme.color }, // Màu chữ của label
-                    "& .MuiInputBase-input": { color: currentTheme.color }, // Màu chữ của input
-                    "& .MuiOutlinedInput-root": {
-                      "& fieldset": { borderColor: "#00000" }, // Màu viền
-                    },
-                    "& .MuiInputBase-root": {
-                      borderRadius: "4px", // Làm tròn góc nếu muốn
-                    },
-                  }}
-                />{" "}
-                <TextField
-                  label="Số điện thoại"
-                  variant="outlined"
-                  type="number"
-                  value={soDienThoai} // Đảm bảo giá trị mặc định là chuỗi rỗng nếu không có dataUser hoặc EMAIL
-                  fullWidth
-                  InputProps={{
-                    style: { color: currentTheme.color }, // Màu chữ trong TextField
-                  }}
-                  onChange={(e) => setSoDienThoai(e.target.value)}
-                  InputLabelProps={{
-                    style: { color: currentTheme.color }, // Màu chữ nhãn
-                  }}
-                  sx={{
-                    backgroundColor: currentTheme.backgroundColorLow, // Màu nền của input
-                    "& .MuiInputLabel-root": { color: currentTheme.color }, // Màu chữ của label
-                    "& .MuiInputBase-input": { color: currentTheme.color }, // Màu chữ của input
-                    "& .MuiOutlinedInput-root": {
-                      "& fieldset": { borderColor: "#00000" }, // Màu viền
-                    },
-                    "& .MuiInputBase-root": {
-                      borderRadius: "4px", // Làm tròn góc nếu muốn
-                    },
-                  }}
-                />
-              </>
-            )} */}
             <Divider sx={{ backgroundColor: "#555", mb: 2 }} />
             <Box>
               <Typography

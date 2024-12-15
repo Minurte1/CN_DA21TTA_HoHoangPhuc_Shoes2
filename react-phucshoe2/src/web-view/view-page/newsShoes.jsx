@@ -292,7 +292,7 @@ const NewsComponent = () => {
                 fontWeight: "bold", // Chữ đậm
               },
               ".Mui-selected": {
-                color: "#ffffff", // Màu chữ trắng
+                color: currentTheme.color, // Màu chữ trắng
               },
               ".MuiPaginationItem-ellipsis": {
                 color: "#999999", // Màu cho dấu "..."
