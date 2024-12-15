@@ -23,6 +23,7 @@ import "react-quill/dist/quill.snow.css";
 import ReactQuill from "react-quill";
 import { enqueueSnackbar } from "notistack";
 import { getThemeConfig } from "../../../../services/themeService";
+import { Add, Edit, Delete } from "@mui/icons-material";
 const modules = {
   toolbar: [
     // Tùy chỉnh tiêu đề
@@ -212,19 +213,29 @@ const BlogManager = () => {
   };
   return (
     <Container>
-      <Button variant="contained" color="primary" onClick={handleClickOpen}>
-        New Blog
-      </Button>
-      <Typography
-        variant="h5"
-        mt={4}
-        color="primary"
-        sx={{ textAlign: "left" }}
-        gutterBottom
-      >
-        Quản lý Carousel Sản Phẩm
-      </Typography>
-
+      {" "}
+      <Box sx={{ width: "100%", textAlign: "left", mt: 4 }}>
+        <Typography
+          variant="h5"
+          color="primary"
+          gutterBottom
+          sx={{ textAlign: "left" }}
+        >
+          QUẢN LÝ BÀI VIẾT
+        </Typography>
+        <Button
+          variant="outlined"
+          startIcon={<Add />}
+          onClick={handleClickOpen}
+          sx={{
+            marginBottom: 2,
+            backgroundColor: currentTheme.color,
+            color: currentTheme.backgroundColor,
+          }}
+        >
+          TẠO BÀI VIẾT
+        </Button>
+      </Box>
       <TableContainer
         component={Paper}
         sx={{

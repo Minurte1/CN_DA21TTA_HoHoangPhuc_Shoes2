@@ -53,7 +53,7 @@ const TatCaDonHangAdmin = () => {
     setSelectedOrderId(null);
   };
   const [currentPage, setCurrentPage] = useState(1); // Current page state
-  const [itemsPerPage] = useState(8); // Number of items per page
+  const [itemsPerPage] = useState(7); // Number of items per page
   const handlePageChange = (event, value) => {
     setCurrentPage(value); // Update current page
   };
@@ -62,7 +62,9 @@ const TatCaDonHangAdmin = () => {
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentOrders = orders.slice(indexOfFirstItem, indexOfLastItem); // Cắt mảng đơn hàng theo trang
   return (
-    <Container>
+    <Container
+      sx={{ height: "auto", backgroundColor: currentTheme.backgroundColor }}
+    >
       <Box sx={{ width: "100%", textAlign: "left", mt: 4, mb: 3 }}>
         <Typography variant="h5" color="primary">
           TẤT CẢ ĐƠN HÀNG
@@ -73,6 +75,7 @@ const TatCaDonHangAdmin = () => {
         sx={{
           backgroundColor: currentTheme.backgroundColor,
           color: currentTheme.color,
+          height: "100vh",
         }}
       >
         <Table>

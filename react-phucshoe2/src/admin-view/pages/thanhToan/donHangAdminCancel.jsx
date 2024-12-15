@@ -62,7 +62,13 @@ const TatCaDonHangAdminCancel = () => {
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentOrders = orders.slice(indexOfFirstItem, indexOfLastItem); // Cắt mảng đơn hàng theo trang
   return (
-    <Container>
+    <Container
+      sx={{
+        backgroundColor: currentTheme.backgroundColor,
+        color: currentTheme.color,
+        height: "auto",
+      }}
+    >
       <Box sx={{ width: "100%", textAlign: "left", mt: 4, mb: 3 }}>
         <Typography variant="h5" color="primary">
           DANH SÁCH ĐƠN HÀNG ĐÃ HỦY
@@ -73,6 +79,7 @@ const TatCaDonHangAdminCancel = () => {
         sx={{
           backgroundColor: currentTheme.backgroundColor,
           color: currentTheme.color,
+          height: "100vh",
         }}
       >
         <Table>

@@ -120,7 +120,7 @@ const DanhSachNguoiDungAdmin = () => {
         sx={{ textAlign: "left" }}
         gutterBottom
       >
-        Quản lý Carousel Sản Phẩm
+        Quản lý người dùng
       </Typography>
 
       <TableContainer

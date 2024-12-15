@@ -21,6 +21,7 @@ import GroupIcon from "@mui/icons-material/Group"; // Tương tác người dùn
 import ExpandLess from "@mui/icons-material/ExpandLess"; // Import đúng từ đây
 import ExpandMore from "@mui/icons-material/ExpandMore"; // Import đúng từ đây
 import BarChartIcon from "@mui/icons-material/BarChart";
+import BookmarkIcon from "@mui/icons-material/Bookmark";
 import { Link, useLocation } from "react-router-dom";
 import { getThemeConfig } from "../../services/themeService";
 const NavBarAdmin = () => {
@@ -664,7 +665,7 @@ const NavBarAdmin = () => {
             to="/admin/blog"
             sx={{
               borderRadius: "12px",
-              pl: 4,
+              // pl: 4,
               mt: 1,
               mb: 1,
               color: currentTheme.color,
@@ -677,6 +678,10 @@ const NavBarAdmin = () => {
               "&:hover": { backgroundColor: currentTheme.accentColor },
             }}
           >
+            <ListItemIcon>
+              <BookmarkIcon sx={{ color: currentTheme.color }} />
+            </ListItemIcon>
+
             <ListItemText primary="Blog" />
           </ListItem>
           {/* //----------------------- */}

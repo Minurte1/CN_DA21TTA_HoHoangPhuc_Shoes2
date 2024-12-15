@@ -99,8 +99,16 @@ const ThanhToanManager = () => {
   };
 
   return (
-    <Container>
-      <Box sx={{ width: "100%", textAlign: "left", mt: 4 }}>
+    <Container
+      sx={{ height: "100vh", backgroundColor: currentTheme.backgroundColor }}
+    >
+      <Box
+        sx={{
+          width: "100%",
+          textAlign: "left",
+          mt: 4,
+        }}
+      >
         <Typography
           variant="h5"
           color="primary"
