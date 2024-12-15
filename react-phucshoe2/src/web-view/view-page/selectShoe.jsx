@@ -95,10 +95,7 @@ const SelectShoe = () => {
       if (response.data.EC === 1) {
         enqueueSnackbar(response.data.EM, { variant: "success" });
         dispatch(setTotalCart(response.data.totalQuantity));
-
-        console.log(response.data.EM); // Thêm vào giỏ hàng thành công
       } else {
-        console.log("Lỗi:", response.data.EM); // Xử lý lỗi nếu có
         enqueueSnackbar(response.data.EM, { variant: "error" });
       }
     } catch (error) {
@@ -128,9 +125,7 @@ const SelectShoe = () => {
 
       if (response.data.EC === 1) {
         enqueueSnackbar(response.data.EM, { variant: "success" });
-        console.log(response.data.EM); // Thêm vào yêu thích thành công
       } else {
-        console.log("Lỗi:", response.data.EM); // Xử lý lỗi nếu có
         enqueueSnackbar(response.data.EM, { variant: "error" });
       }
     } catch (error) {
@@ -142,7 +137,7 @@ const SelectShoe = () => {
   if (!product) {
     return <div>Loading...</div>; // Add a loading state
   }
-  console.log("product => ", userInfo);
+
   return (
     <Container maxWidth="lg" className="container-select-game">
       <Grid container spacing={2}>

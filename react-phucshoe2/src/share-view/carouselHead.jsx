@@ -57,7 +57,7 @@ const CarouselHead = ({ carouselProducts }) => {
   const selectedProduct = carouselProducts.find(
     (product) => product.HINH_ANH_NEN_CAROUSEL === mainImage
   );
-  console.log("selectedProduct", selectedProduct);
+
   const handleBuyProduct = (id) => {
     navigate(`/selectShoe/${id}`);
   };
@@ -84,7 +84,6 @@ const CarouselHead = ({ carouselProducts }) => {
         dispatch(setTotalCart(response.data.totalQuantity));
         enqueueSnackbar(response.data.EM); // Thêm vào giỏ hàng thành công
       } else {
-        console.log("Lỗi:", response.data.EM); // Xử lý lỗi nếu có
         enqueueSnackbar(response.data.EM);
       }
     } catch (error) {

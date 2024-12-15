@@ -455,7 +455,6 @@ const Cart = () => {
   };
 
   const handleRemoveProduct = async (id) => {
-    console.log("handleRemoveProduct", id);
     try {
       const response = await axios.post(`${api}/gio-hang/remove-products`, {
         userId: userInfo.ID_NGUOI_DUNG,
@@ -473,13 +472,13 @@ const Cart = () => {
   const handleSwitchChange = (event) => {
     setIsSwitchOn(event.target.checked); // Cập nhật trạng thái
   };
-  console.log("user info", userInfo);
+
   const [selectedProvince, setSelectedProvince] = useState(null);
   const [selectedDistrict, setSelectedDistrict] = useState(null);
   const [selectedWards, setSelectedWards] = useState(null);
   const [selectStreetName, setSelectStreetName] = useState(null);
   const [soDienThoai, setSoDienThoai] = useState(null);
-  console.log("selectedWards", selectedWards);
+
   const handleSummitThanhToan = async () => {
     if (selectPhuongThucThanhToan === "") {
       enqueueSnackbar("Vui lòng chọn phương thức thanh toán!!");
@@ -506,7 +505,7 @@ const Cart = () => {
         ? `${userInfo.SO_DIEN_THOAI}`
         : `${soDienThoai}`,
     };
-    console.log("selectPhuongThucThanhToan", selectPhuongThucThanhToan);
+
     if (selectPhuongThucThanhToan === 1) {
       try {
         dispatch(setIdOder(orderId));
@@ -530,8 +529,10 @@ const Cart = () => {
       }
     } else if (selectPhuongThucThanhToan === 2) {
       const response = await axios.post(`${api}/don-hang`, requestData);
+
       if (response.data.EC == 1) {
         enqueueSnackbar(response.data.EM, { variant: "success" });
+        fetchCartItems();
       }
     }
   };

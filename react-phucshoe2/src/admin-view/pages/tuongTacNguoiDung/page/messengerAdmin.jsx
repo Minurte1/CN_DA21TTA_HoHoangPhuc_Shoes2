@@ -29,7 +29,6 @@ const MessengerAdmin = () => {
       setSocket(newSocket);
 
       newSocket.on("connect", () => {
-        console.log("Socket connected with ID:", newSocket.id);
         newSocket.emit("user_connected", username);
       });
 
@@ -37,13 +36,10 @@ const MessengerAdmin = () => {
         setMessages((prevMessages) => [...prevMessages, message]);
       });
 
-      newSocket.on("disconnect", () => {
-        console.log("Socket disconnected");
-      });
+      newSocket.on("disconnect", () => {});
 
       return () => {
         newSocket.disconnect();
-        console.log("Socket disconnected on cleanup");
       };
     }
   }, [isAuthenticated]);

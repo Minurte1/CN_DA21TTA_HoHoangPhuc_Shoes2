@@ -25,10 +25,9 @@ const PaymentMoMo = () => {
           amount: 123456,
         }
       );
-      console.log(responsive.data.url);
+
       // Lấy URL từ phản hồi
       const paymentUrl = responsive.data.url;
-      console.log(paymentUrl);
 
       // Chuyển hướng đến URL thanh toán
       window.location.href = paymentUrl;

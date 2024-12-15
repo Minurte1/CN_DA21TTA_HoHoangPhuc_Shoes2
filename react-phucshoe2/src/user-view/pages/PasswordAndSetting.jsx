@@ -59,12 +59,17 @@ const PasswordAndSetting = () => {
             THEMES: themesWeb, // Cập nhật THEMES từ response
           })
         );
-        console.log("Language updated successfully");
+        if (response.data.EC === 1) {
+          enqueueSnackbar(response.data.EM, { variant: "success" });
+        } else {
+          enqueueSnackbar(response.data.EM, { variant: "error" });
+        }
       } else {
-        console.error("Failed to update language");
+        enqueueSnackbar(response.data.EM, { variant: "error" });
       }
     } catch (error) {
       console.error("Error while updating language:", error);
+      enqueueSnackbar(error.response.data.EM, { variant: "error" });
     }
   };
   //api change language
@@ -79,12 +84,13 @@ const PasswordAndSetting = () => {
         LANGUAGE: lang,
       });
       if (response.status === 200) {
-        console.log("Language updated successfully");
+        enqueueSnackbar(response.data.EM);
       } else {
-        console.error("Failed to update language");
+        enqueueSnackbar(response.data.EM, { variant: "error" });
       }
     } catch (error) {
       console.error("Error while updating language:", error);
+      enqueueSnackbar(error.response.data.EM, { variant: "error" });
     }
   };
 

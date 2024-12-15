@@ -42,7 +42,7 @@ const ChatLieuManager = () => {
   const fetchMaterials = async () => {
     try {
       const response = await axios.get(`${api}/chat-lieu/`); // Update to your API endpoint
-      console.log("fetchMaterials", response.data);
+
       if (response.data.EC == 1) {
         setMaterials(response.data.DT);
       }

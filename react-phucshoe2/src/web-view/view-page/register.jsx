@@ -72,7 +72,6 @@ const RegistrationForm = () => {
       }
     }
     if (selectedDate && isOver18(selectedDate)) {
-      console.log("selectedDate", selectedDate);
       setIsOpenThongTinUser(!isOpenThongTinUser);
     } else {
       enqueueSnackbar("Bạn phải trên 18 tuổi để tạo tài khoản.");

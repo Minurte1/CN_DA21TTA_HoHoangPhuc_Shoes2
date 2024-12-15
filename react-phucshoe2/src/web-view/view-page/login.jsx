@@ -24,7 +24,6 @@ const LoginPage = () => {
 
   const loginGoogle = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
-      console.log("Token Response:", tokenResponse);
       setTokenGoogle(tokenResponse.access_token);
 
       // Lấy thông tin người dùng từ Google API
@@ -39,7 +38,6 @@ const LoginPage = () => {
         );
 
         setUser(userInfo.data);
-        console.log("User Info:", userInfo.data);
       } catch (error) {
         console.error("Error fetching user info:", error);
       }
@@ -51,14 +49,12 @@ const LoginPage = () => {
 
   useEffect(() => {
     if (user) {
-      console.log("check user =>", user.email);
       const fetchData = async () => {
         try {
           const response = await axios.post(
             `${process.env.REACT_APP_URL_SERVER}/login/google`,
             { email: user.email, HO_TEN: user.name }
           );
-          console.log("check token =>", response.data);
 
           if (response.data.EC === 200) {
             localStorage.setItem("THEMES", response.data.DT.userInfo.THEMES);
@@ -106,7 +102,6 @@ const LoginPage = () => {
         `${process.env.REACT_APP_URL_SERVER}/login`,
         { email, password }
       );
-      console.log("Response:", response.data);
 
       if (response.data.EC === 1) {
         Cookies.remove("accessToken");

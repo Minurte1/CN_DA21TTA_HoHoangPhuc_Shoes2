@@ -10,7 +10,7 @@ export const login = async (account) => {
     const response = await axiosInstance.post(`${apiUrl}/users/login`, {
       account,
     });
-    console.log("response", response);
+
     if (response.data.EC === 200) {
       Cookies.set("accessToken", response.data.DT.accessToken, {
         expires: 7,
@@ -87,7 +87,6 @@ export const deleteUserById = async (userId) => {
 };
 export const verifyAdmin = async (accessToken) => {
   if (!accessToken) {
-    console.log("No access token found");
     return false;
   }
 
@@ -100,7 +99,7 @@ export const verifyAdmin = async (accessToken) => {
     );
 
     // Kết quả phản hồi từ backend
-    console.log("response", response.data);
+
     if (response.data.DT.isAdmin) {
       // console.log("User is admin");
       return true;

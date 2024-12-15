@@ -405,7 +405,6 @@ const WishlistProducts = () => {
         }
       );
 
-      console.log("responsive ", response.data);
       if (response.data.EC === 1) {
         // Cập nhật trạng thái giỏ hàng thành công
         fetchWishlistItems();
@@ -427,7 +426,7 @@ const WishlistProducts = () => {
         idSanPham: idSanPham,
         idNguoiDung: userInfo.ID_NGUOI_DUNG,
       });
-      console.log("daa", response.data);
+
       if (response.data.EC === 1) {
         fetchWishlistItems();
         enqueueSnackbar(response.data.EM); // Thông báo thành công

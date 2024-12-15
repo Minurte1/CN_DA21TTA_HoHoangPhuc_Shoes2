@@ -109,7 +109,7 @@ const LichSuMuaHangUser = () => {
     }
     handleCloseDialog();
   };
-  console.log("order.chiTietHoaDon", dataChiTietHoaDon);
+
   return (
     <Box sx={{ p: 2, bgcolor: currentTheme.backgroundColor, height: "auto" }}>
       {/* Tabs */}

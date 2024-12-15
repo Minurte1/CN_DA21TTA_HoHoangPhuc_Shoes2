@@ -116,7 +116,7 @@ const Home = () => {
       </div>
     );
   }
-  console.log("t.ProductsGirl", t.ProductsGirl);
+
   return (
     <>
       <div className="container-home">

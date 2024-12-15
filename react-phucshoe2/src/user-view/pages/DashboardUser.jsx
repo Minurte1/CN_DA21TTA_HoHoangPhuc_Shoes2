@@ -114,7 +114,7 @@ const UserProfile = () => {
         `${api}/user/${userInfo.ID_NGUOI_DUNG}`,
         updatedData
       );
-      console.log("response.data.DT", response.data);
+
       if (response.data.EC === 1) {
         Cookies.remove("accessToken");
         const accessToken = response.data.accessToken;

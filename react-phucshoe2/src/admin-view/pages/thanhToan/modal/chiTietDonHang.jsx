@@ -49,7 +49,7 @@ const ProductDetailModal = ({ productId, onClose }) => {
   if (!productDetails) return null; // Nếu chưa có dữ liệu thì không render gì
 
   const { chiTietHoaDon } = productDetails;
-  console.log(productDetails);
+
   return (
     <Dialog
       open={Boolean(productId)}

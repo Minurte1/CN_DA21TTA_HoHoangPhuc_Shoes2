@@ -17,7 +17,7 @@ const CheckOutMoMo = () => {
   const { isAuthenticated, userInfo, itemCart, totalCart } = useSelector(
     (state) => state.auth
   );
-  console.log("itemCart", itemCart);
+
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
 
@@ -88,7 +88,7 @@ const CheckOutMoMo = () => {
       toast.error("Đã có lỗi khi xử lý đơn hàng.");
     }
   };
-  console.log("paymentInfo", paymentInfo);
+
   useEffect(() => {
     // Kiểm tra nếu đã có thông tin thanh toán thành công, thực hiện xử lý đơn hàng
     if (paymentInfo.message === "Successful.") {

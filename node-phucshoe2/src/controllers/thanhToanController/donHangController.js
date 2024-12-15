@@ -245,7 +245,7 @@ const createDON_HANG = async (req, res) => {
       ]);
       return res.status(200).json({
         EM: "Mua hàng thành công, vui lòng kiểm tra đơn hàng",
-        EC: -1,
+        EC: 1,
       });
     }
   } catch (error) {

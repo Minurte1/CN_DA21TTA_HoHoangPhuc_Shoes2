@@ -49,7 +49,7 @@ const AvatarChanger = ({ currentAvatar, onAvatarChange, userId }) => {
       );
       if (response.data.EC === 1) {
         Cookies.remove("accessToken");
-        console.log(" response.data.DT", response.data.accessToken);
+
         const accessToken = response.data.accessToken;
 
         Cookies.set("accessToken", accessToken, { expires: 7 });

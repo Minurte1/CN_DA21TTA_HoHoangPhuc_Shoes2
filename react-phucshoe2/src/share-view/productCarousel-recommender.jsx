@@ -102,10 +102,7 @@ const RecommenderProductCarousel = ({ ID_SAN_PHAM }) => {
       if (response.data.EC === 1) {
         enqueueSnackbar(response.data.EM);
         dispatch(setTotalCart(response.data.totalQuantity));
-
-        console.log(response.data.EM); // Thêm vào giỏ hàng thành công
       } else {
-        console.log("Lỗi:", response.data.EM); // Xử lý lỗi nếu có
         enqueueSnackbar(response.data.EM);
       }
     } catch (error) {
@@ -130,9 +127,7 @@ const RecommenderProductCarousel = ({ ID_SAN_PHAM }) => {
 
       if (response.data.EC === 1) {
         enqueueSnackbar(response.data.EM);
-        console.log(response.data.EM); // Thêm vào yêu thích thành công
       } else {
-        console.log("Lỗi:", response.data.EM); // Xử lý lỗi nếu có
         enqueueSnackbar(response.data.EM);
       }
     } catch (error) {

@@ -60,7 +60,7 @@ const CarouselManager = () => {
   const fetchCarouselProducts = async () => {
     try {
       const response = await axios.get(`${api}/carousel-products`); // Update with your API endpoint
-      console.log("fetchCarouselProducts", response.data);
+
       if (response.data.EC === 1) {
         setCarouselProducts(response.data.DT);
       }

@@ -110,7 +110,6 @@ const TatCaDonHangAdminProcess = () => {
 
   // Hàm mở modal và truyền ID đơn hàng vào
   const handleViewDetails = (orderId) => {
-    console.log("orderId", orderId);
     setSelectedOrderId(orderId);
     setOpenModal(true);
   };

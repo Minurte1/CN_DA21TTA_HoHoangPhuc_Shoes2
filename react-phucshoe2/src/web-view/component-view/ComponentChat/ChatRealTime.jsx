@@ -38,32 +38,25 @@ const ChatRealTime = () => {
 
   useEffect(() => {
     if (isAuthenticated) {
-      console.log("isAuthenticated =>>>>>>>>>>>>>>>", isAuthenticated);
-
       const newSocket = io("http://localhost:3002");
       setSocket(newSocket);
 
       // Lắng nghe sự kiện khi socket kết nối thành công
       newSocket.on("connect", () => {
-        console.log("Socket connected with ID:", newSocket.id);
         // Khi socket kết nối thành công, thông báo userId cho server
         newSocket.emit("user_connected", username);
       });
 
       // Lắng nghe tin nhắn mới từ server
       newSocket.on("receive_message", (message) => {
-        console.log("Tin nhắn mới:", message);
         setTinNhan((prevMessages) => [...prevMessages, message]);
       });
 
       // Lắng nghe sự kiện khi ngắt kết nối
-      newSocket.on("disconnect", () => {
-        console.log("Socket disconnected");
-      });
+      newSocket.on("disconnect", () => {});
 
       return () => {
         newSocket.disconnect(); // Ngắt kết nối khi component bị hủy
-        console.log("Socket disconnected on cleanup");
       };
     }
   }, [isAuthenticated]);
@@ -109,7 +102,6 @@ const ChatRealTime = () => {
       if (response.data.EC === 1) {
         handleUserIb();
         // setTinNhan((prevMessages) => [...prevMessages, response.data.DT]);
-        // console.log("Tin nhắn mới:", response.data.DT);
       } else {
         console.error("Gửi tin nhắn thất bại:", response.data.EM);
       }
@@ -134,7 +126,7 @@ const ChatRealTime = () => {
         `http://localhost:3002/tin-nhan/messages`,
         { ID_NGUOI_DUNG: userInfo.ID_NGUOI_DUNG }
       );
-      console.log("response.data ", response.data.DT);
+
       setTinNhan(response.data.DT);
     } catch (error) {
       if (error.response && error.response.status === 404) {
@@ -155,7 +147,7 @@ const ChatRealTime = () => {
         chatContainerRef.current.scrollHeight;
     }
   }, [TinNhan]);
-  console.log("tin nhan ", TinNhan);
+
   return (
     <>
       <div className="container-chat">

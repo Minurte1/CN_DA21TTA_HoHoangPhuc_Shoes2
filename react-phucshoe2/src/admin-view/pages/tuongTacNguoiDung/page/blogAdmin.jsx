@@ -4,6 +4,7 @@ import { Button, Container, Box, TextField } from "@mui/material";
 import { useSelector } from "react-redux";
 import "react-quill/dist/quill.snow.css";
 import ReactQuill from "react-quill";
+import { enqueueSnackbar } from "notistack";
 const modules = {
   toolbar: [
     // Tùy chỉnh tiêu đề
@@ -57,74 +58,84 @@ const BlogManager = () => {
   const [images, setImages] = useState(null);
   const [descriptionTitle, setDecripttionTitle] = useState("");
   // Hàm xử lý lưu bài viết mới
-  const handleSave = () => {
+  const handleSave = async () => {
     const formData = new FormData();
 
-    if (editId) {
-      // Truyền dữ liệu cập nhật vào formData
-      formData.append("content", content);
+    try {
+      if (editId) {
+        // Truyền dữ liệu cập nhật vào formData
+        formData.append("content", content);
 
-      axios
-        .put(`${api}/bai-viet/${editId}`, formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        })
-        .then((response) => {
-          console.log("Updated Content:", response.data);
-          alert("Content Updated");
-        })
-        .catch((error) => {
-          console.error(error);
-          alert("Failed to update content");
-        });
-    } else {
-      // Truyền dữ liệu tạo mới vào formData
-      formData.append("NOI_DUNG_BAIVIET", content);
-      formData.append("TIEU_DE", title);
-      formData.append("ID_NGUOI_DUNG", userInfo.ID_NGUOI_DUNG);
-      formData.append("HINH_ANH_BAIVIET", images); // Hình ảnh
-      formData.append("NOI_DUNG_TIEU_DE", descriptionTitle);
+        // Gửi yêu cầu PUT để cập nhật
+        const response = await axios.put(
+          `${api}/bai-viet/${editId}`,
+          formData,
+          {
+            headers: { "Content-Type": "multipart/form-data" },
+          }
+        );
+        if (response.data.EC === 1) {
+          enqueueSnackbar(response.data.EM, { variant: "success" });
+        } else {
+          enqueueSnackbar(response.data.EM, { variant: "error" });
+        }
+      } else {
+        // Truyền dữ liệu tạo mới vào formData
+        formData.append("NOI_DUNG_BAIVIET", content);
+        formData.append("TIEU_DE", title);
+        formData.append("ID_NGUOI_DUNG", userInfo.ID_NGUOI_DUNG);
+        formData.append("HINH_ANH_BAIVIET", images); // Hình ảnh
+        formData.append("NOI_DUNG_TIEU_DE", descriptionTitle);
 
-      axios
-        .post(`${api}/bai-viet`, formData, {
+        // Gửi yêu cầu POST để tạo mới
+        const response = await axios.post(`${api}/bai-viet`, formData, {
           headers: { "Content-Type": "multipart/form-data" },
-        })
-        .then((response) => {
-          console.log("Created Content:", response.data);
-          alert("Content Created");
-        })
-        .catch((error) => {
-          console.error(error);
-          alert("Failed to create content");
         });
+        if (response.data.EC === 1) {
+          enqueueSnackbar(response.data.EM, { variant: "success" });
+        } else {
+          enqueueSnackbar(response.data.EM, { variant: "error" });
+        }
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Failed to save content");
+      enqueueSnackbar(error.response.data.EM, { variant: "error" });
     }
   };
 
   // Hàm xử lý xóa bài viết
-  const handleDelete = (id) => {
-    axios
-      .delete(`/bai-viet/${id}`)
-      .then((response) => {
-        console.log("Deleted Content:", response.data);
-        alert("Content Deleted");
-      })
-      .catch((error) => {
-        console.error(error);
-        alert("Failed to delete content");
-      });
+  const handleDelete = async (id) => {
+    try {
+      // Gửi yêu cầu xóa bài viết
+      const response = await axios.delete(`/bai-viet/${id}`);
+      if (response.data.EC === 1) {
+        enqueueSnackbar(response.data.EM, { variant: "success" });
+      } else {
+        enqueueSnackbar(response.data.EM, { variant: "error" });
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Failed to delete content");
+    }
   };
 
   // Hàm tải bài viết để chỉnh sửa
-  const handleEdit = (id) => {
-    axios
-      .get(`/bai-viet/${id}`)
-      .then((response) => {
+  const handleEdit = async (id) => {
+    try {
+      // Tải bài viết để chỉnh sửa
+      const response = await axios.get(`/bai-viet/${id}`);
+      if (response.data.EC === 1) {
+        enqueueSnackbar(response.data.EM, { variant: "success" });
         setEditId(id);
         setContent(response.data.content);
-      })
-      .catch((error) => {
-        console.error(error);
-        alert("Failed to load content");
-      });
+      } else {
+        enqueueSnackbar(response.data.EM, { variant: "error" });
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Failed to load content");
+    }
   };
 
   // Hàm tải danh sách bài viết
