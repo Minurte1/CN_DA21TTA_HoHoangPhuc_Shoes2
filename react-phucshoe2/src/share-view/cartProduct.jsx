@@ -224,37 +224,8 @@ const CartSummary = ({
         ))}
       </Select>
     </FormControl>{" "}
+    <br />
     {/* ----------------- Cmt Code địa chỉ phương thức thanh toán ------------------ */}
-    <FormControl sx={{ mb: 2, mt: 2 }}>
-      <InputLabel
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          color: currentTheme.color,
-          fontWeight: "500",
-        }}
-      >
-        <Payments sx={{ mr: 1 }} />
-        Phương thức thanh toán
-      </InputLabel>
-      <Select
-        value={selectPhuongThucThanhToan}
-        label="Icon Phương thức thanh toán"
-        onChange={(e) => setSelectPhuongThucThanhToan(e.target.value)}
-        sx={{
-          backgroundColor: currentTheme.backgroundColorLow,
-          color: currentTheme.color,
-        }}
-      >
-        {" "}
-        <MenuItem value="">Xem tất cả</MenuItem>
-        {paymentMethods.map((item) => (
-          <MenuItem key={item.ID_THANH_TOAN} value={item.ID_THANH_TOAN}>
-            {item.PHUONG_THUC_THANH_TOAN}
-          </MenuItem>
-        ))}
-      </Select>
-    </FormControl>{" "}
     {isSwitchOn ? (
       <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
         <Switch
@@ -285,10 +256,14 @@ const CartSummary = ({
         <Typography
           variant="body2"
           color="white"
-          sx={{ fontSize: "11px", color: currentTheme.color }}
+          sx={{ fontSize: "11px", color: currentTheme.color, mb: 2 }}
         >
-          {`Địa chỉ: ${selectStreetName || " "} ${selectedWards || ""} 
-        ${selectedDistrict || ""} ${selectedProvince || ""}`}
+          {`Địa chỉ: ${selectStreetName || " "}, ${
+            selectedWards?.full_name || ""
+          } 
+        , ${selectedDistrict?.full_name || ""},  ${
+            selectedProvince?.full_name || ""
+          }`}
         </Typography>
         <AddressSelector
           selectedProvince={selectedProvince}
@@ -314,6 +289,7 @@ const CartSummary = ({
             style: { color: currentTheme.color }, // Màu chữ nhãn
           }}
           sx={{
+            mt: 2,
             backgroundColor: currentTheme.backgroundColorLow, // Màu nền của input
             "& .MuiInputLabel-root": { color: currentTheme.color }, // Màu chữ của label
             "& .MuiInputBase-input": { color: currentTheme.color }, // Màu chữ của input
@@ -339,6 +315,7 @@ const CartSummary = ({
             style: { color: currentTheme.color }, // Màu chữ nhãn
           }}
           sx={{
+            mt: 2,
             backgroundColor: currentTheme.backgroundColorLow, // Màu nền của input
             "& .MuiInputLabel-root": { color: currentTheme.color }, // Màu chữ của label
             "& .MuiInputBase-input": { color: currentTheme.color }, // Màu chữ của input
@@ -501,7 +478,7 @@ const Cart = () => {
   const [selectedWards, setSelectedWards] = useState(null);
   const [selectStreetName, setSelectStreetName] = useState(null);
   const [soDienThoai, setSoDienThoai] = useState(null);
-
+  console.log("selectedWards", selectedWards);
   const handleSummitThanhToan = async () => {
     if (selectPhuongThucThanhToan === "") {
       enqueueSnackbar("Vui lòng chọn phương thức thanh toán!!");
