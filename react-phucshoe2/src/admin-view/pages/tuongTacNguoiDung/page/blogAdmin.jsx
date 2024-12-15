@@ -1,10 +1,28 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Button, Container, Box, TextField } from "@mui/material";
+import {
+  Button,
+  Container,
+  Box,
+  TextField,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Typography,
+  Paper,
+  TableRow,
+  TableCell,
+  TableContainer,
+  Table,
+  TableHead,
+  TableBody,
+} from "@mui/material";
 import { useSelector } from "react-redux";
 import "react-quill/dist/quill.snow.css";
 import ReactQuill from "react-quill";
 import { enqueueSnackbar } from "notistack";
+import { getThemeConfig } from "../../../../services/themeService";
 const modules = {
   toolbar: [
     // Tùy chỉnh tiêu đề
@@ -49,6 +67,7 @@ const formats = [
 ];
 
 const BlogManager = () => {
+  const currentTheme = getThemeConfig(localStorage.getItem("THEMES") || "dark");
   const api = process.env.REACT_APP_URL_SERVER;
   const { isAuthenticated, userInfo } = useSelector((state) => state.auth);
   const [content, setContent] = useState("");
@@ -57,7 +76,23 @@ const BlogManager = () => {
 
   const [images, setImages] = useState(null);
   const [descriptionTitle, setDecripttionTitle] = useState("");
-  // Hàm xử lý lưu bài viết mới
+  const [listBlog, setListBlog] = useState([]);
+  useEffect(() => {
+    const fetchBlog = async () => {
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_URL_SERVER}/bai-viet`
+        );
+        if (response.data.EC === 1) {
+          setListBlog(response.data.DT);
+        }
+      } catch (err) {
+      } finally {
+      }
+    };
+
+    fetchBlog();
+  }, []);
   const handleSave = async () => {
     const formData = new FormData();
 
@@ -102,6 +137,13 @@ const BlogManager = () => {
       alert("Failed to save content");
       enqueueSnackbar(error.response.data.EM, { variant: "error" });
     }
+  };
+  // Hàm mở dialog và hiển thị thông tin người dùng
+  const handleEditClick = (blog) => {
+    setOpen(true);
+    setTitle(blog.TIEU_DE);
+    setDecripttionTitle(blog.NOI_DUNG_TIEU_DE);
+    setEditId(blog.ID_BAI_VIET);
   };
 
   // Hàm xử lý xóa bài viết
@@ -160,50 +202,164 @@ const BlogManager = () => {
   const handleQuillChange = (value) => {
     setContent(value);
   };
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+  const [open, setOpen] = useState(false);
+  // Đóng modal
+  const handleClose = () => {
+    setOpen(false);
+  };
   return (
     <Container>
-      <h2>Blog Editor</h2>
-      <TextField
-        fullWidth
-        label="Tiêu đề bài viết"
-        name="title"
-        value={title || ""}
-        sx={{ width: "400px" }}
-        onChange={(e) => setTitle(e.target.value)}
-        margin="normal"
-      />
+      <Button variant="contained" color="primary" onClick={handleClickOpen}>
+        New Blog
+      </Button>
+      <Typography
+        variant="h5"
+        mt={4}
+        color="primary"
+        sx={{ textAlign: "left" }}
+        gutterBottom
+      >
+        Quản lý Carousel Sản Phẩm
+      </Typography>
 
-      <TextField
-        multiline
-        margin="dense"
-        label="Nôi dung tiêu đề"
-        type="text"
-        fullWidth
-        name="NOI_DUNG_TIEU_DE"
-        minRows={5}
-        // sx={{ width: "400px" }}
-        InputLabelProps={{ shrink: true }}
-        onChange={(e) => setDecripttionTitle(e.target.value)}
-      />
-      <TextField
-        margin="dense"
-        label="Hình ảnh bài viết"
-        type="file"
-        fullWidth
-        name="images"
-        sx={{ width: "400px" }}
-        InputLabelProps={{ shrink: true }}
-        onChange={handleFileChange}
-      />
-      <ReactQuill
-        theme="snow"
-        value={content}
-        onChange={handleQuillChange} // Gọi hàm handleQuillChange
-        modules={modules}
-        formats={formats}
-        className="custom-quill"
-      />
-      <Button onClick={handleSave}>Save</Button>
+      <TableContainer
+        component={Paper}
+        sx={{
+          backgroundColor: currentTheme.backgroundColor,
+          color: currentTheme.color,
+          borderRadius: "8px",
+          boxShadow: "none",
+        }}
+      >
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell sx={{ color: currentTheme.color }}>Tiêu đề</TableCell>
+              <TableCell
+                sx={{
+                  color: currentTheme.color,
+                }}
+              >
+                Nội dung tiêu đề
+              </TableCell>
+              <TableCell sx={{ color: currentTheme.color }}>Ngày Tạo</TableCell>
+              <TableCell sx={{ color: currentTheme.color }}>
+                Trạng thái
+              </TableCell>{" "}
+              <TableCell sx={{ color: currentTheme.color }}>Hình ảnh</TableCell>
+              <TableCell sx={{ color: currentTheme.color }}>Actions</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {listBlog.map((blog) => (
+              <TableRow key={blog.ID_NGUOI_DUNG}>
+                <TableCell sx={{ color: currentTheme.color }}>
+                  {blog.TIEU_DE}
+                </TableCell>
+                <TableCell
+                  sx={{
+                    color: currentTheme.color,
+                  }}
+                >
+                  {blog.NOI_DUNG_TIEU_DE}
+                </TableCell>
+                <TableCell sx={{ color: currentTheme.color }}>
+                  {new Date(blog.NGAY_CAP_NHAT_BAIVIET).toLocaleDateString(
+                    "vi-VN"
+                  )}
+                </TableCell>
+                <TableCell
+                  sx={{
+                    color:
+                      blog.TRANG_THAI_BAIVIET === "Đang hoạt động"
+                        ? "green"
+                        : "red",
+                    fontWeight: "bold",
+                  }}
+                >
+                  {blog.TRANG_THAI_BAIVIET}
+                </TableCell>
+                <TableCell>
+                  <img
+                    style={{ width: "60px" }}
+                    src={
+                      blog.HINH_ANH_BAIVIET
+                        ? `${api}/images/${blog.HINH_ANH_BAIVIET}`
+                        : ""
+                    }
+                    alt={blog.HINH_ANH_BAIVIET || "User"}
+                  ></img>
+                </TableCell>
+
+                <TableCell>
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    onClick={() => handleEditClick(blog)}
+                  >
+                    Chỉnh sửa
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <Dialog open={open} onClose={handleClose}>
+        <DialogTitle>Blog Editor</DialogTitle>
+        <DialogContent>
+          <TextField
+            fullWidth
+            label="Tiêu đề bài viết"
+            name="title"
+            value={title || ""}
+            onChange={(e) => setTitle(e.target.value)}
+            margin="normal"
+          />
+
+          <TextField
+            multiline
+            margin="dense"
+            label="Nội dung tiêu đề"
+            type="text"
+            value={descriptionTitle}
+            fullWidth
+            name="NOI_DUNG_TIEU_DE"
+            minRows={5}
+            InputLabelProps={{ shrink: true }}
+            onChange={(e) => setDecripttionTitle(e.target.value)}
+          />
+
+          <TextField
+            margin="dense"
+            label="Hình ảnh bài viết"
+            type="file"
+            fullWidth
+            name="images"
+            InputLabelProps={{ shrink: true }}
+            onChange={handleFileChange}
+          />
+
+          <ReactQuill
+            theme="snow"
+            value={content}
+            onChange={handleQuillChange}
+            className="custom-quill"
+          />
+        </DialogContent>
+
+        <DialogActions>
+          <Button onClick={handleClose} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleSave} color="primary">
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   );
 };
