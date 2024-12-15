@@ -30,6 +30,7 @@ function App() {
     <div
       className="App"
       style={{
+        height: "auto",
         backgroundColor: currentTheme.backgroundColor, // Sửa mã màu ở đây
         color: currentTheme.color, // Đặt màu chữ phù hợp
       }}

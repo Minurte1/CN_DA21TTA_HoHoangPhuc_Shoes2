@@ -121,176 +121,206 @@ const LichSuMuaHangUser = () => {
         <Tab sx={{ color: currentTheme.color }} label="Chưa thanh toán" />
       </Tabs>
       {/* Danh sách đơn hàng */}
-      <Box
-        mt={2}
-        sx={{ backgroundColor: currentTheme.backgroundColor, height: "100vh" }}
-      >
-        {dataChiTietHoaDon?.map((order, index) => (
-          <>
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                backgroundColor: currentTheme.backgroundColor,
-              }}
-            >
-              {" "}
-              <Paper
-                key={index}
-                sx={{
-                  mb: 2,
-                  p: 2,
-                  textAlign: "left",
-                  backgroundColor: currentTheme.backgroundColor,
-                  color: currentTheme.color,
-                }}
-              >
-                {" "}
-                <Divider sx={{ my: 1, backgroundColor: "#555" }} />
-                {/* Thông tin đơn hàng */}
-                <Typography variant="h6" sx={{ color: currentTheme.color }}>
-                  {order.ID_ODER}
-                </Typography>
-                <Typography
-                  variant="body2"
-                  sx={{ mb: 1, color: currentTheme.color }}
+      {dataChiTietHoaDon.length > 0 ? (
+        <>
+          <Box
+            mt={2}
+            sx={{
+              backgroundColor: currentTheme.backgroundColor,
+              height: "auto",
+            }}
+          >
+            {dataChiTietHoaDon?.map((order, index) => (
+              <>
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    backgroundColor: currentTheme.backgroundColor,
+                  }}
                 >
-                  Trạng thái:
-                  <Typography
-                    component="span"
-                    sx={{
-                      ml: 2,
-                      fontWeight: 600,
-                      color:
-                        order.TRANG_THAI_DON_HANG === "Giao dịch thành công"
-                          ? "#5ab96c"
-                          : order.TRANG_THAI_DON_HANG ===
-                            "Đã thanh toán thành công và đang chờ giao hàng"
-                          ? "#cc7c2c"
-                          : order.TRANG_THAI_DON_HANG === "Đang chờ thanh toán"
-                          ? "#cc7c2c"
-                          : order.TRANG_THAI_DON_HANG === "Đã hủy"
-                          ? "red"
-                          : currentTheme.color, // Bạn có thể thêm một màu mặc định nếu không khớp với bất kỳ điều kiện nào
-                    }}
-                  >
-                    {order.TRANG_THAI_DON_HANG} || Với phương thức thanh toán{" "}
-                    {order.PHUONG_THUC_THANH_TOAN}
-                  </Typography>
-                </Typography>
-                <Typography
-                  variant="body1"
-                  sx={{ mb: 1, color: currentTheme.color }}
-                >
-                  Tổng tiền: {order.TONG_TIEN.toLocaleString("vi-VN")}₫
-                </Typography>
-                <Divider sx={{ my: 2 }} />
-                {/* Danh sách sản phẩm */}
-                {order.chiTietHoaDon?.map((product, prodIndex) => (
-                  <Box
-                    key={prodIndex}
-                    display="flex"
-                    alignItems="center"
+                  {" "}
+                  <Paper
+                    key={index}
                     sx={{
                       mb: 2,
+                      p: 2,
+                      textAlign: "left",
                       backgroundColor: currentTheme.backgroundColor,
+                      color: currentTheme.color,
                     }}
                   >
-                    <img
-                      src={`${apiUrl}/images/${product.HINH_ANH_SANPHAM}`}
-                      alt={product.HINH_ANH_SANPHAM}
-                      style={{ width: 80, height: 80, marginRight: 16 }}
-                    />
-                    <Box flexGrow={1}>
-                      <Typography variant="body1">
-                        {product.TEN_SAN_PHAM}
-                      </Typography>
+                    {" "}
+                    <Divider sx={{ my: 1, backgroundColor: "#555" }} />
+                    {/* Thông tin đơn hàng */}
+                    <Typography variant="h6" sx={{ color: currentTheme.color }}>
+                      {order.ID_ODER}
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      sx={{ mb: 1, color: currentTheme.color }}
+                    >
+                      Trạng thái:
                       <Typography
-                        variant="body2"
-                        sx={{ color: currentTheme.color }}
+                        component="span"
+                        sx={{
+                          ml: 2,
+                          fontWeight: 600,
+                          color:
+                            order.TRANG_THAI_DON_HANG === "Giao dịch thành công"
+                              ? "#5ab96c"
+                              : order.TRANG_THAI_DON_HANG ===
+                                "Đã thanh toán thành công và đang chờ giao hàng"
+                              ? "#cc7c2c"
+                              : order.TRANG_THAI_DON_HANG ===
+                                "Đang chờ thanh toán"
+                              ? "#cc7c2c"
+                              : order.TRANG_THAI_DON_HANG === "Đã hủy"
+                              ? "red"
+                              : currentTheme.color, // Bạn có thể thêm một màu mặc định nếu không khớp với bất kỳ điều kiện nào
+                        }}
                       >
-                        Số lượng: {product.SO_LUONG_SP}
+                        {order.TRANG_THAI_DON_HANG} || Với phương thức thanh
+                        toán {order.PHUONG_THUC_THANH_TOAN}
                       </Typography>
-                      <Typography
-                        variant="body1"
-                        sx={{ mt: 1, color: currentTheme.color }}
+                    </Typography>
+                    <Typography
+                      variant="body1"
+                      sx={{ mb: 1, color: currentTheme.color }}
+                    >
+                      Tổng tiền: {order.TONG_TIEN.toLocaleString("vi-VN")}₫
+                    </Typography>
+                    <Divider sx={{ my: 2 }} />
+                    {/* Danh sách sản phẩm */}
+                    {order.chiTietHoaDon?.map((product, prodIndex) => (
+                      <Box
+                        key={prodIndex}
+                        display="flex"
+                        alignItems="center"
+                        sx={{
+                          mb: 2,
+                          backgroundColor: currentTheme.backgroundColor,
+                        }}
                       >
-                        Giá:{" "}
-                        {product.GIA_SAN_PHAM_CHI_TIET.toLocaleString("vi-VN")}₫
-                      </Typography>
-                    </Box>{" "}
-                    {tabIndex === 1 ? (
-                      <>
-                        <Button
-                          variant="outlined"
-                          sx={{
-                            color: "green",
-                            borderColor: (theme) =>
-                              product.DANH_GIA !== null
-                                ? "transparent"
-                                : "green",
-                            ":hover": { bgcolor: "rgba(0, 128, 0, 0.1)" },
-                            "&.Mui-disabled": {
-                              borderColor: "transparent", // Ẩn viền khi button bị disabled
-                              color: "gray", // Tùy chỉnh màu chữ khi bị disable
-                            },
-                          }}
-                          onClick={() =>
-                            navigate(`/profile/danh-gia/${order.ID_DON_HANG}`)
-                          }
-                          disabled={product.DANH_GIA !== null}
-                        >
-                          {product.DANH_GIA !== null
-                            ? "Đã Đánh Giá"
-                            : "Đánh Giá"}
-                        </Button>
-                        <Button
-                          variant="outlined"
-                          sx={{
-                            ml: 2,
-                            color: "#f60",
-                            borderColor: "#f60",
-                            ":hover": { bgcolor: "rgba(0, 0, 255, 0.1)" },
-                          }}
-                        >
-                          Mua lại
-                        </Button>{" "}
-                      </>
-                    ) : (
-                      false
-                    )}
-                  </Box>
-                ))}
-              </Paper>{" "}
-              {tabIndex === 0 ? (
-                <>
-                  {" "}
-                  {/* Nút "Đã hủy" */}
-                  <Button
-                    variant="outlined"
-                    sx={{
-                      color: "red",
-                      mr: 4,
-                      mt: 4,
-                      height: "50px",
-                      width: "120px",
-                      borderRadius: "10px",
-                    }}
-                    onClick={() =>
-                      handleOpenDialog("canceled", order.ID_DON_HANG)
-                    }
-                    // startIcon={<CancelIcon sx={{ color: "#26bbff" }} />}
-                  >
-                    Hủy đơn
-                  </Button>
-                </>
-              ) : (
-                false
-              )}{" "}
-            </Box>
-          </>
-        ))}
-      </Box>{" "}
+                        <img
+                          src={`${apiUrl}/images/${product.HINH_ANH_SANPHAM}`}
+                          alt={product.HINH_ANH_SANPHAM}
+                          style={{ width: 80, height: 80, marginRight: 16 }}
+                        />
+                        <Box flexGrow={1}>
+                          <Typography variant="body1">
+                            {product.TEN_SAN_PHAM}
+                          </Typography>
+                          <Typography
+                            variant="body2"
+                            sx={{ color: currentTheme.color }}
+                          >
+                            Số lượng: {product.SO_LUONG_SP}
+                          </Typography>
+                          <Typography
+                            variant="body1"
+                            sx={{ mt: 1, color: currentTheme.color }}
+                          >
+                            Giá:{" "}
+                            {product.GIA_SAN_PHAM_CHI_TIET.toLocaleString(
+                              "vi-VN"
+                            )}
+                            ₫
+                          </Typography>
+                        </Box>{" "}
+                        {tabIndex === 1 ? (
+                          <>
+                            <Button
+                              variant="outlined"
+                              sx={{
+                                color: "green",
+                                borderColor: (theme) =>
+                                  product.DANH_GIA !== null
+                                    ? "transparent"
+                                    : "green",
+                                ":hover": { bgcolor: "rgba(0, 128, 0, 0.1)" },
+                                "&.Mui-disabled": {
+                                  borderColor: "transparent", // Ẩn viền khi button bị disabled
+                                  color: "gray", // Tùy chỉnh màu chữ khi bị disable
+                                },
+                              }}
+                              onClick={() =>
+                                navigate(
+                                  `/profile/danh-gia/${order.ID_DON_HANG}`
+                                )
+                              }
+                              disabled={product.DANH_GIA !== null}
+                            >
+                              {product.DANH_GIA !== null
+                                ? "Đã Đánh Giá"
+                                : "Đánh Giá"}
+                            </Button>
+                            <Button
+                              variant="outlined"
+                              sx={{
+                                ml: 2,
+                                color: "#f60",
+                                borderColor: "#f60",
+                                ":hover": { bgcolor: "rgba(0, 0, 255, 0.1)" },
+                              }}
+                            >
+                              Mua lại
+                            </Button>{" "}
+                          </>
+                        ) : (
+                          false
+                        )}
+                      </Box>
+                    ))}
+                  </Paper>{" "}
+                  {tabIndex === 0 ? (
+                    <>
+                      {" "}
+                      {/* Nút "Đã hủy" */}
+                      <Button
+                        variant="outlined"
+                        sx={{
+                          color: "red",
+                          mr: 4,
+                          mt: 4,
+                          height: "50px",
+                          width: "120px",
+                          borderRadius: "10px",
+                        }}
+                        onClick={() =>
+                          handleOpenDialog("canceled", order.ID_DON_HANG)
+                        }
+                        // startIcon={<CancelIcon sx={{ color: "#26bbff" }} />}
+                      >
+                        Hủy đơn
+                      </Button>
+                    </>
+                  ) : (
+                    false
+                  )}{" "}
+                </Box>
+              </>
+            ))}
+          </Box>{" "}
+        </>
+      ) : (
+        <>
+          {" "}
+          <Box
+            mt={2}
+            sx={{
+              backgroundColor: currentTheme.backgroundColor,
+              height: "100vh",
+            }}
+          >
+            {" "}
+            <Typography variant="h6" sx={{ color: currentTheme.color }}>
+              Bạn không có đơn hàng nào cả
+            </Typography>
+          </Box>
+        </>
+      )}
+
       {/* Modal xác nhận */}
       <Dialog open={openDialog} onClose={handleCloseDialog}>
         <DialogTitle>Xác nhận hành động</DialogTitle>
