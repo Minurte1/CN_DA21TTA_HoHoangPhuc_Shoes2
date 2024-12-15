@@ -473,6 +473,7 @@ const Cart = () => {
   const handleSwitchChange = (event) => {
     setIsSwitchOn(event.target.checked); // Cập nhật trạng thái
   };
+  console.log("user info", userInfo);
   const [selectedProvince, setSelectedProvince] = useState(null);
   const [selectedDistrict, setSelectedDistrict] = useState(null);
   const [selectedWards, setSelectedWards] = useState(null);
@@ -499,8 +500,8 @@ const Cart = () => {
       items: items,
       email: userInfo.EMAIL,
       DIA_CHI_DON_HANG: isSwitchOn
-        ? `${selectStreetName}, ${userInfo.DIA_CHI_Wards?.name}, ${userInfo.DIA_CHI_Districts?.name}, ${userInfo.DIA_CHI_Provinces?.name}`
-        : `${selectStreetName}, ${selectedWards?.name}, ${selectedDistrict?.name}, ${selectedProvince?.name}`,
+        ? `${userInfo.DIA_CHI_STREETNAME}, ${userInfo.DIA_CHI_Wards}, ${userInfo.DIA_CHI_Districts}, ${userInfo.DIA_CHI_Provinces}`
+        : `${selectStreetName}, ${selectedWards?.full_name}, ${selectedDistrict?.full_name}, ${selectedProvince?.full_name}`,
       SO_DIEN_THOAI_DON_HANG: isSwitchOn
         ? `${userInfo.SO_DIEN_THOAI}`
         : `${soDienThoai}`,
@@ -529,6 +530,9 @@ const Cart = () => {
       }
     } else if (selectPhuongThucThanhToan === 2) {
       const response = await axios.post(`${api}/don-hang`, requestData);
+      if (response.data.EC == 1) {
+        enqueueSnackbar(response.data.EM, { variant: "success" });
+      }
     }
   };
 

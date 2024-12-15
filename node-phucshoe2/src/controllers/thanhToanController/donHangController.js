@@ -193,11 +193,61 @@ const createDON_HANG = async (req, res) => {
     // Chờ tất cả các sản phẩm được thêm vào chi tiết hóa đơn
     await Promise.all(chiTietHoaDonPromises);
 
-    // Phản hồi thành công
-    return res.json({
-      EM: "Thêm đơn hàng, gửi email và xóa giỏ hàng thành công",
-      EC: 1,
+    const [orderDetails] = await connection.execute(
+      "SELECT c.ID_SAN_PHAM, c.SO_LUONG_SP, c.GIA_SAN_PHAM_CHI_TIET, p.TEN_SAN_PHAM FROM CHI_TIET_HOA_DON c JOIN SAN_PHAM p ON c.ID_SAN_PHAM = p.ID_SAN_PHAM WHERE c.ID_DON_HANG = ?",
+      [donHangId]
+    );
+
+    // Lấy thông tin người dùng
+    const [userResults] = await connection.execute(
+      "SELECT HO_TEN, EMAIL, DIA_CHI_Provinces,DIA_CHI_Districts,DIA_CHI_Wards, SO_DIEN_THOAI FROM NGUOI_DUNG WHERE ID_NGUOI_DUNG = ?",
+      [idNguoiDung]
+    );
+    console.log("orderDetails", orderDetails);
+    if (userResults.length === 0) {
+      return res.status(404).json({
+        EM: "Người dùng không tồn tại",
+        EC: -1,
+      });
+    }
+
+    const user = userResults[0]; // Lấy thông tin người dùng
+
+    // Chuẩn bị thông tin gửi email
+    const orderDetailsFormatted = {
+      orderId: ID_ODER,
+      tongTien: tongTien,
+      ngayTaoDonHang: ngayTaoDonHang,
+      items: orderDetails.map((item) => ({
+        tenSanPham: item.TEN_SAN_PHAM,
+        soLuong: item.SO_LUONG_SP,
+        giaSanPhamChiTiet: item.GIA_SAN_PHAM_CHI_TIET,
+      })),
+      user: {
+        name: user.HO_TEN,
+        email: user.EMAIL,
+        address: DIA_CHI_DON_HANG,
+
+        phone: SO_DIEN_THOAI_DON_HANG,
+      },
+    };
+
+    // Gọi hàm gửi email
+    const emailResult = await sendOrderEmail({
+      email,
+      orderDetails: orderDetailsFormatted,
     });
+
+    if (emailResult.EC === 1) {
+      // Xóa dữ liệu trong bảng GIO_HANG nếu email gửi thành công
+      await connection.execute("DELETE FROM GIO_HANG WHERE ID_NGUOI_DUNG = ?", [
+        idNguoiDung,
+      ]);
+      return res.status(200).json({
+        EM: "Mua hàng thành công, vui lòng kiểm tra đơn hàng",
+        EC: -1,
+      });
+    }
   } catch (error) {
     console.error("Error creating don hang:", error);
     return res.status(500).json({
