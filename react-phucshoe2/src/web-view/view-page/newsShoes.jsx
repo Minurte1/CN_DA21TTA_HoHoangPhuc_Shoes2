@@ -8,6 +8,7 @@ import {
   CardMedia,
   Button,
   Divider,
+  Pagination,
 } from "@mui/material";
 import axios from "axios";
 import { getThemeConfig } from "../../services/themeService";
@@ -15,16 +16,20 @@ import { useNavigate } from "react-router-dom";
 
 const NewsComponent = () => {
   const [newsData, setNewsData] = useState([]);
+  const currentTheme = getThemeConfig(localStorage.getItem("THEMES") || "dark");
+
   const api = process.env.REACT_APP_URL_SERVER;
   const navigate = useNavigate();
-  const currentTheme = getThemeConfig(localStorage.getItem("THEMES") || "dark");
-  // Fetch dữ liệu từ API
+  const [currentPage, setCurrentPage] = useState(1); // Trạng thái trang hiện tại
+  const [itemsPerPage] = useState(5); // Số lượng bài viết hiển thị trên mỗi trang
+  const [displayedData, setDisplayedData] = useState([]);
   useEffect(() => {
     const fetchNewsData = async () => {
       try {
         const response = await axios.get(`${api}/bai-viet/use`);
         if (response.data.EC === 1) {
           setNewsData(response.data.DT); // Lưu dữ liệu từ API vào state
+          setDisplayedData(response.data.DT.slice(0, itemsPerPage));
         }
       } catch (error) {
         console.error("Error fetching news data:", error);
@@ -40,6 +45,15 @@ const NewsComponent = () => {
   const firstTwoNews = newsData.slice(0, 2);
   // Các bài viết còn lại
   const remainingNews = newsData.slice(2);
+
+  // Hàm xử lý khi người dùng thay đổi trang
+  const handlePageChange = (event, value) => {
+    setCurrentPage(value);
+    // Tính toán dữ liệu cần hiển thị dựa trên trang hiện tại
+    const startIndex = (value - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    setDisplayedData(remainingNews.slice(startIndex, endIndex));
+  };
 
   return (
     <Box
@@ -160,10 +174,9 @@ const NewsComponent = () => {
             </Grid>
           ))}
         </Grid>
-
         {/* Render các bài viết còn lại */}
         <Grid container spacing={2} mt={2}>
-          {remainingNews.map((news) => (
+          {displayedData.map((news) => (
             <Grid item xs={12} md={12} key={news.ID_BAI_VIET} mt={4}>
               <Divider
                 sx={{
@@ -259,7 +272,34 @@ const NewsComponent = () => {
               </Card>
             </Grid>
           ))}
-        </Grid>
+        </Grid>{" "}
+        {/* Pagination */}
+        <Box display="flex" justifyContent="center" mt={3}>
+          <Pagination
+            count={Math.ceil(remainingNews.length / itemsPerPage)}
+            page={currentPage}
+            onChange={handlePageChange}
+            sx={{
+              marginTop: 4,
+              display: "flex",
+              justifyContent: "center",
+              ".MuiPagination-ul": {
+                borderRadius: "8px", // Bo góc
+                padding: "4px 8px", // Khoảng cách bên trong
+              },
+              ".MuiPaginationItem-root": {
+                color: currentTheme.color, // Màu chữ đen
+                fontWeight: "bold", // Chữ đậm
+              },
+              ".Mui-selected": {
+                color: "#ffffff", // Màu chữ trắng
+              },
+              ".MuiPaginationItem-ellipsis": {
+                color: "#999999", // Màu cho dấu "..."
+              },
+            }}
+          />
+        </Box>
       </Box>
     </Box>
   );
