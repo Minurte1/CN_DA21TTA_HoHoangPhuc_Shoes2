@@ -182,6 +182,7 @@ const ForgotPassword = () => {
               <TextField
                 label="Xác nhận mật khẩu mới"
                 variant="outlined"
+                type="password"
                 InputLabelProps={{ style: { color: "#ccc" } }}
                 inputProps={{ style: { color: "#fff" } }}
                 sx={{

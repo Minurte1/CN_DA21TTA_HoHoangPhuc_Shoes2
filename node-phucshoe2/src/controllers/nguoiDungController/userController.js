@@ -137,11 +137,13 @@ const updateUserById_User = async (req, res) => {
     HO_TEN,
     SO_DIEN_THOAI,
     NGAY_SINH,
-
+    VAI_TRO,
     DIA_CHI_Provinces,
     DIA_CHI_Districts,
     DIA_CHI_Wards,
     DIA_CHI_STREETNAME,
+    DIA_CHI,
+    TRANG_THAI_USER,
   } = req.body;
 
   const { id } = req.params;
@@ -173,7 +175,14 @@ const updateUserById_User = async (req, res) => {
     // Cập nhật các trường không phải null
     let updateFields = [];
     let updateValues = [];
-
+    if (DIA_CHI !== undefined && DIA_CHI !== null) {
+      updateFields.push("DIA_CHI = ?");
+      updateValues.push(DIA_CHI);
+    }
+    if (TRANG_THAI_USER !== undefined && TRANG_THAI_USER !== null) {
+      updateFields.push("TRANG_THAI_USER = ?");
+      updateValues.push(TRANG_THAI_USER);
+    }
     if (EMAIL !== undefined && EMAIL !== null) {
       updateFields.push("EMAIL = ?");
       updateValues.push(EMAIL);
@@ -181,6 +190,10 @@ const updateUserById_User = async (req, res) => {
     if (HO_TEN !== undefined && HO_TEN !== null) {
       updateFields.push("HO_TEN = ?");
       updateValues.push(HO_TEN);
+    }
+    if (VAI_TRO !== undefined && VAI_TRO !== null) {
+      updateFields.push("VAI_TRO = ?");
+      updateValues.push(VAI_TRO);
     }
     if (SO_DIEN_THOAI !== undefined && SO_DIEN_THOAI !== null) {
       updateFields.push("SO_DIEN_THOAI = ?");

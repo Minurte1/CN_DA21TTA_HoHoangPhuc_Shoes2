@@ -126,13 +126,13 @@ const RecommenderProductCarousel = ({ ID_SAN_PHAM }) => {
       const response = await axios.post(`${api}/yeu-thich/`, payload);
 
       if (response.data.EC === 1) {
-        enqueueSnackbar(response.data.EM);
+        enqueueSnackbar(response.data.EM, { variant: "success" }); // Thông báo lỗi
       } else {
-        enqueueSnackbar(response.data.EM);
+        enqueueSnackbar(response.data.EM, { variant: "error" }); // Thông báo lỗi
       }
     } catch (error) {
       console.error("Lỗi hệ thống:", error);
-      enqueueSnackbar(error.response.data.EM);
+      enqueueSnackbar(error.response.data.EM, { variant: "error" }); // Thông báo lỗi
     }
   };
   if (isLoading) {

@@ -12,8 +12,8 @@ import {
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
-import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import { useDispatch, useSelector } from "react-redux";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import "./css/productCarousel.css";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -81,14 +81,14 @@ const ProductCarousel = ({ title, products, api }) => {
       const response = await axios.post(`${api}/gio-hang/`, payload);
 
       if (response.data.EC === 1) {
-        enqueueSnackbar(response.data.EM);
+        enqueueSnackbar(response.data.EM, { variant: "success" });
         dispatch(setTotalCart(response.data.totalQuantity));
       } else {
-        enqueueSnackbar(response.data.EM);
+        enqueueSnackbar(response.data.EM, { variant: "error" });
       }
     } catch (error) {
       console.error("Lỗi hệ thống:", error);
-      enqueueSnackbar(error.response.data.EM);
+      enqueueSnackbar(error.response.data.EM, { variant: "error" });
     }
   };
   const handleAddToWish = async (product) => {
@@ -107,13 +107,13 @@ const ProductCarousel = ({ title, products, api }) => {
       const response = await axios.post(`${api}/yeu-thich/`, payload);
 
       if (response.data.EC === 1) {
-        enqueueSnackbar(response.data.EM);
+        enqueueSnackbar(response.data.EM, { variant: "success" });
       } else {
-        enqueueSnackbar(response.data.EM);
+        enqueueSnackbar(response.data.EM, { variant: "error" });
       }
     } catch (error) {
       console.error("Lỗi hệ thống:", error);
-      enqueueSnackbar(error.response.data.EM);
+      enqueueSnackbar(error.response.data.EM, { variant: "error" });
     }
   };
 
@@ -225,7 +225,7 @@ const ProductCarousel = ({ title, products, api }) => {
                 onClick={() => handleBuyProduct(product.ID_SAN_PHAM)}
               >
                 <Tooltip title={t.AddToWish} arrow>
-                  <ControlPointIcon
+                  <FavoriteBorderIcon
                     sx={{
                       position: "absolute", // Đặt icon ở góc trên bên phải
                       top: 8,
@@ -233,7 +233,7 @@ const ProductCarousel = ({ title, products, api }) => {
                       color: "#101014", // Màu icon
                       borderRadius: "50%", // Tạo hình tròn cho icon
                       margin: "8px",
-                      fontSize: "20px",
+                      fontSize: "23px",
                       cursor: "pointer",
                       transition: "transform 0.3s ease", // Thêm hiệu ứng chuyển động khi hover
                       "&:hover": {

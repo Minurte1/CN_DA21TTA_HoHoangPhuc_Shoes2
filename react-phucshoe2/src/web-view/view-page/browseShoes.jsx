@@ -15,7 +15,12 @@ import {
   Pagination,
   Tooltip,
 } from "@mui/material";
-import { FilterList, AddShoppingCart, ControlPoint } from "@mui/icons-material";
+import {
+  FilterList,
+  AddShoppingCart,
+  ControlPoint,
+  FavoriteBorder,
+} from "@mui/icons-material";
 import axios from "axios";
 import ProductCarousel from "../../share-view/productCarousel";
 import FilterShoes from "../../admin-view/pages/quanLySanPham/component/FilterShoe";
@@ -295,7 +300,7 @@ const BrowseProduct = () => {
                     {" "}
                     {/* Đảm bảo Card có position: relative */}
                     <Tooltip title="Add to Wish" arrow>
-                      <ControlPoint
+                      <FavoriteBorder
                         sx={{
                           position: "absolute", // Đặt icon ở góc trên bên phải
                           top: 8,

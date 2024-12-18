@@ -103,12 +103,21 @@ const UserProfile = () => {
       HO_TEN: dataUser.HO_TEN,
       SO_DIEN_THOAI: dataUser.SO_DIEN_THOAI,
       NGAY_SINH: selectedDate,
-      DIA_CHI_Provinces: selectedProvince.name_with_type,
-      DIA_CHI_Districts: selectedDistrict.name_with_type,
-      DIA_CHI_Wards: selectedWards.name_with_type,
+      DIA_CHI_Provinces: selectedProvince.full_name,
+      DIA_CHI_Districts: selectedDistrict.full_name,
+      DIA_CHI_Wards: selectedWards.full_name,
       DIA_CHI_STREETNAME: selectStreetName,
     };
 
+    // Nối chuỗi nếu tất cả các giá trị tồn tại
+    if (
+      selectedProvince.full_name &&
+      selectedDistrict.full_name &&
+      selectedWards.full_name &&
+      selectStreetName
+    ) {
+      updatedData.DIA_CHI = `${selectStreetName}, ${selectedWards.full_name}, ${selectedDistrict.full_name} ${selectedProvince.full_name}`;
+    }
     try {
       const response = await axios.put(
         `${api}/user/${userInfo.ID_NGUOI_DUNG}`,

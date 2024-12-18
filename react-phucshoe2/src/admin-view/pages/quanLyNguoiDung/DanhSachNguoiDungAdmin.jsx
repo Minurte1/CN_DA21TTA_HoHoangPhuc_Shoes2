@@ -17,9 +17,14 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  MenuItem,
+  Select,
+  InputLabel,
+  FormControl,
 } from "@mui/material";
 import PeopleIcon from "@mui/icons-material/People";
 import { getThemeConfig } from "../../../services/themeService";
+import AddressSelector from "../../../user-view/components/addressUser";
 
 const DanhSachNguoiDungAdmin = () => {
   const [users, setUsers] = useState([]);
@@ -29,46 +34,74 @@ const DanhSachNguoiDungAdmin = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false); // Trạng thái mở/đóng của form
   const currentTheme = getThemeConfig(localStorage.getItem("THEMES") || "dark");
   const api = process.env.REACT_APP_URL_SERVER;
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const response = await axios.get(
-          `${process.env.REACT_APP_URL_SERVER}/user`
-        );
-        if (response.data.EC === 1) {
-          setUsers(response.data.DT);
-        }
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
 
+  const [selectedProvince, setSelectedProvince] = useState(null);
+  const [selectedDistrict, setSelectedDistrict] = useState(null);
+  const [selectedWards, setSelectedWards] = useState(null);
+  const [selectStreetName, setSelectStreetName] = useState(null);
+
+  useEffect(() => {
     fetchUsers();
   }, []);
+  const fetchUsers = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_URL_SERVER}/user`
+      );
+      if (response.data.EC === 1) {
+        setUsers(response.data.DT);
+      }
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Hàm mở dialog và hiển thị thông tin người dùng
   const handleEditClick = (user) => {
+    setSelectedProvince(user.DIA_CHI_Provinces);
+    setSelectedDistrict(user.DIA_CHI_Districts);
+    setSelectedWards(user.DIA_CHI_Wards);
     setSelectedUser(user);
     setIsDialogOpen(true);
   };
 
   // Hàm cập nhật thông tin người dùng
   const handleSave = async () => {
+    console.log("selectedUser trước khi cập nhật:", selectedUser);
+
+    // Cập nhật địa chỉ vào selectedUser
+    const updatedUser = {
+      ...selectedUser,
+      DIA_CHI_Provinces: selectedProvince?.full_name || "",
+      DIA_CHI_Districts: selectedDistrict?.full_name || "",
+      DIA_CHI_Wards: selectedWards?.full_name || "",
+      DIA_CHI:
+        selectedUser?.DIA_CHI_STREETNAME &&
+        selectedProvince?.full_name &&
+        selectedDistrict?.full_name &&
+        selectedWards?.full_name
+          ? `${selectStreetName}, ${selectedWards.full_name}, ${selectedDistrict.full_name}, ${selectedProvince.full_name}`
+          : "",
+    };
+
+    console.log("selectedUser sau khi cập nhật:", updatedUser);
+
     try {
       const response = await axios.put(
-        `${process.env.REACT_APP_URL_SERVER}/user/update`,
-        selectedUser
+        `${process.env.REACT_APP_URL_SERVER}/user/${updatedUser.ID_NGUOI_DUNG}`,
+        updatedUser
       );
       if (response.data.EC === 1) {
         setUsers((prevUsers) =>
           prevUsers.map((user) =>
-            user.ID_NGUOI_DUNG === selectedUser.ID_NGUOI_DUNG
-              ? selectedUser
+            user.ID_NGUOI_DUNG === updatedUser.ID_NGUOI_DUNG
+              ? updatedUser
               : user
           )
         );
+        fetchUsers();
         setIsDialogOpen(false);
       } else {
         setError(response.data.EM);
@@ -140,6 +173,9 @@ const DanhSachNguoiDungAdmin = () => {
               <TableCell sx={{ color: currentTheme.color }}>Email</TableCell>
               <TableCell sx={{ color: currentTheme.color }}>Ngày Tạo</TableCell>
               <TableCell sx={{ color: currentTheme.color }}>Vai Trò</TableCell>
+              <TableCell sx={{ color: currentTheme.color }}>
+                Trạng thái
+              </TableCell>
               <TableCell sx={{ color: currentTheme.color }}>Actions</TableCell>
             </TableRow>
           </TableHead>
@@ -172,7 +208,16 @@ const DanhSachNguoiDungAdmin = () => {
                 >
                   {user.VAI_TRO === "1" ? "Quản Trị Viên" : "Người Dùng Thường"}
                 </TableCell>
-
+                <TableCell
+                  sx={{
+                    color: user.TRANG_THAI_USER === "1" ? "green" : "red",
+                    fontWeight: "bold",
+                  }}
+                >
+                  {user.TRANG_THAI_USER === "1"
+                    ? "Đang hoạt động"
+                    : "Ngưng hoạt động"}
+                </TableCell>
                 <TableCell>
                   <Button
                     variant="outlined"
@@ -207,14 +252,34 @@ const DanhSachNguoiDungAdmin = () => {
             onChange={handleInputChange}
             margin="normal"
           />
-          <TextField
-            fullWidth
-            label="Vai Trò"
-            name="VAI_TRO"
-            value={selectedUser?.VAI_TRO || ""}
-            onChange={handleInputChange}
-            margin="normal"
-          />
+          <FormControl fullWidth margin="normal">
+            <InputLabel id="vai-tro-label">Vai Trò</InputLabel>
+            <Select
+              labelId="vai-tro-label"
+              id="vai-tro-select"
+              label="Vai trò"
+              name="VAI_TRO"
+              value={selectedUser?.VAI_TRO || ""}
+              onChange={handleInputChange}
+            >
+              <MenuItem value="0">Người dùng thường</MenuItem>
+              <MenuItem value="1">Quản trị</MenuItem>
+            </Select>
+          </FormControl>
+          <FormControl fullWidth margin="normal">
+            <InputLabel id="vai-tro-label">Trạng thái tài khoản</InputLabel>
+            <Select
+              labelId="vai-tro-label"
+              id="vai-tro-select"
+              label="Trạng thái tài khoản"
+              name="TRANG_THAI_USER"
+              value={selectedUser?.TRANG_THAI_USER || ""}
+              onChange={handleInputChange}
+            >
+              <MenuItem value="0">Ngưng hoạt động</MenuItem>
+              <MenuItem value="1">Đang hoạt động</MenuItem>
+            </Select>
+          </FormControl>
           <TextField
             fullWidth
             label="Số Điện Thoại"
@@ -226,6 +291,7 @@ const DanhSachNguoiDungAdmin = () => {
           <TextField
             fullWidth
             label="Địa Chỉ"
+            disabled
             name="DIA_CHI"
             value={selectedUser?.DIA_CHI || ""}
             onChange={handleInputChange}
@@ -238,7 +304,26 @@ const DanhSachNguoiDungAdmin = () => {
             value={selectedUser?.AVATAR || ""}
             onChange={handleInputChange}
             margin="normal"
-          />
+          />{" "}
+          <FormControl fullWidth margin="normal">
+            <AddressSelector
+              selectedProvince={selectedProvince}
+              selectedDistrict={selectedDistrict}
+              selectedWards={selectedWards}
+              //
+              setSelectedProvince={setSelectedProvince}
+              setSelectedDistrict={setSelectedDistrict}
+              setSelectedWards={setSelectedWards}
+            />
+          </FormControl>{" "}
+          <TextField
+            fullWidth
+            label="Tên đường"
+            name="DIA_CHI_STREETNAME"
+            value={selectedUser?.DIA_CHI_STREETNAME || ""}
+            onChange={handleInputChange}
+            margin="normal"
+          />{" "}
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialog} color="secondary">

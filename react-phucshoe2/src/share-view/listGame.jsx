@@ -17,6 +17,7 @@ import { enqueueSnackbar } from "notistack";
 import { setTotalCart } from "../redux/authSlice";
 import translations from "../redux/data/translations";
 import { getThemeConfig } from "../services/themeService";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 const ListGame = ({ title, items, api }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -47,14 +48,14 @@ const ListGame = ({ title, items, api }) => {
       const response = await axios.post(`${api}/gio-hang/`, payload);
 
       if (response.data.EC === 1) {
-        enqueueSnackbar(response.data.EM);
+        enqueueSnackbar(response.data.EM, { variant: "success" }); // Thông báo lỗi
         dispatch(setTotalCart(response.data.totalQuantity));
       } else {
-        enqueueSnackbar(response.data.EM);
+        enqueueSnackbar(response.data.EM, { variant: "error" }); // Thông báo lỗi
       }
     } catch (error) {
       console.error("Lỗi hệ thống:", error);
-      enqueueSnackbar(error.response.data.EM);
+      enqueueSnackbar(error.response.data.EM, { variant: "error" }); // Thông báo lỗi
     }
   }; // Hàm handleAddToWish
   const handleAddToWish = async (product) => {
@@ -73,13 +74,13 @@ const ListGame = ({ title, items, api }) => {
       const response = await axios.post(`${api}/yeu-thich/`, payload);
 
       if (response.data.EC === 1) {
-        enqueueSnackbar(response.data.EM);
+        enqueueSnackbar(response.data.EM, { variant: "success" }); // Thông báo lỗi
       } else {
-        enqueueSnackbar(response.data.EM);
+        enqueueSnackbar(response.data.EM, { variant: "error" }); // Thông báo lỗi
       }
     } catch (error) {
       console.error("Lỗi hệ thống:", error);
-      enqueueSnackbar(error.response.data.EM);
+      enqueueSnackbar(error.response.data.EM, { variant: "error" }); // Thông báo lỗi
     }
   };
   return (
@@ -180,7 +181,7 @@ const ListGame = ({ title, items, api }) => {
                       handleAddToWish(item); // Gọi hàm thêm vào giỏ hàng
                     }}
                   >
-                    <ControlPointIcon />
+                    <FavoriteBorderIcon />
                   </IconButton>
                 </Tooltip>
               </Box>

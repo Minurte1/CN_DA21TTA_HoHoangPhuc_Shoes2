@@ -409,13 +409,13 @@ const WishlistProducts = () => {
         // Cập nhật trạng thái giỏ hàng thành công
         fetchWishlistItems();
         dispatch(setTotalCart(response.data.totalQuantity));
-        enqueueSnackbar(response.data.EM); // Hiển thị thông báo
+        enqueueSnackbar(response.data.EM, { variant: "success" }); // Thông báo thành công
       } else {
-        enqueueSnackbar(response.data.EM); // Hiển thị lỗi từ API
+        enqueueSnackbar(response.data.EM, { variant: "error" }); // Thông báo lỗi
       }
     } catch (error) {
       console.error("Error adding product to cart:", error);
-      enqueueSnackbar("Đã xảy ra lỗi khi thêm sản phẩm vào giỏ hàng.");
+      enqueueSnackbar(error.response.data.EM, { variant: "error" }); // Thông báo lỗi
     } finally {
       setIsLoading(false);
     }
@@ -429,16 +429,14 @@ const WishlistProducts = () => {
 
       if (response.data.EC === 1) {
         fetchWishlistItems();
-        enqueueSnackbar(response.data.EM); // Thông báo thành công
+        enqueueSnackbar(response.data.EM, { variant: "success" }); // Thông báo thành công
       } else {
         fetchWishlistItems();
-        enqueueSnackbar(response.data.EM); // Thông báo lỗi
+        enqueueSnackbar(response.data.EM, { variant: "error" }); // Thông báo lỗi
       }
     } catch (error) {
       console.error("Error removing product from favorites:", error);
-      enqueueSnackbar(
-        "Có lỗi xảy ra khi xóa sản phẩm khỏi danh sách yêu thích."
-      );
+      enqueueSnackbar(error.response.data.EM, { variant: "error" }); // Thông báo lỗi
     }
   };
   if (loading) {
