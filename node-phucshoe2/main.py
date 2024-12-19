@@ -6,7 +6,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 from flask_cors import CORS
 import json
 from pyvi import ViTokenizer
-
+from textblob import TextBlob
 app = Flask(__name__)
 CORS(app)
 
@@ -203,5 +203,61 @@ def recommend():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+
+@app.route('/analyze_reviews', methods=['POST'])
+def analyze_reviews():
+    try:
+        data = request.json
+        if not data or 'product_id' not in data:
+            return jsonify({"error": "Thiếu trường 'product_id'"}), 400
+        
+        product_id = data['product_id']
+        db = connect_database()
+        
+        # Phân tích các đánh giá và bình luận cho sản phẩm
+        analysis_result = analyze_product_reviews(db, product_id)
+        
+        return jsonify(analysis_result)
+    
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+
+def fetch_reviews_for_product(db, product_id):
+    query = """
+    SELECT DANH_GIA, BINH_LUAN
+    FROM CHI_TIET_HOA_DON
+    WHERE ID_SAN_PHAM = %s
+    """
+    cursor = db.cursor()
+    cursor.execute(query, (product_id,))
+    reviews = cursor.fetchall()
+    return pd.DataFrame(reviews, columns=["DANH_GIA", "BINH_LUAN"])
+
+# Phân tích cảm xúc từ bình luận
+def analyze_sentiment(comment):
+    blob = TextBlob(comment)
+    sentiment = blob.sentiment.polarity  # Tính toán độ cảm xúc từ -1 (tiêu cực) đến 1 (tích cực)
+    return sentiment
+
+# Phân tích đánh giá sản phẩm (tính điểm trung bình và cảm xúc)
+def analyze_product_reviews(db, product_id):
+    reviews_df = fetch_reviews_for_product(db, product_id)
+    if reviews_df.empty:
+        return {"error": "Không có đánh giá cho sản phẩm này."}
+
+    # Tính điểm trung bình của tất cả các đánh giá
+    average_rating = reviews_df['DANH_GIA'].mean()
+
+    # Phân tích cảm xúc từ các bình luận
+    reviews_df['sentiment'] = reviews_df['BINH_LUAN'].apply(analyze_sentiment)
+    average_sentiment = reviews_df['sentiment'].mean()  # Tính cảm xúc trung bình
+
+    return {
+        "average_rating": average_rating,
+        "average_sentiment": average_sentiment,
+        "reviews": reviews_df.to_dict(orient="records")
+    }
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=5000)

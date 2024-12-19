@@ -38,7 +38,6 @@ const DanhSachNguoiDungAdmin = () => {
   const [selectedProvince, setSelectedProvince] = useState(null);
   const [selectedDistrict, setSelectedDistrict] = useState(null);
   const [selectedWards, setSelectedWards] = useState(null);
-  const [selectStreetName, setSelectStreetName] = useState(null);
 
   useEffect(() => {
     fetchUsers();
@@ -82,7 +81,7 @@ const DanhSachNguoiDungAdmin = () => {
         selectedProvince?.full_name &&
         selectedDistrict?.full_name &&
         selectedWards?.full_name
-          ? `${selectStreetName}, ${selectedWards.full_name}, ${selectedDistrict.full_name}, ${selectedProvince.full_name}`
+          ? `${selectedUser.DIA_CHI_STREETNAME}, ${selectedWards.full_name}, ${selectedDistrict.full_name}, ${selectedProvince.full_name}`
           : "",
     };
 

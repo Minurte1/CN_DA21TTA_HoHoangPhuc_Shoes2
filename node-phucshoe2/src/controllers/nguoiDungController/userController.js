@@ -175,51 +175,76 @@ const updateUserById_User = async (req, res) => {
     // Cập nhật các trường không phải null
     let updateFields = [];
     let updateValues = [];
-    if (DIA_CHI !== undefined && DIA_CHI !== null) {
+    if (DIA_CHI !== undefined && DIA_CHI !== null && DIA_CHI !== "") {
       updateFields.push("DIA_CHI = ?");
       updateValues.push(DIA_CHI);
     }
-    if (TRANG_THAI_USER !== undefined && TRANG_THAI_USER !== null) {
+    if (
+      TRANG_THAI_USER !== undefined &&
+      TRANG_THAI_USER !== null &&
+      TRANG_THAI_USER !== ""
+    ) {
       updateFields.push("TRANG_THAI_USER = ?");
       updateValues.push(TRANG_THAI_USER);
     }
-    if (EMAIL !== undefined && EMAIL !== null) {
+    if (EMAIL !== undefined && EMAIL !== null && EMAIL !== "") {
       updateFields.push("EMAIL = ?");
       updateValues.push(EMAIL);
     }
-    if (HO_TEN !== undefined && HO_TEN !== null) {
+    if (HO_TEN !== undefined && HO_TEN !== null && HO_TEN !== "") {
       updateFields.push("HO_TEN = ?");
       updateValues.push(HO_TEN);
     }
-    if (VAI_TRO !== undefined && VAI_TRO !== null) {
+    if (VAI_TRO !== undefined && VAI_TRO !== null && VAI_TRO !== "") {
       updateFields.push("VAI_TRO = ?");
       updateValues.push(VAI_TRO);
     }
-    if (SO_DIEN_THOAI !== undefined && SO_DIEN_THOAI !== null) {
+    if (
+      SO_DIEN_THOAI !== undefined &&
+      SO_DIEN_THOAI !== null &&
+      SO_DIEN_THOAI !== ""
+    ) {
       updateFields.push("SO_DIEN_THOAI = ?");
       updateValues.push(SO_DIEN_THOAI);
     }
-    if (NGAY_SINH !== undefined && NGAY_SINH !== null) {
+    if (NGAY_SINH !== undefined && NGAY_SINH !== null && NGAY_SINH !== "") {
       const formattedNgaySinh = dayjs(NGAY_SINH).format("YYYY-MM-DD"); // Sử dụng dayjs để chuyển đổi
       updateFields.push("NGAY_SINH = ?");
       updateValues.push(formattedNgaySinh);
     }
-    if (DIA_CHI_Provinces !== undefined && DIA_CHI_Provinces !== null) {
+    if (
+      DIA_CHI_Provinces !== undefined &&
+      DIA_CHI_Provinces !== null &&
+      DIA_CHI_Provinces !== ""
+    ) {
       updateFields.push("DIA_CHI_Provinces = ?");
       updateValues.push(DIA_CHI_Provinces);
     }
-    if (DIA_CHI_Districts !== undefined && DIA_CHI_Districts !== null) {
+    if (
+      DIA_CHI_Districts !== undefined &&
+      DIA_CHI_Districts !== null &&
+      DIA_CHI_Districts !== ""
+    ) {
       updateFields.push("DIA_CHI_Districts = ?");
       updateValues.push(DIA_CHI_Districts);
     }
-    if (DIA_CHI_Wards !== undefined && DIA_CHI_Wards !== null) {
+    if (
+      DIA_CHI_Wards !== undefined &&
+      DIA_CHI_Wards !== null &&
+      DIA_CHI_Wards !== ""
+    ) {
       updateFields.push("DIA_CHI_Wards = ?");
       updateValues.push(DIA_CHI_Wards);
     }
-    if (DIA_CHI_STREETNAME !== undefined && DIA_CHI_STREETNAME !== null) {
+    if (
+      DIA_CHI_STREETNAME !== undefined &&
+      DIA_CHI_STREETNAME !== null &&
+      DIA_CHI_STREETNAME !== ""
+    ) {
       updateFields.push("DIA_CHI_STREETNAME = ?");
       updateValues.push(DIA_CHI_STREETNAME);
     }
+
     // Thêm trường ngày cập nhật
     const ngayCapNhat = new Date();
     updateFields.push("NGAY_CAP_NHAT_USER = ?");

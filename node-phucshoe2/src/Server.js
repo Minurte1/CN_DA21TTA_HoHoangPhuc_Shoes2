@@ -65,6 +65,8 @@ const gioHangRoute = require("./routers/tuongTacUserRouter/gioHangRouter.js");
 const yeuThichRoute = require("./routers/tuongTacUserRouter/yeuThichRouter.js");
 const binhLuanRoute = require("./routers/tuongTacUserRouter/binhLuanRouter.js");
 const tinNhanRoute = require("./routers/nguoiDungRouter/tinNhanRouter.js");
+const danhGiaRoute = require("./routers/tuongTacUserRouter/danhGiaRouter.js");
+
 app.use("/", userRoute);
 //
 app.use("/chat-lieu/", chatLieuRoute);
@@ -89,6 +91,8 @@ app.use("/binh-luan/", binhLuanRoute);
 
 app.use("/tin-nhan/", tinNhanRoute);
 app.use("/bai-viet/", baiVietRoute);
+
+app.use("/danh-gia/", danhGiaRoute);
 // Socket.IO logic
 const userSockets = {}; // Lưu trữ socket.id của từng user theo userId
 
