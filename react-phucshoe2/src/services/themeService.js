@@ -17,6 +17,15 @@ const themeConfigs = {
     backgroundColorLow: "#1f1f1f",
     colorTitle: "#1976d2", //Nhấn đậm title
   },
+
+  gray: {
+    backgroundColor: "#101014",
+    color: "#ffffff",
+    secondaryColor: "#3ccaf0",
+    accentColor: "#515157",
+    backgroundColorLow: "#1f1f1f",
+    colorTitle: "#1976d2", //Nhấn đậm title
+  },
 };
 
 // Hàm lấy theme

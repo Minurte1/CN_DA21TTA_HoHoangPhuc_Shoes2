@@ -1,0 +1,72 @@
+trục y them tiền
+trục y cần them label 
+
+Thống kê doanh thu theo phương thức thanh toán 
+biểu đồ cột : 2 cột 2 màu
+
+
+thống kê theo loại sản phẩm bán được nhiều nhất
+thống kê 
+
+
+
+ở thống kê sản phẩm
+Số lượng sản phẩm theo trạng thái -> sửa lại ưu tiên chọn 1 hoặc nhiều sản phẩm rồi thống kê theo -> số lượng sản phẩm đã bán, số lượng sp hiện tại và đã ẩn 
+
+
+thống kê yêu thích bieur đồ tròn thì phải % ( lấy top 8 ) và tổng số lượng của top 8 thôi ( có 1 ô % khác )
+biểu đồ phải hiển thị thêm thông tin, rà chuột vào thì thấy dc chi tiết hơn
+
+
+- thêm sản phẩm bán chạy ( đếm chi tiết hóa đơn ) theo tháng theo quý theo năm ( biểu đồ point ) hoặc ( word clound ) 
+
+- thống kê sản phẩm ít được quan tâm nhất ( tiêu cực nhất ) ( chỉ lấy trong chi tiết hóa đơn, phải được đánh giá)
+
+thống kê đơn hàng -> số lượng thì phải biểu đồ cột, biêu đồ tròn thì phải %
+
+
+bỏ biểu đồ size 
+
+gộp thống kê theo giới tính +  loại danh mục + múc đích sử dụng 
+
+
+---------------------THỐNG KÊ NGƯỜI DÙNG --------------------------
+- thống kê theo biểu đồ vn người dùng ở tỉnh nào "https://app.datawrapper.de/"
+- thông kê khách hàng mua nhiều nhất ( khách hàng thân thiết )			=>>>  xài biểu đồ phân tán, cột y  là số lượng tham gia đánh giá, x là số lượng mua hàng
+- thống kê khách hàng nhiệt tình ( mua xong đánh giá, bình luận ) 			khi rà chuột vào chấm thì sẽ thấy dc tên người đó và hiển thị số luong các thứ.
+- thống kê khách hàng đánh giá tiêu cực  ( có thể khóa bình luận )  --- còn time thì làm
+
+
+ở quản lý đơn hàng 
+thêm 2 trạng thái đang đóng gói và đã chuyển đến bưu cục
+có thể xem theo uuw tiên đơn hang theo tỉnh
+
+
+---- route dành cho nhân viên ( quan tâm nhiệm vụ )
+
+
+thanh toán đang lỗi 
+
+ở sau tên bài viết thì hiển thị ngày đăng  + người đăng  => lỗi ở blog k them dc hình ảnh 
+
+
+sửa mô hình + sửa màu sắc + kích cỡ 
+
+
+
+sửa hiển thị sản phẩm chỉ lấy sản phẩm có kích cỡ và màu sắc cùng list sản phẩm
+
+
+giới tình => đối tượng sử dung 
+
+
+hearth => sẽ có tim 
+
+them tong màu xanh vào logo header, viền tròn css màu  khỏi sửa hình ( logo them shoes xíu đi cho đẹp )
+
+phân trang thì trạng thái bình thường chữ sáng thì nền tối, nền tối thì chữ sáng => khi hover thì ngược lại trạng thais ban đầu
+
+bo hình ở route sản phẩm 
+
+
+trends google api
