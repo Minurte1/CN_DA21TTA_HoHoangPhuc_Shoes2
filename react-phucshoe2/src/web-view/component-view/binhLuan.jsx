@@ -76,6 +76,7 @@ const CommentsSection = ({ reviews }) => {
   const handleShowLess = () => {
     setShowAll(false);
   };
+  console.log("comments", reviews);
 
   return (
     <Box sx={{ width: "100%" }}>
@@ -178,14 +179,21 @@ const CommentsSection = ({ reviews }) => {
                     />
                     <Typography variant="body1">{review.HO_TEN}</Typography>
                   </Box>
-                  <Box sx={{ marginBottom: 1 }}>
+                  <Box sx={{ marginBottom: 1, display: "flex" }}>
                     <Rating
                       value={parseFloat(review.DANH_GIA)}
                       readOnly
                       precision={0.5}
                       sx={{ marginTop: 0.5, fontSize: 13 }}
-                    />
+                    />{" "}
+                    <Typography sx={{ marginLeft: 1, fontSize: 11, mt: 0.5 }}>
+                      Màu {review.TEN_MAU_SAC},
+                    </Typography>
+                    <Typography sx={{ marginLeft: 1, fontSize: 11, mt: 0.5 }}>
+                      Size: {review.KICH_CO}
+                    </Typography>
                   </Box>
+
                   <Typography variant="body2">{review.BINH_LUAN}</Typography>
                 </Box>
               ))

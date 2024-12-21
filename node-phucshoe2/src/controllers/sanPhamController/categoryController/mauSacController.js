@@ -28,12 +28,12 @@ const getDanhSachMauSac_Use = async (req, res) => {
 
 // Thêm mới màu sắc
 const createDanhSachMauSac = async (req, res) => {
-  const { tenMau } = req.body;
+  const { tenMau, maMauSac } = req.body;
   try {
     const createdMauSac = new Date(); // Lấy ngày hiện tại
     const [results] = await connection.execute(
-      "INSERT INTO MAU_SAC (TEN_MAU_SAC, CREATE_MAU_SAC, UPDATE_MAU_SAC, TRANG_THAI_MAU_SAC) VALUES (?, ?, ?, ?)",
-      [tenMau, createdMauSac, createdMauSac, 1]
+      "INSERT INTO MAU_SAC (TEN_MAU_SAC, CREATE_MAU_SAC, UPDATE_MAU_SAC, TRANG_THAI_MAU_SAC,MA_MAU) VALUES (?, ?, ?, ?,?)",
+      [tenMau, createdMauSac, createdMauSac, 1, maMauSac]
     );
     return res.status(200).json({
       EM: "Thêm kích cỡ thành công",
@@ -53,11 +53,11 @@ const createDanhSachMauSac = async (req, res) => {
 // Cập nhật màu sắc
 const updateDanhSachMauSac = async (req, res) => {
   const { id } = req.params;
-  const { tenMau, trangThaiMauSac } = req.body;
+  const { tenMau, trangThaiMauSac, maMauSac } = req.body;
   try {
     const [results] = await connection.execute(
-      "UPDATE `MAU_SAC` SET TEN_MAU_SAC = ? , TRANG_THAI_MAU_SAC = ? WHERE MAU_SAC_ID = ?",
-      [tenMau, trangThaiMauSac, id]
+      "UPDATE `MAU_SAC` SET TEN_MAU_SAC = ? , TRANG_THAI_MAU_SAC = ?,MA_MAU=? WHERE MAU_SAC_ID = ?",
+      [tenMau, trangThaiMauSac, maMauSac, id]
     );
     res
       .status(200)

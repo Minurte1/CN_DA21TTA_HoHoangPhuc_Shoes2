@@ -208,7 +208,7 @@ const FilterShoes = ({
             {" "}
             <MenuItem value="">{t.SeeAll ? t.SeeAll : "Xem tất cả"}</MenuItem>
             {mauSac.map((item) => (
-              <MenuItem key={item.MAU_SAC_ID} value={item.MAU_SAC_ID}>
+              <MenuItem key={item.MAU_SAC_ID} value={item.TEN_MAU_SAC}>
                 {item.TEN_MAU_SAC}
               </MenuItem>
             ))}
@@ -264,7 +264,7 @@ const FilterShoes = ({
           >
             <MenuItem value="">{t.SeeAll ? t.SeeAll : "Xem tất cả"}</MenuItem>
             {kichCo.map((item) => (
-              <MenuItem key={item.ID_KICH_CO} value={item.ID_KICH_CO}>
+              <MenuItem key={item.ID_KICH_CO} value={item.KICH_CO}>
                 {item.KICH_CO}
               </MenuItem>
             ))}

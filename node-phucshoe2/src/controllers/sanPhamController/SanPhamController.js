@@ -7,40 +7,38 @@ const path = require("path");
 const getSAN_PHAM = async (req, res) => {
   try {
     const [results] = await connection.execute(`
-      SELECT 
-        sp.ID_SAN_PHAM, sp.ID_THUONG_HIEU, sp.ID_DANH_MUC, sp.GIOI_TINH_ID, sp.CHAT_LIEU_ID_,
-        sp.TEN_SAN_PHAM, sp.GIA, sp.MO_TA_SAN_PHAM, sp.HINH_ANH_SANPHAM, sp.TRANG_THAI_SANPHAM, 
-        sp.NGAY_TAO_SANPHAM, sp.NGAY_CAP_NHAT_SANPHAM, sp.SO_LUONG_SANPHAM,
+         SELECT 
+        sp.ID_SAN_PHAM, 
+        sp.ID_THUONG_HIEU, 
+        sp.ID_DANH_MUC, 
+        sp.GIOI_TINH_ID, 
+        sp.CHAT_LIEU_ID_,
+        sp.TEN_SAN_PHAM, 
+        sp.GIA, 
+        sp.MO_TA_SAN_PHAM, 
+        sp.HINH_ANH_SANPHAM, 
+        sp.TRANG_THAI_SANPHAM, 
+        sp.NGAY_TAO_SANPHAM, 
+        sp.NGAY_CAP_NHAT_SANPHAM, 
+        sp.SO_LUONG_SANPHAM,
         gt.TEN_GIOI_TINH,
-        dm.TEN_DANH_MUC, dm.MO_TA_LOAI_DANH_MUC,
-        cl.TEN_CHAT_LIEU_, cl.MO_TA_CHAT_LIEU,
+        dm.TEN_DANH_MUC, 
+        dm.MO_TA_LOAI_DANH_MUC,
+        cl.TEN_CHAT_LIEU_, 
+        cl.MO_TA_CHAT_LIEU,
         th.TEN_THUONG_HIEU,
-        
-        -- Additional fields from PHONG_CACH, MAU_SAC, MUC_DICH_SU_DUNG, and KICH_CO tables
-        pc.ID_PHUONG_CACH, pc.TEN_PHONG_CACH, pc.CREATED_PHONG_CACH, pc.UPDATE_PHONG_CACH, pc.TRANG_THAI_PHONG_CACH,
-        ms.MAU_SAC_ID, ms.TEN_MAU_SAC, ms.CREATE_MAU_SAC, ms.UPDATE_MAU_SAC, ms.TRANG_THAI_MAU_SAC,
-        mdsd.ID_MUC_DICH_SU_DUNG, mdsd.TEN_MUC_DICH_SU_DUNG, mdsd.CREATE_MUC_DICH_SU_DUNG, mdsd.UPDATE_MUC_DICH_SU_DUNG, mdsd.TRANG_THAI_MUC_DICH_SU_DUNG,
-        kc.ID_KICH_CO, kc.KICH_CO, kc.TRANG_THAI_KICH_CO, kc.CREATED_KICH_CO, kc.UPDATE_KICH_CO
+        GROUP_CONCAT(DISTINCT CONCAT(ms.TEN_MAU_SAC, ' - ', kc.KICH_CO) ORDER BY ms.TEN_MAU_SAC SEPARATOR ', ') AS CHI_TIET_SAN_PHAM
 
       FROM SAN_PHAM sp
       LEFT JOIN GIOI_TINH gt ON sp.GIOI_TINH_ID = gt.GIOI_TINH_ID
       LEFT JOIN LOAI_DANH_MUC dm ON sp.ID_DANH_MUC = dm.ID_DANH_MUC
       LEFT JOIN CHAT_LIEU cl ON sp.CHAT_LIEU_ID_ = cl.CHAT_LIEU_ID_
       LEFT JOIN THUONG_HIEU th ON sp.ID_THUONG_HIEU = th.ID_THUONG_HIEU
+      LEFT JOIN SAN_PHAM_CHI_TIET spct ON sp.ID_SAN_PHAM = spct.ID_SAN_PHAM
+      LEFT JOIN MAU_SAC ms ON spct.MAU_SAC_ID = ms.MAU_SAC_ID
+      LEFT JOIN KICH_CO kc ON spct.ID_KICH_CO = kc.ID_KICH_CO
 
-      -- Joins to retrieve additional details
-      LEFT JOIN PHONG_CACH_SAN_PHAM pcs ON sp.ID_SAN_PHAM = pcs.ID_SAN_PHAM
-      LEFT JOIN PHONG_CACH pc ON pcs.ID_PHUONG_CACH = pc.ID_PHUONG_CACH
-      
-      LEFT JOIN MAU_SAC_SAN_PHAM mss ON sp.ID_SAN_PHAM = mss.ID_SAN_PHAM
-      LEFT JOIN MAU_SAC ms ON mss.MAU_SAC_ID = ms.MAU_SAC_ID
-
-      LEFT JOIN MUC_DICH_SU_DUNG_SAN_PHAM mdsds ON sp.ID_SAN_PHAM = mdsds.ID_SAN_PHAM
-      LEFT JOIN MUC_DICH_SU_DUNG mdsd ON mdsds.ID_MUC_DICH_SU_DUNG = mdsd.ID_MUC_DICH_SU_DUNG
-
-      LEFT JOIN CO_KICH_CO ckc ON sp.ID_SAN_PHAM = ckc.ID_SAN_PHAM
-      LEFT JOIN KICH_CO kc ON ckc.ID_KICH_CO = kc.ID_KICH_CO
-
+      GROUP BY sp.ID_SAN_PHAM
       ORDER BY sp.NGAY_TAO_SANPHAM DESC
     `);
 
@@ -63,38 +61,36 @@ const getSAN_PHAM_Use_ById = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const [results] = await connection.execute(
-      `
-      SELECT 
-        sp.ID_SAN_PHAM, sp.ID_THUONG_HIEU, sp.ID_DANH_MUC, sp.GIOI_TINH_ID, sp.CHAT_LIEU_ID_,
-        sp.TEN_SAN_PHAM, sp.GIA, sp.MO_TA_SAN_PHAM, sp.HINH_ANH_SANPHAM, sp.TRANG_THAI_SANPHAM, 
-        sp.NGAY_TAO_SANPHAM, sp.NGAY_CAP_NHAT_SANPHAM, sp.SO_LUONG_SANPHAM,
-        gt.TEN_GIOI_TINH,
-        dm.TEN_DANH_MUC, dm.MO_TA_LOAI_DANH_MUC,
-        cl.TEN_CHAT_LIEU_, cl.MO_TA_CHAT_LIEU,
-        th.TEN_THUONG_HIEU,
-        pc.ID_PHUONG_CACH, pc.TEN_PHONG_CACH, pc.CREATED_PHONG_CACH, pc.UPDATE_PHONG_CACH, pc.TRANG_THAI_PHONG_CACH,
-        spct.MAU_SAC_ID, ms.TEN_MAU_SAC, ms.CREATE_MAU_SAC, ms.UPDATE_MAU_SAC, ms.TRANG_THAI_MAU_SAC,
-        mdsd.ID_MUC_DICH_SU_DUNG, mdsd.TEN_MUC_DICH_SU_DUNG, mdsd.CREATE_MUC_DICH_SU_DUNG, mdsd.UPDATE_MUC_DICH_SU_DUNG, mdsd.TRANG_THAI_MUC_DICH_SU_DUNG,
-        spct.ID_KICH_CO, kc.KICH_CO, kc.TRANG_THAI_KICH_CO, kc.CREATED_KICH_CO, kc.UPDATE_KICH_CO
+    // Query 1: Get main product information
+    const [productResults] = await connection.execute(
+      `SELECT 
+        sp.*, 
+        gt.TEN_GIOI_TINH, gt.CREATED_GIOI_TINH, gt.UPDATE_GIOI_TINH, gt.TRANG_THAI_GIOI_TINH,
+        dm.TEN_DANH_MUC, dm.MO_TA_LOAI_DANH_MUC, dm.TRANG_THAI_DANHMUC, 
+        dm.CREATED_DANH_MUC, dm.UPDATE_DANH_MUC,
+        cl.TEN_CHAT_LIEU_, cl.MO_TA_CHAT_LIEU, cl.TRANG_THAI_CHAT_LIEU,
+        cl.CREATED_TEN_CHAT_LIEU_, cl.UPDATE_CHAT_LIEU,
+        th.TEN_THUONG_HIEU, th.CREATE_THUONG_HIEU, th.UPDATE_THUONG_HIEU, 
+        th.TRANG_THAI_THUONG_HIEU,
+        GROUP_CONCAT(DISTINCT pc.TEN_PHONG_CACH) as PHONG_CACH,
+        GROUP_CONCAT(DISTINCT mdsd.TEN_MUC_DICH_SU_DUNG) as MUC_DICH_SU_DUNG
+ 
       FROM SAN_PHAM sp
       LEFT JOIN GIOI_TINH gt ON sp.GIOI_TINH_ID = gt.GIOI_TINH_ID
       LEFT JOIN LOAI_DANH_MUC dm ON sp.ID_DANH_MUC = dm.ID_DANH_MUC
       LEFT JOIN CHAT_LIEU cl ON sp.CHAT_LIEU_ID_ = cl.CHAT_LIEU_ID_
       LEFT JOIN THUONG_HIEU th ON sp.ID_THUONG_HIEU = th.ID_THUONG_HIEU
-      LEFT JOIN PHONG_CACH_SAN_PHAM pcs ON sp.ID_SAN_PHAM = pcs.ID_SAN_PHAM
-      LEFT JOIN PHONG_CACH pc ON pcs.ID_PHUONG_CACH = pc.ID_PHUONG_CACH
-      LEFT JOIN SAN_PHAM_CHI_TIET spct ON sp.ID_SAN_PHAM = spct.ID_SAN_PHAM
-      LEFT JOIN MAU_SAC ms ON spct.MAU_SAC_ID = ms.MAU_SAC_ID
-      LEFT JOIN MUC_DICH_SU_DUNG_SAN_PHAM mdsds ON sp.ID_SAN_PHAM = mdsds.ID_SAN_PHAM
-      LEFT JOIN MUC_DICH_SU_DUNG mdsd ON mdsds.ID_MUC_DICH_SU_DUNG = mdsd.ID_MUC_DICH_SU_DUNG
-      LEFT JOIN KICH_CO kc ON spct.ID_KICH_CO = kc.ID_KICH_CO
-      WHERE sp.TRANG_THAI_SANPHAM = 1 AND sp.ID_SAN_PHAM = ?;
-      `,
+      LEFT JOIN PHONG_CACH_SAN_PHAM pcsp ON sp.ID_SAN_PHAM = pcsp.ID_SAN_PHAM
+      LEFT JOIN PHONG_CACH pc ON pcsp.ID_PHUONG_CACH = pc.ID_PHUONG_CACH
+      LEFT JOIN MUC_DICH_SU_DUNG_SAN_PHAM mdsdsp ON sp.ID_SAN_PHAM = mdsdsp.ID_SAN_PHAM
+      LEFT JOIN MUC_DICH_SU_DUNG mdsd ON mdsdsp.ID_MUC_DICH_SU_DUNG = mdsd.ID_MUC_DICH_SU_DUNG
+   
+      WHERE sp.TRANG_THAI_SANPHAM = 1 AND sp.ID_SAN_PHAM = ?
+      GROUP BY sp.ID_SAN_PHAM`,
       [id]
     );
 
-    if (results.length === 0) {
+    if (productResults.length === 0) {
       return res.status(404).json({
         EM: "Sản phẩm không tìm thấy",
         EC: 0,
@@ -102,10 +98,32 @@ const getSAN_PHAM_Use_ById = async (req, res) => {
       });
     }
 
+    // Query 2: Get product details
+    const [detailResults] = await connection.execute(
+      `SELECT 
+        spct.ID_SAN_PHAM_CHI_TIET,
+        ms.MAU_SAC_ID,
+        ms.TEN_MAU_SAC,
+        ms.MA_MAU,
+        kc.ID_KICH_CO,
+        kc.KICH_CO
+      FROM SAN_PHAM_CHI_TIET spct
+      LEFT JOIN MAU_SAC ms ON spct.MAU_SAC_ID = ms.MAU_SAC_ID
+      LEFT JOIN KICH_CO kc ON spct.ID_KICH_CO = kc.ID_KICH_CO
+      WHERE spct.ID_SAN_PHAM = ?`,
+      [id]
+    );
+
+    // Combine results
+    const finalResult = {
+      ...productResults[0],
+      CHI_TIET_SAN_PHAM: detailResults,
+    };
+
     return res.status(200).json({
       EM: "Xem thông tin sản phẩm thành công",
       EC: 1,
-      DT: results[0],
+      DT: finalResult,
     });
   } catch (error) {
     console.error("Error getting san pham by id:", error);

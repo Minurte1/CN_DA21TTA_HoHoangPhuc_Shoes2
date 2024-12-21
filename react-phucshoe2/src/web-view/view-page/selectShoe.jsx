@@ -133,7 +133,25 @@ const SelectShoe = () => {
       enqueueSnackbar(error.response.data.EM, { variant: "error" });
     }
   };
+  const [selectedDetail, setSelectedDetail] = useState(null);
 
+  const handleOptionChange = (type, value, detail) => {
+    if (type === "color") {
+      // Lọc ra các tùy chọn phù hợp với màu đã chọn
+      const selectedSize = selectedDetail?.size;
+      const selected = product.CHI_TIET_SAN_PHAM.find(
+        (item) => item.MAU_SAC_ID === value && item.KICH_CO === selectedSize
+      );
+      setSelectedDetail(selected || { ...detail, size: selectedSize });
+    } else if (type === "size") {
+      // Lọc ra các tùy chọn phù hợp với kích cỡ đã chọn
+      const selectedColor = selectedDetail?.color;
+      const selected = product.CHI_TIET_SAN_PHAM.find(
+        (item) => item.KICH_CO === value && item.MAU_SAC_ID === selectedColor
+      );
+      setSelectedDetail(selected || { ...detail, color: selectedColor });
+    }
+  };
   if (!product) {
     return <div>Loading...</div>; // Add a loading state
   }
@@ -251,19 +269,93 @@ const SelectShoe = () => {
           >
             <Typography variant="h6" sx={{ mb: 1 }}>
               {product.TEN_SAN_PHAM}
-            </Typography>
-            <Box>
-              <Typography sx={{ color: currentTheme.color }} variant="body2">
-                Size: {product.KICH_CO || "N/A"}
-              </Typography>
-              <Typography variant="caption" sx={{ color: currentTheme.color }}>
-                Chất liệu: {product.TEN_CHAT_LIEU_ || "N/A"} {/* Material */}
-              </Typography>
-            </Box>
+            </Typography>{" "}
             <Typography sx={{ color: currentTheme.color }} variant="h6">
               {product.GIA.toLocaleString()} VND
             </Typography>{" "}
-            {/* Price */}
+            <Typography
+              variant="body2"
+              sx={{
+                color: currentTheme.color,
+                borderBottom: "1px solid rgba(204, 204, 204, 0.5)",
+                paddingTop: 3,
+                paddingBottom: 1,
+              }}
+            >
+              Màu sắc: {product.TEN_MAU_SAC}
+            </Typography>
+            <Typography
+              variant="body2"
+              sx={{
+                color: currentTheme.color,
+                borderBottom: "1px solid rgba(204, 204, 204, 0.5)",
+                paddingTop: 3,
+                paddingBottom: 1,
+              }}
+            >
+              Kích cỡ: {product.KICH_CO} {/* Product Description */}
+            </Typography>
+            <div>
+              <h2>{product.TEN_SAN_PHAM}</h2>
+              <p>Giá: {product.GIA}</p>
+
+              <div>
+                <h4>Chọn màu sắc</h4>
+                {product.CHI_TIET_SAN_PHAM.map((detail, index) => (
+                  <button
+                    key={`color-${index}`}
+                    style={{
+                      backgroundColor: detail.TEN_MAU_SAC.toLowerCase(),
+                      border:
+                        selectedDetail?.color === detail.MAU_SAC_ID
+                          ? "2px solid black"
+                          : "1px solid gray",
+                    }}
+                    onClick={() =>
+                      handleOptionChange("color", detail.MAU_SAC_ID, detail)
+                    }
+                  >
+                    {detail.TEN_MAU_SAC}
+                  </button>
+                ))}
+              </div>
+
+              <div>
+                <h4>Chọn kích cỡ</h4>
+                {product.CHI_TIET_SAN_PHAM.map((detail, index) => (
+                  <button
+                    key={`size-${index}`}
+                    style={{
+                      border:
+                        selectedDetail?.size === detail.KICH_CO
+                          ? "2px solid black"
+                          : "1px solid gray",
+                    }}
+                    onClick={() =>
+                      handleOptionChange("size", detail.KICH_CO, detail)
+                    }
+                  >
+                    {detail.KICH_CO}
+                  </button>
+                ))}
+              </div>
+
+              <div>
+                <h4>Tùy chọn đã chọn:</h4>
+                {selectedDetail ? (
+                  <>
+                    <p>
+                      ID sản phẩm chi tiết:{" "}
+                      {selectedDetail.ID_SAN_PHAM_CHI_TIET}
+                    </p>
+                    <p>Màu sắc: {selectedDetail.TEN_MAU_SAC}</p>
+                    <p>Kích cỡ: {selectedDetail.KICH_CO}</p>
+                  </>
+                ) : (
+                  <p>Chưa chọn sản phẩm chi tiết</p>
+                )}
+              </div>
+            </div>
             <Button
               variant="contained"
               onClick={() => handleAddToCart(false)}
@@ -331,19 +423,8 @@ const SelectShoe = () => {
                   paddingBottom: 1,
                 }}
               >
-                Kích cỡ: {product.TEN_DANH_MUC} {/* Product Description */}
-              </Typography>
-              <Typography
-                variant="body2"
-                sx={{
-                  color: currentTheme.color,
-                  borderBottom: "1px solid rgba(204, 204, 204, 0.5)",
-                  paddingTop: 3,
-                  paddingBottom: 1,
-                }}
-              >
-                Kích cỡ: {product.KICH_CO} {/* Product Description */}
-              </Typography>
+                Thể loại: {product.TEN_DANH_MUC} {/* Product Description */}
+              </Typography>{" "}
               <Typography
                 variant="body2"
                 sx={{
@@ -377,7 +458,19 @@ const SelectShoe = () => {
                 }}
               >
                 Đối tượng phù hợp nhất: {product.TEN_GIOI_TINH}{" "}
-              </Typography>
+              </Typography>{" "}
+              <Typography
+                variant="body2"
+                sx={{
+                  color: currentTheme.color,
+                  borderBottom: "1px solid rgba(204, 204, 204, 0.5)",
+                  paddingTop: 3,
+                  paddingBottom: 1,
+                }}
+              >
+                Chất liệu: {product.TEN_CHAT_LIEU_ || "N/A"} {/* Material */}
+                {/* {new Date(product.NGAY_TAO_SANPHAM).toLocaleDateString()} */}
+              </Typography>{" "}
               <Typography
                 variant="body2"
                 sx={{
@@ -390,17 +483,6 @@ const SelectShoe = () => {
                 Số lượng trong kho còn : {product.SO_LUONG_SANPHAM}
                 {/* {new Date(product.NGAY_TAO_SANPHAM).toLocaleDateString()} */}
               </Typography>{" "}
-              <Typography
-                variant="body2"
-                sx={{
-                  color: currentTheme.color,
-                  borderBottom: "1px solid rgba(204, 204, 204, 0.5)",
-                  paddingTop: 3,
-                  paddingBottom: 1,
-                }}
-              >
-                Màu sắc: {product.TEN_MAU_SAC}
-              </Typography>
             </Box>
           </Box>
         </Grid>

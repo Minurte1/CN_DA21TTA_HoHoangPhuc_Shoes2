@@ -209,54 +209,74 @@ const BrowseProduct = () => {
   useEffect(() => {
     const applyFilters = () => {
       let updatedProducts = products;
+
+      // Parse CHI_TIET_SAN_PHAM for each product
+      updatedProducts = updatedProducts.map((product) => {
+        const details = product.CHI_TIET_SAN_PHAM
+          ? product.CHI_TIET_SAN_PHAM.split(", ").map((detail) => {
+              const [mauSac, kichCo] = detail.split(" - ");
+              return { mauSac, kichCo };
+            })
+          : [];
+        return { ...product, parsedDetails: details };
+      });
+      console.log("updatedProducts", updatedProducts);
       if (selectMucDichSuDung) {
         updatedProducts = updatedProducts.filter(
           (product) => product.ID_MUC_DICH_SU_DUNG === selectMucDichSuDung
         );
       }
-      if (selectMucDichSuDung) {
-        updatedProducts = updatedProducts.filter(
-          (product) => product.ID_MUC_DICH_SU_DUNG === selectMucDichSuDung
-        );
-      }
+
       if (selectPhongCach) {
         updatedProducts = updatedProducts.filter(
           (product) => product.ID_PHUONG_CACH === selectPhongCach
         );
       }
+
+      // Filter by size using parsed details
       if (selectKichCo) {
-        updatedProducts = updatedProducts.filter(
-          (product) => product.ID_KICH_CO === selectKichCo
+        updatedProducts = updatedProducts.filter((product) =>
+          product.parsedDetails.some((detail) => detail.kichCo === selectKichCo)
         );
       }
+      console.log("selectedMauSac", selectedMauSac);
+      // Filter by color using parsed details
       if (selectedMauSac) {
-        updatedProducts = updatedProducts.filter(
-          (product) => product.MAU_SAC_ID === selectedMauSac
+        updatedProducts = updatedProducts.filter((product) =>
+          product.parsedDetails.some(
+            (detail) => detail.mauSac === selectedMauSac
+          )
         );
       }
+
       if (selectedThuongHieu) {
         updatedProducts = updatedProducts.filter(
           (product) => product.ID_THUONG_HIEU === selectedThuongHieu
         );
       }
+
       if (selectedChatLieu) {
         updatedProducts = updatedProducts.filter(
           (product) => product.CHAT_LIEU_ID_ === selectedChatLieu
         );
       }
+
       if (selectedTrangThai !== "") {
         updatedProducts = updatedProducts.filter(
           (product) => product.TRANG_THAI_SANPHAM === selectedTrangThai
         );
       }
 
-      // Nếu có từ khóa tìm kiếm, lọc lại
       if (searchTerm) {
         updatedProducts = updatedProducts.filter((product) =>
           product.TEN_SAN_PHAM.toLowerCase().includes(searchTerm.toLowerCase())
         );
       }
 
+      // Remove temporary parsedDetails before setting state
+      updatedProducts = updatedProducts.map(
+        ({ parsedDetails, ...product }) => product
+      );
       setFilteredProducts(updatedProducts);
     };
 
@@ -265,7 +285,7 @@ const BrowseProduct = () => {
     selectedThuongHieu,
     selectedChatLieu,
     selectedTrangThai,
-    searchTerm, // Thêm searchTerm vào dependency array
+    searchTerm,
     products,
     selectKichCo,
     selectPhongCach,
@@ -279,7 +299,7 @@ const BrowseProduct = () => {
   const handlePageChange = (event, value) => {
     setCurrentPage(value);
   };
-
+  console.log("currentProducts", currentProducts);
   return (
     <>
       <Box>

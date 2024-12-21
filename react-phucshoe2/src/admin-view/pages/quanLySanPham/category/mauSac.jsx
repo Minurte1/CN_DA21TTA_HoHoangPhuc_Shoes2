@@ -33,6 +33,7 @@ const MauSacManager = () => {
   const [currentMauSac, setCurrentMauSac] = useState(null);
   const [tenMau, setTenMau] = useState("");
   const [trangThaiMauSac, setTrangThaiMauSac] = useState("");
+  const [maMauSac, setMaMauSac] = useState("");
   useEffect(() => {
     fetchMauSacList();
   }, []);
@@ -52,6 +53,7 @@ const MauSacManager = () => {
     setCurrentMauSac(mauSacItem);
     setTenMau(mauSacItem ? mauSacItem.TEN_MAU_SAC : "");
     setTrangThaiMauSac(mauSacItem ? mauSacItem.TRANG_THAI_MAU_SAC : "");
+    setMaMauSac(mauSacItem ? mauSacItem.MA_MAU : "");
     setOpenDialog(true);
   };
 
@@ -62,7 +64,7 @@ const MauSacManager = () => {
   };
 
   const handleSave = async () => {
-    const mauSacData = { tenMau, trangThaiMauSac };
+    const mauSacData = { tenMau, trangThaiMauSac, maMauSac };
     try {
       if (currentMauSac) {
         const response = await axios.put(
@@ -125,6 +127,9 @@ const MauSacManager = () => {
                 Tên Màu Sắc
               </TableCell>{" "}
               <TableCell sx={{ color: currentTheme.colorTitle }}>
+                Mã Màu Sắc
+              </TableCell>{" "}
+              <TableCell sx={{ color: currentTheme.colorTitle }}>
                 Ngày Tạo Ra
               </TableCell>{" "}
               <TableCell sx={{ color: currentTheme.colorTitle }}>
@@ -146,6 +151,16 @@ const MauSacManager = () => {
                 </TableCell>
                 <TableCell sx={{ color: currentTheme.color }}>
                   {mauSacItem.TEN_MAU_SAC}
+                </TableCell>{" "}
+                <TableCell sx={{ color: currentTheme.color }}>
+                  <div
+                    style={{
+                      backgroundColor: mauSacItem.MA_MAU,
+                      width: "20px",
+                      height: "20px",
+                      borderRadius: "50%",
+                    }}
+                  ></div>
                 </TableCell>
                 <TableCell sx={{ color: currentTheme.color }}>
                   {moment(mauSacItem.CREATE_MAU_SAC).format(
@@ -201,6 +216,16 @@ const MauSacManager = () => {
             variant="outlined"
             value={tenMau}
             onChange={(e) => setTenMau(e.target.value)}
+          />{" "}
+          <TextField
+            autoFocus
+            margin="dense"
+            label="Mã Màu Sắc"
+            type="text"
+            fullWidth
+            variant="outlined"
+            value={maMauSac}
+            onChange={(e) => setMaMauSac(e.target.value)}
           />{" "}
           <Select
             margin="dense"
