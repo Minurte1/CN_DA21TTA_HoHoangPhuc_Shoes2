@@ -7,7 +7,7 @@ const path = require("path");
 const getSAN_PHAM = async (req, res) => {
   try {
     const [results] = await connection.execute(`
-         SELECT 
+      SELECT 
         sp.ID_SAN_PHAM, 
         sp.ID_THUONG_HIEU, 
         sp.ID_DANH_MUC, 
@@ -27,8 +27,12 @@ const getSAN_PHAM = async (req, res) => {
         cl.TEN_CHAT_LIEU_, 
         cl.MO_TA_CHAT_LIEU,
         th.TEN_THUONG_HIEU,
+        mdsd.ID_MUC_DICH_SU_DUNG,
+        mdsd.TEN_MUC_DICH_SU_DUNG,
+        mdsd.CREATE_MUC_DICH_SU_DUNG,
+        mdsd.UPDATE_MUC_DICH_SU_DUNG, 
+        mdsd.TRANG_THAI_MUC_DICH_SU_DUNG,
         GROUP_CONCAT(DISTINCT CONCAT(ms.TEN_MAU_SAC, ' - ', kc.KICH_CO) ORDER BY ms.TEN_MAU_SAC SEPARATOR ', ') AS CHI_TIET_SAN_PHAM
-
       FROM SAN_PHAM sp
       LEFT JOIN GIOI_TINH gt ON sp.GIOI_TINH_ID = gt.GIOI_TINH_ID
       LEFT JOIN LOAI_DANH_MUC dm ON sp.ID_DANH_MUC = dm.ID_DANH_MUC
@@ -37,8 +41,9 @@ const getSAN_PHAM = async (req, res) => {
       LEFT JOIN SAN_PHAM_CHI_TIET spct ON sp.ID_SAN_PHAM = spct.ID_SAN_PHAM
       LEFT JOIN MAU_SAC ms ON spct.MAU_SAC_ID = ms.MAU_SAC_ID
       LEFT JOIN KICH_CO kc ON spct.ID_KICH_CO = kc.ID_KICH_CO
-
-      GROUP BY sp.ID_SAN_PHAM
+      LEFT JOIN MUC_DICH_SU_DUNG_SAN_PHAM mdsdsp ON sp.ID_SAN_PHAM = mdsdsp.ID_SAN_PHAM
+      LEFT JOIN MUC_DICH_SU_DUNG mdsd ON mdsdsp.ID_MUC_DICH_SU_DUNG = mdsd.ID_MUC_DICH_SU_DUNG
+      GROUP BY sp.ID_SAN_PHAM, gt.TEN_GIOI_TINH, dm.TEN_DANH_MUC, dm.MO_TA_LOAI_DANH_MUC, cl.TEN_CHAT_LIEU_, cl.MO_TA_CHAT_LIEU, th.TEN_THUONG_HIEU, mdsd.ID_MUC_DICH_SU_DUNG, mdsd.TEN_MUC_DICH_SU_DUNG, mdsd.CREATE_MUC_DICH_SU_DUNG, mdsd.UPDATE_MUC_DICH_SU_DUNG, mdsd.TRANG_THAI_MUC_DICH_SU_DUNG
       ORDER BY sp.NGAY_TAO_SANPHAM DESC
     `);
 
@@ -585,6 +590,7 @@ const getFavoriteProductsByUser = async (req, res) => {
 };
 
 // Tạo sản phẩm mới
+// Tạo sản phẩm mới
 const createSAN_PHAM = async (req, res) => {
   try {
     const {
@@ -597,15 +603,45 @@ const createSAN_PHAM = async (req, res) => {
       moTaSanPham,
       trangThaiSanPham,
       soLuongSanPham,
-      option,
-
       phongCachId,
-      mauSacId,
+      mauSacIds,
+      kichCoIds,
       mucDichSuDungId,
-      kichCoId,
     } = req.body;
+
     const ngayTaoSanPham = new Date();
     const images = req.file ? path.basename(req.file.path) : null;
+
+    // Parse chuỗi thành mảng (nếu cần)
+    const parsedMauSacIds =
+      typeof mauSacIds === "string"
+        ? mauSacIds.split(",").map(Number)
+        : mauSacIds;
+    const parsedKichCoIds =
+      typeof kichCoIds === "string"
+        ? kichCoIds.split(",").map(Number)
+        : kichCoIds;
+
+    if (!Array.isArray(parsedMauSacIds) || !Array.isArray(parsedKichCoIds)) {
+      return res.status(400).json({
+        EM: "Dữ liệu không hợp lệ: mauSacIds hoặc kichCoIds không phải là mảng.",
+        EC: 0,
+        DT: [],
+      });
+    }
+
+    const validMauSacIds = parsedMauSacIds.filter((id) => Number.isInteger(id));
+    const validKichCoIds = parsedKichCoIds.filter((id) => Number.isInteger(id));
+
+    if (validMauSacIds.length === 0 || validKichCoIds.length === 0) {
+      return res.status(400).json({
+        EM: "Dữ liệu không hợp lệ: Mảng mauSacIds hoặc kichCoIds rỗng hoặc không có giá trị hợp lệ.",
+        EC: 0,
+        DT: [],
+      });
+    }
+
+    // Thêm sản phẩm vào bảng SAN_PHAM
     const [results] = await connection.execute(
       "INSERT INTO SAN_PHAM (ID_THUONG_HIEU, ID_DANH_MUC, GIOI_TINH_ID, CHAT_LIEU_ID_, TEN_SAN_PHAM, GIA, MO_TA_SAN_PHAM, HINH_ANH_SANPHAM, TRANG_THAI_SANPHAM, NGAY_TAO_SANPHAM, NGAY_CAP_NHAT_SANPHAM, SO_LUONG_SANPHAM) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
       [
@@ -623,43 +659,35 @@ const createSAN_PHAM = async (req, res) => {
         soLuongSanPham,
       ]
     );
+
     const newProductId = results.insertId;
-    console.log("option value:", option);
 
-    // Kiểm tra nếu option là boolean false
-    if (option === false) {
-      console.log("Điều kiện true khi option là false");
-      // Tiến hành xử lý khi option là false
-    } else {
-      console.log("option không phải là false");
-    }
-
-    if (option) {
-      console.log("newProductId", newProductId);
-      // Insert vào bảng PHONG_CACH_SAN_PHAM
+    // Thêm phong cách vào bảng PHONG_CACH_SAN_PHAM
+    if (phongCachId) {
       await connection.execute(
         "INSERT INTO PHONG_CACH_SAN_PHAM (ID_SAN_PHAM, ID_PHUONG_CACH) VALUES (?, ?)",
         [newProductId, phongCachId]
       );
+    }
 
-      // Insert vào bảng MAU_SAC_SAN_PHAM
-      await connection.execute(
-        "INSERT INTO MAU_SAC_SAN_PHAM (ID_SAN_PHAM, MAU_SAC_ID) VALUES (?, ?)",
-        [newProductId, mauSacId]
-      );
-
-      // Insert vào bảng MUC_DICH_SU_DUNG_SAN_PHAM
+    // Thêm mục đích sử dụng vào bảng MUC_DICH_SU_DUNG_SAN_PHAM
+    if (mucDichSuDungId) {
       await connection.execute(
         "INSERT INTO MUC_DICH_SU_DUNG_SAN_PHAM (ID_SAN_PHAM, ID_MUC_DICH_SU_DUNG) VALUES (?, ?)",
         [newProductId, mucDichSuDungId]
       );
-
-      // Insert vào bảng CO_KICH_CO
-      await connection.execute(
-        "INSERT INTO CO_KICH_CO (ID_SAN_PHAM, ID_KICH_CO) VALUES (?, ?)",
-        [newProductId, kichCoId]
-      );
     }
+
+    // Thêm chi tiết sản phẩm vào bảng SAN_PHAM_CHI_TIET
+    for (const mauSacId of validMauSacIds) {
+      for (const kichCoId of validKichCoIds) {
+        await connection.execute(
+          "INSERT INTO SAN_PHAM_CHI_TIET (ID_SAN_PHAM, MAU_SAC_ID, ID_KICH_CO) VALUES (?, ?, ?)",
+          [newProductId, mauSacId, kichCoId]
+        );
+      }
+    }
+
     return res.status(201).json({
       EM: "Thêm sản phẩm thành công",
       EC: 1,

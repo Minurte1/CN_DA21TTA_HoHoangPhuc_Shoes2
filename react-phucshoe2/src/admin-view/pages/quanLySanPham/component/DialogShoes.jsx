@@ -14,6 +14,7 @@ import {
   Divider,
   IconButton,
   Grid,
+  Autocomplete,
 } from "@mui/material";
 import { ChevronRight, ChevronLeft } from "@mui/icons-material";
 const DialogShoes = ({
@@ -37,6 +38,7 @@ const DialogShoes = ({
   option,
   setOption,
 }) => {
+  console.log("formData", formData);
   return (
     <Dialog
       open={openDialog}
@@ -45,7 +47,7 @@ const DialogShoes = ({
       fullWidth={!option}
     >
       <DialogTitle>
-        {currentProduct ? "Edit Product" : "Add Product"}
+        {currentProduct ? "Chỉnh sửa sản phẩm" : "Thêm sản phẩm"}
       </DialogTitle>
       <DialogContent
         sx={{
@@ -233,24 +235,6 @@ const DialogShoes = ({
                   </Select>{" "}
                 </FormControl>{" "}
                 <FormControl sx={{ width: "400px" }} fullWidth margin="dense">
-                  <InputLabel id="thuong-hieu-label">Màu sắc</InputLabel>
-                  <Select
-                    labelId="thuong-hieu-label"
-                    id="idThuongHieu"
-                    name="mauSacId"
-                    label="Màu sắc"
-                    value={formData.mauSacId}
-                    onChange={handleChange}
-                    fullWidth
-                  >
-                    {mauSac.map((item) => (
-                      <MenuItem key={item.MAU_SAC_ID} value={item.MAU_SAC_ID}>
-                        {item.TEN_MAU_SAC}
-                      </MenuItem>
-                    ))}
-                  </Select>{" "}
-                </FormControl>{" "}
-                <FormControl sx={{ width: "400px" }} fullWidth margin="dense">
                   <InputLabel id="thuong-hieu-label">
                     Mục đích sử dụng
                   </InputLabel>
@@ -273,24 +257,68 @@ const DialogShoes = ({
                     ))}
                   </Select>{" "}
                 </FormControl>{" "}
-                <FormControl sx={{ width: "400px" }} fullWidth margin="dense">
-                  <InputLabel id="thuong-hieu-label">Kích cỡ</InputLabel>
-                  <Select
-                    labelId="thuong-hieu-label"
-                    id="idThuongHieu"
-                    name="kichCoId"
-                    label="Kích cỡ"
-                    value={formData.kichCoId}
-                    onChange={handleChange}
-                    fullWidth
-                  >
-                    {kichCo.map((item) => (
-                      <MenuItem key={item.ID_KICH_CO} value={item.ID_KICH_CO}>
-                        {item.KICH_CO}
-                      </MenuItem>
-                    ))}
-                  </Select>{" "}
-                </FormControl>{" "}
+                <Autocomplete
+                  id="mau-sac-autocomplete"
+                  multiple
+                  options={mauSac}
+                  getOptionLabel={(option) => option.TEN_MAU_SAC || ""}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Màu sắc"
+                      variant="outlined"
+                      margin="dense"
+                    />
+                  )}
+                  value={
+                    mauSac.filter((item) =>
+                      formData.mauSacIds?.includes(item.MAU_SAC_ID)
+                    ) || []
+                  }
+                  onChange={(event, newValue) => {
+                    handleChange({
+                      target: {
+                        name: "mauSacIds",
+                        value: newValue.map((item) => item.MAU_SAC_ID),
+                      },
+                    });
+                  }}
+                  sx={{ width: "400px" }}
+                  isOptionEqualToValue={(option, value) =>
+                    option.MAU_SAC_ID === value?.MAU_SAC_ID
+                  }
+                />
+                <Autocomplete
+                  id="kich-co-autocomplete"
+                  multiple
+                  options={kichCo}
+                  getOptionLabel={(option) => option.KICH_CO || ""}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Kích cỡ"
+                      variant="outlined"
+                      margin="dense"
+                    />
+                  )}
+                  value={
+                    kichCo.filter((item) =>
+                      formData.kichCoIds?.includes(item.ID_KICH_CO)
+                    ) || []
+                  }
+                  onChange={(event, newValue) => {
+                    handleChange({
+                      target: {
+                        name: "kichCoIds",
+                        value: newValue.map((item) => item.ID_KICH_CO),
+                      },
+                    });
+                  }}
+                  sx={{ width: "400px" }}
+                  isOptionEqualToValue={(option, value) =>
+                    option.ID_KICH_CO === value?.ID_KICH_CO
+                  }
+                />
               </Box>{" "}
               <IconButton
                 sx={{
