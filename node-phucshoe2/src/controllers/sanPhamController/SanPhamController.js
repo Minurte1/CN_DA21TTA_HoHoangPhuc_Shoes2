@@ -409,25 +409,27 @@ const get_5CheapestProdcts = async (req, res) => {
 const getTop5BestSellingProducts = async (req, res) => {
   try {
     const [results] = await connection.execute(`
-      SELECT 
-        sp.ID_SAN_PHAM, sp.ID_THUONG_HIEU, sp.ID_DANH_MUC, sp.GIOI_TINH_ID, sp.CHAT_LIEU_ID_,
-        sp.TEN_SAN_PHAM, sp.GIA, sp.MO_TA_SAN_PHAM, sp.HINH_ANH_SANPHAM, sp.TRANG_THAI_SANPHAM, 
-        sp.NGAY_TAO_SANPHAM, sp.NGAY_CAP_NHAT_SANPHAM, sp.SO_LUONG_SANPHAM,
-        gt.TEN_GIOI_TINH,
-        dm.TEN_DANH_MUC, dm.MO_TA_LOAI_DANH_MUC,
-        cl.TEN_CHAT_LIEU_, cl.MO_TA_CHAT_LIEU,
-        th.TEN_THUONG_HIEU,
-        SUM(cthd.SO_LUONG_SP) AS total_sold
-      FROM SAN_PHAM sp
-      LEFT JOIN CHI_TIET_HOA_DON cthd ON sp.ID_SAN_PHAM = cthd.ID_SAN_PHAM
-      LEFT JOIN GIOI_TINH gt ON sp.GIOI_TINH_ID = gt.GIOI_TINH_ID
-      LEFT JOIN LOAI_DANH_MUC dm ON sp.ID_DANH_MUC = dm.ID_DANH_MUC
-      LEFT JOIN CHAT_LIEU cl ON sp.CHAT_LIEU_ID_ = cl.CHAT_LIEU_ID_
-      LEFT JOIN THUONG_HIEU th ON sp.ID_THUONG_HIEU = th.ID_THUONG_HIEU
-      WHERE sp.TRANG_THAI_SANPHAM = 1
-      GROUP BY sp.ID_SAN_PHAM
-      ORDER BY total_sold DESC
-      LIMIT 5
+     SELECT 
+    sp.ID_SAN_PHAM, sp.ID_THUONG_HIEU, sp.ID_DANH_MUC, sp.GIOI_TINH_ID, sp.CHAT_LIEU_ID_,
+    sp.TEN_SAN_PHAM, sp.GIA, sp.MO_TA_SAN_PHAM, sp.HINH_ANH_SANPHAM, sp.TRANG_THAI_SANPHAM, 
+    sp.NGAY_TAO_SANPHAM, sp.NGAY_CAP_NHAT_SANPHAM, sp.SO_LUONG_SANPHAM,
+    gt.TEN_GIOI_TINH,
+    dm.TEN_DANH_MUC, dm.MO_TA_LOAI_DANH_MUC,
+    cl.TEN_CHAT_LIEU_, cl.MO_TA_CHAT_LIEU,
+    th.TEN_THUONG_HIEU,
+    SUM(cthd.SO_LUONG_SP) AS total_sold
+FROM SAN_PHAM sp
+LEFT JOIN SAN_PHAM_CHI_TIET spct ON sp.ID_SAN_PHAM = spct.ID_SAN_PHAM
+LEFT JOIN CHI_TIET_HOA_DON cthd ON spct.ID_SAN_PHAM_CHI_TIET = cthd.ID_SAN_PHAM_CHI_TIET
+LEFT JOIN GIOI_TINH gt ON sp.GIOI_TINH_ID = gt.GIOI_TINH_ID
+LEFT JOIN LOAI_DANH_MUC dm ON sp.ID_DANH_MUC = dm.ID_DANH_MUC
+LEFT JOIN CHAT_LIEU cl ON sp.CHAT_LIEU_ID_ = cl.CHAT_LIEU_ID_
+LEFT JOIN THUONG_HIEU th ON sp.ID_THUONG_HIEU = th.ID_THUONG_HIEU
+WHERE sp.TRANG_THAI_SANPHAM = 1
+GROUP BY sp.ID_SAN_PHAM
+ORDER BY total_sold DESC
+LIMIT 5;
+
     `);
 
     return res.status(200).json({
