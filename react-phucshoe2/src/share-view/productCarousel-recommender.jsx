@@ -303,7 +303,7 @@ const RecommenderProductCarousel = ({ ID_SAN_PHAM }) => {
                     {product.GIA
                       ? `${product.GIA.toLocaleString("vi-VN")}đ`
                       : "Giá không có sẵn"}{" "}
-                    <Tooltip title={t.AddToCart} arrow>
+                    {/* <Tooltip title={t.AddToCart} arrow>
                       <AddShoppingCartIcon
                         sx={{
                           cursor: "pointer",
@@ -313,10 +313,10 @@ const RecommenderProductCarousel = ({ ID_SAN_PHAM }) => {
                         }}
                         onClick={(e) => {
                           e.stopPropagation(); // Ngừng sự kiện click lên card khi nhấn vào icon
-                          handleAddToCart(product); // Gọi hàm thêm vào giỏ hàng
+                          // handleAddToCart(product);
                         }}
                       />
-                    </Tooltip>
+                    </Tooltip> */}
                   </Typography>{" "}
                 </CardContent>
               </Card>

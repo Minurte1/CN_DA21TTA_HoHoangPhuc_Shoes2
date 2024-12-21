@@ -209,10 +209,10 @@ const CarouselHead = ({ carouselProducts }) => {
                   >
                     {t.BuyNow ? t.BuyNow : " Mua Ngay"}
                   </Button>
-                  <Button
+                  {/* <Button
                     variant="text"
                     fullWidth
-                    onClick={handleAddToCart}
+                    // onClick={handleAddToCart}
                     sx={{
                       zIndex: 2,
                       color: "white",
@@ -227,7 +227,7 @@ const CarouselHead = ({ carouselProducts }) => {
                       sx={{ marginRight: "10px", fontSize: "18px" }}
                     />
                     {t.AddToCart ? t.AddToCart : "Thêm vào giỏ hàng"}
-                  </Button>
+                  </Button> */}
                 </Box>
               </Box>
               <Box

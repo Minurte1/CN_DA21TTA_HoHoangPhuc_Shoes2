@@ -278,7 +278,7 @@ const ProductCarousel = ({ title, products, api }) => {
                     {product.GIA
                       ? `${product.GIA.toLocaleString("vi-VN")}đ`
                       : "Giá không có sẵn"}{" "}
-                    <Tooltip title={t.AddToCart} arrow>
+                    {/* <Tooltip title={t.AddToCart} arrow>
                       <AddShoppingCartIcon
                         sx={{
                           cursor: "pointer",
@@ -288,10 +288,10 @@ const ProductCarousel = ({ title, products, api }) => {
                         }}
                         onClick={(e) => {
                           e.stopPropagation(); // Ngừng sự kiện click lên card khi nhấn vào icon
-                          handleAddToCart(product); // Gọi hàm thêm vào giỏ hàng
+                          // handleAddToCart(product);
                         }}
                       />
-                    </Tooltip>
+                    </Tooltip> */}
                   </Typography>{" "}
                 </CardContent>
               </Card>

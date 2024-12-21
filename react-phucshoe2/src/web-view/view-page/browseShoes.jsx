@@ -378,7 +378,7 @@ const BrowseProduct = () => {
                         {product.MO_TA_SAN_PHAM}
                       </Typography>
 
-                      <Tooltip title="Add to cart" arrow>
+                      {/* <Tooltip title="Add to cart" arrow>
                         <AddShoppingCart
                           sx={{
                             cursor: "pointer",
@@ -391,10 +391,10 @@ const BrowseProduct = () => {
                           }}
                           onClick={(e) => {
                             e.stopPropagation(); // Ngừng sự kiện click lên card khi nhấn vào icon
-                            handleAddToCart(product); // Gọi hàm thêm vào giỏ hàng
+                            // handleAddToCart(product);
                           }}
                         />
-                      </Tooltip>
+                      </Tooltip> */}
                     </CardContent>
                   </Card>
                 </Grid>

@@ -144,7 +144,7 @@ const ListGame = ({ title, items, api }) => {
               {/* Thêm IconButton cho các icon */}
               <Box sx={{ display: "flex", alignItems: "center" }}>
                 {/* Tooltip và hiệu ứng cho Add to Cart */}
-                <Tooltip title={t.AddToCart} arrow>
+                {/* <Tooltip title={t.AddToCart} arrow>
                   <IconButton
                     sx={{
                       color: currentTheme.color,
@@ -157,12 +157,12 @@ const ListGame = ({ title, items, api }) => {
                     }}
                     onClick={(e) => {
                       e.stopPropagation(); // Ngừng sự kiện click lên card khi nhấn vào icon
-                      handleAddToCart(item); // Gọi hàm thêm vào giỏ hàng
+                      // handleAddToCart(item);
                     }}
                   >
                     <AddShoppingCartIcon />
                   </IconButton>
-                </Tooltip>
+                </Tooltip> */}
 
                 {/* Tooltip và hiệu ứng cho Add to Wish */}
                 <Tooltip title={t.AddToWish} arrow>

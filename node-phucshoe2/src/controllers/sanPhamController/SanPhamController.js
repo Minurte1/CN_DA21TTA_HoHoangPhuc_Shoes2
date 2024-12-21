@@ -60,7 +60,7 @@ const getSAN_PHAM = async (req, res) => {
 };
 
 const getSAN_PHAM_Use_ById = async (req, res) => {
-  const { id } = req.params; // Lấy id từ tham số URL
+  const { id } = req.params;
 
   try {
     const [results] = await connection.execute(
@@ -73,33 +73,26 @@ const getSAN_PHAM_Use_ById = async (req, res) => {
         dm.TEN_DANH_MUC, dm.MO_TA_LOAI_DANH_MUC,
         cl.TEN_CHAT_LIEU_, cl.MO_TA_CHAT_LIEU,
         th.TEN_THUONG_HIEU,
-
-        -- Additional fields from PHONG_CACH, MAU_SAC, MUC_DICH_SU_DUNG, and KICH_CO tables
         pc.ID_PHUONG_CACH, pc.TEN_PHONG_CACH, pc.CREATED_PHONG_CACH, pc.UPDATE_PHONG_CACH, pc.TRANG_THAI_PHONG_CACH,
-        ms.MAU_SAC_ID, ms.TEN_MAU_SAC, ms.CREATE_MAU_SAC, ms.UPDATE_MAU_SAC, ms.TRANG_THAI_MAU_SAC,
+        spct.MAU_SAC_ID, ms.TEN_MAU_SAC, ms.CREATE_MAU_SAC, ms.UPDATE_MAU_SAC, ms.TRANG_THAI_MAU_SAC,
         mdsd.ID_MUC_DICH_SU_DUNG, mdsd.TEN_MUC_DICH_SU_DUNG, mdsd.CREATE_MUC_DICH_SU_DUNG, mdsd.UPDATE_MUC_DICH_SU_DUNG, mdsd.TRANG_THAI_MUC_DICH_SU_DUNG,
-        kc.ID_KICH_CO, kc.KICH_CO, kc.TRANG_THAI_KICH_CO, kc.CREATED_KICH_CO, kc.UPDATE_KICH_CO
-
+        spct.ID_KICH_CO, kc.KICH_CO, kc.TRANG_THAI_KICH_CO, kc.CREATED_KICH_CO, kc.UPDATE_KICH_CO
       FROM SAN_PHAM sp
       LEFT JOIN GIOI_TINH gt ON sp.GIOI_TINH_ID = gt.GIOI_TINH_ID
       LEFT JOIN LOAI_DANH_MUC dm ON sp.ID_DANH_MUC = dm.ID_DANH_MUC
       LEFT JOIN CHAT_LIEU cl ON sp.CHAT_LIEU_ID_ = cl.CHAT_LIEU_ID_
       LEFT JOIN THUONG_HIEU th ON sp.ID_THUONG_HIEU = th.ID_THUONG_HIEU
-
-      -- Joins to retrieve additional details
       LEFT JOIN PHONG_CACH_SAN_PHAM pcs ON sp.ID_SAN_PHAM = pcs.ID_SAN_PHAM
       LEFT JOIN PHONG_CACH pc ON pcs.ID_PHUONG_CACH = pc.ID_PHUONG_CACH
-      LEFT JOIN MAU_SAC_SAN_PHAM mss ON sp.ID_SAN_PHAM = mss.ID_SAN_PHAM
-      LEFT JOIN MAU_SAC ms ON mss.MAU_SAC_ID = ms.MAU_SAC_ID
+      LEFT JOIN SAN_PHAM_CHI_TIET spct ON sp.ID_SAN_PHAM = spct.ID_SAN_PHAM
+      LEFT JOIN MAU_SAC ms ON spct.MAU_SAC_ID = ms.MAU_SAC_ID
       LEFT JOIN MUC_DICH_SU_DUNG_SAN_PHAM mdsds ON sp.ID_SAN_PHAM = mdsds.ID_SAN_PHAM
       LEFT JOIN MUC_DICH_SU_DUNG mdsd ON mdsds.ID_MUC_DICH_SU_DUNG = mdsd.ID_MUC_DICH_SU_DUNG
-      LEFT JOIN CO_KICH_CO ckc ON sp.ID_SAN_PHAM = ckc.ID_SAN_PHAM
-      LEFT JOIN KICH_CO kc ON ckc.ID_KICH_CO = kc.ID_KICH_CO
-
-      WHERE sp.TRANG_THAI_SANPHAM = 1 AND sp.ID_SAN_PHAM = ?
-    `,
+      LEFT JOIN KICH_CO kc ON spct.ID_KICH_CO = kc.ID_KICH_CO
+      WHERE sp.TRANG_THAI_SANPHAM = 1 AND sp.ID_SAN_PHAM = ?;
+      `,
       [id]
-    ); // Thêm ? vào query để sử dụng tham số id
+    );
 
     if (results.length === 0) {
       return res.status(404).json({
@@ -112,7 +105,7 @@ const getSAN_PHAM_Use_ById = async (req, res) => {
     return res.status(200).json({
       EM: "Xem thông tin sản phẩm thành công",
       EC: 1,
-      DT: results[0], // Chỉ trả về sản phẩm đầu tiên (nếu có)
+      DT: results[0],
     });
   } catch (error) {
     console.error("Error getting san pham by id:", error);
@@ -128,40 +121,40 @@ const getSAN_PHAM_Use = async (req, res) => {
   try {
     const [results] = await connection.execute(`
       SELECT 
-        sp.ID_SAN_PHAM, sp.ID_THUONG_HIEU, sp.ID_DANH_MUC, sp.GIOI_TINH_ID, sp.CHAT_LIEU_ID_,
-        sp.TEN_SAN_PHAM, sp.GIA, sp.MO_TA_SAN_PHAM, sp.HINH_ANH_SANPHAM, sp.TRANG_THAI_SANPHAM, 
-        sp.NGAY_TAO_SANPHAM, sp.NGAY_CAP_NHAT_SANPHAM, sp.SO_LUONG_SANPHAM,
-        gt.TEN_GIOI_TINH,
-        dm.TEN_DANH_MUC, dm.MO_TA_LOAI_DANH_MUC,
-        cl.TEN_CHAT_LIEU_, cl.MO_TA_CHAT_LIEU,
-        th.TEN_THUONG_HIEU,
+    sp.ID_SAN_PHAM, 
+    sp.ID_THUONG_HIEU, 
+    sp.ID_DANH_MUC, 
+    sp.GIOI_TINH_ID, 
+    sp.CHAT_LIEU_ID_,
+    sp.TEN_SAN_PHAM, 
+    sp.GIA, 
+    sp.MO_TA_SAN_PHAM, 
+    sp.HINH_ANH_SANPHAM, 
+    sp.TRANG_THAI_SANPHAM, 
+    sp.NGAY_TAO_SANPHAM, 
+    sp.NGAY_CAP_NHAT_SANPHAM, 
+    sp.SO_LUONG_SANPHAM,
+    gt.TEN_GIOI_TINH,
+    dm.TEN_DANH_MUC, 
+    dm.MO_TA_LOAI_DANH_MUC,
+    cl.TEN_CHAT_LIEU_, 
+    cl.MO_TA_CHAT_LIEU,
+    th.TEN_THUONG_HIEU,
+    GROUP_CONCAT(DISTINCT CONCAT(ms.TEN_MAU_SAC, ' - ', kc.KICH_CO) ORDER BY ms.TEN_MAU_SAC SEPARATOR ', ') AS CHI_TIET_SAN_PHAM
 
-        -- Additional fields from PHONG_CACH, MAU_SAC, MUC_DICH_SU_DUNG, and KICH_CO tables
-        pc.ID_PHUONG_CACH, pc.TEN_PHONG_CACH, pc.CREATED_PHONG_CACH, pc.UPDATE_PHONG_CACH, pc.TRANG_THAI_PHONG_CACH,
-        ms.MAU_SAC_ID, ms.TEN_MAU_SAC, ms.CREATE_MAU_SAC, ms.UPDATE_MAU_SAC, ms.TRANG_THAI_MAU_SAC,
-        mdsd.ID_MUC_DICH_SU_DUNG, mdsd.TEN_MUC_DICH_SU_DUNG, mdsd.CREATE_MUC_DICH_SU_DUNG, mdsd.UPDATE_MUC_DICH_SU_DUNG, mdsd.TRANG_THAI_MUC_DICH_SU_DUNG,
-        kc.ID_KICH_CO, kc.KICH_CO, kc.TRANG_THAI_KICH_CO, kc.CREATED_KICH_CO, kc.UPDATE_KICH_CO
+FROM SAN_PHAM sp
+LEFT JOIN GIOI_TINH gt ON sp.GIOI_TINH_ID = gt.GIOI_TINH_ID
+LEFT JOIN LOAI_DANH_MUC dm ON sp.ID_DANH_MUC = dm.ID_DANH_MUC
+LEFT JOIN CHAT_LIEU cl ON sp.CHAT_LIEU_ID_ = cl.CHAT_LIEU_ID_
+LEFT JOIN THUONG_HIEU th ON sp.ID_THUONG_HIEU = th.ID_THUONG_HIEU
+LEFT JOIN SAN_PHAM_CHI_TIET spct ON sp.ID_SAN_PHAM = spct.ID_SAN_PHAM
+LEFT JOIN MAU_SAC ms ON spct.MAU_SAC_ID = ms.MAU_SAC_ID
+LEFT JOIN KICH_CO kc ON spct.ID_KICH_CO = kc.ID_KICH_CO
 
-      FROM SAN_PHAM sp
-      LEFT JOIN GIOI_TINH gt ON sp.GIOI_TINH_ID = gt.GIOI_TINH_ID
-      LEFT JOIN LOAI_DANH_MUC dm ON sp.ID_DANH_MUC = dm.ID_DANH_MUC
-      LEFT JOIN CHAT_LIEU cl ON sp.CHAT_LIEU_ID_ = cl.CHAT_LIEU_ID_
-      LEFT JOIN THUONG_HIEU th ON sp.ID_THUONG_HIEU = th.ID_THUONG_HIEU
+WHERE sp.TRANG_THAI_SANPHAM = 1
 
-      -- Joins to retrieve additional details
-      LEFT JOIN PHONG_CACH_SAN_PHAM pcs ON sp.ID_SAN_PHAM = pcs.ID_SAN_PHAM
-      LEFT JOIN PHONG_CACH pc ON pcs.ID_PHUONG_CACH = pc.ID_PHUONG_CACH
-      
-      LEFT JOIN MAU_SAC_SAN_PHAM mss ON sp.ID_SAN_PHAM = mss.ID_SAN_PHAM
-      LEFT JOIN MAU_SAC ms ON mss.MAU_SAC_ID = ms.MAU_SAC_ID
+GROUP BY sp.ID_SAN_PHAM;
 
-      LEFT JOIN MUC_DICH_SU_DUNG_SAN_PHAM mdsds ON sp.ID_SAN_PHAM = mdsds.ID_SAN_PHAM
-      LEFT JOIN MUC_DICH_SU_DUNG mdsd ON mdsds.ID_MUC_DICH_SU_DUNG = mdsd.ID_MUC_DICH_SU_DUNG
-
-      LEFT JOIN CO_KICH_CO ckc ON sp.ID_SAN_PHAM = ckc.ID_SAN_PHAM
-      LEFT JOIN KICH_CO kc ON ckc.ID_KICH_CO = kc.ID_KICH_CO
-
-      WHERE sp.TRANG_THAI_SANPHAM = 1
     `);
 
     return res.status(200).json({
