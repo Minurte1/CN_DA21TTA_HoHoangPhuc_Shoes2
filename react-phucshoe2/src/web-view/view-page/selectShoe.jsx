@@ -285,30 +285,10 @@ const SelectShoe = () => {
             <Typography sx={{ color: currentTheme.color }} variant="h6">
               {product.GIA.toLocaleString()} VND
             </Typography>{" "}
-            <Typography
-              variant="body2"
-              sx={{
-                color: currentTheme.color,
-                borderBottom: "1px solid rgba(204, 204, 204, 0.5)",
-                paddingTop: 3,
-                paddingBottom: 1,
-              }}
-            >
-              Màu sắc: {product.TEN_MAU_SAC}
-            </Typography>
-            <Typography
-              variant="body2"
-              sx={{
-                color: currentTheme.color,
-                borderBottom: "1px solid rgba(204, 204, 204, 0.5)",
-                paddingTop: 3,
-                paddingBottom: 1,
-              }}
-            >
-              Kích cỡ: {product.KICH_CO} {/* Product Description */}
-            </Typography>
             <div>
-              <div>
+              <div
+                style={{ borderBottom: "1px solid rgba(204, 204, 204, 0.5)" }}
+              >
                 <h4>Chọn kích cỡ</h4>
                 {uniqueSizes.map((size, index) => (
                   <button
@@ -329,7 +309,9 @@ const SelectShoe = () => {
               </div>
 
               {selectedSize && (
-                <div>
+                <div
+                  style={{ borderBottom: "1px solid rgba(204, 204, 204, 0.5)" }}
+                >
                   <h4>Chọn màu sắc</h4>
                   {availableColors.map((detail, index) => (
                     <button
