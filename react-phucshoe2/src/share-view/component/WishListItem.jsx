@@ -1,10 +1,11 @@
-import React from "react";
-import { Card, Box, Typography, Button } from "@mui/material";
+import React, { useState, useEffect, useRef } from "react";
+import { Card, Box, Typography, Button, Modal } from "@mui/material";
 import { getThemeConfig } from "../../services/themeService";
 
 const api = process.env.REACT_APP_URL_SERVER;
 
 const WishlistItem = ({
+  item,
   name,
   price,
   rating,
@@ -20,6 +21,7 @@ const WishlistItem = ({
   isLoading,
   idProduct,
   removeFromFavorites,
+  handleViewProduct,
 }) => {
   const currentTheme = getThemeConfig(localStorage.getItem("THEMES") || "dark");
 
@@ -74,6 +76,7 @@ const WishlistItem = ({
         </Button>
 
         <Button
+          onClick={() => handleViewProduct(item)}
           variant="contained"
           sx={{
             borderRadius: "14px",
@@ -85,14 +88,13 @@ const WishlistItem = ({
               backgroundColor: inCart ? "#b3b3b3" : "#3ccaff",
             },
           }}
-          onClick={() => handleAddToCart(idProduct)}
           disabled={inCart || isLoading} // Disable button if product is already in cart or processing
         >
           {isLoading
             ? "Processing..."
             : inCart
             ? "View In Cart"
-            : "Add To Cart"}
+            : "View Product"}
         </Button>
       </Box>
     </Card>

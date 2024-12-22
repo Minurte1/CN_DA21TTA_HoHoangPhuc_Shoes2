@@ -151,7 +151,7 @@ const WishlistProducts = () => {
       setFilteredProducts(filtered);
     }
   };
-
+  console.log("items", items);
   useEffect(() => {
     const applyFilters = () => {
       let updatedProducts = items;
@@ -296,6 +296,8 @@ const WishlistProducts = () => {
       enqueueSnackbar(error.response.data.EM, { variant: "error" }); // Thông báo lỗi
     }
   };
+  const [openViewProduct, setOpenViewProduct] = useState(false);
+  const handleViewProduct = (product) => {};
   if (loading) {
     return (
       <div>
@@ -319,20 +321,8 @@ const WishlistProducts = () => {
         <Typography variant="h4" sx={{ color: currentTheme.color }}>
           My Wishlist
         </Typography>
-        <Box sx={{ display: "flex", alignItems: "center", mt: 2, mb: 2 }}>
-          <Switch defaultChecked color="primary" />
-          <Typography variant="body2" sx={{ color: currentTheme.color }}>
-            Sort by:{" "}
-          </Typography>
-          <FormControl sx={{ ml: 1, minWidth: 120 }}>
-            <Select sx={{ color: currentTheme.color }} defaultValue="Newest">
-              <MenuItem value="Newest">Newest</MenuItem>
-              <MenuItem value="On Sale">On Sale</MenuItem>
-              <MenuItem value="Popular">Popular</MenuItem>
-            </Select>
-          </FormControl>
-        </Box>
-        <Divider sx={{ backgroundColor: "#555", mb: 2 }} />
+
+        <Divider sx={{ backgroundColor: "#555", mb: 2, mt: 4 }} />
       </Grid>
       <Grid item xs={12} md={8} lg={7}>
         {loading ? (
@@ -340,6 +330,8 @@ const WishlistProducts = () => {
         ) : (
           filteredProducts.map((item, index) => (
             <WishlistItem
+              handleViewProduct={handleViewProduct}
+              item={item}
               isLoading={isLoading}
               removeFromFavorites={removeFromFavorites}
               setLoading={setLoading}
@@ -360,41 +352,66 @@ const WishlistProducts = () => {
             />
           ))
         )}
-      </Grid>
-      <Grid item xs={12} md={3}>
-        <WishlistFilters
-          thuongHieu={thuongHieu}
-          chatLieu={chatLieu}
-          //
-          selectedThuongHieu={selectedThuongHieu}
-          selectedChatLieu={selectedChatLieu}
-          selectedTrangThai={selectedTrangThai}
-          //
-          selectedMauSac={selectedMauSac}
-          selectKichCo={selectKichCo}
-          selectPhongCach={selectPhongCach}
-          selectMucDichSuDung={selectMucDichSuDung}
-          //
-          setSelectedTrangThai={setSelectedTrangThai}
-          setSelectedChatLieu={setSelectedChatLieu}
-          setSelectedThuongHieu={setSelectedThuongHieu}
-          //
-          setSelectedMauSac={setSelectedMauSac}
-          setSelectPhongCach={setSelectPhongCach}
-          setSelectMucDichSuDung={setSelectMucDichSuDung}
-          setSelectKichCo={setSelectKichCo}
-          //
-          searchTerm={searchTerm}
-          handleSearchChange={handleSearchChange}
-          //
-          phongCach={phongCach}
-          mauSac={mauSac}
-          mucDichSuDung={mucDichSuDung}
-          kichCo={kichCo}
-          //
-          currentTheme={currentTheme}
-        />
-      </Grid>
+      </Grid>{" "}
+      {openViewProduct ? (
+        <>
+          {" "}
+          <Grid item xs={12} md={3}></Grid>{" "}
+        </>
+      ) : (
+        <>
+          <Grid item xs={12} md={3}>
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              <Switch defaultChecked color="primary" />
+              <Typography variant="body2" sx={{ color: currentTheme.color }}>
+                Sort by:{" "}
+              </Typography>
+              <FormControl sx={{ ml: 1, minWidth: 120 }}>
+                <Select
+                  sx={{ color: currentTheme.color }}
+                  defaultValue="Newest"
+                >
+                  <MenuItem value="Newest">Newest</MenuItem>
+                  <MenuItem value="On Sale">On Sale</MenuItem>
+                  <MenuItem value="Popular">Popular</MenuItem>
+                </Select>
+              </FormControl>
+            </Box>
+            <WishlistFilters
+              thuongHieu={thuongHieu}
+              chatLieu={chatLieu}
+              //
+              selectedThuongHieu={selectedThuongHieu}
+              selectedChatLieu={selectedChatLieu}
+              selectedTrangThai={selectedTrangThai}
+              //
+              selectedMauSac={selectedMauSac}
+              selectKichCo={selectKichCo}
+              selectPhongCach={selectPhongCach}
+              selectMucDichSuDung={selectMucDichSuDung}
+              //
+              setSelectedTrangThai={setSelectedTrangThai}
+              setSelectedChatLieu={setSelectedChatLieu}
+              setSelectedThuongHieu={setSelectedThuongHieu}
+              //
+              setSelectedMauSac={setSelectedMauSac}
+              setSelectPhongCach={setSelectPhongCach}
+              setSelectMucDichSuDung={setSelectMucDichSuDung}
+              setSelectKichCo={setSelectKichCo}
+              //
+              searchTerm={searchTerm}
+              handleSearchChange={handleSearchChange}
+              //
+              phongCach={phongCach}
+              mauSac={mauSac}
+              mucDichSuDung={mucDichSuDung}
+              kichCo={kichCo}
+              //
+              currentTheme={currentTheme}
+            />
+          </Grid>
+        </>
+      )}
     </Grid>
   );
 };

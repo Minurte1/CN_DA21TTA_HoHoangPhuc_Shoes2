@@ -218,17 +218,7 @@ const Cart = () => {
       }
     }
   };
-  const [open, setOpen] = useState(false);
-  const [anchorEl, setAnchorEl] = useState(null);
 
-  const handleOpen = (event) => {
-    setAnchorEl(event.currentTarget);
-    setOpen(true);
-  };
-  const handleClose = () => {
-    setOpen(false);
-    setAnchorEl(null);
-  };
   if (loading) {
     return (
       <div>
@@ -258,50 +248,7 @@ const Cart = () => {
           </Typography>
         </Box>
         <Box>
-          <Button variant="contained" onClick={handleOpen}>
-            Add to Cart
-          </Button>
-          <Modal
-            open={open}
-            onClose={handleClose}
-            aria-labelledby="product-details-title"
-            aria-describedby="product-details-description"
-            disableScrollLock // Để tránh khóa scroll trang
-            BackdropProps={{
-              style: { backgroundColor: "transparent" }, // Nền trong suốt
-            }}
-          >
-            <Box
-              sx={{
-                position: "absolute",
-                top: anchorEl
-                  ? anchorEl.getBoundingClientRect().top + window.scrollY
-                  : "50%",
-                left: anchorEl
-                  ? anchorEl.getBoundingClientRect().right + 10
-                  : "50%",
-                transform: anchorEl ? "none" : "translate(-50%, -50%)",
-                width: 300,
-                bgcolor: "background.paper",
-                border: "2px solid #ccc",
-                boxShadow: 24,
-                p: 2,
-                borderRadius: 1,
-              }}
-            >
-              <Typography
-                id="product-details-title"
-                variant="h6"
-                component="h2"
-              >
-                Product Details
-              </Typography>
-              <Typography id="product-details-description" sx={{ mt: 2 }}>
-                Sizes: S, M, L, XL
-              </Typography>
-              <Typography>Colors: Red, Blue, Green</Typography>
-            </Box>
-          </Modal>
+          <Button variant="contained">Add to Cart</Button>
         </Box>
         <Box sx={{ display: "flex", alignItems: "center", mt: 2, mb: 2 }}>
           <Switch defaultChecked color="primary" />
