@@ -133,25 +133,36 @@ const SelectShoe = () => {
       enqueueSnackbar(error.response.data.EM, { variant: "error" });
     }
   };
+
+  const [selectedSize, setSelectedSize] = useState(null);
+  const [selectedColor, setSelectedColor] = useState(null);
   const [selectedDetail, setSelectedDetail] = useState(null);
 
+  // Get unique sizes
+  const uniqueSizes = [
+    ...new Set(product?.CHI_TIET_SAN_PHAM.map((item) => item.KICH_CO)),
+  ];
+
+  // Get available colors for selected size
+  const availableColors = selectedSize
+    ? product?.CHI_TIET_SAN_PHAM.filter((item) => item.KICH_CO === selectedSize)
+    : [];
+
   const handleOptionChange = (type, value, detail) => {
-    if (type === "color") {
-      // Lọc ra các tùy chọn phù hợp với màu đã chọn
-      const selectedSize = selectedDetail?.size;
+    if (type === "size") {
+      setSelectedSize(value);
+      setSelectedColor(null);
+      setSelectedDetail(null);
+    } else if (type === "color") {
+      setSelectedColor(value);
+      // Find matching product detail
       const selected = product.CHI_TIET_SAN_PHAM.find(
-        (item) => item.MAU_SAC_ID === value && item.KICH_CO === selectedSize
+        (item) => item.KICH_CO === selectedSize && item.MAU_SAC_ID === value
       );
-      setSelectedDetail(selected || { ...detail, size: selectedSize });
-    } else if (type === "size") {
-      // Lọc ra các tùy chọn phù hợp với kích cỡ đã chọn
-      const selectedColor = selectedDetail?.color;
-      const selected = product.CHI_TIET_SAN_PHAM.find(
-        (item) => item.KICH_CO === value && item.MAU_SAC_ID === selectedColor
-      );
-      setSelectedDetail(selected || { ...detail, color: selectedColor });
+      setSelectedDetail(selected);
     }
   };
+  console.log(selectedDetail);
   if (!product) {
     return <div>Loading...</div>; // Add a loading state
   }
@@ -259,6 +270,7 @@ const SelectShoe = () => {
               borderRadius: 1,
               backgroundColor: currentTheme.backgroundColorLow,
               color: currentTheme.color,
+
               padding: 2,
               display: "flex",
               flexDirection: "column",
@@ -267,7 +279,7 @@ const SelectShoe = () => {
               top: 20,
             }}
           >
-            <Typography variant="h6" sx={{ mb: 1 }}>
+            <Typography variant="h6" sx={{ mb: 1, fontWeight: "600" }}>
               {product.TEN_SAN_PHAM}
             </Typography>{" "}
             <Typography sx={{ color: currentTheme.color }} variant="h6">
@@ -296,49 +308,53 @@ const SelectShoe = () => {
               Kích cỡ: {product.KICH_CO} {/* Product Description */}
             </Typography>
             <div>
-              <h2>{product.TEN_SAN_PHAM}</h2>
-              <p>Giá: {product.GIA}</p>
-
-              <div>
-                <h4>Chọn màu sắc</h4>
-                {product.CHI_TIET_SAN_PHAM.map((detail, index) => (
-                  <button
-                    key={`color-${index}`}
-                    style={{
-                      backgroundColor: detail.TEN_MAU_SAC.toLowerCase(),
-                      border:
-                        selectedDetail?.color === detail.MAU_SAC_ID
-                          ? "2px solid black"
-                          : "1px solid gray",
-                    }}
-                    onClick={() =>
-                      handleOptionChange("color", detail.MAU_SAC_ID, detail)
-                    }
-                  >
-                    {detail.TEN_MAU_SAC}
-                  </button>
-                ))}
-              </div>
-
               <div>
                 <h4>Chọn kích cỡ</h4>
-                {product.CHI_TIET_SAN_PHAM.map((detail, index) => (
+                {uniqueSizes.map((size, index) => (
                   <button
                     key={`size-${index}`}
                     style={{
                       border:
-                        selectedDetail?.size === detail.KICH_CO
+                        selectedSize === size
                           ? "2px solid black"
                           : "1px solid gray",
+                      margin: "5px",
+                      padding: "5px 10px",
                     }}
-                    onClick={() =>
-                      handleOptionChange("size", detail.KICH_CO, detail)
-                    }
+                    onClick={() => handleOptionChange("size", size)}
                   >
-                    {detail.KICH_CO}
+                    {size}
                   </button>
                 ))}
               </div>
+
+              {selectedSize && (
+                <div>
+                  <h4>Chọn màu sắc</h4>
+                  {availableColors.map((detail, index) => (
+                    <button
+                      key={`color-${index}`}
+                      style={{
+                        borderRadius: "50%",
+                        width: "30px",
+                        height: "30px",
+                        backgroundColor: detail.MA_MAU.toLowerCase(),
+                        border: "none",
+                        cursor: "pointer",
+                        transition: "all 0.3s ease",
+                        margin: "5px",
+                        boxShadow:
+                          selectedColor === detail.MAU_SAC_ID
+                            ? `0 0 0 2px #fff, 0 0 0 4px ${detail.MA_MAU.toLowerCase()}`
+                            : "none",
+                      }}
+                      onClick={() =>
+                        handleOptionChange("color", detail.MAU_SAC_ID, detail)
+                      }
+                    />
+                  ))}
+                </div>
+              )}
 
               <div>
                 <h4>Tùy chọn đã chọn:</h4>
@@ -348,11 +364,11 @@ const SelectShoe = () => {
                       ID sản phẩm chi tiết:{" "}
                       {selectedDetail.ID_SAN_PHAM_CHI_TIET}
                     </p>
-                    <p>Màu sắc: {selectedDetail.TEN_MAU_SAC}</p>
                     <p>Kích cỡ: {selectedDetail.KICH_CO}</p>
+                    <p>Màu sắc: {selectedDetail.TEN_MAU_SAC}</p>
                   </>
                 ) : (
-                  <p>Chưa chọn sản phẩm chi tiết</p>
+                  <p>Vui lòng chọn size và màu sắc</p>
                 )}
               </div>
             </div>

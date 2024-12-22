@@ -297,7 +297,12 @@ const WishlistProducts = () => {
     }
   };
   const [openViewProduct, setOpenViewProduct] = useState(false);
-  const handleViewProduct = (product) => {};
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const handleViewProduct = (product) => {
+    console.log("product", product);
+    setOpenViewProduct(true);
+    setSelectedProduct(product);
+  };
   if (loading) {
     return (
       <div>
@@ -355,14 +360,74 @@ const WishlistProducts = () => {
       </Grid>{" "}
       {openViewProduct ? (
         <>
-          {" "}
-          <Grid item xs={12} md={3}></Grid>{" "}
+          <Grid item xs={12} md={3}>
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              <Switch
+                defaultChecked
+                color="primary"
+                onClick={() => setOpenViewProduct(false)}
+              />
+              <Typography variant="body2" sx={{ color: currentTheme.color }}>
+                Sort by:{" "}
+              </Typography>
+              <FormControl sx={{ ml: 1, minWidth: 120 }}>
+                <Select
+                  disabled={true}
+                  sx={{ color: currentTheme.color }}
+                  defaultValue="Newest"
+                >
+                  <MenuItem value="Newest">Newest</MenuItem>
+                  <MenuItem value="On Sale">On Sale</MenuItem>
+                  <MenuItem value="Popular">Popular</MenuItem>
+                </Select>
+              </FormControl>
+            </Box>
+
+            <Card sx={{ p: 2, backgroundColor: currentTheme.backgroundColor }}>
+              <Box sx={{ mb: 2 }}>
+                <Box sx={{ display: "flex" }}>
+                  <Grid item xs={9} md={9}>
+                    {" "}
+                    <Typography
+                      variant="h5"
+                      sx={{ color: currentTheme.color, mb: 1 }}
+                    >
+                      {selectedProduct.TEN_SAN_PHAM}
+                    </Typography>
+                  </Grid>{" "}
+                  <Grid item xs={3} md={3}>
+                    {" "}
+                    <Typography
+                      variant="body2"
+                      color="gray"
+                      sx={{ ml: 2, color: currentTheme.color, mb: 1 }}
+                    >
+                      {new Intl.NumberFormat("vi-VN", {
+                        style: "currency",
+                        currency: "VND",
+                      }).format(selectedProduct.GIA)}
+                    </Typography>
+                  </Grid>
+                </Box>
+
+                <img
+                  src={`${api}/images/${selectedProduct.HINH_ANH_SANPHAM}`}
+                  alt={selectedProduct.TEN_SAN_PHAM}
+                  style={{ width: "100%", height: "auto" }}
+                />
+              </Box>
+            </Card>
+          </Grid>
         </>
       ) : (
         <>
           <Grid item xs={12} md={3}>
             <Box sx={{ display: "flex", alignItems: "center" }}>
-              <Switch defaultChecked color="primary" />
+              <Switch
+                defaultChecked
+                color="primary"
+                onClick={() => setOpenViewProduct(true)}
+              />
               <Typography variant="body2" sx={{ color: currentTheme.color }}>
                 Sort by:{" "}
               </Typography>
