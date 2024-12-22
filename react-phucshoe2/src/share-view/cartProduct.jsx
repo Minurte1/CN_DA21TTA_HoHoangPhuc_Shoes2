@@ -15,341 +15,23 @@ import {
   Skeleton,
   TextField,
   isSwitchOn,
+  Popover,
+  List,
+  ListItem,
+  ListItemText,
+  Popper,
+  Modal,
 } from "@mui/material";
 import { v4 as uuidv4 } from "uuid"; // Thêm thư viện UUID nếu bạn muốn tạo mã đơn hàng duy nhất
-
-import { Payments } from "@mui/icons-material";
-
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-
-import { Add, Remove } from "@mui/icons-material";
 import axios from "axios";
 import { setItemCart, setTotalCart, setIdOder } from "../redux/authSlice";
 import { enqueueSnackbar } from "notistack";
 import { getThemeConfig } from "../services/themeService";
-import AddressSelector from "../user-view/components/addressUser";
+import CartItem from "./component/CartItem";
+import CartSummary from "./component/CartSummary";
 const api = process.env.REACT_APP_URL_SERVER;
-const CartItem = ({
-  id, // Assuming each item has a unique id
-  name,
-  price,
-  description,
-  gender,
-  category,
-  material,
-  brand,
-  quantityInCart,
-  image,
-
-  userId,
-  fetchCartItems,
-  handleQuantityChange,
-  color,
-  phongCach,
-  mucDich,
-  kichCo,
-  quantity,
-  handleRemoveProduct,
-  currentTheme,
-}) => {
-  return (
-    <Card
-      sx={{
-        mb: 2,
-        display: "flex",
-        justifyContent: "space-between",
-        p: 2,
-        backgroundColor: currentTheme.backgroundColorLow,
-      }}
-    >
-      <Box sx={{ display: "flex", alignItems: "center", textAlign: "left" }}>
-        <img
-          src={`${api}/images/${image}`}
-          alt={`${name} thumbnail`}
-          style={{ marginRight: 16, width: "80px", borderRadius: "13px" }}
-        />
-        <Box>
-          <Typography variant="h6" sx={{ color: currentTheme.color }}>
-            {name}
-          </Typography>
-          <Typography variant="body2" color="gray">
-            {description}
-          </Typography>
-          <Typography variant="body2" color="gray">
-            {category} | {material} | {gender} | {brand}
-          </Typography>
-          <Typography variant="body2" color="gray">
-            {color}
-          </Typography>
-          <Typography variant="body2" color="gray">
-            Kích cỡ: {kichCo}
-          </Typography>
-          <Typography variant="body2" color="gray">
-            {mucDich}
-          </Typography>
-          <Typography variant="body2" color="gray">
-            Phong cách: {phongCach}
-          </Typography>
-        </Box>
-      </Box>
-      <Box sx={{ textAlign: "right" }}>
-        <Typography sx={{ color: currentTheme.color }}>
-          {new Intl.NumberFormat("vi-VN", {
-            style: "currency",
-            currency: "VND",
-          }).format(price)}
-        </Typography>
-
-        <Typography variant="body2" sx={{ color: currentTheme.color }}>
-          Số lượng trong giỏ:
-        </Typography>
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            gap: 1,
-            mt: 2,
-            justifyContent: "right",
-          }}
-        >
-          <IconButton
-            sx={{ color: "#d32a28" }}
-            size="small"
-            onClick={() => handleQuantityChange(quantity - 1, id, "Delete")}
-          >
-            <Remove />
-          </IconButton>
-          <Typography variant="body1" sx={{ color: currentTheme.color }}>
-            {quantity}
-          </Typography>
-          <IconButton
-            sx={{ color: "#3ccaff" }}
-            size="small"
-            onClick={() => handleQuantityChange(quantity + 1, id, "Add")}
-          >
-            <Add />
-          </IconButton>
-        </Box>
-
-        <Button
-          sx={{ mt: 2 }}
-          variant="text"
-          color="error"
-          onClick={() => handleRemoveProduct(id)}
-        >
-          Remove
-        </Button>
-      </Box>
-    </Card>
-  );
-};
-
-const CartSummary = ({
-  subtotal,
-  tongTienCart,
-  paymentMethods,
-  selectPhuongThucThanhToan,
-  setSelectPhuongThucThanhToan,
-  handleSummitThanhToan,
-  currentTheme,
-
-  userInfo,
-  isSwitchOn,
-
-  selectedWards,
-  setSelectedDistrict,
-  setSelectedProvince,
-  setSelectStreetName,
-  handleSwitchChange,
-
-  setSoDienThoai,
-  soDienThoai,
-
-  selectStreetName,
-  setSelectedWards,
-  selectedDistrict,
-  selectedProvince,
-}) => (
-  <Box
-    sx={{
-      backgroundColor: currentTheme.backgroundColorLow,
-      p: 2,
-      borderRadius: 2,
-    }}
-  >
-    <Typography variant="h6" sx={{ color: currentTheme.color }}>
-      Giỏ hàng
-    </Typography>
-    <Divider sx={{ my: 1, backgroundColor: "#555" }} />
-    <Typography sx={{ color: currentTheme.color }}>
-      {tongTienCart ? (
-        <>
-          {" "}
-          {new Intl.NumberFormat("vi-VN", {
-            style: "currency",
-            currency: "VND",
-          }).format(tongTienCart)}
-        </>
-      ) : (
-        <>0đ</>
-      )}
-    </Typography>
-    <Typography sx={{ color: currentTheme.color }}>
-      Các hình thức thanh toán
-    </Typography>{" "}
-    <FormControl sx={{ mb: 2, minWidth: 300, mt: 2 }}>
-      <InputLabel
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          color: currentTheme.color,
-        }}
-      >
-        <Payments sx={{ mr: 1 }} />
-        Phương thức thanh toán
-      </InputLabel>
-      <Select
-        value={selectPhuongThucThanhToan}
-        label="Icon Phương thức thanh toán"
-        onChange={(e) => setSelectPhuongThucThanhToan(e.target.value)}
-        sx={{ color: currentTheme.color }}
-      >
-        {" "}
-        <MenuItem value="">Xem tất cả</MenuItem>
-        {paymentMethods.map((item) => (
-          <MenuItem key={item.ID_THANH_TOAN} value={item.ID_THANH_TOAN}>
-            {item.PHUONG_THUC_THANH_TOAN}
-          </MenuItem>
-        ))}
-      </Select>
-    </FormControl>{" "}
-    <br />
-    {/* ----------------- Cmt Code địa chỉ phương thức thanh toán ------------------ */}
-    {isSwitchOn ? (
-      <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-        <Switch
-          checked={isSwitchOn} // Liên kết trạng thái với Switch
-          onChange={handleSwitchChange}
-          color="primary"
-        />
-        {userInfo && (
-          <>
-            <Typography
-              variant="body2"
-              color="white"
-              sx={{ fontSize: "11px", color: currentTheme.color }}
-            >
-              {`Địa chỉ: ${userInfo.DIA_CHI_STREETNAME}, ${userInfo?.DIA_CHI_Wards}, 
-              ${userInfo?.DIA_CHI_Districts}, ${userInfo?.DIA_CHI_Provinces}`}
-            </Typography>
-          </>
-        )}
-      </Box>
-    ) : (
-      <>
-        <Switch
-          checked={isSwitchOn} // Liên kết trạng thái với Switch
-          onChange={handleSwitchChange}
-          color="primary"
-        />{" "}
-        <Typography
-          variant="body2"
-          color="white"
-          sx={{ fontSize: "11px", color: currentTheme.color, mb: 2 }}
-        >
-          {`Địa chỉ: ${selectStreetName || " "}, ${
-            selectedWards?.full_name || ""
-          } 
-        , ${selectedDistrict?.full_name || ""},  ${
-            selectedProvince?.full_name || ""
-          }`}
-        </Typography>
-        <AddressSelector
-          selectedProvince={selectedProvince}
-          selectedDistrict={selectedDistrict}
-          selectedWards={selectedWards}
-          //
-          setSelectedProvince={setSelectedProvince}
-          setSelectedDistrict={setSelectedDistrict}
-          setSelectedWards={setSelectedWards}
-          backgroundColor={"#343437"}
-          color={"#fff"}
-        />{" "}
-        <TextField
-          label="Tên đường"
-          variant="outlined"
-          value={selectStreetName} // Đảm bảo giá trị mặc định là chuỗi rỗng nếu không có dataUser hoặc EMAIL
-          fullWidth
-          InputProps={{
-            style: { color: currentTheme.color }, // Màu chữ trong TextField
-          }}
-          onChange={(e) => setSelectStreetName(e.target.value)}
-          InputLabelProps={{
-            style: { color: currentTheme.color }, // Màu chữ nhãn
-          }}
-          sx={{
-            mt: 2,
-            backgroundColor: currentTheme.backgroundColorLow, // Màu nền của input
-            "& .MuiInputLabel-root": { color: currentTheme.color }, // Màu chữ của label
-            "& .MuiInputBase-input": { color: currentTheme.color }, // Màu chữ của input
-            "& .MuiOutlinedInput-root": {
-              "& fieldset": { borderColor: "#00000" }, // Màu viền
-            },
-            "& .MuiInputBase-root": {
-              borderRadius: "4px", // Làm tròn góc nếu muốn
-            },
-          }}
-        />{" "}
-        <TextField
-          label="Số điện thoại"
-          variant="outlined"
-          type="number"
-          value={soDienThoai} // Đảm bảo giá trị mặc định là chuỗi rỗng nếu không có dataUser hoặc EMAIL
-          fullWidth
-          InputProps={{
-            style: { color: currentTheme.color }, // Màu chữ trong TextField
-          }}
-          onChange={(e) => setSoDienThoai(e.target.value)}
-          InputLabelProps={{
-            style: { color: currentTheme.color }, // Màu chữ nhãn
-          }}
-          sx={{
-            mt: 2,
-            backgroundColor: currentTheme.backgroundColorLow, // Màu nền của input
-            "& .MuiInputLabel-root": { color: currentTheme.color }, // Màu chữ của label
-            "& .MuiInputBase-input": { color: currentTheme.color }, // Màu chữ của input
-            "& .MuiOutlinedInput-root": {
-              "& fieldset": { borderColor: "#00000" }, // Màu viền
-            },
-            "& .MuiInputBase-root": {
-              borderRadius: "4px", // Làm tròn góc nếu muốn
-            },
-          }}
-        />
-      </>
-    )}
-    <Divider sx={{ my: 1, backgroundColor: "#555" }} />
-    <Button
-      variant="contained"
-      onClick={() => handleSummitThanhToan()}
-      sx={{
-        borderRadius: "14px",
-        backgroundColor: "#26bbff",
-        color: "#101014",
-        fontWeight: "600",
-
-        fontSize: "12px",
-        "&:hover": {
-          backgroundColor: "#3ccaff",
-        },
-      }}
-      fullWidth
-    >
-      Thanh toán
-    </Button>
-  </Box>
-);
 
 const Cart = () => {
   const [items, setItems] = useState([]);
@@ -536,7 +218,17 @@ const Cart = () => {
       }
     }
   };
+  const [open, setOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
 
+  const handleOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+    setAnchorEl(null);
+  };
   if (loading) {
     return (
       <div>
@@ -565,7 +257,52 @@ const Cart = () => {
             My Cart
           </Typography>
         </Box>
-
+        <Box>
+          <Button variant="contained" onClick={handleOpen}>
+            Add to Cart
+          </Button>
+          <Modal
+            open={open}
+            onClose={handleClose}
+            aria-labelledby="product-details-title"
+            aria-describedby="product-details-description"
+            disableScrollLock // Để tránh khóa scroll trang
+            BackdropProps={{
+              style: { backgroundColor: "transparent" }, // Nền trong suốt
+            }}
+          >
+            <Box
+              sx={{
+                position: "absolute",
+                top: anchorEl
+                  ? anchorEl.getBoundingClientRect().top + window.scrollY
+                  : "50%",
+                left: anchorEl
+                  ? anchorEl.getBoundingClientRect().right + 10
+                  : "50%",
+                transform: anchorEl ? "none" : "translate(-50%, -50%)",
+                width: 300,
+                bgcolor: "background.paper",
+                border: "2px solid #ccc",
+                boxShadow: 24,
+                p: 2,
+                borderRadius: 1,
+              }}
+            >
+              <Typography
+                id="product-details-title"
+                variant="h6"
+                component="h2"
+              >
+                Product Details
+              </Typography>
+              <Typography id="product-details-description" sx={{ mt: 2 }}>
+                Sizes: S, M, L, XL
+              </Typography>
+              <Typography>Colors: Red, Blue, Green</Typography>
+            </Box>
+          </Modal>
+        </Box>
         <Box sx={{ display: "flex", alignItems: "center", mt: 2, mb: 2 }}>
           <Switch defaultChecked color="primary" />
           <Typography variant="body2" sx={{ color: currentTheme.color }}>

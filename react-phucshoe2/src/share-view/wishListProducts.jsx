@@ -21,173 +21,9 @@ import FilterShoes from "../admin-view/pages/quanLySanPham/component/FilterShoe"
 import { enqueueSnackbar } from "notistack";
 import { setTotalCart } from "../redux/authSlice";
 import { getThemeConfig } from "../services/themeService";
+import WishlistItem from "./component/WishListItem";
+import WishlistFilters from "./component/WishListFilter";
 const api = process.env.REACT_APP_URL_SERVER;
-const WishlistItem = ({
-  name,
-  price,
-  rating,
-  tags,
-  inCart,
-  image,
-  gender,
-  category,
-  material,
-  brand,
-  dateLiked,
-  handleAddToCart,
-  isLoading,
-  idProduct,
-  removeFromFavorites,
-}) => {
-  const currentTheme = getThemeConfig(localStorage.getItem("THEMES") || "dark");
-  return (
-    <Card
-      sx={{
-        mb: 2,
-        display: "flex",
-        justifyContent: "space-between",
-        p: 2,
-        backgroundColor: currentTheme.backgroundColorLow,
-      }}
-    >
-      <Box sx={{ display: "flex", alignItems: "center", textAlign: "left" }}>
-        <img
-          src={`${api}/images/${image}`} // Replace with correct image URL
-          alt={`${name} thumbnail`}
-          style={{ marginRight: 16, width: "80px", borderRadius: "13px" }}
-        />
-        <Box>
-          <Typography variant="h6" sx={{ color: currentTheme.color }}>
-            {name}
-          </Typography>
-          <Typography variant="body2" color="gray">
-            {gender} | {category} | {material} | {brand}
-          </Typography>
-          <Typography variant="body2" color="gray">
-            Rating: {rating}
-          </Typography>
-        </Box>
-      </Box>
-      <Box sx={{ textAlign: "right" }}>
-        <Typography variant="h6" sx={{ color: currentTheme.color }}>
-          {new Intl.NumberFormat("vi-VN", {
-            style: "currency",
-            currency: "VND",
-          }).format(price)}
-        </Typography>
-        <Button
-          variant="text"
-          onClick={() => removeFromFavorites(idProduct)}
-          sx={{
-            color: currentTheme.color,
-            textTransform: "none",
-            mr: 2,
-            "&:hover": {
-              color: currentTheme.color, // Change text color on hover
-            },
-          }}
-        >
-          Remove
-        </Button>
-
-        <Button
-          variant="contained"
-          sx={{
-            borderRadius: "14px",
-            backgroundColor: inCart ? "#cccccc" : "#26bbff",
-            color: inCart ? "#666666" : "#101014",
-            fontWeight: "600",
-            fontSize: "12px",
-            "&:hover": {
-              backgroundColor: inCart ? "#b3b3b3" : "#3ccaff",
-            },
-          }}
-          onClick={() => handleAddToCart(idProduct)}
-          disabled={inCart || isLoading} // Vô hiệu hóa nút nếu sản phẩm đã trong giỏ hàng hoặc đang xử lý
-        >
-          {isLoading
-            ? "Processing..."
-            : inCart
-            ? "View In Cart"
-            : "Add To Cart"}
-        </Button>
-      </Box>
-    </Card>
-  );
-};
-
-const WishlistFilters = ({
-  thuongHieu,
-  chatLieu,
-  selectedThuongHieu,
-  selectedChatLieu,
-  selectedTrangThai,
-  searchTerm,
-
-  handleSearchChange,
-  setSelectedTrangThai,
-  setSelectedChatLieu,
-  setSelectedThuongHieu,
-  setSelectedMauSac,
-
-  selectKichCo,
-  selectPhongCach,
-  selectMucDichSuDung,
-  selectedMauSac,
-
-  //
-  setSelectPhongCach,
-  setSelectMucDichSuDung,
-  setSelectKichCo,
-  //
-  phongCach,
-  mauSac,
-  mucDichSuDung,
-  kichCo,
-  currentTheme,
-}) => (
-  <Box
-    sx={{
-      backgroundColor: currentTheme.backgroundColor,
-      p: 2,
-      borderRadius: 2,
-      color: "white",
-    }}
-  >
-    <FilterShoes
-      thuongHieu={thuongHieu}
-      chatLieu={chatLieu}
-      //
-      selectedThuongHieu={selectedThuongHieu}
-      selectedChatLieu={selectedChatLieu}
-      selectedTrangThai={selectedTrangThai}
-      //
-      selectedMauSac={selectedMauSac}
-      selectKichCo={selectKichCo}
-      selectPhongCach={selectPhongCach}
-      selectMucDichSuDung={selectMucDichSuDung}
-      //
-      setSelectedTrangThai={setSelectedTrangThai}
-      setSelectedChatLieu={setSelectedChatLieu}
-      setSelectedThuongHieu={setSelectedThuongHieu}
-      //
-      setSelectedMauSac={setSelectedMauSac}
-      setSelectPhongCach={setSelectPhongCach}
-      setSelectMucDichSuDung={setSelectMucDichSuDung}
-      setSelectKichCo={setSelectKichCo}
-      //
-      searchTerm={searchTerm}
-      handleSearchChange={handleSearchChange}
-      //
-      phongCach={phongCach}
-      mauSac={mauSac}
-      mucDichSuDung={mucDichSuDung}
-      kichCo={kichCo}
-      //
-      offStatus={true}
-    />
-  </Box>
-);
 
 const WishlistProducts = () => {
   const currentTheme = getThemeConfig(localStorage.getItem("THEMES") || "dark");
@@ -319,54 +155,74 @@ const WishlistProducts = () => {
   useEffect(() => {
     const applyFilters = () => {
       let updatedProducts = items;
+
+      // Parse CHI_TIET_SAN_PHAM for each product
+      updatedProducts = updatedProducts.map((product) => {
+        const details = product.CHI_TIET_SAN_PHAM
+          ? product.CHI_TIET_SAN_PHAM.split(", ").map((detail) => {
+              const [mauSac, kichCo] = detail.split(" - ");
+              return { mauSac, kichCo };
+            })
+          : [];
+        return { ...product, parsedDetails: details };
+      });
+      console.log("updatedProducts", updatedProducts);
       if (selectMucDichSuDung) {
         updatedProducts = updatedProducts.filter(
           (product) => product.ID_MUC_DICH_SU_DUNG === selectMucDichSuDung
         );
       }
-      if (selectMucDichSuDung) {
-        updatedProducts = updatedProducts.filter(
-          (product) => product.ID_MUC_DICH_SU_DUNG === selectMucDichSuDung
-        );
-      }
+
       if (selectPhongCach) {
         updatedProducts = updatedProducts.filter(
           (product) => product.ID_PHUONG_CACH === selectPhongCach
         );
       }
+
+      // Filter by size using parsed details
       if (selectKichCo) {
-        updatedProducts = updatedProducts.filter(
-          (product) => product.ID_KICH_CO === selectKichCo
+        updatedProducts = updatedProducts.filter((product) =>
+          product.parsedDetails.some((detail) => detail.kichCo === selectKichCo)
         );
       }
+      console.log("selectedMauSac", selectedMauSac);
+      // Filter by color using parsed details
       if (selectedMauSac) {
-        updatedProducts = updatedProducts.filter(
-          (product) => product.MAU_SAC_ID === selectedMauSac
+        updatedProducts = updatedProducts.filter((product) =>
+          product.parsedDetails.some(
+            (detail) => detail.mauSac === selectedMauSac
+          )
         );
       }
+
       if (selectedThuongHieu) {
         updatedProducts = updatedProducts.filter(
           (product) => product.ID_THUONG_HIEU === selectedThuongHieu
         );
       }
+
       if (selectedChatLieu) {
         updatedProducts = updatedProducts.filter(
           (product) => product.CHAT_LIEU_ID_ === selectedChatLieu
         );
       }
+
       if (selectedTrangThai !== "") {
         updatedProducts = updatedProducts.filter(
           (product) => product.TRANG_THAI_SANPHAM === selectedTrangThai
         );
       }
 
-      // Nếu có từ khóa tìm kiếm, lọc lại
       if (searchTerm) {
         updatedProducts = updatedProducts.filter((product) =>
           product.TEN_SAN_PHAM.toLowerCase().includes(searchTerm.toLowerCase())
         );
       }
 
+      // Remove temporary parsedDetails before setting state
+      updatedProducts = updatedProducts.map(
+        ({ parsedDetails, ...product }) => product
+      );
       setFilteredProducts(updatedProducts);
     };
 
@@ -375,13 +231,14 @@ const WishlistProducts = () => {
     selectedThuongHieu,
     selectedChatLieu,
     selectedTrangThai,
-    searchTerm, // Thêm searchTerm vào dependency array
+    searchTerm,
     items,
     selectKichCo,
     selectPhongCach,
     selectMucDichSuDung,
     selectedMauSac,
   ]);
+
   const currentProducts = filteredProducts.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
