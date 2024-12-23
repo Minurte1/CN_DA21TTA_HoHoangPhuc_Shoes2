@@ -97,7 +97,12 @@ const Cart = () => {
     }
   };
 
-  const handleQuantityChange = async (newQuantity, id, title) => {
+  const handleQuantityChange = async (
+    newQuantity,
+    id,
+    title,
+    ID_SAN_PHAM_CHI_TIET
+  ) => {
     try {
       if (newQuantity < 1) return; // Prevents quantity from going below 1
 
@@ -107,6 +112,7 @@ const Cart = () => {
           userId: userInfo.ID_NGUOI_DUNG,
           productId: id,
           updateDate: new Date().toISOString(),
+          ID_SAN_PHAM_CHI_TIET: ID_SAN_PHAM_CHI_TIET,
         });
 
         if (response.data.EC === 1) {
@@ -247,9 +253,7 @@ const Cart = () => {
             My Cart
           </Typography>
         </Box>
-        <Box>
-          <Button variant="contained">Add to Cart</Button>
-        </Box>
+
         <Box sx={{ display: "flex", alignItems: "center", mt: 2, mb: 2 }}>
           <Switch defaultChecked color="primary" />
           <Typography variant="body2" sx={{ color: currentTheme.color }}>
@@ -269,6 +273,7 @@ const Cart = () => {
         {items.map((item, index) => (
           <CartItem
             key={index}
+            item={item}
             quantity={item.TONG_SO_LUONG}
             handleRemoveProduct={handleRemoveProduct}
             handleQuantityChange={handleQuantityChange}

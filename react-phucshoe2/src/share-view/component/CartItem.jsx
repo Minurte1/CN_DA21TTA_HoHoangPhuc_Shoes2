@@ -24,6 +24,7 @@ const CartItem = ({
   quantity,
   handleRemoveProduct,
   currentTheme,
+  item,
 }) => {
   return (
     <Card
@@ -52,7 +53,7 @@ const CartItem = ({
             {category} | {material} | {gender} | {brand}
           </Typography>
           <Typography variant="body2" color="gray">
-            {color}
+            Màu sắc: {color}
           </Typography>
           <Typography variant="body2" color="gray">
             Kích cỡ: {kichCo}
@@ -88,7 +89,14 @@ const CartItem = ({
           <IconButton
             sx={{ color: "#d32a28" }}
             size="small"
-            onClick={() => handleQuantityChange(quantity - 1, id, "Delete")}
+            onClick={() =>
+              handleQuantityChange(
+                quantity - 1,
+                id,
+                "Delete",
+                item.ID_SAN_PHAM_CHI_TIET
+              )
+            }
           >
             <Remove />
           </IconButton>
@@ -98,7 +106,14 @@ const CartItem = ({
           <IconButton
             sx={{ color: "#3ccaff" }}
             size="small"
-            onClick={() => handleQuantityChange(quantity + 1, id, "Add")}
+            onClick={() =>
+              handleQuantityChange(
+                quantity + 1,
+                id,
+                "Add",
+                item.ID_SAN_PHAM_CHI_TIET
+              )
+            }
           >
             <Add />
           </IconButton>

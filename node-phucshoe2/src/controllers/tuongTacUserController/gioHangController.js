@@ -92,15 +92,15 @@ const removeSingleProductFromCart = async (req, res) => {
 };
 
 const addSingleProductToCart = async (req, res) => {
-  const { userId, productId, updateDate } = req.body;
+  const { userId, productId, updateDate, ID_SAN_PHAM_CHI_TIET } = req.body;
 
   // Sử dụng moment để chuyển đổi updateDate thành định dạng 'YYYY-MM-DD HH:mm:ss'
   const formattedUpdateDate = moment(updateDate).format("YYYY-MM-DD HH:mm:ss");
 
   try {
     const [results] = await connection.execute(
-      "INSERT INTO `GIO_HANG` (ID_NGUOI_DUNG, ID_SAN_PHAM, NGAY_CAP_NHAT_GIOHANG) VALUES (?, ?, ?)",
-      [userId, productId, formattedUpdateDate]
+      "INSERT INTO `GIO_HANG` (ID_NGUOI_DUNG, ID_SAN_PHAM, NGAY_CAP_NHAT_GIOHANG ,ID_SAN_PHAM_CHI_TIET) VALUES (?, ?, ?,?)",
+      [userId, productId, formattedUpdateDate, ID_SAN_PHAM_CHI_TIET]
     );
 
     return res.status(200).json({
@@ -168,6 +168,7 @@ const getCartProductsByUser = async (req, res) => {
         th.TEN_THUONG_HIEU,
         ms.TEN_MAU_SAC,
         kc.KICH_CO,
+        
         COUNT(*) AS TONG_SO_LUONG,  -- Đếm số lượng của sản phẩm
         MAX(gh.NGAY_CAP_NHAT_GIOHANG) AS NGAY_CAP_NHAT_GIOHANG -- Ngày cập nhật giỏ hàng mới nhất
       FROM GIO_HANG gh
