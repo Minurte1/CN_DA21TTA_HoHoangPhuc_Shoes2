@@ -50,6 +50,7 @@ const WishlistProducts = () => {
 
     fetchWishlistItems();
   }, [isAuthenticated, userInfo, navigate]);
+
   const fetchWishlistItems = async () => {
     try {
       const response = await axios.get(
@@ -65,6 +66,7 @@ const WishlistProducts = () => {
       setLoading(false);
     }
   };
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -246,6 +248,7 @@ const WishlistProducts = () => {
   const handlePageChange = (event, value) => {
     setCurrentPage(value);
   };
+
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
   const handleAddToCart = async (idProduct) => {
@@ -298,10 +301,42 @@ const WishlistProducts = () => {
   };
   const [openViewProduct, setOpenViewProduct] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
+
   const handleViewProduct = (product) => {
-    console.log("product", product);
     setOpenViewProduct(true);
     setSelectedProduct(product);
+  };
+
+  console.log("selectedProduct", selectedProduct);
+  const [selectedSize, setSelectedSize] = useState(null);
+  const [selectedColor, setSelectedColor] = useState(null);
+  const [selectedDetail, setSelectedDetail] = useState(null);
+
+  // Get unique sizes
+  const uniqueSizes = [
+    ...new Set(selectedProduct?.CHI_TIET_SAN_PHAMM.map((item) => item.KICH_CO)),
+  ];
+
+  // Get available colors for selected size
+  const availableColors = selectedSize
+    ? selectedProduct?.CHI_TIET_SAN_PHAMM.filter(
+        (item) => item.KICH_CO === selectedSize
+      )
+    : [];
+
+  const handleOptionChange = (type, value, detail) => {
+    if (type === "size") {
+      setSelectedSize(value);
+      setSelectedColor(null);
+      setSelectedDetail(null);
+    } else if (type === "color") {
+      setSelectedColor(value);
+      // Find matching product detail
+      const selected = selectedProduct.CHI_TIET_SAN_PHAMM.find(
+        (item) => item.KICH_CO === selectedSize && item.MAU_SAC_ID === value
+      );
+      setSelectedDetail(selected);
+    }
   };
   if (loading) {
     return (
@@ -312,6 +347,7 @@ const WishlistProducts = () => {
       </div>
     );
   }
+
   return (
     <Grid
       container
@@ -392,7 +428,7 @@ const WishlistProducts = () => {
                       variant="h5"
                       sx={{ color: currentTheme.color, mb: 1 }}
                     >
-                      {selectedProduct.TEN_SAN_PHAM}
+                      {selectedProduct?.TEN_SAN_PHAM}
                     </Typography>
                   </Grid>{" "}
                   <Grid item xs={3} md={3}>
@@ -405,17 +441,92 @@ const WishlistProducts = () => {
                       {new Intl.NumberFormat("vi-VN", {
                         style: "currency",
                         currency: "VND",
-                      }).format(selectedProduct.GIA)}
+                      }).format(selectedProduct?.GIA)}
                     </Typography>
                   </Grid>
                 </Box>
 
                 <img
-                  src={`${api}/images/${selectedProduct.HINH_ANH_SANPHAM}`}
-                  alt={selectedProduct.TEN_SAN_PHAM}
+                  src={`${api}/images/${selectedProduct?.HINH_ANH_SANPHAM}`}
+                  alt={selectedProduct?.TEN_SAN_PHAM}
                   style={{ width: "100%", height: "auto" }}
                 />
-              </Box>
+              </Box>{" "}
+              <div>
+                <div
+                  style={{ borderBottom: "1px solid rgba(204, 204, 204, 0.5)" }}
+                >
+                  <h4>Chọn kích cỡ</h4>
+                  {uniqueSizes.map((size, index) => (
+                    <button
+                      key={`size-${index}`}
+                      style={{
+                        border:
+                          selectedSize === size
+                            ? "2px solid black"
+                            : "1px solid gray",
+                        margin: "5px",
+                        padding: "5px 10px",
+                      }}
+                      onClick={() => handleOptionChange("size", size)}
+                    >
+                      {size}
+                    </button>
+                  ))}
+                </div>
+
+                {selectedSize && (
+                  <div
+                    style={
+                      {
+                        // borderBottom: "1px solid rgba(204, 204, 204, 0.5)",
+                      }
+                    }
+                  >
+                    <h4>Chọn màu sắc</h4>
+                    {availableColors.map((detail, index) => (
+                      <button
+                        key={`color-${index}`}
+                        style={{
+                          borderRadius: "50%",
+                          width: "30px",
+                          height: "30px",
+                          backgroundColor: detail.MA_MAU.toLowerCase(),
+                          border: "none",
+                          cursor: "pointer",
+                          transition: "all 0.3s ease",
+                          margin: "5px",
+                          boxShadow:
+                            selectedColor === detail.MAU_SAC_ID
+                              ? `0 0 0 2px #fff, 0 0 0 4px ${detail.MA_MAU.toLowerCase()}`
+                              : "none",
+                        }}
+                        onClick={() =>
+                          handleOptionChange("color", detail.MAU_SAC_ID, detail)
+                        }
+                      />
+                    ))}
+                  </div>
+                )}
+
+                <Box sx={{ mt: 2 }}>
+                  <Button
+                    variant="contained"
+                    onClick={() =>
+                      handleAddToCart(selectedProduct?.ID_SAN_PHAM)
+                    }
+                    sx={{
+                      backgroundColor: "#3ccaff",
+                      color: "#000",
+                      borderRadius: "14px",
+                      fontSize: "12px",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    Thêm vào giỏ hàng
+                  </Button>
+                </Box>
+              </div>
             </Card>
           </Grid>
         </>
