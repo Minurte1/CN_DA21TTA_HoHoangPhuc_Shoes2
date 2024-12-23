@@ -18,7 +18,12 @@ const getGioHang = async (req, res) => {
 
 // 2. Thêm sản phẩm vào giỏ hàng
 const createGioHang = async (req, res) => {
-  const { ID_SAN_PHAM, ID_NGUOI_DUNG, NGAY_CAP_NHAT_GIOHANG } = req.body;
+  const {
+    ID_SAN_PHAM,
+    ID_NGUOI_DUNG,
+    NGAY_CAP_NHAT_GIOHANG,
+    ID_SAN_PHAM_CHI_TIET,
+  } = req.body;
   console.log("req.body", req.body);
 
   // Định dạng ngày
@@ -29,8 +34,8 @@ const createGioHang = async (req, res) => {
   try {
     // Bước 1: Thêm sản phẩm vào giỏ hàng
     const [results] = await connection.execute(
-      "INSERT INTO `GIO_HANG` (ID_SAN_PHAM, ID_NGUOI_DUNG, NGAY_CAP_NHAT_GIOHANG) VALUES (?, ?, ?)",
-      [ID_SAN_PHAM, ID_NGUOI_DUNG, formattedDate]
+      "INSERT INTO `GIO_HANG` (ID_SAN_PHAM, ID_NGUOI_DUNG, NGAY_CAP_NHAT_GIOHANG , ID_SAN_PHAM_CHI_TIET) VALUES (?, ?, ?,?)",
+      [ID_SAN_PHAM, ID_NGUOI_DUNG, formattedDate, ID_SAN_PHAM_CHI_TIET]
     );
 
     // Bước 2: Tính tổng số lượng sản phẩm trong giỏ hàng của người dùng
@@ -148,70 +153,35 @@ const getCartProductsByUser = async (req, res) => {
   try {
     const [results] = await connection.execute(
       `
-   SELECT 
-  gh.ID_SAN_PHAM, 
-  sp.TEN_SAN_PHAM, 
-  sp.GIA, 
-  sp.HINH_ANH_SANPHAM, 
-  sp.MO_TA_SAN_PHAM,
-  sp.TRANG_THAI_SANPHAM, 
-  sp.SO_LUONG_SANPHAM, 
-  gt.TEN_GIOI_TINH,
-  dm.TEN_DANH_MUC,
-  cl.TEN_CHAT_LIEU_,
-  th.TEN_THUONG_HIEU,
-  COUNT(*) AS TONG_SO_LUONG,  -- Đếm số lượng của sản phẩm
-  MAX(gh.NGAY_CAP_NHAT_GIOHANG) AS NGAY_CAP_NHAT_GIOHANG, -- Ngày cập nhật giỏ hàng mới nhất
-
-  -- Lấy thông tin từ bảng PHONG_CACH, MAU_SAC, MUC_DICH_SU_DUNG, và KICH_CO
-  MAX(pc.ID_PHUONG_CACH) AS ID_PHUONG_CACH, 
-  MAX(pc.TEN_PHONG_CACH) AS TEN_PHONG_CACH, 
-  MAX(pc.CREATED_PHONG_CACH) AS CREATED_PHONG_CACH,
-  MAX(pc.UPDATE_PHONG_CACH) AS UPDATE_PHONG_CACH,
-  MAX(pc.TRANG_THAI_PHONG_CACH) AS TRANG_THAI_PHONG_CACH,
-
-  MAX(ms.MAU_SAC_ID) AS MAU_SAC_ID,
-  MAX(ms.TEN_MAU_SAC) AS TEN_MAU_SAC,
-  MAX(ms.CREATE_MAU_SAC) AS CREATE_MAU_SAC,
-  MAX(ms.UPDATE_MAU_SAC) AS UPDATE_MAU_SAC,
-  MAX(ms.TRANG_THAI_MAU_SAC) AS TRANG_THAI_MAU_SAC,
-
-  MAX(md.ID_MUC_DICH_SU_DUNG) AS ID_MUC_DICH_SU_DUNG,
-  MAX(md.TEN_MUC_DICH_SU_DUNG) AS TEN_MUC_DICH_SU_DUNG,
-  MAX(md.CREATE_MUC_DICH_SU_DUNG) AS CREATE_MUC_DICH_SU_DUNG,
-  MAX(md.UPDATE_MUC_DICH_SU_DUNG) AS UPDATE_MUC_DICH_SU_DUNG,
-  MAX(md.TRANG_THAI_MUC_DICH_SU_DUNG) AS TRANG_THAI_MUC_DICH_SU_DUNG,
-
-  MAX(kc.ID_KICH_CO) AS ID_KICH_CO,
-  MAX(kc.KICH_CO) AS KICH_CO,
-  MAX(kc.TRANG_THAI_KICH_CO) AS TRANG_THAI_KICH_CO,
-  MAX(kc.CREATED_KICH_CO) AS CREATED_KICH_CO,
-  MAX(kc.UPDATE_KICH_CO) AS UPDATE_KICH_CO
-
-FROM GIO_HANG gh
-JOIN SAN_PHAM sp ON gh.ID_SAN_PHAM = sp.ID_SAN_PHAM
-LEFT JOIN GIOI_TINH gt ON sp.GIOI_TINH_ID = gt.GIOI_TINH_ID
-LEFT JOIN LOAI_DANH_MUC dm ON sp.ID_DANH_MUC = dm.ID_DANH_MUC
-LEFT JOIN CHAT_LIEU cl ON sp.CHAT_LIEU_ID_ = cl.CHAT_LIEU_ID_
-LEFT JOIN THUONG_HIEU th ON sp.ID_THUONG_HIEU = th.ID_THUONG_HIEU
-
--- Kết nối với các bảng PHONG_CACH, MAU_SAC, MUC_DICH_SU_DUNG, và KICH_CO qua các bảng kết nối
-LEFT JOIN PHONG_CACH_SAN_PHAM pcsp ON sp.ID_SAN_PHAM = pcsp.ID_SAN_PHAM
-LEFT JOIN PHONG_CACH pc ON pcsp.ID_PHUONG_CACH = pc.ID_PHUONG_CACH
-
-LEFT JOIN SAN_PHAM_CHI_TIET spct ON sp.ID_SAN_PHAM = spct.ID_SAN_PHAM
-LEFT JOIN MAU_SAC ms ON spct.MAU_SAC_ID = ms.MAU_SAC_ID
-
-LEFT JOIN MUC_DICH_SU_DUNG_SAN_PHAM mdsp ON sp.ID_SAN_PHAM = mdsp.ID_SAN_PHAM
-LEFT JOIN MUC_DICH_SU_DUNG md ON mdsp.ID_MUC_DICH_SU_DUNG = md.ID_MUC_DICH_SU_DUNG
-
-LEFT JOIN KICH_CO kc ON spct.ID_KICH_CO = kc.ID_KICH_CO
-
-WHERE gh.ID_NGUOI_DUNG = ? AND sp.TRANG_THAI_SANPHAM = 1
-GROUP BY gh.ID_SAN_PHAM 
-ORDER BY MAX(gh.NGAY_CAP_NHAT_GIOHANG) DESC;
-
-
+      SELECT 
+        gh.ID_SAN_PHAM_CHI_TIET,
+        spct.ID_SAN_PHAM,
+        sp.TEN_SAN_PHAM,
+        sp.GIA,
+        sp.HINH_ANH_SANPHAM,
+        sp.MO_TA_SAN_PHAM,
+        sp.TRANG_THAI_SANPHAM,
+        sp.SO_LUONG_SANPHAM,
+        gt.TEN_GIOI_TINH,
+        dm.TEN_DANH_MUC,
+        cl.TEN_CHAT_LIEU_,
+        th.TEN_THUONG_HIEU,
+        ms.TEN_MAU_SAC,
+        kc.KICH_CO,
+        COUNT(*) AS TONG_SO_LUONG,  -- Đếm số lượng của sản phẩm
+        MAX(gh.NGAY_CAP_NHAT_GIOHANG) AS NGAY_CAP_NHAT_GIOHANG -- Ngày cập nhật giỏ hàng mới nhất
+      FROM GIO_HANG gh
+      JOIN SAN_PHAM_CHI_TIET spct ON gh.ID_SAN_PHAM_CHI_TIET = spct.ID_SAN_PHAM_CHI_TIET
+      JOIN SAN_PHAM sp ON spct.ID_SAN_PHAM = sp.ID_SAN_PHAM
+      LEFT JOIN GIOI_TINH gt ON sp.GIOI_TINH_ID = gt.GIOI_TINH_ID
+      LEFT JOIN LOAI_DANH_MUC dm ON sp.ID_DANH_MUC = dm.ID_DANH_MUC
+      LEFT JOIN CHAT_LIEU cl ON sp.CHAT_LIEU_ID_ = cl.CHAT_LIEU_ID_
+      LEFT JOIN THUONG_HIEU th ON sp.ID_THUONG_HIEU = th.ID_THUONG_HIEU
+      LEFT JOIN MAU_SAC ms ON spct.MAU_SAC_ID = ms.MAU_SAC_ID
+      LEFT JOIN KICH_CO kc ON spct.ID_KICH_CO = kc.ID_KICH_CO
+      WHERE gh.ID_NGUOI_DUNG = ? AND sp.TRANG_THAI_SANPHAM = 1
+      GROUP BY gh.ID_SAN_PHAM_CHI_TIET
+      ORDER BY MAX(gh.NGAY_CAP_NHAT_GIOHANG) DESC
     `,
       [userId]
     );
@@ -223,11 +193,14 @@ ORDER BY MAX(gh.NGAY_CAP_NHAT_GIOHANG) DESC;
         DT: [],
       });
     }
+
     // Bước 2: Tính tổng số lượng sản phẩm trong giỏ hàng của người dùng
     const [totalResults] = await connection.execute(
-      `SELECT COUNT(ID_SAN_PHAM) AS totalQuantity
-       FROM GIO_HANG
-       WHERE ID_NGUOI_DUNG = ?`,
+      `
+      SELECT COUNT(ID_SAN_PHAM_CHI_TIET) AS totalQuantity
+      FROM GIO_HANG
+      WHERE ID_NGUOI_DUNG = ?
+    `,
       [userId]
     );
 

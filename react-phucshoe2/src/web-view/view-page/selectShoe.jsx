@@ -88,6 +88,7 @@ const SelectShoe = () => {
         ID_SAN_PHAM: id,
         ID_NGUOI_DUNG: userInfo.ID_NGUOI_DUNG, // ID người dùng
         NGAY_CAP_NHAT_GIOHANG: new Date().toISOString(),
+        ID_SAN_PHAM_CHI_TIET: selectedDetail.ID_SAN_PHAM_CHI_TIET,
       };
 
       const response = await axios.post(`${api}/gio-hang/`, payload);
