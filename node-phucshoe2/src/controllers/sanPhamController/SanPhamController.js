@@ -523,51 +523,40 @@ const getFavoriteProductsByUser = async (req, res) => {
   const userId = req.params.id; // Lấy userId từ tham số URL
 
   try {
+    // Query 1: Get main product information
     const [results] = await connection.execute(
       `
-    SELECT 
-    yt.ID_SAN_PHAM, yt.NGAY_YEU_THICH,
-    sp.TEN_SAN_PHAM, sp.GIA, sp.HINH_ANH_SANPHAM, sp.MO_TA_SAN_PHAM, sp.TRANG_THAI_SANPHAM, sp.SO_LUONG_SANPHAM,
-    sp.NGAY_TAO_SANPHAM, sp.NGAY_CAP_NHAT_SANPHAM,
-    gt.TEN_GIOI_TINH,
-    dm.TEN_DANH_MUC, dm.MO_TA_LOAI_DANH_MUC,
-    cl.TEN_CHAT_LIEU_, cl.MO_TA_CHAT_LIEU,
-    th.TEN_THUONG_HIEU,
-    
-    -- Dữ liệu từ các bảng liên quan
-    pc.ID_PHUONG_CACH, pc.TEN_PHONG_CACH, pc.CREATED_PHONG_CACH, pc.UPDATE_PHONG_CACH, pc.TRANG_THAI_PHONG_CACH,
-    mdsd.ID_MUC_DICH_SU_DUNG, mdsd.TEN_MUC_DICH_SU_DUNG, mdsd.CREATE_MUC_DICH_SU_DUNG, mdsd.UPDATE_MUC_DICH_SU_DUNG, mdsd.TRANG_THAI_MUC_DICH_SU_DUNG,
-
-    -- Màu sắc và kích cỡ
-    GROUP_CONCAT(DISTINCT CONCAT(ms.TEN_MAU_SAC, ' - ', kc.KICH_CO) ORDER BY ms.TEN_MAU_SAC SEPARATOR ', ') AS CHI_TIET_SAN_PHAM
-FROM YEU_THICH yt
-JOIN SAN_PHAM sp ON yt.ID_SAN_PHAM = sp.ID_SAN_PHAM
-LEFT JOIN GIOI_TINH gt ON sp.GIOI_TINH_ID = gt.GIOI_TINH_ID
-LEFT JOIN LOAI_DANH_MUC dm ON sp.ID_DANH_MUC = dm.ID_DANH_MUC
-LEFT JOIN CHAT_LIEU cl ON sp.CHAT_LIEU_ID_ = cl.CHAT_LIEU_ID_
-LEFT JOIN THUONG_HIEU th ON sp.ID_THUONG_HIEU = th.ID_THUONG_HIEU
-
--- Joins to retrieve additional details
-LEFT JOIN PHONG_CACH_SAN_PHAM pcs ON sp.ID_SAN_PHAM = pcs.ID_SAN_PHAM
-LEFT JOIN PHONG_CACH pc ON pcs.ID_PHUONG_CACH = pc.ID_PHUONG_CACH
-
-LEFT JOIN MUC_DICH_SU_DUNG_SAN_PHAM mdsds ON sp.ID_SAN_PHAM = mdsds.ID_SAN_PHAM
-LEFT JOIN MUC_DICH_SU_DUNG mdsd ON mdsds.ID_MUC_DICH_SU_DUNG = mdsd.ID_MUC_DICH_SU_DUNG
-
--- Thêm join với các bảng MÀU_SAC và KÍCH_CO để lấy thông tin
-LEFT JOIN SAN_PHAM_CHI_TIET spct ON sp.ID_SAN_PHAM = spct.ID_SAN_PHAM
-LEFT JOIN MAU_SAC ms ON spct.MAU_SAC_ID = ms.MAU_SAC_ID
-LEFT JOIN KICH_CO kc ON spct.ID_KICH_CO = kc.ID_KICH_CO
-
-WHERE yt.ID_NGUOI_DUNG = ? AND sp.TRANG_THAI_SANPHAM = 1
-GROUP BY yt.ID_SAN_PHAM, yt.NGAY_YEU_THICH, sp.TEN_SAN_PHAM, sp.GIA, sp.HINH_ANH_SANPHAM, sp.MO_TA_SAN_PHAM, sp.TRANG_THAI_SANPHAM, sp.SO_LUONG_SANPHAM,
-    sp.NGAY_TAO_SANPHAM, sp.NGAY_CAP_NHAT_SANPHAM, gt.TEN_GIOI_TINH, dm.TEN_DANH_MUC, dm.MO_TA_LOAI_DANH_MUC, cl.TEN_CHAT_LIEU_, cl.MO_TA_CHAT_LIEU,
-    th.TEN_THUONG_HIEU, pc.ID_PHUONG_CACH, pc.TEN_PHONG_CACH, pc.CREATED_PHONG_CACH, pc.UPDATE_PHONG_CACH, pc.TRANG_THAI_PHONG_CACH,
-    mdsd.ID_MUC_DICH_SU_DUNG, mdsd.TEN_MUC_DICH_SU_DUNG, mdsd.CREATE_MUC_DICH_SU_DUNG, mdsd.UPDATE_MUC_DICH_SU_DUNG, mdsd.TRANG_THAI_MUC_DICH_SU_DUNG
-ORDER BY yt.NGAY_YEU_THICH DESC;
-
-
- `,
+      SELECT 
+        yt.ID_SAN_PHAM, yt.NGAY_YEU_THICH,
+        sp.TEN_SAN_PHAM, sp.GIA, sp.HINH_ANH_SANPHAM, sp.MO_TA_SAN_PHAM, sp.TRANG_THAI_SANPHAM, sp.SO_LUONG_SANPHAM,
+        sp.NGAY_TAO_SANPHAM, sp.NGAY_CAP_NHAT_SANPHAM,
+        gt.TEN_GIOI_TINH,
+        dm.TEN_DANH_MUC, dm.MO_TA_LOAI_DANH_MUC,
+        cl.TEN_CHAT_LIEU_, cl.MO_TA_CHAT_LIEU,
+        th.TEN_THUONG_HIEU,
+        pc.ID_PHUONG_CACH, pc.TEN_PHONG_CACH, pc.CREATED_PHONG_CACH, pc.UPDATE_PHONG_CACH, pc.TRANG_THAI_PHONG_CACH,
+        mdsd.ID_MUC_DICH_SU_DUNG, mdsd.TEN_MUC_DICH_SU_DUNG, mdsd.CREATE_MUC_DICH_SU_DUNG, mdsd.UPDATE_MUC_DICH_SU_DUNG, mdsd.TRANG_THAI_MUC_DICH_SU_DUNG,
+        GROUP_CONCAT(DISTINCT CONCAT(ms.TEN_MAU_SAC, ' - ', kc.KICH_CO) ORDER BY ms.TEN_MAU_SAC SEPARATOR ', ') AS CHI_TIET_SAN_PHAM
+      FROM YEU_THICH yt
+      JOIN SAN_PHAM sp ON yt.ID_SAN_PHAM = sp.ID_SAN_PHAM
+      LEFT JOIN GIOI_TINH gt ON sp.GIOI_TINH_ID = gt.GIOI_TINH_ID
+      LEFT JOIN LOAI_DANH_MUC dm ON sp.ID_DANH_MUC = dm.ID_DANH_MUC
+      LEFT JOIN CHAT_LIEU cl ON sp.CHAT_LIEU_ID_ = cl.CHAT_LIEU_ID_
+      LEFT JOIN THUONG_HIEU th ON sp.ID_THUONG_HIEU = th.ID_THUONG_HIEU
+      LEFT JOIN PHONG_CACH_SAN_PHAM pcs ON sp.ID_SAN_PHAM = pcs.ID_SAN_PHAM
+      LEFT JOIN PHONG_CACH pc ON pcs.ID_PHUONG_CACH = pc.ID_PHUONG_CACH
+      LEFT JOIN MUC_DICH_SU_DUNG_SAN_PHAM mdsds ON sp.ID_SAN_PHAM = mdsds.ID_SAN_PHAM
+      LEFT JOIN MUC_DICH_SU_DUNG mdsd ON mdsds.ID_MUC_DICH_SU_DUNG = mdsd.ID_MUC_DICH_SU_DUNG
+      LEFT JOIN SAN_PHAM_CHI_TIET spct ON sp.ID_SAN_PHAM = spct.ID_SAN_PHAM
+      LEFT JOIN MAU_SAC ms ON spct.MAU_SAC_ID = ms.MAU_SAC_ID
+      LEFT JOIN KICH_CO kc ON spct.ID_KICH_CO = kc.ID_KICH_CO
+      WHERE yt.ID_NGUOI_DUNG = ? AND sp.TRANG_THAI_SANPHAM = 1
+      GROUP BY yt.ID_SAN_PHAM, yt.NGAY_YEU_THICH, sp.TEN_SAN_PHAM, sp.GIA, sp.HINH_ANH_SANPHAM, sp.MO_TA_SAN_PHAM, sp.TRANG_THAI_SANPHAM, sp.SO_LUONG_SANPHAM,
+        sp.NGAY_TAO_SANPHAM, sp.NGAY_CAP_NHAT_SANPHAM, gt.TEN_GIOI_TINH, dm.TEN_DANH_MUC, dm.MO_TA_LOAI_DANH_MUC, cl.TEN_CHAT_LIEU_, cl.MO_TA_CHAT_LIEU,
+        th.TEN_THUONG_HIEU, pc.ID_PHUONG_CACH, pc.TEN_PHONG_CACH, pc.CREATED_PHONG_CACH, pc.UPDATE_PHONG_CACH, pc.TRANG_THAI_PHONG_CACH,
+        mdsd.ID_MUC_DICH_SU_DUNG, mdsd.TEN_MUC_DICH_SU_DUNG, mdsd.CREATE_MUC_DICH_SU_DUNG, mdsd.UPDATE_MUC_DICH_SU_DUNG, mdsd.TRANG_THAI_MUC_DICH_SU_DUNG
+      ORDER BY yt.NGAY_YEU_THICH DESC
+    `,
       [userId]
     );
 
@@ -579,10 +568,35 @@ ORDER BY yt.NGAY_YEU_THICH DESC;
       });
     }
 
+    // Query 2: Get product details
+    const productIds = results.map((product) => product.ID_SAN_PHAM);
+    const [detailResults] = await connection.execute(`
+      SELECT 
+        spct.ID_SAN_PHAM,
+        spct.ID_SAN_PHAM_CHI_TIET,
+        ms.MAU_SAC_ID,
+        ms.TEN_MAU_SAC,
+        ms.MA_MAU,
+        kc.ID_KICH_CO,
+        kc.KICH_CO
+      FROM SAN_PHAM_CHI_TIET spct
+      LEFT JOIN MAU_SAC ms ON spct.MAU_SAC_ID = ms.MAU_SAC_ID
+      LEFT JOIN KICH_CO kc ON spct.ID_KICH_CO = kc.ID_KICH_CO
+      WHERE spct.ID_SAN_PHAM IN (${productIds.join(",")})
+    `);
+
+    // Combine results
+    const finalResults = results.map((product) => ({
+      ...product,
+      CHI_TIET_SAN_PHAMM: detailResults.filter(
+        (detail) => detail.ID_SAN_PHAM === product.ID_SAN_PHAM
+      ),
+    }));
+
     return res.status(200).json({
       EM: "Lấy thông tin sản phẩm yêu thích thành công",
       EC: 1,
-      DT: results,
+      DT: finalResults,
     });
   } catch (error) {
     console.error("Error getting favorite products:", error);
