@@ -53,10 +53,16 @@ const CartItem = ({
             {category} | {material} | {gender} | {brand}
           </Typography>
           <Typography variant="body2" color="gray">
-            Màu sắc: {color}
+            Màu sắc:{" "}
+            <span style={{ color: item.MA_MAU.toLowerCase(), fontWeight: 600 }}>
+              {color}
+            </span>
           </Typography>
           <Typography variant="body2" color="gray">
-            Kích cỡ: {kichCo}
+            Kích cỡ:
+            <span style={{ color: item.MA_MAU.toLowerCase(), fontWeight: 600 }}>
+              {kichCo}
+            </span>
           </Typography>
           <Typography variant="body2" color="gray">
             {mucDich}

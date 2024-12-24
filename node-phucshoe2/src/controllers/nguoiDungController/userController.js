@@ -359,6 +359,7 @@ const loginUserGoogle = async (req, res) => {
           DIA_CHI_Provinces: user.DIA_CHI_Provinces,
           DIA_CHI_Districts: user.DIA_CHI_Districts,
           DIA_CHI_Wards: user.DIA_CHI_Wards,
+          DIA_CHI_STREETNAME: user.DIA_CHI_STREETNAME,
         },
         JWT_SECRET,
         { expiresIn: "5h" }
@@ -528,6 +529,7 @@ const loginUser = async (req, res) => {
         DIA_CHI_Provinces: user.DIA_CHI_Provinces,
         DIA_CHI_Districts: user.DIA_CHI_Districts,
         DIA_CHI_Wards: user.DIA_CHI_Wards,
+        DIA_CHI_STREETNAME: user.DIA_CHI_STREETNAME,
       },
       JWT_SECRET,
       { expiresIn: "5h" }
@@ -762,6 +764,7 @@ const updateAvatarController = async (req, res) => {
           DIA_CHI_Provinces: user.DIA_CHI_Provinces,
           DIA_CHI_Districts: user.DIA_CHI_Districts,
           DIA_CHI_Wards: user.DIA_CHI_Wards,
+          DIA_CHI_STREETNAME: user.DIA_CHI_STREETNAME,
         },
         JWT_SECRET,
         { expiresIn: "5h" }

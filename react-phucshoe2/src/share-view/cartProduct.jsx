@@ -1,26 +1,14 @@
 import React, { useState, useEffect } from "react";
 import {
   Box,
-  Button,
   Divider,
   Typography,
-  Card,
   Grid,
   FormControl,
   Select,
   MenuItem,
   Switch,
-  IconButton,
-  InputLabel,
   Skeleton,
-  TextField,
-  isSwitchOn,
-  Popover,
-  List,
-  ListItem,
-  ListItemText,
-  Popper,
-  Modal,
 } from "@mui/material";
 import { v4 as uuidv4 } from "uuid"; // Thêm thư viện UUID nếu bạn muốn tạo mã đơn hàng duy nhất
 import { useDispatch, useSelector } from "react-redux";
@@ -49,13 +37,13 @@ const Cart = () => {
   const currentTheme = getThemeConfig(localStorage.getItem("THEMES") || "dark");
   useEffect(() => {
     if (!isAuthenticated || !userInfo) {
-      // Redirect to login if user is not authenticated or userInfo is missing
       navigate("/login");
       return;
     }
 
     fetchCartItems();
   }, [isAuthenticated, userInfo, navigate]);
+
   const fetchCartItems = async () => {
     try {
       const response = await axios.get(
@@ -286,7 +274,7 @@ const Cart = () => {
             brand={item.TEN_THUONG_HIEU}
             quantityInCart={item.TONG_SO_LUONG}
             image={item.HINH_ANH_SANPHAM}
-            userId={userInfo.ID_NGUOI_DUNG}
+            userId={userInfo?.ID_NGUOI_DUNG}
             id={item.ID_SAN_PHAM}
             fetchCartItems={fetchCartItems}
             color={item.TEN_MAU_SAC}

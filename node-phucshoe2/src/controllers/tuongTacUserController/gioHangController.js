@@ -168,7 +168,7 @@ const getCartProductsByUser = async (req, res) => {
         th.TEN_THUONG_HIEU,
         ms.TEN_MAU_SAC,
         kc.KICH_CO,
-        
+        ms.MA_MAU,
         COUNT(*) AS TONG_SO_LUONG,  -- Đếm số lượng của sản phẩm
         MAX(gh.NGAY_CAP_NHAT_GIOHANG) AS NGAY_CAP_NHAT_GIOHANG -- Ngày cập nhật giỏ hàng mới nhất
       FROM GIO_HANG gh

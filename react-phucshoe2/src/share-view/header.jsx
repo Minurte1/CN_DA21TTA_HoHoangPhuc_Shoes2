@@ -99,12 +99,10 @@ const Header = () => {
         {},
         { withCredentials: true }
       );
-      Cookies.remove("accessToken");
+      navigate("/login");
 
-      // Cập nhật Redux bằng cách dispatch hành động logout
       dispatch(logout());
       handleClose();
-      navigate("/login");
     } catch (error) {
       console.error("Lỗi đăng xuất:", error);
     }
