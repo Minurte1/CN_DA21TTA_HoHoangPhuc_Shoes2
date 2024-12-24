@@ -252,32 +252,35 @@ const WishlistProducts = () => {
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
   const handleAddToCart = async (idProduct) => {
+    if (!isAuthenticated) {
+      enqueueSnackbar("Vui lòng đăng nhập để tiếp tục!");
+      navigate("/login"); // Đảm bảo '/login' là đường dẫn đúng tới trang đăng nhập của bạn
+      return; // Dừng hàm nếu chưa đăng nhập
+    }
+    if (selectedDetail === null) {
+      return enqueueSnackbar("Vui lòng chọn size và màu sắc!", {
+        variant: "error",
+      });
+    }
     try {
-      setIsLoading(true);
-      const updateDate = dayjs().format("YYYY-MM-DD HH:mm:ss"); // Lấy ngày giờ hiện tại và định dạng
+      const payload = {
+        ID_SAN_PHAM: idProduct,
+        ID_NGUOI_DUNG: userInfo.ID_NGUOI_DUNG, // ID người dùng
+        NGAY_CAP_NHAT_GIOHANG: new Date().toISOString(),
+        ID_SAN_PHAM_CHI_TIET: selectedDetail.ID_SAN_PHAM_CHI_TIET,
+      };
 
-      const response = await axios.post(
-        `${api}/yeu-thich/add-cart/delete-wish`,
-        {
-          userId: userInfo.ID_NGUOI_DUNG,
-          productId: idProduct,
-          updateDate,
-        }
-      );
+      const response = await axios.post(`${api}/gio-hang/`, payload);
 
       if (response.data.EC === 1) {
-        // Cập nhật trạng thái giỏ hàng thành công
-        fetchWishlistItems();
+        enqueueSnackbar(response.data.EM, { variant: "success" });
         dispatch(setTotalCart(response.data.totalQuantity));
-        enqueueSnackbar(response.data.EM, { variant: "success" }); // Thông báo thành công
       } else {
-        enqueueSnackbar(response.data.EM, { variant: "error" }); // Thông báo lỗi
+        enqueueSnackbar(response.data.EM, { variant: "error" });
       }
     } catch (error) {
-      console.error("Error adding product to cart:", error);
-      enqueueSnackbar(error.response.data.EM, { variant: "error" }); // Thông báo lỗi
-    } finally {
-      setIsLoading(false);
+      console.error("Lỗi hệ thống:", error);
+      enqueueSnackbar(error.response.data.EM, { variant: "error" });
     }
   };
   const removeFromFavorites = async (idSanPham) => {

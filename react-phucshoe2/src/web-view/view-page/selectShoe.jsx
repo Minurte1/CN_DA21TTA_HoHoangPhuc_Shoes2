@@ -82,7 +82,11 @@ const SelectShoe = () => {
       navigate("/login"); // Đảm bảo '/login' là đường dẫn đúng tới trang đăng nhập của bạn
       return; // Dừng hàm nếu chưa đăng nhập
     }
-
+    if (selectedDetail === null) {
+      return enqueueSnackbar("Vui lòng chọn size và màu sắc!", {
+        variant: "error",
+      });
+    }
     try {
       const payload = {
         ID_SAN_PHAM: id,
@@ -107,7 +111,9 @@ const SelectShoe = () => {
         navigate("/cart");
       }
     }
-  }; // Hàm handleAddToWish
+  };
+
+  // Hàm handleAddToWish
   const handleAddToWish = async (product) => {
     if (!isAuthenticated) {
       enqueueSnackbar("Vui lòng đăng nhập để tiếp tục!");
