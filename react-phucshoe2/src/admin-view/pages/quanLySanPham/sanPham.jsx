@@ -118,6 +118,8 @@ const SanPhamManager = () => {
 
   const handleOpenDialog = (product = null) => {
     setCurrentProduct(product);
+
+    console.log("handleOpenDialog product", product);
     setFormData({
       idThuongHieu: product ? product.ID_THUONG_HIEU : "",
       idDanhMuc: product ? product.ID_DANH_MUC : "",
@@ -268,7 +270,7 @@ const SanPhamManager = () => {
           : [];
         return { ...product, parsedDetails: details };
       });
-      console.log("updatedProducts", updatedProducts);
+
       if (selectMucDichSuDung) {
         updatedProducts = updatedProducts.filter(
           (product) => product.ID_MUC_DICH_SU_DUNG === selectMucDichSuDung

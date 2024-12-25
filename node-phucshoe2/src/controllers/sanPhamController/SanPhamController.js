@@ -46,7 +46,24 @@ const getSAN_PHAM = async (req, res) => {
       GROUP BY sp.ID_SAN_PHAM, gt.TEN_GIOI_TINH, dm.TEN_DANH_MUC, dm.MO_TA_LOAI_DANH_MUC, cl.TEN_CHAT_LIEU_, cl.MO_TA_CHAT_LIEU, th.TEN_THUONG_HIEU, mdsd.ID_MUC_DICH_SU_DUNG, mdsd.TEN_MUC_DICH_SU_DUNG, mdsd.CREATE_MUC_DICH_SU_DUNG, mdsd.UPDATE_MUC_DICH_SU_DUNG, mdsd.TRANG_THAI_MUC_DICH_SU_DUNG
       ORDER BY sp.NGAY_TAO_SANPHAM DESC
     `);
+    // Loop through each product to get detailed information
+    for (let product of results) {
+      const [detailResults] = await connection.execute(
+        `
+      SELECT 
+        spct.ID_SAN_PHAM_CHI_TIET,
+        ms.MAU_SAC_ID, ms.TEN_MAU_SAC, ms.MA_MAU,
+        kc.ID_KICH_CO, kc.KICH_CO
+      FROM SAN_PHAM_CHI_TIET spct
+      LEFT JOIN MAU_SAC ms ON spct.MAU_SAC_ID = ms.MAU_SAC_ID
+      LEFT JOIN KICH_CO kc ON spct.ID_KICH_CO = kc.ID_KICH_CO
+      WHERE spct.ID_SAN_PHAM = ?
+    `,
+        [product.ID_SAN_PHAM]
+      );
 
+      product.CHI_TIET_SAN_PHAMM = detailResults;
+    }
     return res.status(200).json({
       EM: "Xem thông tin sản phẩm thành công",
       EC: 1,
