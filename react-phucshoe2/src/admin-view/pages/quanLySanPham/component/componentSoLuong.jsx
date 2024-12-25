@@ -48,21 +48,49 @@ export default function ProductDetailInput({ products }) {
     }));
   };
 
+  console.log("quantityData", quantityData);
   const handleSummit = async () => {
-    const updatedDetails = productDetails.map((item) => {
-      const key = `${item.TEN_MAU_SAC}_${item.KICH_CO}`;
-      return {
-        idSanPhamChiTiet: item.ID_SAN_PHAM_CHI_TIET,
-        mauSacId: item.MAU_SAC_ID,
-        kichCoId: item.ID_KICH_CO,
-        soLuongSanPhamChiTiet: quantityData[key] || null,
+    // Tạo một mảng mới chứa tất cả các chi tiết từ quantityData
+    const updatedDetails = [];
+
+    const existingDetails = [];
+    const newDetails = [];
+
+    // Duyệt qua mỗi item trong quantityData để tạo thông tin chi tiết mới
+    Object.keys(quantityData).forEach((key) => {
+      const [mauSac, kichCo] = key.split("_");
+
+      // Kiểm tra nếu chi tiết sản phẩm đã có trong productDetails
+      const existingItem = productDetails.find(
+        (item) => item.TEN_MAU_SAC === mauSac && item.KICH_CO === kichCo
+      );
+
+      const newDetail = {
+        mauSacId: mauSac,
+        kichCoId: kichCo,
+        soLuongSanPhamChiTiet: quantityData[key],
       };
+
+      if (existingItem) {
+        // Nếu đã có, cập nhật thông tin chi tiết
+        newDetail.idSanPhamChiTiet = existingItem.ID_SAN_PHAM_CHI_TIET;
+        existingDetails.push(newDetail); // Thêm vào mảng existingDetails
+      } else {
+        // Nếu chưa có, thêm vào mảng newDetails
+        newDetails.push(newDetail);
+      }
+
+      updatedDetails.push(newDetail); // Thêm vào updatedDetails
     });
 
     try {
       const response = await axios.put(
         `${api}/san-pham/chi-tiet/${products.ID_SAN_PHAM}`,
-        { chiTietSanPham: updatedDetails }
+        {
+          chiTietSanPham: updatedDetails,
+          existingDetails: existingDetails,
+          newDetails: newDetails, // Gửi mảng chi tiết mới nếu có
+        }
       );
       console.log(response.data);
       alert("Cập nhật thành công");
@@ -93,9 +121,6 @@ export default function ProductDetailInput({ products }) {
               <TableCell>{color}</TableCell>
               {sizes.map((size) => {
                 const key = `${color}_${size}`;
-                const isDisabled = !productDetails.some(
-                  (item) => item.TEN_MAU_SAC === color && item.KICH_CO === size
-                );
 
                 return (
                   <TableCell key={key}>
@@ -107,7 +132,6 @@ export default function ProductDetailInput({ products }) {
                       onChange={(e) =>
                         handleChange(color, size, e.target.value)
                       }
-                      disabled={isDisabled} // Disable nếu không có trong dữ liệu
                     />
                   </TableCell>
                 );
