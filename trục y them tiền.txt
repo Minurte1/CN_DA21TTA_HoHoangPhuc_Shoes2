@@ -1,8 +1,8 @@
-trục y them tiền
-trục y cần them label 
+>>>>> ||  trục y them tiền
+>>>>> || trục y cần them label 
 
-Thống kê doanh thu theo phương thức thanh toán 
-biểu đồ cột : 2 cột 2 màu
+>>>>> || Thống kê doanh thu theo phương thức thanh toán 
+>>>>> || biểu đồ cột : 2 cột 2 màu     
 
 
 thống kê theo loại sản phẩm bán được nhiều nhất

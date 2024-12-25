@@ -654,25 +654,156 @@ const getProductsByStatus = async (req, res) => {
     });
   }
 };
+// 15. Thống kê loại sản phẩm bán được nhiều nhất
+const getTopSellingProductCategories = async (req, res) => {
+  try {
+    const query = `
+      SELECT 
+        ldm.TEN_DANH_MUC AS categoryName,
+        COUNT(cthd.ID_SAN_PHAM_CHI_TIET) AS soldCount
+      FROM 
+        LOAI_DANH_MUC ldm
+      JOIN 
+        SAN_PHAM sp ON ldm.ID_DANH_MUC = sp.ID_DANH_MUC
+      JOIN 
+        SAN_PHAM_CHI_TIET spct ON sp.ID_SAN_PHAM = spct.ID_SAN_PHAM
+      JOIN 
+        CHI_TIET_HOA_DON cthd ON spct.ID_SAN_PHAM_CHI_TIET = cthd.ID_SAN_PHAM_CHI_TIET
+      GROUP BY 
+        ldm.TEN_DANH_MUC
+      ORDER BY 
+        soldCount DESC;
+    `;
 
+    const [results] = await connection.execute(query);
+
+    // Tính tổng số sản phẩm bán được
+    const totalSold = results.reduce(
+      (acc, category) => acc + category.soldCount,
+      0
+    );
+
+    // Chỉ lấy 5 loại sản phẩm bán được nhiều nhất, phần còn lại là "Khác"
+    const topCategories = results.slice(0, 5);
+    const otherCategories = results.slice(5);
+
+    // Tính tỷ lệ phần trăm cho từng loại sản phẩm
+    const topCategoriesWithPercentage = topCategories.map((category) => ({
+      ...category,
+      percentage: ((category.soldCount / totalSold) * 100).toFixed(2),
+    }));
+
+    // Nếu có các loại sản phẩm còn lại, cộng lại thành mục "Khác"
+    if (otherCategories.length > 0) {
+      const otherSoldCount = otherCategories.reduce(
+        (acc, category) => acc + category.soldCount,
+        0
+      );
+      topCategoriesWithPercentage.push({
+        categoryName: "Khác",
+        soldCount: otherSoldCount,
+        percentage: ((otherSoldCount / totalSold) * 100).toFixed(2),
+      });
+    }
+
+    return res.status(200).json({
+      EM: "Thống kê loại sản phẩm bán được nhiều nhất thành công",
+      EC: 1,
+      DT: topCategoriesWithPercentage,
+    });
+  } catch (error) {
+    console.error("Error getting top selling product categories:", error);
+    return res.status(500).json({
+      EM: "Có lỗi xảy ra khi thống kê loại sản phẩm bán được nhiều nhất",
+      EC: 0,
+      DT: [],
+    });
+  }
+};
+// 16. Thống kê doanh số bán được theo thương hiệu
+const getSalesByBrand = async (req, res) => {
+  try {
+    const query = `
+      SELECT 
+        th.TEN_THUONG_HIEU AS brandName,
+        COUNT(cthd.ID_SAN_PHAM_CHI_TIET) AS soldCount
+      FROM 
+        THUONG_HIEU th
+      JOIN 
+        SAN_PHAM sp ON th.ID_THUONG_HIEU = sp.ID_THUONG_HIEU
+      JOIN 
+        SAN_PHAM_CHI_TIET spct ON sp.ID_SAN_PHAM = spct.ID_SAN_PHAM
+      JOIN 
+        CHI_TIET_HOA_DON cthd ON spct.ID_SAN_PHAM_CHI_TIET = cthd.ID_SAN_PHAM_CHI_TIET
+      GROUP BY 
+        th.TEN_THUONG_HIEU
+      ORDER BY 
+        soldCount DESC;
+    `;
+
+    const [results] = await connection.execute(query);
+
+    // Tính tổng số sản phẩm bán được
+    const totalSold = results.reduce((acc, brand) => acc + brand.soldCount, 0);
+
+    // Chỉ lấy 5 thương hiệu bán được nhiều nhất, phần còn lại là "Khác"
+    const topBrands = results.slice(0, 5);
+    const otherBrands = results.slice(5);
+
+    // Tính tỷ lệ phần trăm cho từng thương hiệu
+    const topBrandsWithPercentage = topBrands.map((brand) => ({
+      ...brand,
+      percentage: ((brand.soldCount / totalSold) * 100).toFixed(2),
+    }));
+
+    // Nếu có các thương hiệu còn lại, cộng lại thành mục "Khác"
+    if (otherBrands.length > 0) {
+      const otherSoldCount = otherBrands.reduce(
+        (acc, brand) => acc + brand.soldCount,
+        0
+      );
+      topBrandsWithPercentage.push({
+        brandName: "Khác",
+        soldCount: otherSoldCount,
+        percentage: ((otherSoldCount / totalSold) * 100).toFixed(2),
+      });
+    }
+
+    return res.status(200).json({
+      EM: "Thống kê doanh số bán được theo thương hiệu thành công",
+      EC: 1,
+      DT: topBrandsWithPercentage,
+    });
+  } catch (error) {
+    console.error("Error getting sales by brand:", error);
+    return res.status(500).json({
+      EM: "Có lỗi xảy ra khi thống kê doanh số bán được theo thương hiệu",
+      EC: 0,
+      DT: [],
+    });
+  }
+};
 module.exports = {
-  getProductStatisticsByCategory,
-  getRevenueByMonth,
-  getRevenueByDay,
-  getRevenueByYear,
-  getMostLikedProducts,
-  getProductsByBrand,
-  getOrdersByStatus,
-  getRevenueByPaymentMethod,
-  getUsersByRole,
-  getProductsByColor,
-  getProductsByMaterial,
-  getProductsBySize,
-  getMessagesByDate,
-  getProductsByStyle,
-  getProductsByUsagePurpose,
-  getProductsByCategoryType,
-  getProductsByGender,
-  getUsersByProvince,
-  getProductsByStatus,
+  getProductStatisticsByCategory, // Lấy thống kê sản phẩm theo danh mục (số lượng, doanh thu, v.v.)
+  getRevenueByMonth, // Lấy doanh thu theo từng tháng
+  getRevenueByDay, // Lấy doanh thu theo từng ngày
+  getRevenueByYear, // Lấy doanh thu theo từng năm
+  getMostLikedProducts, // Lấy danh sách sản phẩm được yêu thích nhiều nhất
+  getProductsByBrand, // Lấy danh sách sản phẩm theo thương hiệu
+  getOrdersByStatus, // Lấy danh sách đơn hàng theo trạng thái (đang xử lý, đã giao, v.v.)
+  getRevenueByPaymentMethod, // Lấy doanh thu phân theo phương thức thanh toán (thẻ, tiền mặt, v.v.)
+  getUsersByRole, // Lấy danh sách người dùng phân theo vai trò (quản trị viên, khách hàng, v.v.)
+  getProductsByColor, // Lấy danh sách sản phẩm theo màu sắc
+  getProductsByMaterial, // Lấy danh sách sản phẩm theo chất liệu
+  getProductsBySize, // Lấy danh sách sản phẩm theo kích thước
+  getMessagesByDate, // Lấy tin nhắn theo ngày
+  getProductsByStyle, // Lấy danh sách sản phẩm theo phong cách (hiện đại, cổ điển, v.v.)
+  getProductsByUsagePurpose, // Lấy sản phẩm theo mục đích sử dụng (trang trí, gia dụng, v.v.)
+  getProductsByCategoryType, // Lấy sản phẩm theo loại danh mục (hàng điện tử, thời trang, v.v.)
+  getProductsByGender, // Lấy danh sách sản phẩm phân theo giới tính (nam, nữ, unisex)
+  getUsersByProvince, // Lấy danh sách người dùng phân theo tỉnh/thành phố
+  getProductsByStatus, // Lấy danh sách sản phẩm theo trạng thái (còn hàng, hết hàng, v.v.)
+
+  getTopSellingProductCategories, // Lấy danh mục sản phẩm bán chạy nhất
+  getSalesByBrand, // Lấy doanh số bán được theo thương hiệu
 };

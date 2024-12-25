@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Line, Bar } from "react-chartjs-2";
+import { Line, Bar, Pie } from "react-chartjs-2";
 import { Grid, Typography, Box } from "@mui/material";
 import {
   Chart as ChartJS,
@@ -27,10 +27,13 @@ const RevenueDashboard = () => {
   const api = process.env.REACT_APP_URL_SERVER;
   const [combinedData, setCombinedData] = useState([]);
   const [paymentData, setPaymentData] = useState([]);
+  const [topSellingCategories, setTopSellingCategories] = useState([]);
+  const [topSellingBrands, setTopSellingBrands] = useState([]);
   const currentTheme = getThemeConfig(localStorage.getItem("THEMES") || "dark");
   useEffect(() => {
     fetchCombinedData();
-    fetchRevenueByPaymentMethod(); // Fetch doanh thu theo phương thức thanh toán
+    fetchRevenueByPaymentMethod();
+    fetchTopSellingCategories();
   }, []);
 
   const fetchCombinedData = async () => {
@@ -102,6 +105,33 @@ const RevenueDashboard = () => {
     }
   };
 
+  const fetchTopSellingCategories = async () => {
+    try {
+      const response = await axios.get(
+        `${api}/thong-ke/statistics/top-selling-product-categories`
+      );
+      const response_Brand = await axios.get(`${api}/thong-ke/sales-by-brand`);
+      setTopSellingBrands(response_Brand.data.DT);
+      const data = response.data.DT;
+
+      // Nếu có nhiều hơn 5 loại sản phẩm, gộp các loại sản phẩm còn lại vào mục "Khác"
+      const topCategories = data.slice(0, 5);
+      const otherCategories = data.slice(5);
+      if (otherCategories.length > 0) {
+        topCategories.push({
+          categoryName: "Khác",
+          soldCount: otherCategories.reduce(
+            (acc, item) => acc + item.soldCount,
+            0
+          ),
+        });
+      }
+
+      setTopSellingCategories(topCategories);
+    } catch (error) {
+      console.error("Error fetching top selling categories:", error);
+    }
+  };
   // Dữ liệu biểu đồ cho doanh thu theo tháng, ngày và năm
   const chartData = {
     labels: combinedData.labels,
@@ -176,6 +206,93 @@ const RevenueDashboard = () => {
       },
     },
   };
+
+  // Dữ liệu biểu đồ tròn từ API loại sản phẩm bán chạy nhất
+  const pieChartData = {
+    labels: topSellingCategories.map((item) => item.categoryName),
+    datasets: [
+      {
+        data: topSellingCategories.map((item) => item.percentage), // Sử dụng percentage từ API
+        backgroundColor: [
+          "#FF6384", // Màu cho loại sản phẩm 1
+          "#36A2EB", // Màu cho loại sản phẩm 2
+          "#FFCE56", // Màu cho loại sản phẩm 3
+          "#4BC0C0", // Màu cho loại sản phẩm 4
+          "#FF9F40", // Màu cho loại sản phẩm 5
+          "#9966FF", // Màu cho "Khác"
+        ],
+        hoverBackgroundColor: [
+          "#FF6384",
+          "#36A2EB",
+          "#FFCE56",
+          "#4BC0C0",
+          "#FF9F40",
+          "#9966FF",
+        ],
+        // Thêm thông tin soldCount vào data
+        soldCount: topSellingCategories.map((item) => item.soldCount),
+      },
+    ],
+  };
+
+  // Cấu hình biểu đồ tròn với phần trăm và soldCount
+  const pieChartOptions = {
+    responsive: true,
+    plugins: {
+      tooltip: {
+        callbacks: {
+          // Tùy chỉnh tooltip để hiển thị soldCount
+          label: function (tooltipItem) {
+            const dataset = tooltipItem.dataset;
+            const soldCount = dataset.soldCount[tooltipItem.dataIndex]; // Lấy soldCount từ data
+            return `${tooltipItem.label}: ${soldCount} sản phẩm`;
+          },
+        },
+      },
+      datalabels: {
+        // Hiển thị phần trăm từ API trên biểu đồ tròn
+        formatter: (value, context) => {
+          // Trả về giá trị phần trăm đã có sẵn từ API
+          return `${value}%`;
+        },
+        color: "#000", // Màu chữ cho phần trăm
+        font: {
+          weight: "bold",
+          size: 12,
+        },
+        anchor: "center", // Đặt phần trăm ở giữa phần của biểu đồ
+        align: "center",
+      },
+    },
+  };
+
+  // Dữ liệu biểu đồ tròn từ API thương hiệu sản phẩm bán chạy nhất
+  const pieChartDataBrand = {
+    labels: topSellingBrands.map((item) => item.brandName),
+    datasets: [
+      {
+        data: topSellingBrands.map((item) => item.percentage), // Sử dụng percentage từ API
+        backgroundColor: [
+          "#FF6384", // Màu cho loại sản phẩm 1
+          "#36A2EB", // Màu cho loại sản phẩm 2
+          "#FFCE56", // Màu cho loại sản phẩm 3
+          "#4BC0C0", // Màu cho loại sản phẩm 4
+          "#FF9F40", // Màu cho loại sản phẩm 5
+          "#9966FF", // Màu cho "Khác"
+        ],
+        hoverBackgroundColor: [
+          "#FF6384",
+          "#36A2EB",
+          "#FFCE56",
+          "#4BC0C0",
+          "#FF9F40",
+          "#9966FF",
+        ],
+        // Thêm thông tin soldCount vào data
+        soldCount: topSellingBrands.map((item) => item.soldCount),
+      },
+    ],
+  };
   return (
     <>
       <Box
@@ -196,7 +313,6 @@ const RevenueDashboard = () => {
             <Line data={chartData} options={paymentChartOptions} />
           </Grid>
         </Grid>
-
         <Grid container spacing={3} style={{ padding: "20px" }}>
           <Grid item xs={12}>
             <Typography variant="h4" align="center" gutterBottom>
@@ -205,6 +321,20 @@ const RevenueDashboard = () => {
           </Grid>
           <Grid item xs={12} md={12}>
             <Bar data={paymentChartData} options={paymentChartOptions} />
+          </Grid>
+        </Grid>{" "}
+        <Grid container spacing={3} style={{ padding: "20px" }}>
+          <Grid item xs={6} md={6}>
+            <Typography variant="h6" align="center" gutterBottom>
+              Thống kê loại sản phẩm bán được nhiều nhất
+            </Typography>
+            <Pie data={pieChartData} options={pieChartOptions} />
+          </Grid>{" "}
+          <Grid item xs={6} md={6}>
+            <Typography variant="h6" align="center" gutterBottom>
+              Thống kê thương hiệu sản phẩm bán được nhiều nhất
+            </Typography>
+            <Pie data={pieChartDataBrand} options={pieChartOptions} />
           </Grid>
         </Grid>
       </Box>

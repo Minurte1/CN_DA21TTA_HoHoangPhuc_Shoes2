@@ -23,6 +23,8 @@ const {
   getProductsByGender,
   getUsersByProvince,
   getProductsByStatus,
+  getTopSellingProductCategories,
+  getSalesByBrand,
 } = require("../../controllers/sanPhamController/thongKeController");
 router.get("/danh-muc", getProductStatisticsByCategory);
 
@@ -50,5 +52,10 @@ router.get("/messages-by-date", getMessagesByDate); // 11. Thống kê tin nhắ
 router.get("/users-by-province", getUsersByProvince); // 14. Thống kê người dùng theo tỉnh/thành phố
 
 router.get("/statistics/products-by-status", getProductsByStatus); //15. Thống kê số lượng sản phẩm theo trạng thái
+router.get(
+  "/statistics/top-selling-product-categories",
+  getTopSellingProductCategories
+); //16. Thống kê danh mục sản phẩm bán chạy nhất
 
+router.get("/sales-by-brand", getSalesByBrand); //17. Thống kê doanh số theo thương hiệu
 module.exports = router;
