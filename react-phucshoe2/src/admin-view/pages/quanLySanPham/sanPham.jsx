@@ -43,9 +43,10 @@ const SanPhamManager = () => {
     soLuongSanPham: "",
 
     phongCachId: "",
-    mauSacId: "",
+    mauSacId: [],
     mucDichSuDungId: "",
-    kichCoId: "",
+    kichCoId: [],
+    CHI_TIET_SAN_PHAMM: [],
 
     optionFormData: true,
   });
@@ -133,9 +134,18 @@ const SanPhamManager = () => {
       trangThaiSanPham: product ? product.TRANG_THAI_SANPHAM : 1,
 
       phongCachId: product ? product.ID_PHUONG_CACH : "",
-      mauSacId: product ? product.MAU_SAC_ID : "",
+
       mucDichSuDungId: product ? product.ID_MUC_DICH_SU_DUNG : "",
-      kichCoId: product ? product.ID_KICH_CO : "",
+      kichCoId:
+        product && product.CHI_TIET_SAN_PHAMM
+          ? product.CHI_TIET_SAN_PHAMM.map((item) => item.ID_KICH_CO)
+          : [],
+
+      mauSacId:
+        product && product.CHI_TIET_SAN_PHAMM
+          ? product.CHI_TIET_SAN_PHAMM.map((item) => item.MAU_SAC_ID)
+          : [],
+      CHI_TIET_SAN_PHAMM: product ? product.CHI_TIET_SAN_PHAMM : [],
     });
     setOpenDialog(true);
   };
@@ -156,9 +166,10 @@ const SanPhamManager = () => {
       soLuongSanPham: "",
 
       phongCachId: "",
-      mauSacId: "",
+      mauSacId: [],
       mucDichSuDungId: "",
-      kichCoId: "",
+      kichCoId: [],
+      CHI_TIET_SAN_PHAMM: [],
     });
   };
 
