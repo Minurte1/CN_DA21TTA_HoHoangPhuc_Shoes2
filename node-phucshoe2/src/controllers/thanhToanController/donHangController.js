@@ -177,16 +177,16 @@ const createDON_HANG = async (req, res) => {
 
     // Thêm chi tiết hóa đơn cho từng sản phẩm
     const chiTietHoaDonPromises = itemsArray.map(async (item) => {
-      const { ID_SAN_PHAM, TONG_SO_LUONG = 1, GIA } = item;
+      const { ID_SAN_PHAM_CHI_TIET, TONG_SO_LUONG = 1, GIA } = item;
       const giaSanPhamChiTiet = GIA * TONG_SO_LUONG;
       console.log("TONG_SO_LUONG", TONG_SO_LUONG);
       console.log("GIA", GIA);
       console.log("donHangId", donHangId);
-      console.log("ID_SAN_PHAM", ID_SAN_PHAM);
+
       console.log("giaSanPhamChiTiet", giaSanPhamChiTiet);
       await connection.execute(
-        "INSERT INTO CHI_TIET_HOA_DON (ID_SAN_PHAM, ID_DON_HANG, SO_LUONG_SP, GIA_SAN_PHAM_CHI_TIET) VALUES (?, ?, ?, ?)",
-        [ID_SAN_PHAM, donHangId, TONG_SO_LUONG, giaSanPhamChiTiet]
+        "INSERT INTO CHI_TIET_HOA_DON (ID_SAN_PHAM_CHI_TIET, ID_DON_HANG, SO_LUONG_SP, GIA_SAN_PHAM_CHI_TIET) VALUES (?, ?, ?, ?)",
+        [ID_SAN_PHAM_CHI_TIET, donHangId, TONG_SO_LUONG, giaSanPhamChiTiet]
       );
     });
 
@@ -194,13 +194,25 @@ const createDON_HANG = async (req, res) => {
     await Promise.all(chiTietHoaDonPromises);
 
     const [orderDetails] = await connection.execute(
-      "SELECT c.ID_SAN_PHAM, c.SO_LUONG_SP, c.GIA_SAN_PHAM_CHI_TIET, p.TEN_SAN_PHAM FROM CHI_TIET_HOA_DON c JOIN SAN_PHAM p ON c.ID_SAN_PHAM = p.ID_SAN_PHAM WHERE c.ID_DON_HANG = ?",
+      `SELECT 
+        c.ID_SAN_PHAM_CHI_TIET, 
+        c.SO_LUONG_SP, 
+        c.GIA_SAN_PHAM_CHI_TIET, 
+        p.TEN_SAN_PHAM, 
+        ms.TEN_MAU_SAC, 
+        kc.KICH_CO 
+      FROM CHI_TIET_HOA_DON c
+      JOIN SAN_PHAM_CHI_TIET spct ON c.ID_SAN_PHAM_CHI_TIET = spct.ID_SAN_PHAM_CHI_TIET
+      JOIN SAN_PHAM p ON spct.ID_SAN_PHAM = p.ID_SAN_PHAM
+      LEFT JOIN MAU_SAC ms ON spct.MAU_SAC_ID = ms.MAU_SAC_ID
+      LEFT JOIN KICH_CO kc ON spct.ID_KICH_CO = kc.ID_KICH_CO
+      WHERE c.ID_DON_HANG = ?`,
       [donHangId]
     );
 
     // Lấy thông tin người dùng
     const [userResults] = await connection.execute(
-      "SELECT HO_TEN, EMAIL, DIA_CHI_Provinces,DIA_CHI_Districts,DIA_CHI_Wards, SO_DIEN_THOAI FROM NGUOI_DUNG WHERE ID_NGUOI_DUNG = ?",
+      "SELECT HO_TEN, EMAIL,DIA_CHI_STREETNAME, DIA_CHI_Provinces,DIA_CHI_Districts,DIA_CHI_Wards, SO_DIEN_THOAI FROM NGUOI_DUNG WHERE ID_NGUOI_DUNG = ?",
       [idNguoiDung]
     );
     console.log("orderDetails", orderDetails);
@@ -222,6 +234,8 @@ const createDON_HANG = async (req, res) => {
         tenSanPham: item.TEN_SAN_PHAM,
         soLuong: item.SO_LUONG_SP,
         giaSanPhamChiTiet: item.GIA_SAN_PHAM_CHI_TIET,
+        mauSac: item.TEN_MAU_SAC,
+        kichCo: item.KICH_CO,
       })),
       user: {
         name: user.HO_TEN,
@@ -289,7 +303,19 @@ const updateTrangThaiDonHang = async (req, res) => {
     );
 
     const [orderDetails] = await connection.execute(
-      "SELECT c.ID_SAN_PHAM, c.SO_LUONG_SP, c.GIA_SAN_PHAM_CHI_TIET, p.TEN_SAN_PHAM FROM CHI_TIET_HOA_DON c JOIN SAN_PHAM p ON c.ID_SAN_PHAM = p.ID_SAN_PHAM WHERE c.ID_DON_HANG = ?",
+      `SELECT 
+    c.ID_SAN_PHAM_CHI_TIET, 
+    c.SO_LUONG_SP, 
+    c.GIA_SAN_PHAM_CHI_TIET, 
+    p.TEN_SAN_PHAM, 
+    ms.TEN_MAU_SAC, 
+    kc.KICH_CO 
+  FROM CHI_TIET_HOA_DON c
+  JOIN SAN_PHAM_CHI_TIET spct ON c.ID_SAN_PHAM_CHI_TIET = spct.ID_SAN_PHAM_CHI_TIET
+  JOIN SAN_PHAM p ON spct.ID_SAN_PHAM = p.ID_SAN_PHAM
+  LEFT JOIN MAU_SAC ms ON spct.MAU_SAC_ID = ms.MAU_SAC_ID
+  LEFT JOIN KICH_CO kc ON spct.ID_KICH_CO = kc.ID_KICH_CO
+  WHERE c.ID_DON_HANG = ?`,
       [order.ID_DON_HANG]
     );
 
@@ -387,12 +413,12 @@ const sendOrderEmail = async ({ email, orderDetails }) => {
         ${orderDetails.items
           .map(
             (item) =>
-              `<li>${item.tenSanPham} - ${
-                item.soLuong
-              } x ${new Intl.NumberFormat("vi-VN", {
+              `<li>${item.tenSanPham} - ${item.soLuong} x ${item.mauSac}, ${
+                item.kichCo
+              } x  ${new Intl.NumberFormat("vi-VN", {
                 style: "currency",
                 currency: "VND",
-              }).format(item.giaSanPhamChiTiet)} </li>`
+              }).format(item.giaSanPhamChiTiet)}  </li>`
           )
           .join("")}
         
@@ -642,7 +668,7 @@ const updateOrderStatusSuccess = async (req, res) => {
     if (result.affectedRows > 0) {
       // Lấy danh sách chi tiết đơn hàng (sản phẩm)
       const [orderDetails] = await conn.execute(
-        `SELECT ID_SAN_PHAM, SO_LUONG_SP FROM CHI_TIET_HOA_DON WHERE ID_DON_HANG = ?`,
+        `SELECT ID_SAN_PHAM_CHI_TIET, SO_LUONG_SP FROM CHI_TIET_HOA_DON WHERE ID_DON_HANG = ?`,
         [orderId]
       );
 

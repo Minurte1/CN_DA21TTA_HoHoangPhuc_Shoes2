@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux"; // Sử dụng Redux hoo
 import axios from "axios";
 import { toast } from "react-toastify"; // Đảm bảo bạn đã cài đặt react-toastify
 import { setItemCart, setTotalCart } from "../../redux/authSlice"; // Import các action cần thiết
+import { enqueueSnackbar } from "notistack";
 
 const CheckOutMoMo = () => {
   const apiUrl = process.env.REACT_APP_URL_SERVER;
@@ -73,13 +74,13 @@ const CheckOutMoMo = () => {
         `${apiUrl}/don-hang/hoan-tat`,
         requestData
       );
-
+      navigate("/cart");
       if (response.data.EC === 1) {
         // Đơn hàng được tạo thành công
         toast.success("Đặt hàng thành công!");
-
-        navigate("/");
+        navigate("/cart");
       } else {
+        navigate("/cart");
         // Nếu có lỗi khi tạo đơn hàng
         toast.error("Đã có lỗi xảy ra khi đặt hàng.");
       }
@@ -90,9 +91,17 @@ const CheckOutMoMo = () => {
   };
 
   useEffect(() => {
+    console.log(paymentInfo);
     // Kiểm tra nếu đã có thông tin thanh toán thành công, thực hiện xử lý đơn hàng
-    if (paymentInfo.message === "Successful.") {
+    if (paymentInfo.message === "Thành công.") {
+      enqueueSnackbar(paymentInfo.message, { variant: "success" });
       handleOrder(); // Xử lý đơn hàng khi thanh toán thành công
+    } else if (
+      paymentInfo.message ===
+      "Giao dịch bị từ chối do nhà phát hành tài khoản thanh toán."
+    ) {
+      enqueueSnackbar(paymentInfo.message, { variant: "error" });
+      navigate("/cart");
     }
   }, [paymentInfo]); // Chạy khi paymentInfo thay đổi
 
