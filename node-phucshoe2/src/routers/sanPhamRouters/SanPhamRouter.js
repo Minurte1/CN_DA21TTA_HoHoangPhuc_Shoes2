@@ -18,6 +18,9 @@ const {
   getSAN_PHAM_Use_ById,
   getSAN_PHAM_Use_Nam,
   getSAN_PHAM_Search,
+
+  getSAN_PHAM_ChiTiet_ById,
+  updateSAN_PHAM_ChiTiet_ById,
 } = require("../../controllers/sanPhamController/SanPhamController");
 const uploads = require("../../config/multerConfig");
 // Định nghĩa các route
@@ -39,4 +42,6 @@ router.delete("/:id", deleteSAN_PHAM);
 router.get("/use/:id", getSAN_PHAM_Use_ById);
 router.get("/search", getSAN_PHAM_Search);
 
+router.get("/chi-tiet/:id", getSAN_PHAM_ChiTiet_ById);
+router.put("/chi-tiet/:id", updateSAN_PHAM_ChiTiet_ById);
 module.exports = router;

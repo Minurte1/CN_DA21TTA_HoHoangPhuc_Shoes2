@@ -206,7 +206,7 @@ const SanPhamManager = () => {
       }
 
       fetchProducts();
-      handleCloseDialog();
+      // handleCloseDialog();
     } catch (error) {
       console.error("Error saving product:", error);
     }
@@ -440,6 +440,7 @@ const SanPhamManager = () => {
         kichCo={kichCo}
         setOption={setOption}
         option={option}
+        //
       />
     </Container>
   );

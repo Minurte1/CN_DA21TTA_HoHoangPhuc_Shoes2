@@ -78,6 +78,7 @@ ORDER BY sp.NGAY_TAO_SANPHAM DESC;
       SELECT 
         spct.ID_SAN_PHAM_CHI_TIET,
         ms.MAU_SAC_ID, ms.TEN_MAU_SAC, ms.MA_MAU,
+          spct.SOLUONG_SANPHAM_CHITIET,
         kc.ID_KICH_CO, kc.KICH_CO
       FROM SAN_PHAM_CHI_TIET spct
       LEFT JOIN MAU_SAC ms ON spct.MAU_SAC_ID = ms.MAU_SAC_ID
@@ -151,6 +152,7 @@ GROUP BY sp.ID_SAN_PHAM, gt.TEN_GIOI_TINH, gt.CREATED_GIOI_TINH, gt.UPDATE_GIOI_
     const [detailResults] = await connection.execute(
       `SELECT 
         spct.ID_SAN_PHAM_CHI_TIET,
+        spct.SOLUONG_SANPHAM_CHITIET,
         ms.MAU_SAC_ID,
         ms.TEN_MAU_SAC,
         ms.MA_MAU,
@@ -946,6 +948,71 @@ const deleteSAN_PHAM = async (req, res) => {
   }
 };
 
+const getSAN_PHAM_ChiTiet_ById = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const [results] = await connection.execute(
+      `SELECT spct.ID_SAN_PHAM_CHI_TIET, spct.ID_SAN_PHAM, spct.MAU_SAC_ID, spct.ID_KICH_CO, 
+        spct.SOLUONG_SANPHAM_CHITIET,      ms.TEN_MAU_SAC, kc.KICH_CO
+       FROM SAN_PHAM_CHI_TIET spct
+       JOIN MAU_SAC ms ON spct.MAU_SAC_ID = ms.MAU_SAC_ID
+       JOIN KICH_CO kc ON spct.ID_KICH_CO = kc.ID_KICH_CO
+       WHERE spct.ID_SAN_PHAM = ?`,
+      [id]
+    );
+
+    return res.status(200).json({
+      EM: "Lấy chi tiết sản phẩm thành công",
+      EC: 1,
+      DT: results,
+    });
+  } catch (error) {
+    console.error("Error getting chi tiet san pham:", error);
+    return res.status(500).json({
+      EM: "Có lỗi xảy ra khi lấy chi tiết sản phẩm",
+      EC: 0,
+      DT: [],
+    });
+  }
+};
+
+const updateSAN_PHAM_ChiTiet_ById = async (req, res) => {
+  const { id } = req.params;
+  const { chiTietSanPham } = req.body; // Expecting an array of product details
+
+  try {
+    // Delete existing details for the product
+    await connection.execute(
+      "DELETE FROM SAN_PHAM_CHI_TIET WHERE ID_SAN_PHAM = ?",
+      [id]
+    );
+
+    // Insert new details
+    for (let detail of chiTietSanPham) {
+      const { idSanPhamChiTiet, mauSacId, kichCoId, soLuongSanPhamChiTiet } =
+        detail;
+      await connection.execute(
+        `INSERT INTO SAN_PHAM_CHI_TIET (ID_SAN_PHAM_CHI_TIET, ID_SAN_PHAM, MAU_SAC_ID, ID_KICH_CO, SOLUONG_SANPHAM_CHITIET)
+         VALUES (?, ?, ?, ?, ?)`,
+        [idSanPhamChiTiet, id, mauSacId, kichCoId, soLuongSanPhamChiTiet]
+      );
+    }
+
+    return res.status(200).json({
+      EM: "Cập nhật chi tiết sản phẩm thành công",
+      EC: 1,
+      DT: [],
+    });
+  } catch (error) {
+    console.error("Error updating chi tiet san pham:", error);
+    return res.status(500).json({
+      EM: "Có lỗi xảy ra khi cập nhật chi tiết sản phẩm",
+      EC: 0,
+      DT: [],
+    });
+  }
+};
 module.exports = {
   getSAN_PHAM,
   createSAN_PHAM,
@@ -964,4 +1031,7 @@ module.exports = {
   getSAN_PHAM_Use_ById,
   getSAN_PHAM_Use_Nam,
   getSAN_PHAM_Search,
+
+  getSAN_PHAM_ChiTiet_ById,
+  updateSAN_PHAM_ChiTiet_ById,
 };
