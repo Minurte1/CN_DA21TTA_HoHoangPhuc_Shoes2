@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Line } from "react-chartjs-2";
+import { Line, Bar } from "react-chartjs-2";
 import { Grid, Typography, Box } from "@mui/material";
 import {
   Chart as ChartJS,
@@ -10,6 +10,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import ChartDataLabels from "chartjs-plugin-datalabels";
 import axios from "axios";
 import { getThemeConfig } from "../../../../services/themeService";
 ChartJS.register(
@@ -18,7 +19,8 @@ ChartJS.register(
   PointElement,
   LineElement,
   Tooltip,
-  Legend
+  Legend,
+  ChartDataLabels
 );
 
 const RevenueDashboard = () => {
@@ -133,19 +135,47 @@ const RevenueDashboard = () => {
 
   // Dữ liệu biểu đồ cho doanh thu theo phương thức thanh toán
   const paymentChartData = {
-    labels: paymentData.map((item) => item.paymentMethod),
-    datasets: [
-      {
-        label: "Doanh thu theo phương thức thanh toán",
-        data: paymentData.map((item) => item.totalRevenue),
-        borderColor: "rgba(153, 102, 255, 1)",
-        backgroundColor: "rgba(153, 102, 255, 0.2)",
-        tension: 0.4,
-        fill: true,
-      },
-    ],
+    labels: ["Phương thức thanh toán"], // Một nhãn chung trên trục X
+    datasets: paymentData.map((item) => ({
+      label: item.paymentMethod, // Nhãn tương ứng với phương thức thanh toán
+      data: [item.totalRevenue], // Dữ liệu doanh thu cho từng phương thức
+      backgroundColor:
+        item.paymentMethod === "Momo"
+          ? "rgba(75, 192, 192, 0.2)" // Màu nền cho Momo
+          : "rgba(153, 102, 255, 0.2)", // Màu nền cho Thanh toán tại nhà
+      borderColor:
+        item.paymentMethod === "Momo"
+          ? "rgba(75, 192, 192, 1)" // Màu viền cho Momo
+          : "rgba(153, 102, 255, 1)", // Màu viền cho Thanh toán tại nhà
+      borderWidth: 1,
+    })),
   };
-
+  const paymentChartOptions = {
+    responsive: true,
+    scales: {
+      y: {
+        beginAtZero: true,
+        title: {
+          display: true,
+          text: "Số tiền (VND)",
+        },
+      },
+    },
+    plugins: {
+      tooltip: {
+        enabled: true,
+      },
+      datalabels: {
+        anchor: "end",
+        align: "top",
+        formatter: (value) => `${value.toLocaleString("vi-VN")} đ`,
+        font: {
+          weight: "bold",
+          size: 12,
+        },
+      },
+    },
+  };
   return (
     <>
       <Box
@@ -163,7 +193,7 @@ const RevenueDashboard = () => {
             </Typography>
           </Grid>
           <Grid item xs={12} md={12}>
-            <Line data={chartData} options={{ responsive: true }} />
+            <Line data={chartData} options={paymentChartOptions} />
           </Grid>
         </Grid>
 
@@ -174,7 +204,7 @@ const RevenueDashboard = () => {
             </Typography>
           </Grid>
           <Grid item xs={12} md={12}>
-            <Line data={paymentChartData} options={{ responsive: true }} />
+            <Bar data={paymentChartData} options={paymentChartOptions} />
           </Grid>
         </Grid>
       </Box>
