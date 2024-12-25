@@ -1088,9 +1088,7 @@ const updateSAN_PHAM_ChiTiet_ById = async (req, res) => {
 
       const finalMauSacId = mauSacResult[0].MAU_SAC_ID;
       const finalKichCoId = kichCoResult[0].ID_KICH_CO;
-      console.log("Mau sac id: ", mauSacId, " Kich co id: ", kichCoId);
-      console.log("Mau sac result: ", mauSacResult);
-      console.log("Kich co result: ", kichCoResult);
+
       // Kiểm tra nếu finalMauSacId và finalKichCoId không phải undefined
       if (finalMauSacId === undefined || finalKichCoId === undefined) {
         return res.status(400).json({
@@ -1100,18 +1098,34 @@ const updateSAN_PHAM_ChiTiet_ById = async (req, res) => {
         });
       }
 
-      // Tiến hành cập nhật hoặc thêm chi tiết sản phẩm
-      if (idSanPhamChiTiet) {
+      // Kiểm tra nếu đã tồn tại chi tiết sản phẩm với ID_SAN_PHAM, MAU_SAC_ID và ID_KICH_CO
+      const [existingDetail] = await connection.execute(
+        `SELECT * FROM SAN_PHAM_CHI_TIET 
+         WHERE ID_SAN_PHAM = ? AND MAU_SAC_ID = ? AND ID_KICH_CO = ?`,
+        [id, finalMauSacId, finalKichCoId]
+      );
+
+      if (existingDetail.length > 0) {
+        // Nếu đã tồn tại, thực hiện cập nhật số lượng
         const soLuong = parseInt(soLuongSanPhamChiTiet, 10);
-        // Nếu đã có ID chi tiết sản phẩm (tức là bản ghi đã tồn tại), thực hiện cập nhật
         await connection.execute(
           `UPDATE SAN_PHAM_CHI_TIET 
-           SET MAU_SAC_ID = ?, ID_KICH_CO = ?, SOLUONG_SANPHAM_CHITIET = ?
-           WHERE ID_SAN_PHAM_CHI_TIET = ?`,
-          [finalMauSacId, finalKichCoId, soLuongSanPhamChiTiet, soLuong]
+           SET SOLUONG_SANPHAM_CHITIET = ?
+           WHERE ID_SAN_PHAM = ? AND MAU_SAC_ID = ? AND ID_KICH_CO = ?`,
+          [soLuong, id, finalMauSacId, finalKichCoId]
+        );
+      } else {
+        // Nếu không tồn tại, thêm mới chi tiết sản phẩm
+        const soLuong = parseInt(soLuongSanPhamChiTiet, 10);
+        await connection.execute(
+          `INSERT INTO SAN_PHAM_CHI_TIET 
+           (ID_SAN_PHAM, MAU_SAC_ID, ID_KICH_CO, SOLUONG_SANPHAM_CHITIET, TRANGTHAI_SANPHAM_CHITIET)
+           VALUES (?, ?, ?, ?, 1)`,
+          [id, finalMauSacId, finalKichCoId, soLuong]
         );
       }
     }
+
     console.log("------------------------------------------------ news");
     console.log(newDetails.length);
     // Lặp qua các chi tiết sản phẩm mới để thêm vào cơ sở dữ liệu
@@ -1141,15 +1155,7 @@ const updateSAN_PHAM_ChiTiet_ById = async (req, res) => {
 
       const finalMauSacId = mauSacResult[0].MAU_SAC_ID;
       const finalKichCoId = kichCoResult[0].ID_KICH_CO;
-      console.log("Mau sac id: ", mauSacId, " Kich co id: ", kichCoId);
-      console.log("Mau sac result: ", mauSacResult);
-      console.log("Kich co result: ", kichCoResult);
-      console.log(
-        "finalMauSacId: ",
-        finalMauSacId,
-        " finalKichCoId: ",
-        finalKichCoId
-      );
+
       // Kiểm tra nếu finalMauSacId và finalKichCoId không phải undefined
       if (finalMauSacId === undefined || finalKichCoId === undefined) {
         return res.status(400).json({
@@ -1158,20 +1164,33 @@ const updateSAN_PHAM_ChiTiet_ById = async (req, res) => {
           DT: [],
         });
       }
-      const soLuong = parseInt(soLuongSanPhamChiTiet, 10);
 
-      // Tiến hành chèn chi tiết sản phẩm mới
-      await connection.execute(
-        `INSERT INTO SAN_PHAM_CHI_TIET 
-         (ID_SAN_PHAM, MAU_SAC_ID, ID_KICH_CO, SOLUONG_SANPHAM_CHITIET,TRANGTHAI_SANPHAM_CHITIET)
-         VALUES (?, ?, ?, ?,1)`,
-        [
-          id, // ID sản phẩm cha
-          finalMauSacId,
-          finalKichCoId,
-          soLuong,
-        ]
+      // Kiểm tra nếu đã tồn tại chi tiết sản phẩm với ID_SAN_PHAM, MAU_SAC_ID và ID_KICH_CO
+      const [existingDetail] = await connection.execute(
+        `SELECT * FROM SAN_PHAM_CHI_TIET 
+         WHERE ID_SAN_PHAM = ? AND MAU_SAC_ID = ? AND ID_KICH_CO = ?`,
+        [id, finalMauSacId, finalKichCoId]
       );
+
+      if (existingDetail.length > 0) {
+        // Nếu đã tồn tại, cập nhật số lượng sản phẩm
+        const soLuong = parseInt(soLuongSanPhamChiTiet, 10);
+        await connection.execute(
+          `UPDATE SAN_PHAM_CHI_TIET 
+           SET SOLUONG_SANPHAM_CHITIET = ?
+           WHERE ID_SAN_PHAM = ? AND MAU_SAC_ID = ? AND ID_KICH_CO = ?`,
+          [soLuong, id, finalMauSacId, finalKichCoId]
+        );
+      } else {
+        // Nếu không tồn tại, thêm mới chi tiết sản phẩm
+        const soLuong = parseInt(soLuongSanPhamChiTiet, 10);
+        await connection.execute(
+          `INSERT INTO SAN_PHAM_CHI_TIET 
+           (ID_SAN_PHAM, MAU_SAC_ID, ID_KICH_CO, SOLUONG_SANPHAM_CHITIET, TRANGTHAI_SANPHAM_CHITIET)
+           VALUES (?, ?, ?, ?, 1)`,
+          [id, finalMauSacId, finalKichCoId, soLuong]
+        );
+      }
     }
 
     return res.status(200).json({

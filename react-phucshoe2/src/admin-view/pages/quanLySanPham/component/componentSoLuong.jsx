@@ -7,6 +7,7 @@ import {
   TableRow,
   TextField,
   Button,
+  Box,
 } from "@mui/material";
 import axios from "axios";
 
@@ -70,7 +71,7 @@ export default function ProductDetailInput({ products }) {
         kichCoId: kichCo,
         soLuongSanPhamChiTiet: quantityData[key],
       };
-
+      console.log("existingItem", existingItem);
       if (existingItem) {
         // Nếu đã có, cập nhật thông tin chi tiết
         newDetail.idSanPhamChiTiet = existingItem.ID_SAN_PHAM_CHI_TIET;
@@ -140,9 +141,16 @@ export default function ProductDetailInput({ products }) {
           ))}
         </TableBody>
       </Table>
-      <Button variant="contained" color="primary" onClick={handleSummit}>
-        Lưu
-      </Button>
+      <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+        <Button
+          sx={{ mt: 2 }}
+          variant="text"
+          color="primary"
+          onClick={handleSummit}
+        >
+          Lưu
+        </Button>
+      </Box>
     </div>
   );
 }

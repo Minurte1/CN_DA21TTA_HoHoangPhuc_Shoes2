@@ -386,6 +386,14 @@ const DialogShoes = ({
               </>
             )}
           </DialogContent>{" "}
+          <DialogActions>
+            <Button onClick={handleCloseDialog} color="secondary">
+              Cancel
+            </Button>
+            <Button onClick={handleSave} color="primary">
+              Save
+            </Button>
+          </DialogActions>
         </>
       ) : (
         <>
@@ -401,15 +409,6 @@ const DialogShoes = ({
           </DialogContent>
         </>
       )}
-
-      <DialogActions>
-        <Button onClick={handleCloseDialog} color="secondary">
-          Cancel
-        </Button>
-        <Button onClick={handleSave} color="primary">
-          Save
-        </Button>
-      </DialogActions>
     </Dialog>
   );
 };
