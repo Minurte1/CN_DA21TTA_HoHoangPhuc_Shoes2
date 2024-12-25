@@ -116,7 +116,7 @@ const SanPhamManager = () => {
       console.error("Error fetching data:", error);
     }
   };
-
+  console.log("products", products);
   const handleOpenDialog = (product = null) => {
     setCurrentProduct(product);
 

@@ -272,13 +272,13 @@ const DialogShoes = ({
                   )}
                   value={
                     mauSac.filter((item) =>
-                      formData.mauSacIds?.includes(item.MAU_SAC_ID)
+                      formData.mauSacId?.includes(item.MAU_SAC_ID)
                     ) || []
                   }
                   onChange={(event, newValue) => {
                     handleChange({
                       target: {
-                        name: "mauSacIds",
+                        name: "mauSacId",
                         value: newValue.map((item) => item.MAU_SAC_ID),
                       },
                     });
@@ -303,13 +303,13 @@ const DialogShoes = ({
                   )}
                   value={
                     kichCo.filter((item) =>
-                      formData.kichCoIds?.includes(item.ID_KICH_CO)
+                      formData.kichCoId?.includes(item.ID_KICH_CO)
                     ) || []
                   }
                   onChange={(event, newValue) => {
                     handleChange({
                       target: {
-                        name: "kichCoIds",
+                        name: "kichCoId",
                         value: newValue.map((item) => item.ID_KICH_CO),
                       },
                     });
