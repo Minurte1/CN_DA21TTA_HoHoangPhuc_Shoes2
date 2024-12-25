@@ -83,7 +83,7 @@ ORDER BY sp.NGAY_TAO_SANPHAM DESC;
       FROM SAN_PHAM_CHI_TIET spct
       LEFT JOIN MAU_SAC ms ON spct.MAU_SAC_ID = ms.MAU_SAC_ID
       LEFT JOIN KICH_CO kc ON spct.ID_KICH_CO = kc.ID_KICH_CO
-      WHERE spct.ID_SAN_PHAM = ?
+      WHERE spct.ID_SAN_PHAM = ?  AND spct.TRANGTHAI_SANPHAM_CHITIET = 1
     `,
         [product.ID_SAN_PHAM]
       );
@@ -161,7 +161,7 @@ GROUP BY sp.ID_SAN_PHAM, gt.TEN_GIOI_TINH, gt.CREATED_GIOI_TINH, gt.UPDATE_GIOI_
       FROM SAN_PHAM_CHI_TIET spct
       LEFT JOIN MAU_SAC ms ON spct.MAU_SAC_ID = ms.MAU_SAC_ID
       LEFT JOIN KICH_CO kc ON spct.ID_KICH_CO = kc.ID_KICH_CO
-      WHERE spct.ID_SAN_PHAM = ?`,
+      WHERE spct.ID_SAN_PHAM = ?  AND spct.TRANGTHAI_SANPHAM_CHITIET = 1`,
       [id]
     );
 
@@ -628,7 +628,9 @@ const getFavoriteProductsByUser = async (req, res) => {
       FROM SAN_PHAM_CHI_TIET spct
       LEFT JOIN MAU_SAC ms ON spct.MAU_SAC_ID = ms.MAU_SAC_ID
       LEFT JOIN KICH_CO kc ON spct.ID_KICH_CO = kc.ID_KICH_CO
-      WHERE spct.ID_SAN_PHAM IN (${productIds.join(",")})
+      WHERE  spct.TRANGTHAI_SANPHAM_CHITIET = 1 AND spct.ID_SAN_PHAM IN (${productIds.join(
+        ","
+      )})
     `);
 
     // Combine results
@@ -789,10 +791,9 @@ const updateSAN_PHAM = async (req, res) => {
     } = req.body;
 
     const ngayCapNhatSanPham = new Date();
+    const images = req.file ? path.basename(req.file.path) : req.body.images;
 
     console.log("req.body", req.body);
-    // Lấy hình ảnh nếu có tải lên mới, nếu không thì giữ hình ảnh cũ
-    const images = req.file ? path.basename(req.file.path) : req.body.images;
 
     // Kiểm tra sản phẩm có tồn tại hay không
     const [results] = await connection.execute(
@@ -801,53 +802,125 @@ const updateSAN_PHAM = async (req, res) => {
     );
 
     if (results.length > 0) {
-      // Cập nhật bảng SAN_PHAM
-      await connection.execute(
-        "UPDATE SAN_PHAM SET ID_THUONG_HIEU = ?, ID_DANH_MUC = ?, GIOI_TINH_ID = ?, CHAT_LIEU_ID_ = ?, TEN_SAN_PHAM = ?, GIA = ?, MO_TA_SAN_PHAM = ?, HINH_ANH_SANPHAM = ?, TRANG_THAI_SANPHAM = ?, NGAY_CAP_NHAT_SANPHAM = ?, SO_LUONG_SANPHAM = ? WHERE ID_SAN_PHAM = ?",
-        [
-          idThuongHieu,
-          idDanhMuc,
-          gioiTinhId,
-          chatLieuId,
-          tenSanPham,
-          gia,
-          moTaSanPham,
-          images,
-          trangThaiSanPham,
-          ngayCapNhatSanPham,
-          soLuongSanPham,
-          id,
-        ]
-      );
+      // Xây dựng câu lệnh SQL động
+      const updates = [];
+      const values = [];
 
-      // Nếu option là true, cập nhật các bảng liên kết
+      if (idThuongHieu) {
+        updates.push("ID_THUONG_HIEU = ?");
+        values.push(idThuongHieu);
+      }
+      if (idDanhMuc) {
+        updates.push("ID_DANH_MUC = ?");
+        values.push(idDanhMuc);
+      }
+      if (gioiTinhId) {
+        updates.push("GIOI_TINH_ID = ?");
+        values.push(gioiTinhId);
+      }
+      if (chatLieuId) {
+        updates.push("CHAT_LIEU_ID_ = ?");
+        values.push(chatLieuId);
+      }
+      if (tenSanPham) {
+        updates.push("TEN_SAN_PHAM = ?");
+        values.push(tenSanPham);
+      }
+      if (gia) {
+        updates.push("GIA = ?");
+        values.push(gia);
+      }
+      if (moTaSanPham) {
+        updates.push("MO_TA_SAN_PHAM = ?");
+        values.push(moTaSanPham);
+      }
+      if (images) {
+        updates.push("HINH_ANH_SANPHAM = ?");
+        values.push(images);
+      }
+      if (trangThaiSanPham) {
+        updates.push("TRANG_THAI_SANPHAM = ?");
+        values.push(trangThaiSanPham);
+      }
+      if (soLuongSanPham) {
+        updates.push("SO_LUONG_SANPHAM = ?");
+        values.push(soLuongSanPham);
+      }
+
+      updates.push("NGAY_CAP_NHAT_SANPHAM = ?");
+      values.push(ngayCapNhatSanPham);
+
+      values.push(id);
+
+      const sqlUpdate = `UPDATE SAN_PHAM SET ${updates.join(
+        ", "
+      )} WHERE ID_SAN_PHAM = ?`;
+
+      await connection.execute(sqlUpdate, values);
+
+      // Xử lý các bảng liên kết nếu `option` là true
       if (option) {
-        // Cập nhật bảng PHONG_CACH_SAN_PHAM
-        await connection.execute(
-          "REPLACE INTO PHONG_CACH_SAN_PHAM (ID_SAN_PHAM, ID_PHUONG_CACH) VALUES (?, ?)",
-          [id, phongCachId]
-        );
-
-        // Cập nhật bảng MUC_DICH_SU_DUNG_SAN_PHAM
-        await connection.execute(
-          "REPLACE INTO MUC_DICH_SU_DUNG_SAN_PHAM (ID_SAN_PHAM, ID_MUC_DICH_SU_DUNG) VALUES (?, ?)",
-          [id, mucDichSuDungId]
-        );
-
-        // Xóa các bản ghi cũ trong bảng SAN_PHAM_CHI_TIET
-        await connection.execute(
-          "DELETE FROM SAN_PHAM_CHI_TIET WHERE ID_SAN_PHAM = ?",
-          [id]
-        );
-
-        // Cập nhật bảng SAN_PHAM_CHI_TIET
-        const mauSacIds = mauSacId.split(",");
-        const kichCoIds = kichCoId.split(",");
-        for (let i = 0; i < mauSacIds.length; i++) {
+        if (phongCachId) {
           await connection.execute(
-            "INSERT INTO SAN_PHAM_CHI_TIET (ID_SAN_PHAM, MAU_SAC_ID, ID_KICH_CO) VALUES (?, ?, ?)",
-            [id, mauSacIds[i], kichCoIds[i]]
+            "REPLACE INTO PHONG_CACH_SAN_PHAM (ID_SAN_PHAM, ID_PHUONG_CACH) VALUES (?, ?)",
+            [id, phongCachId]
           );
+        }
+
+        if (mucDichSuDungId) {
+          await connection.execute(
+            "REPLACE INTO MUC_DICH_SU_DUNG_SAN_PHAM (ID_SAN_PHAM, ID_MUC_DICH_SU_DUNG) VALUES (?, ?)",
+            [id, mucDichSuDungId]
+          );
+        }
+
+        // ----------------------------
+        if (mauSacId && kichCoId) {
+          const mauSacIds = mauSacId.split(",");
+          const kichCoIds = kichCoId.split(",");
+
+          // Lấy tất cả ID_SAN_PHAM trong SAN_PHAM_CHI_TIET để kiểm tra các bản ghi đã tồn tại
+          const [existingRecords] = await connection.execute(
+            "SELECT ID_SAN_PHAM, MAU_SAC_ID, ID_KICH_CO FROM SAN_PHAM_CHI_TIET WHERE ID_SAN_PHAM = ?",
+            [id]
+          );
+
+          const existingMap = new Map();
+          existingRecords.forEach((record) => {
+            existingMap.set(
+              `${record.MAU_SAC_ID}-${record.ID_KICH_CO}`,
+              record
+            );
+          });
+
+          // Kiểm tra các dữ liệu từ frontend và cập nhật hoặc thêm mới
+          for (let i = 0; i < mauSacIds.length; i++) {
+            const key = `${mauSacIds[i]}-${kichCoIds[i]}`;
+
+            if (existingMap.has(key)) {
+              // Nếu bản ghi đã tồn tại, cập nhật trạng thái nếu cần thiết
+              await connection.execute(
+                "UPDATE SAN_PHAM_CHI_TIET SET TRANGTHAI_SANPHAM_CHITIET = 1 WHERE ID_SAN_PHAM = ? AND MAU_SAC_ID = ? AND ID_KICH_CO = ?",
+                [id, mauSacIds[i], kichCoIds[i]]
+              );
+              // Xóa khỏi danh sách để tránh cập nhật sau này
+              existingMap.delete(key);
+            } else {
+              // Nếu bản ghi chưa tồn tại, thêm mới vào bảng
+              await connection.execute(
+                "INSERT INTO SAN_PHAM_CHI_TIET (ID_SAN_PHAM, MAU_SAC_ID, ID_KICH_CO, TRANGTHAI_SANPHAM_CHITIET) VALUES (?, ?, ?, 1)",
+                [id, mauSacIds[i], kichCoIds[i]]
+              );
+            }
+          }
+
+          // Cập nhật trạng thái 0 cho các bản ghi không có trong frontend (các bản ghi còn lại trong existingMap)
+          for (let [key, record] of existingMap) {
+            await connection.execute(
+              "UPDATE SAN_PHAM_CHI_TIET SET TRANGTHAI_SANPHAM_CHITIET = 0 WHERE ID_SAN_PHAM = ? AND MAU_SAC_ID = ? AND ID_KICH_CO = ?",
+              [id, record.MAU_SAC_ID, record.ID_KICH_CO]
+            );
+          }
         }
       }
 
@@ -872,6 +945,7 @@ const updateSAN_PHAM = async (req, res) => {
     });
   }
 };
+
 // Xóa sản phẩm
 
 const deleteSAN_PHAM = async (req, res) => {
@@ -958,7 +1032,7 @@ const getSAN_PHAM_ChiTiet_ById = async (req, res) => {
        FROM SAN_PHAM_CHI_TIET spct
        JOIN MAU_SAC ms ON spct.MAU_SAC_ID = ms.MAU_SAC_ID
        JOIN KICH_CO kc ON spct.ID_KICH_CO = kc.ID_KICH_CO
-       WHERE spct.ID_SAN_PHAM = ?`,
+       WHERE spct.ID_SAN_PHAM = ? AND spct.TRANGTHAI_SANPHAM_CHITIET = 1`,
       [id]
     );
 
@@ -978,41 +1052,55 @@ const getSAN_PHAM_ChiTiet_ById = async (req, res) => {
 };
 
 const updateSAN_PHAM_ChiTiet_ById = async (req, res) => {
-  const { id } = req.params;
-  const { chiTietSanPham } = req.body; // Expecting an array of product details
+  const { id } = req.params; // ID của sản phẩm cha
+  const { chiTietSanPham } = req.body; // Mảng chi tiết sản phẩm gửi từ client
+
+  console.log("req.body updateSAN_PHAM_ChiTiet_ById", req.body);
 
   try {
-    // Delete existing details for the product
-    await connection.execute(
-      "DELETE FROM SAN_PHAM_CHI_TIET WHERE ID_SAN_PHAM = ?",
-      [id]
-    );
-
-    // Insert new details
+    // Lặp qua từng chi tiết sản phẩm để chèn hoặc cập nhật
     for (let detail of chiTietSanPham) {
-      const { idSanPhamChiTiet, mauSacId, kichCoId, soLuongSanPhamChiTiet } =
-        detail;
+      const {
+        idSanPhamChiTiet, // Có thể là null nếu là sản phẩm mới
+        mauSacId,
+        kichCoId,
+        soLuongSanPhamChiTiet,
+      } = detail;
+
+      // Chèn hoặc cập nhật sản phẩm
       await connection.execute(
-        `INSERT INTO SAN_PHAM_CHI_TIET (ID_SAN_PHAM_CHI_TIET, ID_SAN_PHAM, MAU_SAC_ID, ID_KICH_CO, SOLUONG_SANPHAM_CHITIET)
-         VALUES (?, ?, ?, ?, ?)`,
-        [idSanPhamChiTiet, id, mauSacId, kichCoId, soLuongSanPhamChiTiet]
+        `INSERT INTO SAN_PHAM_CHI_TIET 
+         (ID_SAN_PHAM_CHI_TIET, ID_SAN_PHAM, MAU_SAC_ID, ID_KICH_CO, SOLUONG_SANPHAM_CHITIET)
+         VALUES (?, ?, ?, ?, ?)
+         ON DUPLICATE KEY UPDATE
+           MAU_SAC_ID = VALUES(MAU_SAC_ID),
+           ID_KICH_CO = VALUES(ID_KICH_CO),
+           SOLUONG_SANPHAM_CHITIET = VALUES(SOLUONG_SANPHAM_CHITIET)`, // Cập nhật trực tiếp số lượng
+        [
+          idSanPhamChiTiet || null, // Nếu là sản phẩm mới, giá trị ID có thể là null
+          id, // ID sản phẩm cha
+          mauSacId,
+          kichCoId,
+          soLuongSanPhamChiTiet,
+        ]
       );
     }
 
     return res.status(200).json({
-      EM: "Cập nhật chi tiết sản phẩm thành công",
+      EM: "Cập nhật và thêm chi tiết sản phẩm thành công",
       EC: 1,
       DT: [],
     });
   } catch (error) {
-    console.error("Error updating chi tiet san pham:", error);
+    console.error("Error updating/inserting chi tiet san pham:", error);
     return res.status(500).json({
-      EM: "Có lỗi xảy ra khi cập nhật chi tiết sản phẩm",
+      EM: "Có lỗi xảy ra khi cập nhật hoặc thêm chi tiết sản phẩm",
       EC: 0,
       DT: [],
     });
   }
 };
+
 module.exports = {
   getSAN_PHAM,
   createSAN_PHAM,

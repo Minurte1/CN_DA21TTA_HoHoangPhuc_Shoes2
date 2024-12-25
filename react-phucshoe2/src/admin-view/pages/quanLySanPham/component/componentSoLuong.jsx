@@ -9,22 +9,28 @@ import {
   Button,
 } from "@mui/material";
 import axios from "axios";
-export default function ProductDetailInput({ productId }) {
-  const [formData, setFormData] = useState(null);
+
+const api = process.env.REACT_APP_URL_SERVER;
+
+export default function ProductDetailInput({ products }) {
+  const [productDetails, setProductDetails] = useState([]);
   const [quantityData, setQuantityData] = useState({});
 
   useEffect(() => {
-    const getData = async () => {
+    const fetchProductDetails = async () => {
       try {
-        const response = await axios.get(`/api/products/${productId}`);
+        const response = await axios.get(
+          `${api}/san-pham/chi-tiet/${products.ID_SAN_PHAM}`
+        );
+        const data = response.data.DT;
 
-        setFormData(response.data.DT);
+        setProductDetails(data);
 
-        // Khởi tạo dữ liệu quantityData từ formData
+        // Tạo dữ liệu ban đầu cho quantityData
         const initialData = {};
-        response.data.DT.CHI_TIET_SAN_PHAMM.forEach((item) => {
+        data.forEach((item) => {
           const key = `${item.TEN_MAU_SAC}_${item.KICH_CO}`;
-          initialData[key] = item.SOLUONG_SANPHAM_CHITIET;
+          initialData[key] = item.SOLUONG_SANPHAM_CHITIET || "";
         });
         setQuantityData(initialData);
       } catch (error) {
@@ -32,35 +38,43 @@ export default function ProductDetailInput({ productId }) {
       }
     };
 
-    getData();
-  }, [productId]);
+    fetchProductDetails();
+  }, [products]);
 
   const handleChange = (color, size, value) => {
     setQuantityData((prev) => ({
       ...prev,
-      [`${color}_${size}`]: Number(value),
+      [`${color}_${size}`]: value,
     }));
   };
 
-  const handleSave = () => {
-    const updatedDetails = Object.entries(quantityData).map(([key, value]) => {
-      const [color, size] = key.split("_");
-      const detail = formData.CHI_TIET_SAN_PHAMM.find(
-        (item) => item.TEN_MAU_SAC === color && item.KICH_CO === size
-      );
+  const handleSummit = async () => {
+    const updatedDetails = productDetails.map((item) => {
+      const key = `${item.TEN_MAU_SAC}_${item.KICH_CO}`;
       return {
-        ...detail,
-        SOLUONG_SANPHAM_CHITIET: value,
+        idSanPhamChiTiet: item.ID_SAN_PHAM_CHI_TIET,
+        mauSacId: item.MAU_SAC_ID,
+        kichCoId: item.ID_KICH_CO,
+        soLuongSanPhamChiTiet: quantityData[key] || null,
       };
     });
 
-    console.log("Updated Product Details:", updatedDetails);
-    // Gửi updatedDetails lên API
+    try {
+      const response = await axios.put(
+        `${api}/san-pham/chi-tiet/${products.ID_SAN_PHAM}`,
+        { chiTietSanPham: updatedDetails }
+      );
+      console.log(response.data);
+      alert("Cập nhật thành công");
+    } catch (error) {
+      console.error("Error updating product details:", error);
+      alert("Có lỗi xảy ra khi cập nhật chi tiết sản phẩm");
+    }
   };
 
-  if (!formData) {
-    return <div>Loading...</div>; // Hiển thị loader khi chưa có dữ liệu
-  }
+  // Lấy danh sách các màu sắc và kích cỡ duy nhất
+  const colors = [...new Set(productDetails.map((item) => item.TEN_MAU_SAC))];
+  const sizes = [...new Set(productDetails.map((item) => item.KICH_CO))];
 
   return (
     <div>
@@ -68,56 +82,41 @@ export default function ProductDetailInput({ productId }) {
         <TableHead>
           <TableRow>
             <TableCell>Màu sắc \ Kích cỡ</TableCell>
-            {formData.kichCoId?.map((id, index) => (
-              <TableCell key={index}>
-                {
-                  formData.CHI_TIET_SAN_PHAMM?.find(
-                    (item) => item.ID_KICH_CO === id
-                  )?.KICH_CO
-                }
-              </TableCell>
+            {sizes.map((size, index) => (
+              <TableCell key={index}>{size}</TableCell>
             ))}
           </TableRow>
         </TableHead>
         <TableBody>
-          {formData.mauSacId?.map((id) => {
-            const colorItem = formData.CHI_TIET_SAN_PHAMM.find(
-              (item) => item.MAU_SAC_ID === id
-            );
-            return (
-              <TableRow key={colorItem.TEN_MAU_SAC}>
-                <TableCell>{colorItem.TEN_MAU_SAC}</TableCell>
-                {formData.kichCoId?.map((sizeId) => {
-                  const sizeItem = formData?.CHI_TIET_SAN_PHAMM?.find(
-                    (item) =>
-                      item.MAU_SAC_ID === id && item.ID_KICH_CO === sizeId
-                  );
-                  const size = sizeItem ? sizeItem.KICH_CO : "";
-                  const key = `${colorItem.TEN_MAU_SAC}_${size}`;
-                  return (
-                    <TableCell key={key}>
-                      <TextField
-                        type="number"
-                        variant="outlined"
-                        size="small"
-                        value={quantityData[key] || ""}
-                        onChange={(e) =>
-                          handleChange(
-                            colorItem.TEN_MAU_SAC,
-                            size,
-                            e.target.value
-                          )
-                        }
-                      />
-                    </TableCell>
-                  );
-                })}
-              </TableRow>
-            );
-          })}
+          {colors.map((color) => (
+            <TableRow key={color}>
+              <TableCell>{color}</TableCell>
+              {sizes.map((size) => {
+                const key = `${color}_${size}`;
+                const isDisabled = !productDetails.some(
+                  (item) => item.TEN_MAU_SAC === color && item.KICH_CO === size
+                );
+
+                return (
+                  <TableCell key={key}>
+                    <TextField
+                      type="number"
+                      variant="outlined"
+                      size="small"
+                      value={quantityData[key] || ""}
+                      onChange={(e) =>
+                        handleChange(color, size, e.target.value)
+                      }
+                      disabled={isDisabled} // Disable nếu không có trong dữ liệu
+                    />
+                  </TableCell>
+                );
+              })}
+            </TableRow>
+          ))}
         </TableBody>
       </Table>
-      <Button variant="contained" color="primary" onClick={handleSave}>
+      <Button variant="contained" color="primary" onClick={handleSummit}>
         Lưu
       </Button>
     </div>

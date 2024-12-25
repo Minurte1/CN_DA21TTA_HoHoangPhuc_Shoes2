@@ -41,6 +41,7 @@ const DialogShoes = ({
   //
 }) => {
   console.log("formData", formData);
+  console.log("currentProduct", currentProduct);
   const [soLuongChiTiet, setSoLuongChiTiet] = useState({});
   const [isOpenAddSoLuong, setIsOpenAddSoLuong] = useState(true);
   return (
@@ -396,7 +397,7 @@ const DialogShoes = ({
             }}
           >
             <Button onClick={() => setIsOpenAddSoLuong(true)}>Trở về</Button>
-            <ProductDetailInput formData={formData} />
+            <ProductDetailInput products={currentProduct} />
           </DialogContent>
         </>
       )}
