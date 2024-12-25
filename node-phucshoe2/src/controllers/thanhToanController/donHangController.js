@@ -668,18 +668,19 @@ const updateOrderStatusSuccess = async (req, res) => {
     if (result.affectedRows > 0) {
       // Lấy danh sách chi tiết đơn hàng (sản phẩm)
       const [orderDetails] = await conn.execute(
-        `SELECT ID_SAN_PHAM_CHI_TIET, SO_LUONG_SP FROM CHI_TIET_HOA_DON WHERE ID_DON_HANG = ?`,
+        `SELECT ID_SAN_PHAM_CHI_TIET,  SO_LUONG_SP FROM CHI_TIET_HOA_DON WHERE ID_DON_HANG = ?`,
         [orderId]
       );
 
-      // Trừ số lượng sản phẩm trong bảng SAN_PHAM
+      // Trừ số lượng sản phẩm trong bảng SAN_PHAM_CHI_TIET
       for (let i = 0; i < orderDetails.length; i++) {
-        const { ID_SAN_PHAM, SO_LUONG_SP } = orderDetails[i];
+        const { ID_SAN_PHAM_CHI_TIET, SO_LUONG_SP } = orderDetails[i];
+        // Trừ số lượng trong SAN_PHAM_CHI_TIET
         await conn.execute(
-          `UPDATE SAN_PHAM 
-           SET SO_LUONG_SANPHAM = SO_LUONG_SANPHAM - ? 
-           WHERE ID_SAN_PHAM = ?`,
-          [SO_LUONG_SP, ID_SAN_PHAM]
+          `UPDATE SAN_PHAM_CHI_TIET 
+           SET SOLUONG_SANPHAM_CHITIET = SOLUONG_SANPHAM_CHITIET - ? 
+           WHERE ID_SAN_PHAM_CHI_TIET = ? `,
+          [SO_LUONG_SP, ID_SAN_PHAM_CHI_TIET]
         );
       }
 
@@ -687,7 +688,7 @@ const updateOrderStatusSuccess = async (req, res) => {
       await conn.commit();
 
       return res.status(200).json({
-        EM: "Cập nhật trạng thái đơn hàng thành công và trừ số lượng sản phẩm",
+        EM: "Cập nhật trạng thái đơn hàng thành công và trừ số lượng sản phẩm chi tiết",
         EC: 1,
         DT: [],
       });
@@ -716,6 +717,7 @@ const updateOrderStatusSuccess = async (req, res) => {
     }
   }
 };
+
 module.exports = {
   getDON_HANG,
   createDON_HANG,

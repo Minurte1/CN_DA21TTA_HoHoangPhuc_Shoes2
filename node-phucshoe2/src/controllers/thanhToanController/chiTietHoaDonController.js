@@ -47,7 +47,7 @@ const getChiTietHoaDon = async (req, res) => {
     // Truy vấn bảng CHI_TIET_HOA_DON
     const [chiTietHoaDonResults] = await connection.execute(
       `
-       SELECT 
+      SELECT 
     sp.ID_SAN_PHAM, 
     sp.ID_THUONG_HIEU, 
     sp.ID_DANH_MUC, 
@@ -113,9 +113,9 @@ LEFT JOIN
     PHONG_CACH pc ON pcs.ID_PHUONG_CACH = pc.ID_PHUONG_CACH
     
 LEFT JOIN 
-    MAU_SAC_SAN_PHAM mss ON sp.ID_SAN_PHAM = mss.ID_SAN_PHAM
+    SAN_PHAM_CHI_TIET spct ON sp.ID_SAN_PHAM = spct.ID_SAN_PHAM
 LEFT JOIN 
-    MAU_SAC ms ON mss.MAU_SAC_ID = ms.MAU_SAC_ID
+    MAU_SAC ms ON spct.MAU_SAC_ID = ms.MAU_SAC_ID
 
 LEFT JOIN 
     MUC_DICH_SU_DUNG_SAN_PHAM mdsds ON sp.ID_SAN_PHAM = mdsds.ID_SAN_PHAM
@@ -123,16 +123,15 @@ LEFT JOIN
     MUC_DICH_SU_DUNG mdsd ON mdsds.ID_MUC_DICH_SU_DUNG = mdsd.ID_MUC_DICH_SU_DUNG
 
 LEFT JOIN 
-    CO_KICH_CO ckc ON sp.ID_SAN_PHAM = ckc.ID_SAN_PHAM
-LEFT JOIN 
-    KICH_CO kc ON ckc.ID_KICH_CO = kc.ID_KICH_CO
+    KICH_CO kc ON spct.ID_KICH_CO = kc.ID_KICH_CO
 
 -- Adding CHI_TIET_HOA_DON details
 LEFT JOIN 
-    CHI_TIET_HOA_DON cthd ON cthd.ID_SAN_PHAM = sp.ID_SAN_PHAM
+    CHI_TIET_HOA_DON cthd ON cthd.ID_SAN_PHAM_CHI_TIET = spct.ID_SAN_PHAM_CHI_TIET
 
 WHERE 
     cthd.ID_DON_HANG = ?;
+
 
 
 

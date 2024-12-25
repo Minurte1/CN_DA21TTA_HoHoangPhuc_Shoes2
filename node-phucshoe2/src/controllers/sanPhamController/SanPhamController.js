@@ -890,7 +890,7 @@ const updateSAN_PHAM = async (req, res) => {
               record
             );
           });
-          console.log("mauSacIds", mauSacIds);
+
           // Kiểm tra các dữ liệu từ frontend và cập nhật hoặc thêm mới
           for (let i = 0; i < mauSacIds.length; i++) {
             const key = `${mauSacIds[i]}-${kichCoIds[i]}`;
@@ -911,7 +911,7 @@ const updateSAN_PHAM = async (req, res) => {
               );
             }
           }
-          console.log("existingMap", existingMap);
+
           // Cập nhật trạng thái 0 cho các bản ghi không có trong frontend (các bản ghi còn lại trong existingMap)
           for (let [key, record] of existingMap) {
             await connection.execute(
@@ -1053,8 +1053,6 @@ const updateSAN_PHAM_ChiTiet_ById = async (req, res) => {
   const { id } = req.params; // ID của sản phẩm cha
   const { existingDetails, newDetails } = req.body; // Mảng chi tiết sản phẩm gửi từ client
 
-  console.log("req.body updateSAN_PHAM_ChiTiet_ById", req.body);
-
   try {
     // Lặp qua từng chi tiết sản phẩm cũ để cập nhật
     for (let detail of existingDetails) {
@@ -1126,8 +1124,6 @@ const updateSAN_PHAM_ChiTiet_ById = async (req, res) => {
       }
     }
 
-    console.log("------------------------------------------------ news");
-    console.log(newDetails.length);
     // Lặp qua các chi tiết sản phẩm mới để thêm vào cơ sở dữ liệu
     for (let newDetail of newDetails) {
       const { mauSacId, kichCoId, soLuongSanPhamChiTiet } = newDetail;
