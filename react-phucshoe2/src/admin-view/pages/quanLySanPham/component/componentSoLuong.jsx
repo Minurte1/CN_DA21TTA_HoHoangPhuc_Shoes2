@@ -8,8 +8,7 @@ import {
   TextField,
   Button,
 } from "@mui/material";
-import { fetchProductDetails } from "./api";
-
+import axios from "axios";
 export default function ProductDetailInput({ productId }) {
   const [formData, setFormData] = useState(null);
   const [quantityData, setQuantityData] = useState({});
@@ -17,12 +16,13 @@ export default function ProductDetailInput({ productId }) {
   useEffect(() => {
     const getData = async () => {
       try {
-        const data = await fetchProductDetails(productId);
-        setFormData(data);
+        const response = await axios.get(`/api/products/${productId}`);
+
+        setFormData(response.data.DT);
 
         // Khởi tạo dữ liệu quantityData từ formData
         const initialData = {};
-        data.CHI_TIET_SAN_PHAMM.forEach((item) => {
+        response.data.DT.CHI_TIET_SAN_PHAMM.forEach((item) => {
           const key = `${item.TEN_MAU_SAC}_${item.KICH_CO}`;
           initialData[key] = item.SOLUONG_SANPHAM_CHITIET;
         });
