@@ -151,6 +151,7 @@ const SanPhamManager = () => {
   };
 
   const handleCloseDialog = () => {
+    setOption(true);
     setOpenDialog(false);
     setCurrentProduct(null);
     setFormData({

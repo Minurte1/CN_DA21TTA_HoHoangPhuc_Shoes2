@@ -788,6 +788,7 @@ const updateSAN_PHAM = async (req, res) => {
 
     const ngayCapNhatSanPham = new Date();
 
+    console.log("req.body", req.body);
     // Lấy hình ảnh nếu có tải lên mới, nếu không thì giữ hình ảnh cũ
     const images = req.file ? path.basename(req.file.path) : req.body.images;
 
@@ -825,23 +826,27 @@ const updateSAN_PHAM = async (req, res) => {
           [id, phongCachId]
         );
 
-        // Cập nhật bảng MAU_SAC_SAN_PHAM
-        await connection.execute(
-          "REPLACE INTO MAU_SAC_SAN_PHAM (ID_SAN_PHAM, MAU_SAC_ID) VALUES (?, ?)",
-          [id, mauSacId]
-        );
-
         // Cập nhật bảng MUC_DICH_SU_DUNG_SAN_PHAM
         await connection.execute(
           "REPLACE INTO MUC_DICH_SU_DUNG_SAN_PHAM (ID_SAN_PHAM, ID_MUC_DICH_SU_DUNG) VALUES (?, ?)",
           [id, mucDichSuDungId]
         );
 
-        // Cập nhật bảng CO_KICH_CO
+        // Xóa các bản ghi cũ trong bảng SAN_PHAM_CHI_TIET
         await connection.execute(
-          "REPLACE INTO CO_KICH_CO (ID_SAN_PHAM, ID_KICH_CO) VALUES (?, ?)",
-          [id, kichCoId]
+          "DELETE FROM SAN_PHAM_CHI_TIET WHERE ID_SAN_PHAM = ?",
+          [id]
         );
+
+        // Cập nhật bảng SAN_PHAM_CHI_TIET
+        const mauSacIds = mauSacId.split(",");
+        const kichCoIds = kichCoId.split(",");
+        for (let i = 0; i < mauSacIds.length; i++) {
+          await connection.execute(
+            "INSERT INTO SAN_PHAM_CHI_TIET (ID_SAN_PHAM, MAU_SAC_ID, ID_KICH_CO) VALUES (?, ?, ?)",
+            [id, mauSacIds[i], kichCoIds[i]]
+          );
+        }
       }
 
       return res.status(200).json({
