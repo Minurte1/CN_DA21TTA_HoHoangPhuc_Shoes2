@@ -670,27 +670,43 @@ const createSAN_PHAM = async (req, res) => {
       trangThaiSanPham,
       soLuongSanPham,
       phongCachId,
-      mauSacIds,
-      kichCoIds,
+      mauSacId, // Đổi tên từ mauSacIds sang mauSacId
+      kichCoId, // Đổi tên từ kichCoIds sang kichCoId
       mucDichSuDungId,
     } = req.body;
 
     const ngayTaoSanPham = new Date();
     const images = req.file ? path.basename(req.file.path) : null;
 
-    // Parse chuỗi thành mảng (nếu cần)
-    const parsedMauSacIds =
-      typeof mauSacIds === "string"
-        ? mauSacIds.split(",").map(Number)
-        : mauSacIds;
-    const parsedKichCoIds =
-      typeof kichCoIds === "string"
-        ? kichCoIds.split(",").map(Number)
-        : kichCoIds;
+    // Logging to debug the incoming data
+    // Kiểm tra xem sản phẩm đã tồn tại hay chưa
+    const [existingProduct] = await connection.execute(
+      "SELECT ID_SAN_PHAM FROM SAN_PHAM WHERE TEN_SAN_PHAM = ?",
+      [tenSanPham]
+    );
 
+    if (existingProduct.length > 0) {
+      return res.status(400).json({
+        EM: "Sản phẩm đã tồn tại.",
+        EC: 0,
+        DT: [],
+      });
+    }
+
+    // Chuyển chuỗi mauSacId và kichCoId thành mảng số
+    const parsedMauSacIds =
+      typeof mauSacId === "string" && mauSacId.trim() !== ""
+        ? mauSacId.split(",").map(Number)
+        : [];
+    const parsedKichCoIds =
+      typeof kichCoId === "string" && kichCoId.trim() !== ""
+        ? kichCoId.split(",").map(Number)
+        : [];
+
+    // Kiểm tra nếu mảng rỗng hoặc không hợp lệ
     if (!Array.isArray(parsedMauSacIds) || !Array.isArray(parsedKichCoIds)) {
       return res.status(400).json({
-        EM: "Dữ liệu không hợp lệ: mauSacIds hoặc kichCoIds không phải là mảng.",
+        EM: "Dữ liệu không hợp lệ: mauSacId hoặc kichCoId không phải là mảng.",
         EC: 0,
         DT: [],
       });
@@ -701,13 +717,13 @@ const createSAN_PHAM = async (req, res) => {
 
     if (validMauSacIds.length === 0 || validKichCoIds.length === 0) {
       return res.status(400).json({
-        EM: "Dữ liệu không hợp lệ: Mảng mauSacIds hoặc kichCoIds rỗng hoặc không có giá trị hợp lệ.",
+        EM: "Dữ liệu không hợp lệ: Mảng mauSacId hoặc kichCoId rỗng hoặc không có giá trị hợp lệ.",
         EC: 0,
         DT: [],
       });
     }
 
-    // Thêm sản phẩm vào bảng SAN_PHAM
+    // Insert product into SAN_PHAM table
     const [results] = await connection.execute(
       "INSERT INTO SAN_PHAM (ID_THUONG_HIEU, ID_DANH_MUC, GIOI_TINH_ID, CHAT_LIEU_ID_, TEN_SAN_PHAM, GIA, MO_TA_SAN_PHAM, HINH_ANH_SANPHAM, TRANG_THAI_SANPHAM, NGAY_TAO_SANPHAM, NGAY_CAP_NHAT_SANPHAM, SO_LUONG_SANPHAM) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
       [
@@ -728,7 +744,7 @@ const createSAN_PHAM = async (req, res) => {
 
     const newProductId = results.insertId;
 
-    // Thêm phong cách vào bảng PHONG_CACH_SAN_PHAM
+    // Insert phong cách into PHONG_CACH_SAN_PHAM table
     if (phongCachId) {
       await connection.execute(
         "INSERT INTO PHONG_CACH_SAN_PHAM (ID_SAN_PHAM, ID_PHUONG_CACH) VALUES (?, ?)",
@@ -736,7 +752,7 @@ const createSAN_PHAM = async (req, res) => {
       );
     }
 
-    // Thêm mục đích sử dụng vào bảng MUC_DICH_SU_DUNG_SAN_PHAM
+    // Insert muc dich su dung into MUC_DICH_SU_DUNG_SAN_PHAM table
     if (mucDichSuDungId) {
       await connection.execute(
         "INSERT INTO MUC_DICH_SU_DUNG_SAN_PHAM (ID_SAN_PHAM, ID_MUC_DICH_SU_DUNG) VALUES (?, ?)",
@@ -744,7 +760,7 @@ const createSAN_PHAM = async (req, res) => {
       );
     }
 
-    // Thêm chi tiết sản phẩm vào bảng SAN_PHAM_CHI_TIET
+    // Insert product details into SAN_PHAM_CHI_TIET table
     for (const mauSacId of validMauSacIds) {
       for (const kichCoId of validKichCoIds) {
         await connection.execute(

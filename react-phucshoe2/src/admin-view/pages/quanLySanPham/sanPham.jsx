@@ -6,6 +6,7 @@ import FilterShoes from "./component/FilterShoe";
 import TableShoes from "./component/TableShoes";
 import DialogShoes from "./component/DialogShoes";
 import { getThemeConfig } from "../../../services/themeService";
+import { enqueueSnackbar } from "notistack";
 
 const api = process.env.REACT_APP_URL_SERVER;
 
@@ -187,7 +188,7 @@ const SanPhamManager = () => {
 
       if (currentProduct) {
         // Update product
-        await axios.put(
+        const response = await axios.put(
           `${api}/san-pham/${currentProduct.ID_SAN_PHAM}`,
           formDataToSend,
           {
@@ -196,18 +197,29 @@ const SanPhamManager = () => {
             },
           }
         );
+        if (response.data.EC === 1) {
+          enqueueSnackbar(response.data.EM, { variant: "success" });
+        } else if (response.data.EC === 0) {
+          enqueueSnackbar(response.data.EM, { variant: "error" });
+        }
       } else {
         // Create new product
-        await axios.post(`${api}/san-pham`, formDataToSend, {
+        const response = await axios.post(`${api}/san-pham`, formDataToSend, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
         });
+        if (response.data.EC === 1) {
+          enqueueSnackbar(response.data.EM, { variant: "success" });
+        } else if (response.data.EC === 0) {
+          enqueueSnackbar(response.data.EM, { variant: "error" });
+        }
       }
 
       fetchProducts();
       // handleCloseDialog();
     } catch (error) {
+      enqueueSnackbar(error.response.data.EM, { variant: "error" });
       console.error("Error saving product:", error);
     }
   };
