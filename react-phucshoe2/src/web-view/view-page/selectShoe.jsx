@@ -301,14 +301,21 @@ const SelectShoe = () => {
                   <button
                     key={`size-${index}`}
                     style={{
+                      backgroundColor:
+                        selectedSize === size ? "#007bff" : "#f1f1f1", // Màu nền khi được chọn và không chọn
+                      color: selectedSize === size ? "white" : "#333", // Màu chữ khi được chọn và không chọn
                       border:
                         selectedSize === size
-                          ? "2px solid black"
-                          : "1px solid gray",
-                      margin: "5px",
-                      padding: "5px 10px",
+                          ? "2px solid #007bff"
+                          : "1px solid #ccc", // Viền khi được chọn và không chọn
+                      borderRadius: "8px", // Góc bo tròn
+                      padding: "8px 15px", // Padding cho nút
+                      margin: "5px", // Khoảng cách giữa các nút
+                      fontSize: "16px", // Kích thước chữ
+                      cursor: "pointer", // Con trỏ chuột khi hover
+                      transition: "all 0.3s ease", // Hiệu ứng chuyển đổi mượt mà
                     }}
-                    onClick={() => handleOptionChange("size", size)}
+                    onClick={() => handleOptionChange("size", size)} // Xử lý khi click vào nút
                   >
                     {size}
                   </button>
@@ -344,22 +351,6 @@ const SelectShoe = () => {
                   ))}
                 </div>
               )}
-
-              <div>
-                <h4>Tùy chọn đã chọn:</h4>
-                {selectedDetail ? (
-                  <>
-                    <p>
-                      ID sản phẩm chi tiết:{" "}
-                      {selectedDetail.ID_SAN_PHAM_CHI_TIET}
-                    </p>
-                    <p>Kích cỡ: {selectedDetail.KICH_CO}</p>
-                    <p>Màu sắc: {selectedDetail.TEN_MAU_SAC}</p>
-                  </>
-                ) : (
-                  <p>Vui lòng chọn size và màu sắc</p>
-                )}
-              </div>
             </div>
             <Button
               variant="contained"
