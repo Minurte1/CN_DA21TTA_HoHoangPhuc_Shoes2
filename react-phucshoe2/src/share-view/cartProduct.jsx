@@ -238,7 +238,7 @@ const Cart = () => {
         <Box sx={{ textAlign: "left", paddingLeft: 2 }}>
           {" "}
           <Typography variant="h4" sx={{ color: currentTheme.color }}>
-            My Cart
+            Giỏ hàng
           </Typography>
         </Box>
 
@@ -248,11 +248,11 @@ const Cart = () => {
             Sort by:{" "}
           </Typography>
           <FormControl sx={{ ml: 1, minWidth: 120 }}>
-            <Select sx={{ color: currentTheme.color }} defaultValue="Newest">
+            {/* <Select sx={{ color: currentTheme.color }} defaultValue="Newest">
               <MenuItem value="Newest">Newest</MenuItem>
               <MenuItem value="On Sale">On Sale</MenuItem>
               <MenuItem value="Popular">Popular</MenuItem>
-            </Select>
+            </Select> */}
           </FormControl>
         </Box>
         <Divider sx={{ backgroundColor: "#555", mb: 2 }} />

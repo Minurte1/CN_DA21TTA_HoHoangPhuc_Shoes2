@@ -131,7 +131,7 @@ const CartItem = ({
           color="error"
           onClick={() => handleRemoveProduct(id)}
         >
-          Remove
+          Loại bỏ
         </Button>
       </Box>
     </Card>

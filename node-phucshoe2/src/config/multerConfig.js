@@ -27,6 +27,12 @@ const imageFilter = function (req, file, cb) {
 };
 
 // Export configured multer instance
-const upload = multer({ storage: storage, fileFilter: imageFilter });
+const upload = multer({
+  storage: storage,
+  limits: {
+    fieldSize: 100 * 1024 * 1024, // Cho phép mỗi trường dữ liệu tối đa 100MB
+  },
+  fileFilter: imageFilter,
+});
 
 module.exports = upload;

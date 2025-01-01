@@ -83,6 +83,8 @@ const updateBaiViet = async (req, res) => {
     TRANG_THAI_BAIVIET,
     HINH_ANH_BAIVIET,
   } = req.body;
+  console.log("req.body", req.body);
+  console.log("req.params", req.params);
   try {
     const [results] = await connection.execute(
       "UPDATE `ID_BAI_VIET` SET TIEU_DE = ?, NGAY_CAP_NHAT_BAIVIET = ?, NOI_DUNG_BAIVIET = ?, TRANG_THAI_BAIVIET = ?, HINH_ANH_BAIVIET = ? WHERE ID_BAI_VIET = ?",

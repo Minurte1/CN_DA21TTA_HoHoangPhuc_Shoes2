@@ -363,7 +363,7 @@ const WishlistProducts = () => {
     >
       <Grid item xs={12}>
         <Typography variant="h4" sx={{ color: currentTheme.color }}>
-          My Wishlist
+          Yêu thích
         </Typography>
 
         <Divider sx={{ backgroundColor: "#555", mb: 2, mt: 4 }} />

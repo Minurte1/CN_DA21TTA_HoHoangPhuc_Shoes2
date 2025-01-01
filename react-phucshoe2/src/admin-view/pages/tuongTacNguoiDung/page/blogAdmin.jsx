@@ -24,48 +24,6 @@ import ReactQuill from "react-quill";
 import { enqueueSnackbar } from "notistack";
 import { getThemeConfig } from "../../../../services/themeService";
 import { Add, Edit, Delete } from "@mui/icons-material";
-const modules = {
-  toolbar: [
-    // Tùy chỉnh tiêu đề
-    [{ header: [1, 2, 3, 4, 5, 6, false] }],
-    // Kiểu chữ
-    [{ font: [] }],
-    // Kích thước chữ
-    [{ size: [] }],
-    // Định dạng văn bản
-    ["bold", "italic", "underline", "strike"], // In đậm, nghiêng, gạch chân, gạch ngang
-    [{ color: [] }, { background: [] }], // Màu chữ và màu nền
-    [{ script: "sub" }, { script: "super" }], // Chỉ số trên/dưới
-    [{ list: "ordered" }, { list: "bullet" }], // Danh sách
-    [{ indent: "-1" }, { indent: "+1" }], // Thụt lề
-    [{ align: [] }], // Căn lề
-    ["link", "image", "video"], // Link, ảnh, video
-    ["blockquote", "code-block"], // Trích dẫn, đoạn mã
-    ["clean"], // Xóa định dạng
-  ],
-};
-
-const formats = [
-  "header",
-  "font",
-  "size",
-  "bold",
-  "italic",
-  "underline",
-  "strike",
-  "color",
-  "background",
-  "script",
-  "list",
-  "bullet",
-  "indent",
-  "align",
-  "link",
-  "image",
-  "video",
-  "blockquote",
-  "code-block",
-];
 
 const BlogManager = () => {
   const currentTheme = getThemeConfig(localStorage.getItem("THEMES") || "dark");
@@ -79,21 +37,20 @@ const BlogManager = () => {
   const [descriptionTitle, setDecripttionTitle] = useState("");
   const [listBlog, setListBlog] = useState([]);
   useEffect(() => {
-    const fetchBlog = async () => {
-      try {
-        const response = await axios.get(
-          `${process.env.REACT_APP_URL_SERVER}/bai-viet`
-        );
-        if (response.data.EC === 1) {
-          setListBlog(response.data.DT);
-        }
-      } catch (err) {
-      } finally {
-      }
-    };
-
     fetchBlog();
   }, []);
+  const fetchBlog = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_URL_SERVER}/bai-viet`
+      );
+      if (response.data.EC === 1) {
+        setListBlog(response.data.DT);
+      }
+    } catch (err) {
+    } finally {
+    }
+  };
   const handleSave = async () => {
     const formData = new FormData();
 
@@ -101,7 +58,12 @@ const BlogManager = () => {
       if (editId) {
         // Truyền dữ liệu cập nhật vào formData
         formData.append("content", content);
-
+        // Truyền dữ liệu tạo mới vào formData
+        formData.append("NOI_DUNG_BAIVIET", content);
+        formData.append("TIEU_DE", title);
+        formData.append("ID_NGUOI_DUNG", userInfo.ID_NGUOI_DUNG);
+        formData.append("HINH_ANH_BAIVIET", images); // Hình ảnh
+        formData.append("NOI_DUNG_TIEU_DE", descriptionTitle);
         // Gửi yêu cầu PUT để cập nhật
         const response = await axios.put(
           `${api}/bai-viet/${editId}`,
@@ -129,6 +91,7 @@ const BlogManager = () => {
         });
         if (response.data.EC === 1) {
           enqueueSnackbar(response.data.EM, { variant: "success" });
+          fetchBlog();
         } else {
           enqueueSnackbar(response.data.EM, { variant: "error" });
         }
@@ -148,11 +111,14 @@ const BlogManager = () => {
   };
 
   // Hàm xử lý xóa bài viết
-  const handleDelete = async (id) => {
+  const handleDelete = async (blog) => {
     try {
       // Gửi yêu cầu xóa bài viết
-      const response = await axios.delete(`/bai-viet/${id}`);
+      const response = await axios.delete(
+        `${api}/bai-viet/${blog.ID_BAI_VIET}`
+      );
       if (response.data.EC === 1) {
+        fetchBlog();
         enqueueSnackbar(response.data.EM, { variant: "success" });
       } else {
         enqueueSnackbar(response.data.EM, { variant: "error" });
@@ -194,7 +160,48 @@ const BlogManager = () => {
   //       alert("Failed to load posts");
   //     });
   // }, []);
+  const modules = {
+    toolbar: [
+      // Tùy chỉnh tiêu đề
+      [{ header: [1, 2, 3, 4, 5, 6, false] }],
+      // Kiểu chữ
+      [{ font: [] }],
+      // Kích thước chữ
+      [{ size: [] }],
+      // Định dạng văn bản
+      ["bold", "italic", "underline", "strike"], // In đậm, nghiêng, gạch chân, gạch ngang
+      [{ color: [] }, { background: [] }], // Màu chữ và màu nền
+      [{ script: "sub" }, { script: "super" }], // Chỉ số trên/dưới
+      [{ list: "ordered" }, { list: "bullet" }], // Danh sách
+      [{ indent: "-1" }, { indent: "+1" }], // Thụt lề
+      [{ align: [] }], // Căn lề
+      ["link", "image", "video"], // Link, ảnh, video
+      ["blockquote", "code-block"], // Trích dẫn, đoạn mã
+      ["clean"], // Xóa định dạng
+    ],
+  };
 
+  const formats = [
+    "header",
+    "font",
+    "size",
+    "bold",
+    "italic",
+    "underline",
+    "strike",
+    "color",
+    "background",
+    "script",
+    "list",
+    "bullet",
+    "indent",
+    "align",
+    "link",
+    "image",
+    "video",
+    "blockquote",
+    "code-block",
+  ];
   const handleFileChange = (e) => {
     if (e.target.files && e.target.files[0]) {
       setImages(e.target.files[0]);
@@ -266,7 +273,7 @@ const BlogManager = () => {
           </TableHead>
           <TableBody>
             {listBlog.map((blog) => (
-              <TableRow key={blog.ID_NGUOI_DUNG}>
+              <TableRow key={blog.ID_BAI_VIET}>
                 <TableCell sx={{ color: currentTheme.color }}>
                   {blog.TIEU_DE}
                 </TableCell>
@@ -313,6 +320,14 @@ const BlogManager = () => {
                   >
                     Chỉnh sửa
                   </Button>
+
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    onClick={() => handleDelete(blog)}
+                  >
+                    Xóa
+                  </Button>
                 </TableCell>
               </TableRow>
             ))}
@@ -358,6 +373,8 @@ const BlogManager = () => {
             theme="snow"
             value={content}
             onChange={handleQuillChange}
+            modules={modules}
+            formats={formats}
             className="custom-quill"
           />
         </DialogContent>
