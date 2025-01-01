@@ -180,7 +180,7 @@ const DialogShoes = ({
                   value={formData.gia}
                   onChange={handleChange}
                 />
-                <TextField
+                {/* <TextField
                   margin="dense"
                   label="Số lượng sản phẩm"
                   type="number"
@@ -188,7 +188,7 @@ const DialogShoes = ({
                   name="soLuongSanPham"
                   value={formData.soLuongSanPham}
                   onChange={handleChange}
-                />
+                /> */}
               </FormControl>
               <FormControl sx={{ width: "400px" }} fullWidth margin="dense">
                 <InputLabel id="trang-thai-label">Trạng thái</InputLabel>

@@ -44,7 +44,7 @@ const TableShoes = ({
             <TableCell sx={{ color: currentTheme.color }}>Mô tả</TableCell>
             <TableCell sx={{ color: currentTheme.color }}>Hình ảnh</TableCell>
             <TableCell sx={{ color: currentTheme.color }}>Trạng thái</TableCell>
-            <TableCell sx={{ color: currentTheme.color }}>Số lượng</TableCell>
+            {/* <TableCell sx={{ color: currentTheme.color }}>Số lượng</TableCell> */}
             <TableCell sx={{ color: currentTheme.color }}>
               Ngày thêm vào hệ thống
             </TableCell>
@@ -97,9 +97,9 @@ const TableShoes = ({
                   ? "Đang hoạt động"
                   : "Ngưng hoạt động"}
               </TableCell>
-              <TableCell sx={{ color: currentTheme.color }}>
+              {/* <TableCell sx={{ color: currentTheme.color }}>
                 {product.SO_LUONG_SANPHAM}
-              </TableCell>
+              </TableCell> */}
               <TableCell sx={{ color: currentTheme.color }}>
                 {moment(product.NGAY_TAO_SANPHAM).format("DD/MM/YYYY")}
               </TableCell>

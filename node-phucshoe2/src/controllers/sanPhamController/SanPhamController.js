@@ -668,7 +668,7 @@ const createSAN_PHAM = async (req, res) => {
       gia,
       moTaSanPham,
       trangThaiSanPham,
-      soLuongSanPham,
+      soLuongSanPham = 0,
       phongCachId,
       mauSacId, // Đổi tên từ mauSacIds sang mauSacId
       kichCoId, // Đổi tên từ kichCoIds sang kichCoId
@@ -722,7 +722,7 @@ const createSAN_PHAM = async (req, res) => {
         DT: [],
       });
     }
-
+    const soLuongSanPham1 = 0;
     // Insert product into SAN_PHAM table
     const [results] = await connection.execute(
       "INSERT INTO SAN_PHAM (ID_THUONG_HIEU, ID_DANH_MUC, GIOI_TINH_ID, CHAT_LIEU_ID_, TEN_SAN_PHAM, GIA, MO_TA_SAN_PHAM, HINH_ANH_SANPHAM, TRANG_THAI_SANPHAM, NGAY_TAO_SANPHAM, NGAY_CAP_NHAT_SANPHAM, SO_LUONG_SANPHAM) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
@@ -738,7 +738,7 @@ const createSAN_PHAM = async (req, res) => {
         trangThaiSanPham,
         ngayTaoSanPham,
         ngayTaoSanPham,
-        soLuongSanPham,
+        soLuongSanPham1,
       ]
     );
 

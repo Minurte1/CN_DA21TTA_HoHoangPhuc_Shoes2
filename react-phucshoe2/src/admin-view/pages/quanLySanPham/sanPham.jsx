@@ -41,7 +41,7 @@ const SanPhamManager = () => {
     moTaSanPham: "",
     images: null,
     trangThaiSanPham: 1,
-    soLuongSanPham: "",
+    soLuongSanPham: 1,
 
     phongCachId: "",
     mauSacId: [],
@@ -219,7 +219,19 @@ const SanPhamManager = () => {
       fetchProducts();
       // handleCloseDialog();
     } catch (error) {
-      enqueueSnackbar(error.response.data.EM, { variant: "error" });
+      // Catch errors from the try block
+      if (error.response) {
+        // Server-side error
+        enqueueSnackbar(error.response.data.EM, { variant: "error" });
+      } else if (error.request) {
+        // No response received
+        enqueueSnackbar("No response from server", { variant: "error" });
+      } else {
+        // Other errors
+        enqueueSnackbar("An error occurred while saving the product", {
+          variant: "error",
+        });
+      }
       console.error("Error saving product:", error);
     }
   };

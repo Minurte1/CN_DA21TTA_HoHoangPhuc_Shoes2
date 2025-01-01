@@ -112,9 +112,9 @@ const CarouselHead = ({ carouselProducts }) => {
               sx={{
                 display: "flex",
                 flexDirection: { xs: "column", md: "row" },
-                width: "100%",
+                width: "1200px",
                 backgroundColor: currentTheme.backgroundColor,
-                backgroundImage: `linear-gradient(to right, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0)), url(${
+                backgroundImage: `url(${
                   selectedProduct
                     ? `${api}/images/${selectedProduct.HINH_ANH_NEN_CAROUSEL}`
                     : "default-image-path"
@@ -160,14 +160,20 @@ const CarouselHead = ({ carouselProducts }) => {
                   isSelected === index ? (
                     <React.Fragment key={index}>
                       <Typography
-                        className={`component-game-description-background  ${
+                        className={`component-game-description-background ${
                           animateLogo ? "fade-in-up-text" : ""
                         }`}
                         variant="subtitle1"
                         sx={{
                           textAlign: "left",
                           mt: 1,
+                          p: 2,
+                          backgroundColor: "rgba(255, 255, 255, 0.8)", // Nền nhấn nhẹ
                           fontSize: { xs: "0.9rem", md: "1.25rem" },
+                          borderRadius: "9px", // Bo góc
+                          fontWeight: "400", // Làm chữ đậm
+                          color: "#1f1f1f", // Màu nổi bật từ theme
+                          textShadow: "1px 1px 2px rgba(0, 0, 0, 0.3)", // Đổ bóng nhẹ
                         }}
                       >
                         {products.MO_TA_CAROUSEL}
@@ -175,7 +181,16 @@ const CarouselHead = ({ carouselProducts }) => {
                       <Typography
                         className="component-game-description-background"
                         variant="body1"
-                        sx={{ mt: 1, mb: 2 }}
+                        sx={{
+                          mt: 1,
+                          mb: 2,
+                          fontSize: { xs: "1rem", md: "1.2rem" }, // Kích thước to hơn
+                          color: "secondary.main", // Thay màu khác để tương phản
+                          backgroundColor: "rgba(255, 255, 255, 0.8)", // Nền nhấn nhẹ
+                          padding: "4px 8px", // Khoảng cách giữa chữ và viền
+                          borderRadius: "7px", // Bo góc
+                          boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)", // Đổ bóng cho nền
+                        }}
                       >
                         {new Intl.NumberFormat("vi-VN", {
                           style: "currency",
@@ -185,6 +200,7 @@ const CarouselHead = ({ carouselProducts }) => {
                     </React.Fragment>
                   ) : null
                 )}
+
                 <Box
                   sx={{
                     display: "flex",

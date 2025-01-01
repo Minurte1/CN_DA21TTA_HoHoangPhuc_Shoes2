@@ -1,0 +1,143 @@
+INSERT INTO LOAI_DANH_MUC (TEN_DANH_MUC, MO_TA_LOAI_DANH_MUC, TRANG_THAI_DANHMUC, CREATED_DANH_MUC, UPDATE_DANH_MUC)
+VALUES
+('Giày thể thao', 'Giày thể thao là loại giày được thiết kế cho các hoạt động thể thao, với đặc điểm nhẹ, thoải mái và có đế chống trơn. Chúng giúp bảo vệ và hỗ trợ cơ thể khi vận động.', 1, '2024-11-07 23:17:05', '2024-11-07 23:17:05'),
+('Giày công sở', 'Giày công sở là loại giày dành cho môi trường làm việc chuyên nghiệp, thường có thiết kế đơn giản, sang trọng và mang lại sự thoải mái cho người dùng.', 1, '2024-11-07 23:18:15', '2024-11-07 23:18:15'),
+('Giày cao gót', 'Giày cao gót là loại giày có gót cao, giúp tăng chiều cao và tạo dáng đẹp cho người mang. Chúng thường được sử dụng trong các dịp trang trọng hoặc sự kiện đặc biệt.', 1, '2024-11-07 23:19:25', '2024-11-07 23:19:25'),
+('Giày búp bê', 'Giày búp bê là loại giày có thiết kế đơn giản, thoải mái, phù hợp cho các hoạt động thường ngày. Chúng thường được làm từ chất liệu mềm mại như vải, da hoặc nhựa.', 1, '2024-11-07 23:20:35', '2024-11-07 23:20:35'),
+('Giày boot', 'Giày boot là loại giày có phần cổ cao, thường được làm từ da hoặc vải dày để bảo vệ chân trong mùa lạnh hoặc các hoạt động ngoài trời.', 1, '2024-11-07 23:21:45', '2024-11-07 23:21:45'),
+('Giày lười', 'Giày lười là loại giày không có dây, dễ dàng mang vào và tháo ra. Đây là lựa chọn phổ biến cho những người muốn sự tiện lợi và thoải mái.', 1, '2024-11-07 23:22:55', '2024-11-07 23:22:55'),
+('Giày slip-on', 'Giày slip-on là loại giày không có dây và không có khóa, dễ dàng mang vào và tháo ra, thích hợp cho người bận rộn hoặc tìm kiếm sự thoải mái tối đa.', 1, '2024-11-07 23:23:25', '2024-11-07 23:23:25'),
+('Giày thể thao chạy bộ', 'Giày thể thao chạy bộ được thiết kế đặc biệt để hỗ trợ khi chạy, với đế mềm và độ bám tốt giúp bảo vệ chân khỏi chấn thương trong suốt quá trình vận động.', 1, '2024-11-07 23:24:35', '2024-11-07 23:24:35'),
+('Giày thể thao bóng đá', 'Giày thể thao bóng đá có thiết kế đặc biệt với đế có đinh để tạo độ bám tốt trên sân cỏ, giúp người chơi dễ dàng di chuyển và kiểm soát bóng.', 1, '2024-11-07 23:25:45', '2024-11-07 23:25:45'),
+('Giày thể thao tennis', 'Giày thể thao tennis có đặc điểm nhẹ, linh hoạt, và có đế đặc biệt để hỗ trợ các chuyển động nhanh, giúp người chơi dễ dàng di chuyển trên sân.', 1, '2024-11-07 23:26:55', '2024-11-07 23:26:55'),
+('Giày sandal', 'Giày sandal là loại giày có thiết kế thoáng khí với dây đeo và đế phẳng, thường được sử dụng vào mùa hè hoặc trong các hoạt động ngoài trời.', 1, '2024-11-07 23:27:35', '2024-11-07 23:27:35'),
+('Giày dép nữ', 'Giày dép nữ là các loại giày được thiết kế riêng cho nữ giới, có nhiều kiểu dáng và mẫu mã khác nhau từ giày búp bê đến giày cao gót.', 1, '2024-11-07 23:28:45', '2024-11-07 23:28:45'),
+('Giày dép nam', 'Giày dép nam thường có thiết kế chắc chắn, mạnh mẽ và thích hợp với các phong cách công sở hoặc thể thao.', 1, '2024-11-07 23:29:55', '2024-11-07 23:29:55'),
+('Giày trẻ em', 'Giày trẻ em được thiết kế nhẹ nhàng, thoải mái, với nhiều màu sắc và họa tiết đáng yêu, giúp trẻ em dễ dàng vận động và chơi đùa.', 1, '2024-11-07 23:30:25', '2024-11-07 23:30:25'),
+('Giày chống nước', 'Giày chống nước được làm từ các chất liệu không thấm nước, giúp bảo vệ chân khi đi dưới mưa hoặc trong môi trường ẩm ướt.', 1, '2024-11-07 23:31:35', '2024-11-07 23:31:35'),
+('Giày đi bộ', 'Giày đi bộ có đế mềm, nhẹ, hỗ trợ tốt cho người đi bộ lâu, thích hợp cho các hoạt động ngoài trời hoặc thể dục.', 1, '2024-11-07 23:32:45', '2024-11-07 23:32:45'),
+('Giày bảo hộ', 'Giày bảo hộ có tính năng bảo vệ cao, thường được sử dụng trong các công việc đòi hỏi sự an toàn cho đôi chân, như công trường xây dựng.', 1, '2024-11-07 23:33:15', '2024-11-07 23:33:15'),
+('Giày da', 'Giày da được làm từ chất liệu da cao cấp, tạo nên sự sang trọng và bền bỉ, thích hợp cho các dịp trang trọng hoặc công sở.', 1, '2024-11-07 23:34:25', '2024-11-07 23:34:25'),
+('Giày thể thao nữ', 'Giày thể thao nữ có thiết kế nhẹ nhàng, phù hợp với vóc dáng của phái nữ và giúp tăng sự thoải mái khi vận động.', 1, '2024-11-07 23:35:35', '2024-11-07 23:35:35'),
+('Giày thể thao nam', 'Giày thể thao nam được thiết kế chắc chắn và khỏe khoắn, hỗ trợ tốt cho các hoạt động thể thao, đặc biệt là các môn thể thao như bóng rổ, bóng đá.', 1, '2024-11-07 23:36:45', '2024-11-07 23:36:45');
+
+
+
+===============================================================================================================
+INSERT INTO CHAT_LIEU (TEN_CHAT_LIEU_, MO_TA_CHAT_LIEU, TRANG_THAI_CHAT_LIEU, CREATED_TEN_CHAT_LIEU_, UPDATE_CHAT_LIEU)
+VALUES
+('Da', 'Chất liệu da tự nhiên, mềm mại, bền bỉ, và có khả năng chống nước tốt, thường được sử dụng cho các loại giày cao cấp.', 1, '2024-11-07 23:37:55', '2024-11-07 23:37:55'),
+('Vải', 'Chất liệu vải mềm mại và thoáng khí, thích hợp cho các loại giày thể thao, giày mùa hè, hoặc các sản phẩm giày nhẹ nhàng.', 1, '2024-11-07 23:38:35', '2024-11-07 23:38:35'),
+('Cao su', 'Cao su được sử dụng cho đế giày, mang lại độ bám và sự linh hoạt cho giày thể thao hoặc giày bảo hộ.', 1, '2024-11-07 23:39:15', '2024-11-07 23:39:15'),
+('Nhựa', 'Chất liệu nhựa thường được sử dụng cho các loại giày sandal, giày dép nhẹ nhàng và dễ dàng vệ sinh.', 1, '2024-11-07 23:40:05', '2024-11-07 23:40:05'),
+('Len', 'Len là chất liệu dày dặn và ấm áp, thích hợp cho giày đi mùa đông hoặc giày bảo hộ.', 1, '2024-11-07 23:40:45', '2024-11-07 23:40:45'),
+('Polyester', 'Polyester là chất liệu tổng hợp nhẹ và bền, thường được sử dụng cho các loại giày thể thao hoặc giày đi bộ.', 1, '2024-11-07 23:41:25', '2024-11-07 23:41:25'),
+('Nylon', 'Nylon là chất liệu siêu nhẹ, chống mài mòn và bền bỉ, phù hợp cho các loại giày thể thao hoặc giày chạy bộ.', 1, '2024-11-07 23:42:05', '2024-11-07 23:42:05'),
+('Sợi tổng hợp', 'Sợi tổng hợp kết hợp các đặc tính của nhiều chất liệu khác nhau, giúp tạo ra những sản phẩm giày bền, chống nước và dễ dàng vệ sinh.', 1, '2024-11-07 23:42:45', '2024-11-07 23:42:45'),
+('Silicone', 'Silicone là chất liệu dẻo, mềm và đàn hồi, giúp tạo sự thoải mái khi mang giày và thường được sử dụng trong các thiết kế giày chuyên dụng.', 1, '2024-11-07 23:43:25', '2024-11-07 23:43:25'),
+('Kim loại', 'Kim loại được sử dụng trong các chi tiết trang trí của giày như khóa kéo, nẹp giày, hoặc đinh tán, giúp tạo điểm nhấn cho thiết kế.', 1, '2024-11-07 23:44:05', '2024-11-07 23:44:05'),
+('Da PU', 'Da PU là chất liệu giả da, thường được sử dụng thay thế cho da thật, với chi phí thấp nhưng vẫn có độ bền cao và dễ chăm sóc.', 1, '2024-11-07 23:44:45', '2024-11-07 23:44:45'),
+('Lụa', 'Lụa là chất liệu mềm mại, nhẹ nhàng và bóng bẩy, thường được dùng cho các mẫu giày đặc biệt dành cho dịp trang trọng.', 1, '2024-11-07 23:45:25', '2024-11-07 23:45:25'),
+('Canvas', 'Canvas là chất liệu vải bền và dày, thường được sử dụng trong các loại giày thể thao hoặc giày casual.', 1, '2024-11-07 23:46:05', '2024-11-07 23:46:05'),
+('Mềm', 'Chất liệu mềm mại, thường được sử dụng trong các loại giày dép mùa hè hoặc giày đi trong nhà.', 1, '2024-11-07 23:46:45', '2024-11-07 23:46:45'),
+('Bằng nhựa PVC', 'Chất liệu PVC có độ bền cao và thường được sử dụng trong các loại giày bảo hộ hoặc giày đế nhựa cho các hoạt động ngoài trời.', 1, '2024-11-07 23:47:25', '2024-11-07 23:47:25'),
+('Cao su non', 'Cao su non được sử dụng trong các loại giày thể thao để mang lại sự nhẹ nhàng và độ bền lâu dài.', 1, '2024-11-07 23:48:05', '2024-11-07 23:48:05'),
+('Gỗ', 'Chất liệu gỗ chủ yếu được sử dụng cho các chi tiết trang trí của giày hoặc làm giày cho các dịp đặc biệt.', 1, '2024-11-07 23:48:45', '2024-11-07 23:48:45'),
+('Gốm', 'Gốm là chất liệu ít gặp trong giày dép, nhưng đôi khi được sử dụng cho các chi tiết trang trí hoặc giày cho các dịp nghệ thuật.', 1, '2024-11-07 23:49:25', '2024-11-07 23:49:25'),
+('Chất liệu tổng hợp', 'Chất liệu tổng hợp là sự kết hợp của các vật liệu khác nhau để tạo ra giày có độ bền, nhẹ nhàng và tiện dụng cho người sử dụng.', 1, '2024-11-07 23:50:05', '2024-11-07 23:50:05');
+
+===============================================================================================
+INSERT INTO THUONG_HIEU (TEN_THUONG_HIEU, TRANG_THAI_THUONG_HIEU, CREATE_THUONG_HIEU, UPDATE_THUONG_HIEU)
+VALUES
+
+
+('Reebok', 1, '2024-11-07 23:57:10', '2024-11-07 23:57:10'),
+('Under Armour', 1, '2024-11-07 23:57:50', '2024-11-07 23:57:50'),
+
+
+
+('Asics', 1, '2024-11-08 00:00:40', '2024-11-08 00:00:40'),
+('Fila', 1, '2024-11-08 00:01:20', '2024-11-08 00:01:20'),
+('Skechers', 1, '2024-11-08 00:02:00', '2024-11-08 00:02:00'),
+('Jordan', 1, '2024-11-08 00:02:40', '2024-11-08 00:02:40'),
+('Balenciaga', 1, '2024-11-08 00:03:20', '2024-11-08 00:03:20'),
+('Gucci', 1, '2024-11-08 00:04:00', '2024-11-08 00:04:00'),
+('Prada', 1, '2024-11-08 00:04:40', '2024-11-08 00:04:40'),
+('Louis Vuitton', 1, '2024-11-08 00:05:20', '2024-11-08 00:05:20'),
+('Reebok Classic', 1, '2024-11-08 00:06:00', '2024-11-08 00:06:00'),
+('Timberland', 1, '2024-11-08 00:06:40', '2024-11-08 00:06:40'),
+('Crocs', 1, '2024-11-08 00:07:20', '2024-11-08 00:07:20'),
+('Doc Martens', 1, '2024-11-08 00:08:00', '2024-11-08 00:08:00');
+
+================================================================================================
+INSERT INTO PHONG_CACH (TEN_PHONG_CACH, TRANG_THAI_PHONG_CACH, CREATED_PHONG_CACH, UPDATE_PHONG_CACH)
+VALUES
+('Sang trọng', 1, '2024-11-08 00:23:00', '2024-11-08 00:23:00'),
+('Cổ điển', 1, '2024-11-08 00:23:40', '2024-11-08 00:23:40'),
+('Luxury', 1, '2024-11-08 00:24:20', '2024-11-08 00:24:20'),
+('Elegant', 1, '2024-11-08 00:25:00', '2024-11-08 00:25:00'),
+('High-end', 1, '2024-11-08 00:25:40', '2024-11-08 00:25:40'),
+('Fashion-forward', 1, '2024-11-08 00:26:20', '2024-11-08 00:26:20'),
+('Với đế cao', 1, '2024-11-08 00:27:00', '2024-11-08 00:27:00'),
+('Giày da cao cấp', 1, '2024-11-08 00:27:40', '2024-11-08 00:27:40'),
+('Giày lướt nhẹ', 1, '2024-11-08 00:28:20', '2024-11-08 00:28:20'),
+('Giày công sở sang trọng', 1, '2024-11-08 00:29:00', '2024-11-08 00:29:00'),
+('Giày cổ điển đẳng cấp', 1, '2024-11-08 00:29:40', '2024-11-08 00:29:40'),
+('Giày loafer sang trọng', 1, '2024-11-08 00:30:20', '2024-11-08 00:30:20'),
+('Giày búp bê đẳng cấp', 1, '2024-11-08 00:31:00', '2024-11-08 00:31:00'),
+('Giày dây đẳng cấp', 1, '2024-11-08 00:31:40', '2024-11-08 00:31:40'),
+('Giày thời trang cao cấp', 1, '2024-11-08 00:32:20', '2024-11-08 00:32:20'),
+('Giày cưới sang trọng', 1, '2024-11-08 00:33:00', '2024-11-08 00:33:00'),
+('Giày sang trọng cho tiệc', 1, '2024-11-08 00:33:40', '2024-11-08 00:33:40'),
+('Giày trang trí lấp lánh', 1, '2024-11-08 00:34:20', '2024-11-08 00:34:20'),
+('Giày thể thao kiểu dáng sang trọng', 1, '2024-11-08 00:35:00', '2024-11-08 00:35:00'),
+('Giày dạ hội sang trọng', 1, '2024-11-08 00:35:40', '2024-11-08 00:35:40');
+
+=================================================================================================
+INSERT INTO MUC_DICH_SU_DUNG (TEN_MUC_DICH_SU_DUNG, TRANG_THAI_MUC_DICH_SU_DUNG, CREATE_MUC_DICH_SU_DUNG, UPDATE_MUC_DICH_SU_DUNG)
+VALUES
+('Đi làm', 1, '2024-11-08 00:40:00', '2024-11-08 00:40:00'),
+('Đi học', 1, '2024-11-08 00:40:40', '2024-11-08 00:40:40'),
+('Thể thao', 1, '2024-11-08 00:41:20', '2024-11-08 00:41:20'),
+('Đi dạo', 1, '2024-11-08 00:42:00', '2024-11-08 00:42:00'),
+('Tiệc tùng', 1, '2024-11-08 00:42:40', '2024-11-08 00:42:40'),
+('Dự tiệc', 1, '2024-11-08 00:43:20', '2024-11-08 00:43:20'),
+('Đi du lịch', 1, '2024-11-08 00:44:00', '2024-11-08 00:44:00'),
+('Cưới hỏi', 1, '2024-11-08 00:44:40', '2024-11-08 00:44:40'),
+('Giải trí', 1, '2024-11-08 00:45:20', '2024-11-08 00:45:20'),
+('Hàng ngày', 1, '2024-11-08 00:46:00', '2024-11-08 00:46:00'),
+('Công sở', 1, '2024-11-08 00:46:40', '2024-11-08 00:46:40'),
+('Đi chơi', 1, '2024-11-08 00:47:20', '2024-11-08 00:47:20'),
+('Chạy bộ', 1, '2024-11-08 00:48:00', '2024-11-08 00:48:00'),
+('Đi bộ', 1, '2024-11-08 00:48:40', '2024-11-08 00:48:40'),
+('Đi phượt', 1, '2024-11-08 00:49:20', '2024-11-08 00:49:20'),
+('Đi chơi biển', 1, '2024-11-08 00:50:00', '2024-11-08 00:50:00'),
+('Giày dã ngoại', 1, '2024-11-08 00:50:40', '2024-11-08 00:50:40'),
+('Công việc văn phòng', 1, '2024-11-08 00:51:20', '2024-11-08 00:51:20'),
+('Đạp xe', 1, '2024-11-08 00:52:00', '2024-11-08 00:52:00'),
+('Thể thao ngoài trời', 1, '2024-11-08 00:52:40', '2024-11-08 00:52:40');
+
+
+========================================================================================
+INSERT INTO MAU_SAC (TEN_MAU_SAC, CREATE_MAU_SAC, UPDATE_MAU_SAC, TRANG_THAI_MAU_SAC, MA_MAU)
+VALUES
+('Đen', '2024-11-08 00:55:00', '2024-11-08 00:55:00', 1, '#000000'),
+('Trắng', '2024-11-08 00:55:40', '2024-11-08 00:55:40', 1, '#FFFFFF'),
+('Xám', '2024-11-08 00:56:20', '2024-11-08 00:56:20', 1, '#808080'),
+('Đỏ', '2024-11-08 00:57:00', '2024-11-08 00:57:00', 1, '#FF0000'),
+('Xanh dương', '2024-11-08 00:57:40', '2024-11-08 00:57:40', 1, '#0000FF'),
+('Xanh lá', '2024-11-08 00:58:20', '2024-11-08 00:58:20', 1, '#008000'),
+('Vàng', '2024-11-08 00:59:00', '2024-11-08 00:59:00', 1, '#FFFF00'),
+('Cam', '2024-11-08 00:59:40', '2024-11-08 00:59:40', 1, '#FFA500'),
+('Hồng', '2024-11-08 01:00:20', '2024-11-08 01:00:20', 1, '#FFC0CB'),
+('Tím', '2024-11-08 01:01:00', '2024-11-08 01:01:00', 1, '#800080'),
+('Nâu', '2024-11-08 01:01:40', '2024-11-08 01:01:40', 1, '#A52A2A'),
+('Bạc', '2024-11-08 01:02:20', '2024-11-08 01:02:20', 1, '#C0C0C0'),
+('Vàng kim', '2024-11-08 01:03:00', '2024-11-08 01:03:00', 1, '#FFD700'),
+('Đồng', '2024-11-08 01:03:40', '2024-11-08 01:03:40', 1, '#CD7F32'),
+('Be', '2024-11-08 01:04:20', '2024-11-08 01:04:20', 1, '#F5F5DC'),
+('Ngọc lam', '2024-11-08 01:05:00', '2024-11-08 01:05:00', 1, '#20B2AA'),
+('Chàm', '2024-11-08 01:05:40', '2024-11-08 01:05:40', 1, '#5D3F6D'),
+('Màu rượu vang', '2024-11-08 01:06:20', '2024-11-08 01:06:20', 1, '#8B0000'),
+('Cẩm thạch', '2024-11-08 01:07:00', '2024-11-08 01:07:00', 1, '#B9D3B6');
+
