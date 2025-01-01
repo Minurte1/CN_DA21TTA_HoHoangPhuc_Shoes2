@@ -67,21 +67,6 @@ const DashboardAdmin = () => {
             sx={{ color: currentTheme.color, fontSize: "12px" }}
             label="Người dùng"
           />
-          <Tab
-            sx={{ color: currentTheme.color, fontSize: "12px" }}
-            label="Khác"
-          />
-
-          <Tab
-            sx={{ color: currentTheme.color, fontSize: "12px" }}
-            label="Settings"
-          />
-          <Tab
-            sx={{ color: currentTheme.color, fontSize: "12px" }}
-            label="Settings"
-          />
-
-          <Tab sx={{ color: currentTheme.color }} label="Settings" />
         </Tabs>
 
         {/* Tab Content */}

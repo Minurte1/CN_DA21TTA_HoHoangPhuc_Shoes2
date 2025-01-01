@@ -340,9 +340,16 @@ const loginUserGoogle = async (req, res) => {
       "SELECT * FROM NGUOI_DUNG WHERE EMAIL = ?",
       [email]
     );
-
+    const user = rows[0];
+    // Kiểm tra nếu tài khoản bị khóa
+    if (user.TRANG_THAI_USER == 0) {
+      return res.status(403).json({
+        EM: "Tài khoản bị khóa, không thể đăng nhập",
+        EC: 0,
+        DT: "Account is disabled",
+      });
+    }
     if (rows.length > 0) {
-      const user = rows[0];
       console.log(user);
       const token = jwt.sign(
         {
@@ -494,6 +501,15 @@ const loginUser = async (req, res) => {
 
     const user = rows[0];
 
+    // Kiểm tra nếu tài khoản bị khóa
+    if (user.TRANG_THAI_USER == 0) {
+      return res.status(403).json({
+        EM: "Tài khoản bị khóa, không thể đăng nhập",
+        EC: 0,
+        DT: "Account is disabled",
+      });
+    }
+
     // Kiểm tra mật khẩu
     const isPasswordValid = await bcrypt.compare(password, user.MAT_KHAU); // So sánh mật khẩu
     if (!isPasswordValid) {
@@ -501,15 +517,6 @@ const loginUser = async (req, res) => {
         EM: "Mật khẩu không đúng",
         EC: 0,
         DT: [],
-      });
-    }
-
-    // Kiểm tra nếu tài khoản bị khóa
-    if (user.TRANG_THAI_USER === -1) {
-      return res.status(403).json({
-        EM: "Tài khoản bị khóa, không thể đăng nhập",
-        EC: 0,
-        DT: "Account is disabled",
       });
     }
 
@@ -595,7 +602,7 @@ const verifyAdmin = async (req, res) => {
 
     if (rows.length > 0) {
       const user = rows[0];
-      console.log(user.VAI_TRO);
+
       // Kiểm tra vai trò của người dùng
       if (user.VAI_TRO == "1") {
         return res.status(200).json({

@@ -593,28 +593,6 @@ const NavBarAdmin = () => {
                 <ListItem
                   button
                   component={Link}
-                  to="/admin/tuong-tac-nguoi-dung/comments"
-                  sx={{
-                    pl: 4,
-                    color: currentTheme.color,
-                    mt: 1,
-                    mb: 1,
-                    borderRadius: "13px",
-                    backgroundColor:
-                      location.pathname ===
-                      "/admin/tuong-tac-nguoi-dung/comments"
-                        ? currentTheme.accentColor
-                        : "transparent", // Kiểm tra nếu đang ở trang này
-                    "&:hover": {
-                      backgroundColor: currentTheme.accentColor,
-                    },
-                  }}
-                >
-                  <ListItemText primary="Quản lý bình luận" />
-                </ListItem>
-                <ListItem
-                  button
-                  component={Link}
                   to="/admin/tuong-tac-nguoi-dung/reviews"
                   sx={{
                     pl: 4,

@@ -1067,8 +1067,8 @@ const getSAN_PHAM_ChiTiet_ById = async (req, res) => {
 
 const updateSAN_PHAM_ChiTiet_ById = async (req, res) => {
   const { id } = req.params; // ID của sản phẩm cha
-  const { existingDetails, newDetails } = req.body; // Mảng chi tiết sản phẩm gửi từ client
-
+  const { existingDetails, newDetails, chiTietSanPham } = req.body; // Mảng chi tiết sản phẩm gửi từ client
+  console.log("existingDetails", existingDetails);
   try {
     // Lặp qua từng chi tiết sản phẩm cũ để cập nhật
     for (let detail of existingDetails) {
@@ -1152,7 +1152,7 @@ const updateSAN_PHAM_ChiTiet_ById = async (req, res) => {
 
       // Lấy ID_KICH_CO từ KICH_CO
       const [kichCoResult] = await connection.execute(
-        `SELECT ID_KICH_CO FROM KICH_CO WHERE KICH_CO = ? AND TRANG_THAI_KICH_CO = 1`,
+        `SELECT ID_KICH_CO FROM KICH_CO WHERE KICH_CO = ? AND TRANG_THAI_KICH_CO = "1"`,
         [kichCoId] // Tên kích cỡ
       );
 
@@ -1183,10 +1183,11 @@ const updateSAN_PHAM_ChiTiet_ById = async (req, res) => {
          WHERE ID_SAN_PHAM = ? AND MAU_SAC_ID = ? AND ID_KICH_CO = ?`,
         [id, finalMauSacId, finalKichCoId]
       );
-
+      console.log("oke cc ", existingDetail);
       if (existingDetail.length > 0) {
         // Nếu đã tồn tại, cập nhật số lượng sản phẩm
         const soLuong = parseInt(soLuongSanPhamChiTiet, 10);
+        console.log("oke update ", soLuong);
         await connection.execute(
           `UPDATE SAN_PHAM_CHI_TIET 
            SET SOLUONG_SANPHAM_CHITIET = ?
@@ -1196,6 +1197,7 @@ const updateSAN_PHAM_ChiTiet_ById = async (req, res) => {
       } else {
         // Nếu không tồn tại, thêm mới chi tiết sản phẩm
         const soLuong = parseInt(soLuongSanPhamChiTiet, 10);
+        console.log("oke insert ", soLuong);
         await connection.execute(
           `INSERT INTO SAN_PHAM_CHI_TIET 
            (ID_SAN_PHAM, MAU_SAC_ID, ID_KICH_CO, SOLUONG_SANPHAM_CHITIET, TRANGTHAI_SANPHAM_CHITIET)

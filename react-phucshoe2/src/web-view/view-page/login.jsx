@@ -68,16 +68,16 @@ const LoginPage = () => {
                 userInfo: response.data.DT.userInfo, // Thông tin người dùng
               })
             );
-            toast.success(response.data.EM);
+            enqueueSnackbar(response.data.EM, { variant: "success" });
             // loginIs();
             navigate("/");
           } else {
-            toast.error(response.data.EM);
+            enqueueSnackbar(response.data.EM, { variant: "info" });
           }
         } catch (error) {
           console.error("Đã xảy ra lỗi:", error);
 
-          toast.error(error.response.data.EM);
+          enqueueSnackbar(error.response.data.EM, { variant: "info" });
         }
       };
 
@@ -117,15 +117,16 @@ const LoginPage = () => {
           })
         );
 
-        enqueueSnackbar(response.data.EM);
+        enqueueSnackbar(response.data.EM, { variant: "success" });
         navigate("/");
       } else {
-        enqueueSnackbar(response.data.EM);
+        enqueueSnackbar(response.data.EM, { variant: "info" });
       }
     } catch (error) {
       console.error("Đã xảy ra lỗi:", error);
       enqueueSnackbar(
-        error.response?.data?.EM || "Có lỗi xảy ra, vui lòng thử lại."
+        error.response?.data?.EM || "Có lỗi xảy ra, vui lòng thử lại.",
+        { variant: "info" }
       );
     } finally {
       setLoading(false); // Kết thúc loading
@@ -169,7 +170,7 @@ const LoginPage = () => {
         />
 
         <Typography variant="h5" sx={{ marginBottom: 3 }}>
-          Sign In
+          Đăng nhập
         </Typography>
 
         <form onSubmit={handleSubmit}>
@@ -207,7 +208,7 @@ const LoginPage = () => {
               textDecoration: "none",
             }}
           >
-            Forgot password?
+            Quên mật khẩu
           </Typography>
 
           <Button
@@ -232,7 +233,7 @@ const LoginPage = () => {
           variant="body2"
           sx={{ margin: "20px 0", color: currentTheme.color }}
         >
-          or sign in with
+          Hoặc đăng nhập với
         </Typography>
 
         <Grid container spacing={2} sx={{ justifyContent: "center" }}>
@@ -269,7 +270,7 @@ const LoginPage = () => {
             variant="body2"
             sx={{ marginTop: 3, color: currentTheme.color }}
           >
-            Create account
+            Tạo tài khoản
           </Typography>
         </Link>
       </Box>
