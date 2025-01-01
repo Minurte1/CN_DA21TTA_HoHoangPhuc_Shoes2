@@ -257,6 +257,7 @@ const getChiTietHoaDonTheoNguoiDung_Success = async (req, res) => {
     kc.KICH_CO, 
     cthd.ID_CHI_TIET_HOA_DON, 
     cthd.SO_LUONG_SP, 
+    cthd.DANH_GIA,
     cthd.GIA_SAN_PHAM_CHI_TIET
 FROM 
     SAN_PHAM sp

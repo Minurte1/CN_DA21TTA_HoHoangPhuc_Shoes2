@@ -281,10 +281,10 @@ const RegistrationForm = () => {
                       variant="h5"
                       style={{ color: currentTheme.color, textAlign: "center" }}
                     >
-                      Create Account
+                      Tạo tài khoản
                     </Typography>
                     <TextField
-                      label="Email Address"
+                      label="Địa chỉ Email"
                       variant="outlined"
                       fullWidth
                       margin="normal"
@@ -310,7 +310,7 @@ const RegistrationForm = () => {
                       }}
                     />
                     <TextField
-                      label="Full Name"
+                      label="Tên đầy đủ"
                       variant="outlined"
                       fullWidth
                       margin="normal"
@@ -335,7 +335,7 @@ const RegistrationForm = () => {
                       }}
                     />
                     <TextField
-                      label="Phone"
+                      label="Số điện thoại"
                       variant="outlined"
                       fullWidth
                       margin="normal"
@@ -359,7 +359,7 @@ const RegistrationForm = () => {
                       }}
                     />{" "}
                     <TextField
-                      label="Password"
+                      label="Mật khẩu"
                       type="password"
                       variant="outlined"
                       fullWidth
@@ -384,7 +384,7 @@ const RegistrationForm = () => {
                       }}
                     />{" "}
                     <TextField
-                      label="Confirm Password"
+                      label="Xác nhận mật khẩu"
                       type="password"
                       variant="outlined"
                       value={confirmPassword}
@@ -422,7 +422,7 @@ const RegistrationForm = () => {
                         }
                         label={
                           <Typography style={{ color: currentTheme.color }}>
-                            Send me news, surveys and special offers from
+                            Gửi cho tôi tin tức, khảo sát và ưu đãi đặc biệt từ
                             PhucShoe
                           </Typography>
                         }
@@ -437,7 +437,7 @@ const RegistrationForm = () => {
                         }
                         label={
                           <Typography style={{ color: currentTheme.color }}>
-                            I have read and agree to the terms of service
+                            Tôi đã đọc và đồng ý với các điều khoản dịch vụ
                           </Typography>
                         }
                       />
@@ -474,19 +474,19 @@ const RegistrationForm = () => {
                             : "pointer", // Con trỏ chỉ khi enabled
                       }}
                     >
-                      Continue
+                      Tiếp tục
                     </Button>
                     <Typography
                       align="center"
                       style={{ color: currentTheme.color, marginTop: "20px" }}
                     >
-                      Already have an account?{" "}
+                      Bạn đã có tài khoản?
                       <a href="#" style={{ color: "#26bbff" }}>
-                        Sign In
+                        Đăng nhập
                       </a>
                     </Typography>
                     <Typography align="center" style={{ color: "#26bbff" }}>
-                      Privacy Policy
+                      Chính sách bảo mật
                     </Typography>
                     <Button
                       variant="contained"
@@ -499,7 +499,7 @@ const RegistrationForm = () => {
                       }}
                       onClick={handleOpenThongTinUser}
                     >
-                      Back
+                      Trở về
                     </Button>
                   </Container>
                 </>

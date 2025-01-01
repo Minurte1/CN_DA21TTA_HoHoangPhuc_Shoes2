@@ -17,7 +17,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { enqueueSnackbar } from "notistack";
 import { getThemeConfig } from "../../services/themeService";
-
+import { Link } from "react-router-dom";
 const LichSuMuaHangUser = () => {
   const [tabIndex, setTabIndex] = useState(0);
   const apiUrl = process.env.REACT_APP_URL_SERVER;
@@ -109,7 +109,7 @@ const LichSuMuaHangUser = () => {
     }
     handleCloseDialog();
   };
-
+  console.log("dataChiTietHoaDon", dataChiTietHoaDon);
   return (
     <Box sx={{ p: 2, bgcolor: currentTheme.backgroundColor, height: "auto" }}>
       {/* Tabs */}
@@ -256,6 +256,8 @@ const LichSuMuaHangUser = () => {
                                 : "Đánh Giá"}
                             </Button>
                             <Button
+                              component={Link}
+                              to={`/selectShoe/${product.ID_SAN_PHAM}`}
                               variant="outlined"
                               sx={{
                                 ml: 2,
@@ -265,7 +267,7 @@ const LichSuMuaHangUser = () => {
                               }}
                             >
                               Mua lại
-                            </Button>{" "}
+                            </Button>
                           </>
                         ) : (
                           false
