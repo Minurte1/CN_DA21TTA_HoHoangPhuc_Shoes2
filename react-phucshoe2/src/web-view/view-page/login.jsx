@@ -16,12 +16,11 @@ import { login } from "../../redux/authSlice";
 import { enqueueSnackbar } from "notistack";
 import { getThemeConfig } from "../../services/themeService";
 const LoginPage = () => {
-  const [user, setUser] = useState(null);
   const [tokenGoogle, setTokenGoogle] = useState(null);
   const currentTheme = getThemeConfig(localStorage.getItem("THEMES") || "dark");
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
+  const [user, setUser] = useState(null);
   const loginGoogle = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
       setTokenGoogle(tokenResponse.access_token);
