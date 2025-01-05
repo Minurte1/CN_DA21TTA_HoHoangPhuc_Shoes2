@@ -59,7 +59,7 @@ const thongKeRoute = require("./routers/sanPhamRouters/thongKeRoute.js");
 const thanhToanRoute = require("./routers/thanhToanRouter/thanhToanRouter.js");
 const donHangRoute = require("./routers/thanhToanRouter/donHangRouter.js");
 const chiTietHoaDonRoute = require("./routers/thanhToanRouter/chiTietHoaDonRouter.js");
-
+const thanhToanOnlineRoute = require("./routers/thanhToanRouter/thanhToanOnlineRoute.js");
 //api tương tác người dùng
 const gioHangRoute = require("./routers/tuongTacUserRouter/gioHangRouter.js");
 const yeuThichRoute = require("./routers/tuongTacUserRouter/yeuThichRouter.js");
@@ -82,11 +82,13 @@ app.use("/carousel-products", carouselProductsRoute);
 app.use("/thong-ke", thongKeRoute);
 //
 app.use("/thanh-toan/", thanhToanRoute);
+app.use("/thanh-toan-online", thanhToanOnlineRoute);
 app.use("/gio-hang/", gioHangRoute);
 app.use("/chi-tiet-hoa-don/", chiTietHoaDonRoute);
 //
 app.use("/yeu-thich/", yeuThichRoute);
 app.use("/don-hang/", donHangRoute);
+
 app.use("/binh-luan/", binhLuanRoute);
 
 app.use("/tin-nhan/", tinNhanRoute);
