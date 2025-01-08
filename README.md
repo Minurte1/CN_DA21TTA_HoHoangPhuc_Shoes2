@@ -31,19 +31,19 @@ PhucShoe2 mang đến một trải nghiệm mua sắm hiện đại với các t
 
 ## 🛠️  Technologies Used
 
-- **Frontend**: React.js, Material-UI, React Router,...
-- **Backend**: Node.js, Express.js, Socket,..
-- **Database**: MySQL
+- **Frontend**: ⚛️ React.js,🎨 Material-UI, HTML, CSS, JavaScript, React Router,...
+- **Backend**: 🟢  Node.js, 🛡️  Express.js, Socket,..
+- **Database**: 🗄️  MySQL
 - **State Management**: Redux Toolkit
 - **Authentication**: JSON Web Tokens (JWT)
 - **Real-time Communication**: Socket.IO
 - **UI Enhancements**: Notistack, React-Quill, Chart.js
 
-## Getting Started
+## 🚀 Getting Started
 
 Để chạy dự án trên máy của bạn, hãy làm theo các bước dưới đây.
 
-### Prerequisites
+### 🎯 Prerequisites
 
 Cần cài đặt các công cụ sau:
 - Node.js (v18.18 trở lên)
@@ -96,9 +96,9 @@ Start the frontend ▶️:
    
 ## 🚀 About Me
 
-- **GitHub**: [Minurte1](https://github.com/Minurte1)  
-- **Website**: [Portfolio](https://portfolio-phuc2px.vercel.app/)  
-- **Gmail**: hohoangphucjob@gmail.com  
+- **GitHub** 🐙: [Minurte1](https://github.com/Minurte1)  
+- **Website** 🌐: [Portfolio](https://portfolio-phuc2px.vercel.app/)  
+- **Gmail** ✉️: hohoangphucjob@gmail.com  
 
 We are full stack developers dedicated to delivering high-quality solutions!
 
