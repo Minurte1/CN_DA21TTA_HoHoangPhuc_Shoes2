@@ -1,7 +1,7 @@
-# PhucShoe2
-# E-Commerce Platform - PhucShoe2
+# PhucShoe2 👟
+# E-Commerce Platform - PhucShoe2 
 
-PhucShoe2 là một nền tảng thương mại điện tử giúp khách hàng dễ dàng tìm kiếm và mua sắm các sản phẩm giày dép đa dạng. Với giao diện thân thiện và công nghệ hiện đại, chúng tôi mang đến trải nghiệm mua sắm trực tuyến tiện lợi và an toàn.
+PhucShoe2 là một nền tảng thương mại điện tử giúp khách hàng dễ dàng tìm kiếm và mua sắm các sản phẩm giày dép đa dạng. Với giao diện thân thiện và công nghệ hiện đại, chúng tôi mang đến trải nghiệm mua sắm trực tuyến tiện lợi và an toàn. 
 
 ## Table of Contents
 
@@ -14,7 +14,7 @@ PhucShoe2 là một nền tảng thương mại điện tử giúp khách hàng 
 - [Running the Application](#running-the-application)
 - [License](#license)
 
-## About the Project
+## 👟 About the Project   
 
 PhucShoe2 mang đến một trải nghiệm mua sắm hiện đại với các tính năng vượt trội:
 - **Bộ sưu tập đa dạng**: Sản phẩm phù hợp với mọi phong cách và nhu cầu.
@@ -22,14 +22,14 @@ PhucShoe2 mang đến một trải nghiệm mua sắm hiện đại với các t
 - **Thanh toán an toàn**: Đảm bảo an toàn giao dịch với nhiều phương thức thanh toán.
 - **Hỗ trợ trên mọi thiết bị**: Tương thích với cả máy tính và thiết bị di động.
 
-## Features
+##  🌟 Features 
 
 - Danh mục sản phẩm phong phú, hỗ trợ lọc và tìm kiếm.
 - Giỏ hàng trực quan và dễ sử dụng.
 - Quản lý tài khoản người dùng và đặt hàng.
 - Báo cáo doanh số và phân tích dữ liệu.
 
-## Technologies Used
+## 🛠️  Technologies Used
 
 - **Frontend**: React.js, Material-UI, React Router,...
 - **Backend**: Node.js, Express.js, Socket,..
@@ -47,23 +47,25 @@ PhucShoe2 mang đến một trải nghiệm mua sắm hiện đại với các t
 
 Cần cài đặt các công cụ sau:
 - Node.js (v18.18 trở lên)
-- MySQL
+- MySQL 5.0 trở lên 
 - Git
+- Reactjs 18.0
+  
 
 ### Installation
-1. Clone the repository:
+1. Clone the repository 📂:
    ```bash
    git clone https://github.com/yourusername/managing-and-optimizing-faculty-teaching-hours.git](https://github.com/Minurte1/CN_DA21TTA_HoHoangPhuc_Shoes2.git
   
 
-2. Install backend dependencies:
+2. Install backend dependencies 📂:
    ```bash
    cd backend
    npm install
-3. Install frontend dependencies:
+3. Install frontend dependencies 📂:
     ```cd ../frontend
     npm install 
-4. Install backend dependencies:
+4. Install backend dependencies 📂:
     ```# Server configuration
     PORT=2701
     URL_REACT=http://localhost:3000
@@ -82,18 +84,21 @@ Cần cài đặt các công cụ sau:
 
 ## Running the Application
 Backend   
- Start the backend server  
+ Start the backend server ▶️:
 
     
     npm start  
 
 Frontend   
-Start the frontend   
+Start the frontend ▶️:  
 
     npm start
    
 ## 🚀 About Me
-   gihub: https://github.com/Minurte1
-   website: https://portfolio-phuc2px.vercel.app/
-   gmail: hohoangphucjob@gmail.com
-   we are a full stack developer...
+
+- **GitHub**: [Minurte1](https://github.com/Minurte1)  
+- **Website**: [Portfolio](https://portfolio-phuc2px.vercel.app/)  
+- **Gmail**: hohoangphucjob@gmail.com  
+
+We are full stack developers dedicated to delivering high-quality solutions!
+
