@@ -1,85 +1,104 @@
-# PhucShoe2
+# PhucShoe2 👟
+# E-Commerce Platform - PhucShoe2 
+
+PhucShoe2 là một nền tảng thương mại điện tử giúp khách hàng dễ dàng tìm kiếm và mua sắm các sản phẩm giày dép đa dạng. Với giao diện thân thiện và công nghệ hiện đại, chúng tôi mang đến trải nghiệm mua sắm trực tuyến tiện lợi và an toàn. 
 
 ## Table of Contents
 
+- [About the Project](#about-the-project)
+- [Features](#features)
+- [Technologies Used](#technologies-used)
 - [Getting Started](#getting-started)
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
-- [Configuration](#configuration)
 - [Running the Application](#running-the-application)
-- [Built With](#built-with)
-- [Contributing](#contributing)
 - [License](#license)
 
-## Getting Started
+## 👟 About the Project   
 
-Welcome to PhucShoe_2, an online shoe store designed to offer a seamless shopping experience for shoe lovers. Our website provides a variety of footwear options, from casual to formal, all curated to meet the diverse tastes and needs of our customers.
+PhucShoe2 mang đến một trải nghiệm mua sắm hiện đại với các tính năng vượt trội:
+- **Bộ sưu tập đa dạng**: Sản phẩm phù hợp với mọi phong cách và nhu cầu.
+- **Giao diện thân thiện**: Thiết kế đơn giản, dễ sử dụng.
+- **Thanh toán an toàn**: Đảm bảo an toàn giao dịch với nhiều phương thức thanh toán.
+- **Hỗ trợ trên mọi thiết bị**: Tương thích với cả máy tính và thiết bị di động.
 
-Features
-Diverse Collection: Browse a wide range of shoes for different styles and occasions.
-User-Friendly Interface: Intuitive design that makes navigating the website simple and efficient.
-Secure Payment: Multiple payment options with robust security to protect your transactions.
-Responsive Design: Optimized for both desktop and mobile devices for a smooth shopping experience.
-Technologies Used
-Frontend: HTML, CSS, JavaScript (React.js)
-Backend: Node.js, Express
-Database: MySQL/MongoDB
-How to Run the Project
-Clone the repository.
-Install dependencies using npm install.
-Run the development server using npm start.
-We hope this project brings convenience to your shoe shopping experience!
+##  🌟 Features 
 
-### Prerequisites
+- Danh mục sản phẩm phong phú, hỗ trợ lọc và tìm kiếm.
+- Giỏ hàng trực quan và dễ sử dụng.
+- Quản lý tài khoản người dùng và đặt hàng.
+- Báo cáo doanh số và phân tích dữ liệu.
 
-You will need the following software installed on your machine:
-- React
-- Node.js (v18.18 or higher)
-- MySQL
+## 🛠️  Technologies Used
+
+- **Frontend**: ⚛️ React.js,🎨 Material-UI, HTML, CSS, JavaScript, React Router,...
+- **Backend**: 🟢  Node.js, 🛡️  Express.js, Socket,..
+- **Database**: 🗄️  MySQL
+- **State Management**: Redux Toolkit
+- **Authentication**: JSON Web Tokens (JWT)
+- **Real-time Communication**: Socket.IO
+- **UI Enhancements**: Notistack, React-Quill, Chart.js
+
+## 🚀 Getting Started
+
+Để chạy dự án trên máy của bạn, hãy làm theo các bước dưới đây.
+
+### 🎯 Prerequisites
+
+Cần cài đặt các công cụ sau:
+- Node.js (v18.18 trở lên)
+- MySQL 5.0 trở lên 
 - Git
+- Reactjs 18.0
+  
 
 ### Installation
-
-1. Clone the repository:
+1. Clone the repository 📂:
    ```bash
-   git clone https://github.com/yourusername/managing-and-optimizing-faculty-teaching-hours.git
-   cd managing-and-optimizing-faculty-teaching-hours
+   git clone https://github.com/yourusername/managing-and-optimizing-faculty-teaching-hours.git](https://github.com/Minurte1/CN_DA21TTA_HoHoangPhuc_Shoes2.git
+  
 
-2. Install backend dependencies:
+2. Install backend dependencies 📂:
    ```bash
    cd backend
    npm install
-3. Install frontend dependencies:
+3. Install frontend dependencies 📂:
     ```cd ../frontend
     npm install 
-4. Install backend dependencies:
+4. Install backend dependencies 📂:
     ```# Server configuration
     PORT=2701
     URL_REACT=http://localhost:3000
 
     # Database configuration 
-    HOST_NAME=localhost  
-    NODE_ENV=development
-    DB_HOST=localhost
-    DB_PORT=3306
+    HOST_NAME=
+    NODE_ENV=
+    DB_HOST=
+    DB_PORT=
     DB_USER=root
-    DB_NAME=faculty_management
-    DB_PASSWORD=yourpassword
+    DB_NAME=
+    DB_PASSWORD=
 
     # JWT configuration
-    SECRETKEYADMIN=your_secret_key.
+    SECRETKEYADMIN=
 
 ## Running the Application
 Backend   
- Start the backend server  
+ Start the backend server ▶️:
 
     
     npm start  
 
 Frontend   
-Start the frontend   
+Start the frontend ▶️:  
 
     npm start
    
 ## 🚀 About Me
-we are a full stack developer...
+
+- **GitHub** 🐙: [Minurte1](https://github.com/Minurte1)  
+- **Website** 🌐: [Portfolio](https://portfolio-phuc2px.vercel.app/)  
+- **Gmail** ✉️: hohoangphucjob@gmail.com  
+
+We are full stack developers dedicated to delivering high-quality solutions!
+
