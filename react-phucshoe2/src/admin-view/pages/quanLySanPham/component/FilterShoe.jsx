@@ -55,7 +55,7 @@ const FilterShoes = ({
   offStatus,
 }) => {
   const language = useSelector((state) => state.language.language);
-  const t = translations[language].products;
+  const t = translations[language];
   const currentTheme = getThemeConfig(localStorage.getItem("THEMES") || "dark");
   return (
     <>
@@ -197,7 +197,7 @@ const FilterShoes = ({
               color: currentTheme.color,
             }}
           >
-            <ColorLens sx={{ mr: 1 }} /> {t.Color ? t.Color : "Màu sắc"}
+            <ColorLens sx={{ mr: 1 }} /> {t.color ? t.color : "Màu sắc"}
           </InputLabel>
           <Select
             value={selectedMauSac}

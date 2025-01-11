@@ -31,7 +31,7 @@ const Navbar = () => {
   const navigate = useNavigate();
   //language
   const language = useSelector((state) => state.language.language);
-  const t = translations[language].navbar;
+  const t = translations[language];
 
   const isActive = (path) => location.pathname === path;
 

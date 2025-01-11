@@ -16,11 +16,14 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { getThemeConfig } from "../../services/themeService";
+import translations from "../../redux/data/translations";
 
 const api = process.env.REACT_APP_URL_SERVER;
 
 const UserProfile = () => {
   const { isAuthenticated, userInfo } = useSelector((state) => state.auth);
+  const language = useSelector((state) => state.language.language);
+  const t = translations[language];
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [currentAvatar, setCurrentAvatar] = useState("");
@@ -186,9 +189,6 @@ const UserProfile = () => {
             variant="outlined"
             fullWidth
             value={dataUser?.EMAIL || ""} // Đảm bảo giá trị mặc định là chuỗi rỗng nếu không có dataUser hoặc EMAIL
-            // onChange={(e) =>
-            //   setDataUser({ ...dataUser, EMAIL: e.target.value })
-            // }
             InputProps={{
               style: { color: currentTheme.color }, // Màu chữ trong TextField
             }}
@@ -198,7 +198,9 @@ const UserProfile = () => {
             sx={{
               color: currentTheme.backgroundColor, // Màu nền của input
               "& .MuiInputLabel-root": { color: currentTheme.color }, // Màu chữ của label
-              "& .MuiInputBase-input": { color: currentTheme.color }, // Màu chữ của input
+              "& .MuiInputBase-input": {
+                color: currentTheme.color, // Màu chữ của input
+              },
               "& .MuiOutlinedInput-root": {
                 "& fieldset": { borderColor: "#3d444d" }, // Màu viền
               },
@@ -206,9 +208,10 @@ const UserProfile = () => {
                 borderRadius: "4px", // Làm tròn góc nếu muốn
               },
             }}
-          />{" "}
+          />
+
           <TextField
-            label="Họ và tên"
+            label={t.fullNameLabel}
             variant="outlined"
             fullWidth
             value={dataUser?.HO_TEN || ""} // Đảm bảo giá trị mặc định là chuỗi rỗng nếu không có dataUser hoặc EMAIL
@@ -242,7 +245,7 @@ const UserProfile = () => {
           mb={4}
         >
           <TextField
-            label="Số điện thoại"
+            label={t.phoneNumberLabel}
             variant="outlined"
             value={dataUser?.SO_DIEN_THOAI || ""} // Đảm bảo giá trị mặc định là chuỗi rỗng nếu không có dataUser hoặc EMAIL
             onChange={(e) =>
@@ -269,7 +272,7 @@ const UserProfile = () => {
           />{" "}
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DatePicker
-              label="Ngày sinh"
+              label={t.birthDateLabel}
               value={selectedDate}
               sx={{
                 color: currentTheme.backgroundColor, // Màu nền của input
@@ -317,7 +320,7 @@ const UserProfile = () => {
           setSelectedWards={setSelectedWards}
         />
         <TextField
-          label="Tên đường"
+          label={t.streetNameLabel}
           variant="outlined"
           value={selectStreetName} // Đảm bảo giá trị mặc định là chuỗi rỗng nếu không có dataUser hoặc EMAIL
           fullWidth
@@ -352,20 +355,20 @@ const UserProfile = () => {
             marginTop: "8px",
           }}
         >
-          Các thông tin khác
+          {t.otherInfoTitle}
         </Typography>
         <Box display="flex" gap={2} mb={4}>
           <TextField
-            label="Vai trò"
+            label={t.roleLabel}
             variant="outlined"
             value={
               dataUser?.VAI_TRO === "1"
                 ? "Admin"
                 : dataUser?.VAI_TRO === "0"
-                ? "Người dùng bình thường"
+                ? t.roleUser
                 : dataUser?.VAI_TRO === "1.5"
-                ? "Người dùng cấp cao"
-                : "Chưa xác định"
+                ? t.roleVIPUser
+                : t.undefinedRole
             }
             defaultValue="9"
             fullWidth
@@ -388,16 +391,16 @@ const UserProfile = () => {
             }}
           />
           <TextField
-            label="Trạng thái tài khoản"
+            label={t.accountStatusLabel}
             variant="outlined"
             value={
               dataUser?.TRANG_THAI_USER === "1"
-                ? "Đang hoạt động"
+                ? t.activeStatus
                 : dataUser?.TRANG_THAI_USER === "0"
-                ? "Ngưng hoạt động"
+                ? t.inactiveStatus
                 : dataUser?.TRANG_THAI_USER === "1.5"
-                ? "Bị Hạn chế"
-                : "Chưa xác định"
+                ? t.restrictedStatus
+                : t.undefinedStatus
             }
             defaultValue="H***g"
             fullWidth
@@ -423,7 +426,7 @@ const UserProfile = () => {
 
         <Box display="flex" gap={2} mb={2}>
           <TextField
-            label="Ngày cập nhật tài khoản"
+            label={t.accountUpdateDateLabel}
             variant="outlined"
             value={dataUser?.NGAY_CAP_NHAT_USER || ""} // Đảm bảo giá trị mặc định là chuỗi rỗng nếu không có dataUser hoặc EMAIL
             fullWidth
@@ -447,7 +450,7 @@ const UserProfile = () => {
           />
 
           <TextField
-            label="Ngày tạo tài khoản"
+            label={t.accountCreationDateLabel}
             variant="outlined"
             fullWidth
             value={formattedDate || ""} // Hiển thị ngày đã được định dạng // Đảm bảo giá trị mặc định là chuỗi rỗng nếu không có dataUser hoặc EMAIL
@@ -477,7 +480,7 @@ const UserProfile = () => {
           style={{ marginTop: "20px", backgroundColor: "#26bbff" }}
           onClick={handleProfileUpdate} // Gọi hàm cập nhật thông tin
         >
-          Save Changes
+          {t.saveChangesButton}
         </Button>
       </Container>
     </Box>

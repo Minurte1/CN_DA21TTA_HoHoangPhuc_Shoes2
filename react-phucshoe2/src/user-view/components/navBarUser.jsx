@@ -29,7 +29,7 @@ import { getThemeConfig } from "../../services/themeService";
 const NavBarUser = () => {
   const currentTheme = getThemeConfig(localStorage.getItem("THEMES") || "dark");
   const language = useSelector((state) => state.language.language);
-  const t = translations[language].profile;
+  const t = translations[language];
   const [isOpenNeedHelp, setIsOpenNeedHelp] = useState(false);
   return (
     <Box
@@ -49,7 +49,7 @@ const NavBarUser = () => {
         variant="h6"
         style={{ marginBottom: "20px", color: currentTheme.color }}
       >
-        Thông tin
+        {t.sidebarTitle}
       </Typography>
       <List component="nav">
         <ListItem
@@ -89,17 +89,6 @@ const NavBarUser = () => {
             primary={t.HistoryBuy ? t.HistoryBuy : "Lịch sử mua hàng"}
           />
         </ListItem>
-        {/* <ListItem
-        button
-        component={Link}
-        to="/payment-management"
-        sx={{ color: currentTheme.color }}
-      >
-        <ListItemIcon>
-          <PaymentIcon sx={{  color: currentTheme.color }} />
-        </ListItemIcon>
-        <ListItemText primary="Payment Management" />
-      </ListItem> */}
         <ListItem
           button
           component={Link}
@@ -115,17 +104,6 @@ const NavBarUser = () => {
             }
           />
         </ListItem>
-        {/* <ListItem
-        button
-        component={Link}
-        to="/epic-rewards"
-        sx={{ color: currentTheme.color }}
-      >
-        <ListItemIcon>
-          <StarIcon sx={{ color: "#fff" }} />
-        </ListItemIcon>
-        <ListItemText primary="Epic Rewards" />
-      </ListItem> */}
         <Divider style={{ margin: "20px 0" }} />
         <Typography
           onClick={() => setIsOpenNeedHelp(!isOpenNeedHelp)}

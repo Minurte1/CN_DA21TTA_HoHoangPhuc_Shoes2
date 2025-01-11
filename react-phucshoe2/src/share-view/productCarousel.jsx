@@ -28,7 +28,7 @@ const ProductCarousel = ({ title, products, api }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const language = useSelector((state) => state.language.language);
-  const t = translations[language].homeProductCarousel;
+  const t = translations[language];
   const { isAuthenticated, userInfo } = useSelector((state) => state.auth);
   const currentTheme = getThemeConfig(
     localStorage.getItem("THEMES") || userInfo?.THEMES || "dark"

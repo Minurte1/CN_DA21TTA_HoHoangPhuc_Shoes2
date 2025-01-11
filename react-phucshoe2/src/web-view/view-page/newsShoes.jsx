@@ -13,10 +13,14 @@ import {
 import axios from "axios";
 import { getThemeConfig } from "../../services/themeService";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import translations from "../../redux/data/translations";
 
 const NewsComponent = () => {
   const [newsData, setNewsData] = useState([]);
   const currentTheme = getThemeConfig(localStorage.getItem("THEMES") || "dark");
+  const language = useSelector((state) => state.language.language);
+  const t = translations[language];
 
   const api = process.env.REACT_APP_URL_SERVER;
   const navigate = useNavigate();
@@ -74,7 +78,7 @@ const NewsComponent = () => {
         }}
       >
         <Typography variant="h5" sx={{ mb: 2, textAlign: "left" }}>
-          PhucShoe tin tức
+          {t.newsTitle}
         </Typography>
         {/* Render 2 bài viết đầu tiên */}
         <Grid container spacing={2}>
@@ -166,7 +170,7 @@ const NewsComponent = () => {
                         fontWeight: "600",
                       }}
                     >
-                      Xem chi tiết
+                      {t.viewDetails}
                     </Typography>
                   </CardContent>
                 </Box>
@@ -265,7 +269,7 @@ const NewsComponent = () => {
                         cursor: "pointer",
                       }}
                     >
-                      Xem chi tiết
+                      {t.viewDetails}
                     </Typography>
                   </CardContent>
                 </Box>

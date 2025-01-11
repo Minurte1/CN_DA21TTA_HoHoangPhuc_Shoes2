@@ -40,7 +40,7 @@ const Home = () => {
     localStorage.getItem("THEMES") || userInfo?.THEMES || "dark"
   );
   const language = useSelector((state) => state.language.language);
-  const t = translations[language].home;
+  const t = translations[language];
 
   useEffect(() => {
     fetchAllProducts();

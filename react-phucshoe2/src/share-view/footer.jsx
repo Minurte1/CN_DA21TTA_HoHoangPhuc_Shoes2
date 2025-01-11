@@ -20,7 +20,7 @@ const Footer = () => {
     localStorage.getItem("THEMES") || userInfo?.THEMES || "dark"
   );
   const language = useSelector((state) => state.language.language);
-  const t = translations[language].footer;
+  const t = translations[language];
 
   return (
     <Box

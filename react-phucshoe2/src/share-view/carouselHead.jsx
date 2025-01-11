@@ -27,7 +27,7 @@ const CarouselHead = ({ carouselProducts }) => {
   const [isSelected, setIsSelected] = useState(""); // State để theo dõi trạng thái nhấp
   const [animateLogo, setAnimateLogo] = useState(false); // State để quản lý animation logo
   const language = useSelector((state) => state.language.language);
-  const t = translations[language].homeCarouselHead;
+  const t = translations[language];
   const navigate = useNavigate();
   // State to manage the current main image
   const [mainImage, setMainImage] = useState("");

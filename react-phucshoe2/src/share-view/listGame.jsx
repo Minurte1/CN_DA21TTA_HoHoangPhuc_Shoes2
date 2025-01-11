@@ -25,7 +25,7 @@ const ListGame = ({ title, items, api }) => {
     navigate(`/selectShoe/${id}`);
   };
   const language = useSelector((state) => state.language.language);
-  const t = translations[language].homeProductCarousel;
+  const t = translations[language];
   const { isAuthenticated, userInfo } = useSelector((state) => state.auth);
   const currentTheme = getThemeConfig(
     localStorage.getItem("THEMES") || userInfo?.THEMES || "dark"

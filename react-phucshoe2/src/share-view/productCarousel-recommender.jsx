@@ -29,7 +29,7 @@ const RecommenderProductCarousel = ({ ID_SAN_PHAM }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const language = useSelector((state) => state.language.language);
-  const t = translations[language].homeProductCarousel;
+  const t = translations[language];
   const [products, setProducts] = useState([]); // Lưu trữ danh sách sản phẩm gợi ý
   const [isLoading, setIsLoading] = useState(true);
   const [productLength, setProductLength] = useState(0);

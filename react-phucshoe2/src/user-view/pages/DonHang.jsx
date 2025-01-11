@@ -23,7 +23,10 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore"; // Import icon Expa
 import { useSelector } from "react-redux";
 import ProductDetailModal from "../../admin-view/pages/thanhToan/modal/chiTietDonHang";
 import { getThemeConfig } from "../../services/themeService";
+import translations from "../../redux/data/translations";
 const DonHangUser = () => {
+  const language = useSelector((state) => state.language.language);
+  const t = translations[language];
   const [orders, setOrders] = useState([]);
   const [selectedOrderId, setSelectedOrderId] = useState(null);
   const [openModal, setOpenModal] = useState(false);
@@ -73,20 +76,22 @@ const DonHangUser = () => {
   const currentOrders = orders.slice(indexOfFirstItem, indexOfLastItem);
   return (
     <Container
-      sx={{ height: "100vh", backgroundColor: currentTheme.backgroundColor }}
+      sx={{
+        height: currentOrders.length <= 5 ? "100vh" : "auto", // Kiểm tra số lượng sản phẩm
+        backgroundColor: currentTheme.backgroundColor,
+      }}
     >
       <Box
         sx={{
           backgroundColor: currentTheme.backgroundColor,
           width: "100%",
           textAlign: "left",
-
           mt: 4,
           mb: 3,
         }}
       >
         <Typography variant="h5" color="primary">
-          Danh Sách Đơn Hàng
+          {t.orderListLabel}
         </Typography>
       </Box>
       <TableContainer
@@ -100,31 +105,31 @@ const DonHangUser = () => {
           <TableHead>
             <TableRow>
               <TableCell sx={{ fontSize: "0.875rem", color: "#26bbff" }}>
-                <b>ID Đơn Hàng</b>
+                <b>{t.orderIdLabel}</b>
               </TableCell>
               <TableCell sx={{ fontSize: "0.875rem", color: "#26bbff" }}>
-                <b>Người dùng</b>
+                <b>{t.userLabel}</b>
               </TableCell>
               <TableCell sx={{ fontSize: "0.875rem", color: "#26bbff" }}>
-                <b>Số điện thoại</b>
+                <b>{t.phoneNumberLabel}</b>
               </TableCell>
               <TableCell sx={{ fontSize: "0.875rem", color: "#26bbff" }}>
-                <b>Tỉnh thành</b>
+                <b>{t.provinceLabel}</b>
               </TableCell>
               <TableCell sx={{ fontSize: "0.875rem", color: "#26bbff" }}>
-                <b>Tổng Tiền</b>
+                <b>{t.totalAmountLabel}</b>
               </TableCell>
               <TableCell sx={{ fontSize: "0.875rem", color: "#26bbff" }}>
-                <b>Trạng Thái</b>
+                <b>{t.orderStatusLabel}</b>
               </TableCell>
               <TableCell sx={{ fontSize: "0.875rem", color: "#26bbff" }}>
-                <b>Ngày Tạo</b>
+                <b>{t.createdDateLabel}</b>
               </TableCell>
               <TableCell sx={{ fontSize: "0.875rem", color: "#26bbff" }}>
-                <b>Ngày Cập Nhật</b>
+                <b>{t.updatedDateLabel}</b>
               </TableCell>{" "}
               <TableCell sx={{ fontSize: "0.875rem", color: "#26bbff" }}>
-                <b>Chi Tiết</b>
+                <b>{t.detailsLabel}</b>
               </TableCell>
             </TableRow>
           </TableHead>{" "}

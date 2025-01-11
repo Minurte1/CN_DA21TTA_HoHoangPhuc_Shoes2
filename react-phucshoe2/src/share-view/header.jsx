@@ -37,7 +37,7 @@ const Header = () => {
   //redux
   const dispatch = useDispatch();
   const language = useSelector((state) => state.language.language);
-  const t = translations[language].header;
+  const t = translations[language];
   const { isAuthenticated, userInfo } = useSelector((state) => state.auth);
   const [optionLanguage, setOptionLanguage] = useState("vi");
   //BackgroundColor

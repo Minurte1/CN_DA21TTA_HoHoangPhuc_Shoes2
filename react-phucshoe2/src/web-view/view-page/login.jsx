@@ -11,13 +11,17 @@ import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { login } from "../../redux/authSlice";
 import { enqueueSnackbar } from "notistack";
 import { getThemeConfig } from "../../services/themeService";
+import translations from "../../redux/data/translations";
 const LoginPage = () => {
   const [tokenGoogle, setTokenGoogle] = useState(null);
   const currentTheme = getThemeConfig(localStorage.getItem("THEMES") || "dark");
+  const language = useSelector((state) => state.language.language);
+  const t = translations[language];
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
@@ -169,12 +173,12 @@ const LoginPage = () => {
         />
 
         <Typography variant="h5" sx={{ marginBottom: 3 }}>
-          Đăng nhập
+          {t.signIn}
         </Typography>
 
         <form onSubmit={handleSubmit}>
           <TextField
-            label="Email Address"
+            label={t.emailLabel}
             variant="outlined"
             fullWidth
             value={email}
@@ -185,7 +189,7 @@ const LoginPage = () => {
           />
 
           <TextField
-            label="Password"
+            label={t.passwordLabel}
             variant="outlined"
             type="password"
             fullWidth
@@ -207,7 +211,7 @@ const LoginPage = () => {
               textDecoration: "none",
             }}
           >
-            Quên mật khẩu
+            {t.forgetPassword}
           </Typography>
 
           <Button
@@ -224,7 +228,7 @@ const LoginPage = () => {
             }}
             disabled={loading} // Disable button khi đang loading
           >
-            {loading ? "Loading..." : "SIGN IN"}
+            {loading ? t.loadingButton : t.signInButton}
           </Button>
         </form>
 
@@ -232,7 +236,7 @@ const LoginPage = () => {
           variant="body2"
           sx={{ margin: "20px 0", color: currentTheme.color }}
         >
-          Hoặc đăng nhập với
+          {t.orLoginWith}
         </Typography>
 
         <Grid container spacing={2} sx={{ justifyContent: "center" }}>
@@ -269,7 +273,7 @@ const LoginPage = () => {
             variant="body2"
             sx={{ marginTop: 3, color: currentTheme.color }}
           >
-            Tạo tài khoản
+            {t.createAccount}
           </Typography>
         </Link>
       </Box>

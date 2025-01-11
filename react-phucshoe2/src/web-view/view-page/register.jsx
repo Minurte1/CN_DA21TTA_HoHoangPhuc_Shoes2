@@ -36,7 +36,7 @@ const RegistrationForm = () => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [isOpenThongTinUser, setIsOpenThongTinUser] = useState(true);
   const language = useSelector((state) => state.language.language);
-  const t = translations[language].register;
+  const t = translations[language];
   const [isAgreed, setIsAgreed] = useState(false); // Theo dõi checkbox 'terms of service'
   const [isSubscribed, setIsSubscribed] = useState(false); // Theo dõi checkbox 'news'
   const [isOpenOTP, setIsOpenOTP] = useState(true);
@@ -281,10 +281,10 @@ const RegistrationForm = () => {
                       variant="h5"
                       style={{ color: currentTheme.color, textAlign: "center" }}
                     >
-                      Tạo tài khoản
+                      {t.createAccount}
                     </Typography>
                     <TextField
-                      label="Địa chỉ Email"
+                      label={t.emailLabel}
                       variant="outlined"
                       fullWidth
                       margin="normal"
@@ -310,7 +310,7 @@ const RegistrationForm = () => {
                       }}
                     />
                     <TextField
-                      label="Tên đầy đủ"
+                      label={t.fullNameLabel}
                       variant="outlined"
                       fullWidth
                       margin="normal"
@@ -335,7 +335,7 @@ const RegistrationForm = () => {
                       }}
                     />
                     <TextField
-                      label="Số điện thoại"
+                      label={t.phoneLabel}
                       variant="outlined"
                       fullWidth
                       margin="normal"
@@ -359,7 +359,7 @@ const RegistrationForm = () => {
                       }}
                     />{" "}
                     <TextField
-                      label="Mật khẩu"
+                      label={t.passwordLabel}
                       type="password"
                       variant="outlined"
                       fullWidth
@@ -384,7 +384,7 @@ const RegistrationForm = () => {
                       }}
                     />{" "}
                     <TextField
-                      label="Xác nhận mật khẩu"
+                      label={t.confirmPasswordLabel}
                       type="password"
                       variant="outlined"
                       value={confirmPassword}
@@ -422,8 +422,7 @@ const RegistrationForm = () => {
                         }
                         label={
                           <Typography style={{ color: currentTheme.color }}>
-                            Gửi cho tôi tin tức, khảo sát và ưu đãi đặc biệt từ
-                            PhucShoe
+                            {t.subscribeLabel}
                           </Typography>
                         }
                       />
@@ -437,7 +436,7 @@ const RegistrationForm = () => {
                         }
                         label={
                           <Typography style={{ color: currentTheme.color }}>
-                            Tôi đã đọc và đồng ý với các điều khoản dịch vụ
+                            {t.agreeLabel}
                           </Typography>
                         }
                       />
@@ -447,15 +446,11 @@ const RegistrationForm = () => {
                       color="primary"
                       onClick={() => {
                         if (!isAgreed) {
-                          enqueueSnackbar(
-                            "Bạn phải đồng ý với điều khoản sử dụng!"
-                          );
+                          enqueueSnackbar(t.validationAgree);
                           return;
                         }
                         if (!isSubscribed) {
-                          enqueueSnackbar(
-                            "Bạn phải đồng ý với điều khoản sử dụng!"
-                          );
+                          enqueueSnackbar(t.validationSubscribe);
                           return;
                         }
 
@@ -474,19 +469,19 @@ const RegistrationForm = () => {
                             : "pointer", // Con trỏ chỉ khi enabled
                       }}
                     >
-                      Tiếp tục
+                      {t.continueButton}
                     </Button>
                     <Typography
                       align="center"
                       style={{ color: currentTheme.color, marginTop: "20px" }}
                     >
-                      Bạn đã có tài khoản?
+                      {t.alreadyHaveAccount}
                       <a href="#" style={{ color: "#26bbff" }}>
-                        Đăng nhập
+                        {t.signInLink}
                       </a>
                     </Typography>
                     <Typography align="center" style={{ color: "#26bbff" }}>
-                      Chính sách bảo mật
+                      {t.privacyPolicy}
                     </Typography>
                     <Button
                       variant="contained"
@@ -499,7 +494,7 @@ const RegistrationForm = () => {
                       }}
                       onClick={handleOpenThongTinUser}
                     >
-                      Trở về
+                      {t.backButton}
                     </Button>
                   </Container>
                 </>
@@ -519,7 +514,7 @@ const RegistrationForm = () => {
                     />
 
                     <Typography variant="h7" sx={{ color: currentTheme.color }}>
-                      Kiểm tra tài khoản email của bạn
+                      {t.checkEmailTitle}
                     </Typography>
                   </Box>
                   <TextField
@@ -574,7 +569,7 @@ const RegistrationForm = () => {
                     fullWidth
                     type="submit"
                   >
-                    Xác nhận
+                    {t.confirmButton}
                   </Button>
                 </>
               )}
