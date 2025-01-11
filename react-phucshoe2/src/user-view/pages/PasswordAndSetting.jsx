@@ -37,6 +37,9 @@ const PasswordAndSetting = () => {
   const currentTheme = getThemeConfig(
     localStorage.getItem("THEMES") || userInfo?.THEMES || "dark"
   );
+  const language = useSelector((state) => state.language.language);
+  const t = translations[language];
+
   //api change backgroundColor
   useEffect(() => {
     if (themesWeb) {
@@ -203,7 +206,7 @@ const PasswordAndSetting = () => {
         }}
       >
         <Typography variant="h5" className="text-white">
-          Mật khẩu & cài đặt
+          {t.passwordAndSetting}
         </Typography>
         <Divider
           sx={{ my: 1, backgroundColor: currentTheme.color, width: "18%" }}
@@ -225,7 +228,7 @@ const PasswordAndSetting = () => {
           >
             {" "}
             <Button variant="text" sx={{ color: currentTheme.color }}>
-              Thay đổi ngôn ngữ
+              {t.changeLanguage}
             </Button>
             <Button
               variant="outlined"
@@ -250,7 +253,7 @@ const PasswordAndSetting = () => {
           >
             {" "}
             <Button variant="text" sx={{ color: currentTheme.color }}>
-              Thay đổi màu nền
+              {t.changeThemse}
             </Button>
             <Box sx={{ ml: 1 }}>
               <Button
@@ -289,7 +292,7 @@ const PasswordAndSetting = () => {
                     handleThemeClose();
                   }}
                 >
-                  Nền đen
+                  {t.blackThemes}
                 </MenuItem>
                 <MenuItem
                   sx={{
@@ -301,7 +304,7 @@ const PasswordAndSetting = () => {
                     handleThemeClose();
                   }}
                 >
-                  Nền trắng
+                  {t.lightThemes}
                 </MenuItem>{" "}
               </Menu>
             </Box>
@@ -326,7 +329,7 @@ const PasswordAndSetting = () => {
                 onClick={() => setIsOpenOTP(!isOpenOTP)}
                 sx={{ color: currentTheme.color, width: "100%" }}
               >
-                Thay đổi mật khẩu
+                {t.changePassword}
               </Button>
             </Box>
             {isOpenOTP ? (
@@ -405,7 +408,7 @@ const PasswordAndSetting = () => {
                             color: "#101014", // Màu chữ
                           }}
                         >
-                          Cập nhật mật khẩu
+                          {t.updatePasswordTitle}
                         </Button>
                       </>
                     ) : (
@@ -462,7 +465,7 @@ const PasswordAndSetting = () => {
                           fullWidth
                           type="submit"
                         >
-                          Xác nhận
+                          {t.confirmButton}
                         </Button>
                       </>
                     )}

@@ -160,10 +160,73 @@ const translations = {
     createdDateLabel: "Ngày Tạo",
     updatedDateLabel: "Ngày Cập Nhật",
     detailsLabel: "Chi Tiết",
+
+    //
+    waitingConfirmationTab: "Chờ xác nhận",
+    deliveredTab: "Đã giao",
+    canceledTab: "Đã hủy",
+    notPaidTab: "Chưa thanh toán",
+
+    status: "Trạng thái",
+    //
+    totalAmountLabel: "Tổng tiền",
+    quantityLabel: "Số lượng",
+    priceLabel: "Giá",
+    reviewButton: "Đánh Giá",
+    reviewedButton: "Đã Đánh Giá",
+    buyAgainButton: "Mua lại",
+    cancelOrderButton: "Hủy đơn",
+
+    //
+    noOrdersLabel: "Bạn không có đơn hàng nào cả",
+    confirmActionTitle: "Xác nhận hành động",
+    confirmSuccessAction:
+      'Bạn có chắc chắn muốn đánh dấu đơn hàng này là "Giao dịch thành công"?',
+    confirmCancelAction: "Bạn có chắc chắn muốn hủy đơn hàng này không?",
+    cancelButtonLabel: "Hủy",
+    confirmButtonLabel: "Xác nhận",
+    updatePasswordTitle: "Cập nhật mật khẩu",
+    changePassword: "Thay đổi mật khẩu",
+    blackThemes: "Nền tối",
+    lightThemes: "Nền sáng",
+    changeThemse: "Thay đổi màu nền",
+    changeLanguage: "Thay đổi ngôn ngữ",
+    passwordAndSetting: "Mật khẩu và cài đặt",
   },
 
   // --------------------ENGLISH--------------------
   en: {
+    passwordAndSetting: "Password and setting",
+    changeLanguage: "Change Language",
+    changeThemse: "Change Theme",
+    lightThemes: "Light Theme",
+    blackThemes: "Black Theme",
+    changePassword: "Change Password",
+    updatePasswordTitle: "Update Password",
+    noOrdersLabel: "You have no orders",
+    confirmActionTitle: "Confirm Action",
+    confirmSuccessAction:
+      'Are you sure you want to mark this order as "Transaction Successful"?',
+    confirmCancelAction: "Are you sure you want to cancel this order?",
+    cancelButtonLabel: "Cancel",
+    confirmButtonLabel: "Confirm",
+    //
+    totalAmountLabel: "Total Amount",
+    quantityLabel: "Quantity",
+    priceLabel: "Price",
+    reviewButton: "Review",
+    reviewedButton: "Reviewed",
+    buyAgainButton: "Buy Again",
+    cancelOrderButton: "Cancel Order",
+
+    //
+    status: "Status",
+    waitingConfirmationTab: "Waiting for Confirmation",
+    deliveredTab: "Delivered",
+    canceledTab: "Canceled",
+    notPaidTab: "Not Paid",
+
+    //
     orderIdLabel: "Order ID",
     userLabel: "User",
     phoneNumberLabel: "Phone Number",
@@ -173,6 +236,7 @@ const translations = {
     createdDateLabel: "Creation Date",
     updatedDateLabel: "Update Date",
     detailsLabel: "Details",
+    HistoryBuy: "History Buy",
 
     orderListLabel: "Order List",
     streetNameLabel: "Street Name",

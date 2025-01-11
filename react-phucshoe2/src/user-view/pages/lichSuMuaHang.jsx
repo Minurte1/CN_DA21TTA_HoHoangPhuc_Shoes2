@@ -18,6 +18,7 @@ import { useNavigate } from "react-router-dom";
 import { enqueueSnackbar } from "notistack";
 import { getThemeConfig } from "../../services/themeService";
 import { Link } from "react-router-dom";
+import translations from "../../redux/data/translations";
 const LichSuMuaHangUser = () => {
   const [tabIndex, setTabIndex] = useState(0);
   const apiUrl = process.env.REACT_APP_URL_SERVER;
@@ -29,6 +30,8 @@ const LichSuMuaHangUser = () => {
   const currentTheme = getThemeConfig(
     localStorage.getItem("THEMES") || userInfo?.THEMES || "dark"
   );
+  const language = useSelector((state) => state.language.language);
+  const t = translations[language];
 
   const navigate = useNavigate();
 
@@ -109,16 +112,25 @@ const LichSuMuaHangUser = () => {
     }
     handleCloseDialog();
   };
-  console.log("dataChiTietHoaDon", dataChiTietHoaDon);
+
   return (
-    <Box sx={{ p: 2, bgcolor: currentTheme.backgroundColor, height: "auto" }}>
+    <Box
+      sx={{
+        p: 2,
+        bgcolor: currentTheme.backgroundColor,
+        height: dataChiTietHoaDon.length <= 2 ? "900px" : "auto",
+      }}
+    >
       {/* Tabs */}
       <Tabs value={tabIndex} onChange={handleTabChange} variant="fullWidth">
-        <Tab sx={{ color: currentTheme.color }} label="Chờ xác nhận" />
-        <Tab sx={{ color: currentTheme.color }} label="Đã giao" />
-        <Tab sx={{ color: currentTheme.color }} label="Đã hủy" />
+        <Tab
+          sx={{ color: currentTheme.color }}
+          label={t.waitingConfirmationTab}
+        />
+        <Tab sx={{ color: currentTheme.color }} label={t.deliveredTab} />
+        <Tab sx={{ color: currentTheme.color }} label={t.canceledTab} />
         {/* <Tab sx={{ color: color }} label="Tất cả" /> */}
-        <Tab sx={{ color: currentTheme.color }} label="Chưa thanh toán" />
+        <Tab sx={{ color: currentTheme.color }} label={t.notPaidTab} />
       </Tabs>
       {/* Danh sách đơn hàng */}
       {dataChiTietHoaDon.length > 0 ? (
@@ -126,8 +138,8 @@ const LichSuMuaHangUser = () => {
           <Box
             mt={2}
             sx={{
+              height: "auto", // Kiểm tra số lượng sản phẩm
               backgroundColor: currentTheme.backgroundColor,
-              height: "auto",
             }}
           >
             {dataChiTietHoaDon?.map((order, index) => (
@@ -160,7 +172,7 @@ const LichSuMuaHangUser = () => {
                       variant="body2"
                       sx={{ mb: 1, color: currentTheme.color }}
                     >
-                      Trạng thái:
+                      {t.status}
                       <Typography
                         component="span"
                         sx={{
@@ -188,7 +200,8 @@ const LichSuMuaHangUser = () => {
                       variant="body1"
                       sx={{ mb: 1, color: currentTheme.color }}
                     >
-                      Tổng tiền: {order.TONG_TIEN.toLocaleString("vi-VN")}₫
+                      {t.totalAmountLabel}:{" "}
+                      {order.TONG_TIEN.toLocaleString("vi-VN")}₫
                     </Typography>
                     <Divider sx={{ my: 2 }} />
                     {/* Danh sách sản phẩm */}
@@ -215,13 +228,13 @@ const LichSuMuaHangUser = () => {
                             variant="body2"
                             sx={{ color: currentTheme.color }}
                           >
-                            Số lượng: {product.SO_LUONG_SP}
+                            {t.quantityLabel}: {product.SO_LUONG_SP}
                           </Typography>
                           <Typography
                             variant="body1"
                             sx={{ mt: 1, color: currentTheme.color }}
                           >
-                            Giá:{" "}
+                            {t.priceLabel}:{" "}
                             {product.GIA_SAN_PHAM_CHI_TIET.toLocaleString(
                               "vi-VN"
                             )}
@@ -252,8 +265,8 @@ const LichSuMuaHangUser = () => {
                               disabled={product.DANH_GIA !== null}
                             >
                               {product.DANH_GIA !== null
-                                ? "Đã Đánh Giá"
-                                : "Đánh Giá"}
+                                ? t.reviewedButton
+                                : t.reviewButton}
                             </Button>
                             <Button
                               component={Link}
@@ -266,7 +279,7 @@ const LichSuMuaHangUser = () => {
                                 ":hover": { bgcolor: "rgba(0, 0, 255, 0.1)" },
                               }}
                             >
-                              Mua lại
+                              {t.buyAgainButton}
                             </Button>
                           </>
                         ) : (
@@ -294,7 +307,7 @@ const LichSuMuaHangUser = () => {
                         }
                         // startIcon={<CancelIcon sx={{ color: "#26bbff" }} />}
                       >
-                        Hủy đơn
+                        {t.cancelOrderButton}
                       </Button>
                     </>
                   ) : (
@@ -317,7 +330,7 @@ const LichSuMuaHangUser = () => {
           >
             {" "}
             <Typography variant="h6" sx={{ color: currentTheme.color }}>
-              Bạn không có đơn hàng nào cả
+              {t.noOrdersLabel}
             </Typography>
           </Box>
         </>
@@ -325,23 +338,20 @@ const LichSuMuaHangUser = () => {
 
       {/* Modal xác nhận */}
       <Dialog open={openDialog} onClose={handleCloseDialog}>
-        <DialogTitle>Xác nhận hành động</DialogTitle>
+        <DialogTitle>{t.confirmActionTitle}</DialogTitle>
         <DialogContent>
           {actionType === "success" ? (
-            <p>
-              Bạn có chắc chắn muốn đánh dấu đơn hàng này là "Giao dịch thành
-              công"?
-            </p>
+            <p>{t.confirmSuccessAction}</p>
           ) : (
-            <p>Bạn có chắc chắn muốn hủy đơn hàng này không?</p>
+            <p>{t.confirmCancelAction}</p>
           )}
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialog} color="primary">
-            Hủy
+            {t.cancelButtonLabel}
           </Button>
           <Button onClick={handleConfirmAction} color="primary">
-            Xác nhận
+            {t.confirmButtonLabel}
           </Button>
         </DialogActions>
       </Dialog>
