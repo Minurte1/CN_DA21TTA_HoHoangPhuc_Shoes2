@@ -32,7 +32,7 @@ PhucShoe2 mang đến một trải nghiệm mua sắm hiện đại với các t
 ## 🛠️  Technologies Used
 
 - **Frontend**: ⚛️ React.js,🎨 Material-UI, HTML, CSS, JavaScript, React Router,...
-- **Backend**: 🟢  Node.js, 🛡️  Express.js, Socket,..
+- **Backend**: Node.js, 🛡️  Express.js, Socket,..
 - **Database**: 🗄️  MySQL
 - **State Management**: Redux Toolkit
 - **Authentication**: JSON Web Tokens (JWT)
