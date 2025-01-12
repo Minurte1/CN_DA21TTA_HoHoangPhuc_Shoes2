@@ -25,6 +25,8 @@ import {
 import PeopleIcon from "@mui/icons-material/People";
 import { getThemeConfig } from "../../../services/themeService";
 import AddressSelector from "../../../user-view/components/addressUser";
+import translations from "../../../redux/data/translations";
+import { useSelector } from "react-redux";
 
 const DanhSachNguoiDungAdmin = () => {
   const [users, setUsers] = useState([]);
@@ -38,6 +40,8 @@ const DanhSachNguoiDungAdmin = () => {
   const [selectedProvince, setSelectedProvince] = useState(null);
   const [selectedDistrict, setSelectedDistrict] = useState(null);
   const [selectedWards, setSelectedWards] = useState(null);
+  const language = useSelector((state) => state.language.language);
+  const t = translations[language];
 
   useEffect(() => {
     fetchUsers();
@@ -125,7 +129,7 @@ const DanhSachNguoiDungAdmin = () => {
   };
 
   if (loading) {
-    return <Typography variant="h6">Đang tải...</Typography>;
+    return <Typography variant="h6">{t.loadingButton}</Typography>;
   }
 
   if (error) {
@@ -152,7 +156,7 @@ const DanhSachNguoiDungAdmin = () => {
         sx={{ textAlign: "left" }}
         gutterBottom
       >
-        Quản lý người dùng
+        {t.userManagement}
       </Typography>
 
       <TableContainer
@@ -167,15 +171,25 @@ const DanhSachNguoiDungAdmin = () => {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell sx={{ color: currentTheme.color }}>Avatar</TableCell>
-              <TableCell sx={{ color: currentTheme.color }}>Họ Tên</TableCell>
-              <TableCell sx={{ color: currentTheme.color }}>Email</TableCell>
-              <TableCell sx={{ color: currentTheme.color }}>Ngày Tạo</TableCell>
-              <TableCell sx={{ color: currentTheme.color }}>Vai Trò</TableCell>
               <TableCell sx={{ color: currentTheme.color }}>
-                Trạng thái
+                {t.avatar}
               </TableCell>
-              <TableCell sx={{ color: currentTheme.color }}>Actions</TableCell>
+              <TableCell sx={{ color: currentTheme.color }}>
+                {t.fullName}
+              </TableCell>
+              <TableCell sx={{ color: currentTheme.color }}>
+                {t.emailLabel}
+              </TableCell>
+              <TableCell sx={{ color: currentTheme.color }}>
+                {t.createdDateLabel}
+              </TableCell>
+              <TableCell sx={{ color: currentTheme.color }}>{t.role}</TableCell>
+              <TableCell sx={{ color: currentTheme.color }}>
+                {t.status}
+              </TableCell>
+              <TableCell sx={{ color: currentTheme.color }}>
+                {t.actions}
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -205,7 +219,7 @@ const DanhSachNguoiDungAdmin = () => {
                     fontWeight: "bold",
                   }}
                 >
-                  {user.VAI_TRO === "1" ? "Quản Trị Viên" : "Người Dùng Thường"}
+                  {user.VAI_TRO === "1" ? t.admin : t.regularUser}
                 </TableCell>
                 <TableCell
                   sx={{
@@ -214,8 +228,8 @@ const DanhSachNguoiDungAdmin = () => {
                   }}
                 >
                   {user.TRANG_THAI_USER === "1"
-                    ? "Đang hoạt động"
-                    : "Ngưng hoạt động"}
+                    ? t.activeStatus
+                    : t.inactiveStatus}
                 </TableCell>
                 <TableCell>
                   <Button
@@ -223,7 +237,7 @@ const DanhSachNguoiDungAdmin = () => {
                     color="primary"
                     onClick={() => handleEditClick(user)}
                   >
-                    Chỉnh sửa
+                    {t.edit}
                   </Button>
                 </TableCell>
               </TableRow>
@@ -233,11 +247,11 @@ const DanhSachNguoiDungAdmin = () => {
       </TableContainer>
       {/* Dialog cập nhật người dùng */}
       <Dialog open={isDialogOpen} onClose={handleCloseDialog}>
-        <DialogTitle>Cập nhật thông tin người dùng</DialogTitle>
+        <DialogTitle>{t.updateUserInfo}</DialogTitle>
         <DialogContent>
           <TextField
             fullWidth
-            label="Họ Tên"
+            label={t.fullName}
             name="HO_TEN"
             value={selectedUser?.HO_TEN || ""}
             onChange={handleInputChange}
@@ -252,36 +266,36 @@ const DanhSachNguoiDungAdmin = () => {
             margin="normal"
           />
           <FormControl fullWidth margin="normal">
-            <InputLabel id="vai-tro-label">Vai Trò</InputLabel>
+            <InputLabel id="vai-tro-label">{t.role}</InputLabel>
             <Select
               labelId="vai-tro-label"
               id="vai-tro-select"
-              label="Vai trò"
+              label={t.role}
               name="VAI_TRO"
               value={selectedUser?.VAI_TRO || ""}
               onChange={handleInputChange}
             >
-              <MenuItem value="0">Người dùng thường</MenuItem>
-              <MenuItem value="1">Quản trị</MenuItem>
+              <MenuItem value="0">{t.regularUser}</MenuItem>
+              <MenuItem value="1">{t.admin}</MenuItem>
             </Select>
           </FormControl>
           <FormControl fullWidth margin="normal">
-            <InputLabel id="vai-tro-label">Trạng thái tài khoản</InputLabel>
+            <InputLabel id="vai-tro-label">{t.accountStatusLabel}</InputLabel>
             <Select
               labelId="vai-tro-label"
               id="vai-tro-select"
-              label="Trạng thái tài khoản"
+              label={t.accountStatusLabel}
               name="TRANG_THAI_USER"
               value={selectedUser?.TRANG_THAI_USER || ""}
               onChange={handleInputChange}
             >
-              <MenuItem value="0">Ngưng hoạt động</MenuItem>
-              <MenuItem value="1">Đang hoạt động</MenuItem>
+              <MenuItem value="0">{t.inactiveStatus}</MenuItem>
+              <MenuItem value="1">{t.activeStatus}</MenuItem>
             </Select>
           </FormControl>
           <TextField
             fullWidth
-            label="Số Điện Thoại"
+            label={t.phoneNumber}
             name="SO_DIEN_THOAI"
             value={selectedUser?.SO_DIEN_THOAI || ""}
             onChange={handleInputChange}
@@ -289,7 +303,7 @@ const DanhSachNguoiDungAdmin = () => {
           />
           <TextField
             fullWidth
-            label="Địa Chỉ"
+            label={t.address}
             disabled
             name="DIA_CHI"
             value={selectedUser?.DIA_CHI || ""}
@@ -317,7 +331,7 @@ const DanhSachNguoiDungAdmin = () => {
           </FormControl>{" "}
           <TextField
             fullWidth
-            label="Tên đường"
+            label={t.streetNameLabel}
             name="DIA_CHI_STREETNAME"
             value={selectedUser?.DIA_CHI_STREETNAME || ""}
             onChange={handleInputChange}
@@ -326,10 +340,10 @@ const DanhSachNguoiDungAdmin = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialog} color="secondary">
-            Hủy
+            {t.cancelButtonLabel}
           </Button>
           <Button onClick={handleSave} color="primary">
-            Lưu
+            {t.save}
           </Button>
         </DialogActions>
       </Dialog>

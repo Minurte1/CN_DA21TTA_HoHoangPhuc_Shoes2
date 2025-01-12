@@ -10,12 +10,16 @@ import {
   Box,
 } from "@mui/material";
 import axios from "axios";
+import translations from "../../../../redux/data/translations";
+import { useSelector } from "react-redux";
 
 const api = process.env.REACT_APP_URL_SERVER;
 
 export default function ProductDetailInput({ products }) {
   const [productDetails, setProductDetails] = useState([]);
   const [quantityData, setQuantityData] = useState({});
+  const language = useSelector((state) => state.language.language);
+  const t = translations[language];
 
   useEffect(() => {
     const fetchProductDetails = async () => {
@@ -110,7 +114,9 @@ export default function ProductDetailInput({ products }) {
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell>Màu sắc \ Kích cỡ</TableCell>
+            <TableCell>
+              {t.color} \ {t.Size}
+            </TableCell>
             {sizes.map((size, index) => (
               <TableCell key={index}>{size}</TableCell>
             ))}
@@ -148,7 +154,7 @@ export default function ProductDetailInput({ products }) {
           color="primary"
           onClick={handleSummit}
         >
-          Lưu
+          {t.save}
         </Button>
       </Box>
     </div>

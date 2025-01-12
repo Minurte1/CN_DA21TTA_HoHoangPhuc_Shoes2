@@ -12,6 +12,8 @@ import {
 import { Edit, Delete } from "@mui/icons-material";
 import moment from "moment";
 import { getThemeConfig } from "../../../../services/themeService";
+import { useSelector } from "react-redux";
+import translations from "../../../../redux/data/translations";
 
 const TableShoes = ({
   filteredProducts,
@@ -19,6 +21,9 @@ const TableShoes = ({
   handleDelete,
   api,
 }) => {
+  const language = useSelector((state) => state.language.language);
+  const t = translations[language];
+
   const currentTheme = getThemeConfig(localStorage.getItem("THEMES") || "dark");
   return (
     <TableContainer
@@ -33,25 +38,33 @@ const TableShoes = ({
           <TableRow>
             <TableCell sx={{ color: currentTheme.color }}>ID</TableCell>
             <TableCell sx={{ color: currentTheme.color }}>
-              Thương hiệu
+              {t.brandLabel}
             </TableCell>
-            <TableCell sx={{ color: currentTheme.color }}>Thể loại</TableCell>
-            <TableCell sx={{ color: currentTheme.color }}>Chất liệu</TableCell>
             <TableCell sx={{ color: currentTheme.color }}>
-              Tên sản phẩm
+              {t.categoryLabel}
             </TableCell>
-            <TableCell sx={{ color: currentTheme.color }}>Giá tiền</TableCell>
-            <TableCell sx={{ color: currentTheme.color }}>Mô tả</TableCell>
-            <TableCell sx={{ color: currentTheme.color }}>Hình ảnh</TableCell>
-            <TableCell sx={{ color: currentTheme.color }}>Trạng thái</TableCell>
+            <TableCell sx={{ color: currentTheme.color }}>
+              {t.materialLabel}
+            </TableCell>
+            <TableCell sx={{ color: currentTheme.color }}>
+              {t.productName}
+            </TableCell>
+            <TableCell sx={{ color: currentTheme.color }}>{t.price}</TableCell>
+            <TableCell sx={{ color: currentTheme.color }}>
+              {t.descriptionLabel}
+            </TableCell>
+            <TableCell sx={{ color: currentTheme.color }}>{t.image}</TableCell>
+            <TableCell sx={{ color: currentTheme.color }}>{t.status}</TableCell>
             {/* <TableCell sx={{ color: currentTheme.color }}>Số lượng</TableCell> */}
             <TableCell sx={{ color: currentTheme.color }}>
-              Ngày thêm vào hệ thống
+              {t.dateAdded}
             </TableCell>
             <TableCell sx={{ color: currentTheme.color }}>
-              Ngày cập nhật
+              {t.dateUpdated}
             </TableCell>
-            <TableCell sx={{ color: currentTheme.color }}>Hành động</TableCell>
+            <TableCell sx={{ color: currentTheme.color }}>
+              {t.actions}
+            </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -94,8 +107,8 @@ const TableShoes = ({
                 }}
               >
                 {product.TRANG_THAI_SANPHAM === 1
-                  ? "Đang hoạt động"
-                  : "Ngưng hoạt động"}
+                  ? t.activeStatus
+                  : t.inactiveStatus}
               </TableCell>
               {/* <TableCell sx={{ color: currentTheme.color }}>
                 {product.SO_LUONG_SANPHAM}

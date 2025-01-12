@@ -168,7 +168,7 @@ const FilterShoes = ({
                   color: currentTheme.color,
                 }}
               >
-                <ToggleOn sx={{ mr: 1 }} /> Trạng thái
+                <ToggleOn sx={{ mr: 1 }} /> {t.status}
               </InputLabel>
               <Select
                 value={selectedTrangThai}
@@ -177,9 +177,9 @@ const FilterShoes = ({
                 sx={{ color: currentTheme.color }}
               >
                 {" "}
-                <MenuItem value="">Xem tất cả</MenuItem>
-                <MenuItem value={1}>Đang hoạt động</MenuItem>
-                <MenuItem value={0}>Ngưng hoạt động</MenuItem>
+                <MenuItem value="">{t.xemTatCa}</MenuItem>
+                <MenuItem value={1}>{t.activeStatus}</MenuItem>
+                <MenuItem value={0}>{t.inactiveStatus}</MenuItem>
               </Select>
             </FormControl>{" "}
           </>

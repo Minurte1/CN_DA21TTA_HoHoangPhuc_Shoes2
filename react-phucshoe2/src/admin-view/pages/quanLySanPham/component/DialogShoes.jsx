@@ -18,6 +18,8 @@ import {
 } from "@mui/material";
 import { ChevronRight, ChevronLeft } from "@mui/icons-material";
 import ProductDetailInput from "./componentSoLuong";
+import { useSelector } from "react-redux";
+import translations from "../../../../redux/data/translations";
 const DialogShoes = ({
   openDialog,
   handleCloseDialog,
@@ -44,6 +46,9 @@ const DialogShoes = ({
   console.log("currentProduct", currentProduct);
   const [soLuongChiTiet, setSoLuongChiTiet] = useState({});
   const [isOpenAddSoLuong, setIsOpenAddSoLuong] = useState(true);
+  const language = useSelector((state) => state.language.language);
+  const t = translations[language];
+
   return (
     <Dialog
       open={openDialog}
@@ -51,9 +56,7 @@ const DialogShoes = ({
       maxWidth="md"
       fullWidth={!option}
     >
-      <DialogTitle>
-        {currentProduct ? "Chỉnh sửa sản phẩm" : "Thêm sản phẩm"}
-      </DialogTitle>
+      <DialogTitle>{currentProduct ? t.editProduct : t.addProduct}</DialogTitle>
       {isOpenAddSoLuong ? (
         <>
           {" "}
@@ -67,7 +70,7 @@ const DialogShoes = ({
             <Box sx={{ width: "410px" }}>
               {" "}
               <FormControl sx={{ width: "400px" }} margin="dense">
-                <InputLabel id="thuong-hieu-label">Thương hiệu</InputLabel>
+                <InputLabel id="thuong-hieu-label">{t.brand}</InputLabel>
                 <Select
                   labelId="thuong-hieu-label"
                   id="idThuongHieu"
@@ -88,7 +91,7 @@ const DialogShoes = ({
                 </Select>
               </FormControl>
               <FormControl sx={{ width: "400px" }} fullWidth margin="dense">
-                <InputLabel id="danh-muc-label">Thể loại</InputLabel>
+                <InputLabel id="danh-muc-label">{t.category}</InputLabel>
                 <Select
                   labelId="danh-muc-label"
                   id="idDanhMuc"
@@ -109,7 +112,7 @@ const DialogShoes = ({
                 </Select>
               </FormControl>
               <FormControl sx={{ width: "400px" }} fullWidth margin="dense">
-                <InputLabel id="gioi-tinh-label">Giày dành cho</InputLabel>
+                <InputLabel id="gioi-tinh-label">{t.forShoes}</InputLabel>
                 <Select
                   labelId="gioi-tinh-label"
                   id="gioiTinhId"
@@ -130,7 +133,7 @@ const DialogShoes = ({
                 </Select>
               </FormControl>
               <FormControl sx={{ width: "400px" }} fullWidth margin="dense">
-                <InputLabel id="chat-lieu-label">Chất liệu</InputLabel>
+                <InputLabel id="chat-lieu-label">{t.material}</InputLabel>
                 <Select
                   labelId="chat-lieu-label"
                   id="chatLieuId"
@@ -155,7 +158,7 @@ const DialogShoes = ({
                 <TextField
                   autoFocus
                   margin="dense"
-                  label="Tên sản phẩm"
+                  label={t.productName}
                   type="text"
                   fullWidth
                   name="tenSanPham"
@@ -164,7 +167,7 @@ const DialogShoes = ({
                 />
                 <TextField
                   margin="dense"
-                  label="Mô tả"
+                  label={t.descriptionLabel}
                   type="text"
                   fullWidth
                   name="moTaSanPham"
@@ -173,7 +176,7 @@ const DialogShoes = ({
                 />
                 <TextField
                   margin="dense"
-                  label="Giá tiền"
+                  label={t.price}
                   type="number"
                   fullWidth
                   name="gia"
@@ -191,7 +194,7 @@ const DialogShoes = ({
                 /> */}
               </FormControl>
               <FormControl sx={{ width: "400px" }} fullWidth margin="dense">
-                <InputLabel id="trang-thai-label">Trạng thái</InputLabel>
+                <InputLabel id="trang-thai-label">{t.status}</InputLabel>
                 <Select
                   labelId="trang-thai-label"
                   label="Trạng thái"
@@ -200,13 +203,13 @@ const DialogShoes = ({
                   onChange={handleChange}
                   fullWidth
                 >
-                  <MenuItem value={1}>Đang sử dụng</MenuItem>
-                  <MenuItem value={0}>Ngưng sử dụng</MenuItem>
+                  <MenuItem value={1}>{t.inUse}</MenuItem>
+                  <MenuItem value={0}>{t.outOfUse}</MenuItem>
                 </Select>
               </FormControl>
               <TextField
                 margin="dense"
-                label="Hình ảnh sản phẩm"
+                label={t.productImage}
                 type="file"
                 fullWidth
                 name="images"
@@ -226,12 +229,12 @@ const DialogShoes = ({
                       fullWidth
                       margin="dense"
                     >
-                      <InputLabel id="thuong-hieu-label">Phong Cách</InputLabel>
+                      <InputLabel id="thuong-hieu-label">{t.style}</InputLabel>
                       <Select
                         labelId="thuong-hieu-label"
                         id="idThuongHieu"
                         name="phongCachId"
-                        label="Phong Cách"
+                        label={t.style}
                         value={formData.phongCachId}
                         onChange={handleChange}
                         fullWidth
@@ -252,13 +255,13 @@ const DialogShoes = ({
                       margin="dense"
                     >
                       <InputLabel id="thuong-hieu-label">
-                        Mục đích sử dụng
+                        {t.usagePurpose}
                       </InputLabel>
                       <Select
                         labelId="thuong-hieu-label"
                         id="idThuongHieu"
                         name="mucDichSuDungId"
-                        label="Mục đích sử dụng"
+                        label={t.usagePurpose}
                         value={formData.mucDichSuDungId}
                         onChange={handleChange}
                         fullWidth
@@ -281,7 +284,7 @@ const DialogShoes = ({
                       renderInput={(params) => (
                         <TextField
                           {...params}
-                          label="Màu sắc"
+                          label={t.color}
                           variant="outlined"
                           margin="dense"
                         />
@@ -312,7 +315,7 @@ const DialogShoes = ({
                       renderInput={(params) => (
                         <TextField
                           {...params}
-                          label="Kích cỡ"
+                          label={t.Size}
                           variant="outlined"
                           margin="dense"
                         />
@@ -341,7 +344,7 @@ const DialogShoes = ({
                         handleSave();
                       }}
                     >
-                      Thêm số lượng{" "}
+                      {t.addQuantity}
                     </Button>
                   </Box>{" "}
                   <IconButton
@@ -388,10 +391,10 @@ const DialogShoes = ({
           </DialogContent>{" "}
           <DialogActions>
             <Button onClick={handleCloseDialog} color="secondary">
-              Cancel
+              {t.cancelButtonLabel}
             </Button>
             <Button onClick={handleSave} color="primary">
-              Save
+              {t.save}
             </Button>
           </DialogActions>
         </>
@@ -404,7 +407,9 @@ const DialogShoes = ({
               transition: "width 0.4s ease",
             }}
           >
-            <Button onClick={() => setIsOpenAddSoLuong(true)}>Trở về</Button>
+            <Button onClick={() => setIsOpenAddSoLuong(true)}>
+              {t.backButton}
+            </Button>
             <ProductDetailInput products={currentProduct} />
           </DialogContent>
         </>

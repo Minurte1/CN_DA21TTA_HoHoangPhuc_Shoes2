@@ -7,6 +7,8 @@ import TableShoes from "./component/TableShoes";
 import DialogShoes from "./component/DialogShoes";
 import { getThemeConfig } from "../../../services/themeService";
 import { enqueueSnackbar } from "notistack";
+import { useSelector } from "react-redux";
+import translations from "../../../redux/data/translations";
 
 const api = process.env.REACT_APP_URL_SERVER;
 
@@ -30,6 +32,8 @@ const SanPhamManager = () => {
 
   // ----------------------------------------------
   const [option, setOption] = useState(true);
+  const language = useSelector((state) => state.language.language);
+  const t = translations[language];
 
   const [formData, setFormData] = useState({
     idThuongHieu: "",
@@ -392,7 +396,7 @@ const SanPhamManager = () => {
         }}
       >
         <Typography variant="h5" color="primary" gutterBottom>
-          Quản lý sản phẩm
+          {t.productManagement}
         </Typography>
         <Button
           variant="outlined"
@@ -400,7 +404,7 @@ const SanPhamManager = () => {
           onClick={() => handleOpenDialog()}
           sx={{ marginBottom: 2, backgroundColor: "#fff", color: "black" }}
         >
-          Thêm sản phẩm
+          {t.addProduct}
         </Button>
       </Box>
 
