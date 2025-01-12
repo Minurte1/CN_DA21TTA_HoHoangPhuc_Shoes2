@@ -13,6 +13,8 @@ import {
 import ChartDataLabels from "chartjs-plugin-datalabels";
 import axios from "axios";
 import { getThemeConfig } from "../../../../services/themeService";
+import { useSelector } from "react-redux";
+import translations from "../../../../redux/data/translations";
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -30,6 +32,9 @@ const RevenueDashboard = () => {
   const [topSellingCategories, setTopSellingCategories] = useState([]);
   const [topSellingBrands, setTopSellingBrands] = useState([]);
   const currentTheme = getThemeConfig(localStorage.getItem("THEMES") || "dark");
+  const language = useSelector((state) => state.language.language);
+  const t = translations[language];
+
   useEffect(() => {
     fetchCombinedData();
     fetchRevenueByPaymentMethod();
@@ -137,7 +142,7 @@ const RevenueDashboard = () => {
     labels: combinedData.labels,
     datasets: [
       {
-        label: "Doanh thu theo tháng",
+        label: t.revenueByMonth,
         data: combinedData.monthlyData,
         borderColor: "rgba(54, 162, 235, 1)",
         backgroundColor: "rgba(54, 162, 235, 0.2)",
@@ -145,7 +150,7 @@ const RevenueDashboard = () => {
         fill: true,
       },
       {
-        label: "Doanh thu theo ngày",
+        label: t.revenueByDay,
         data: combinedData.dailyData,
         borderColor: "rgba(75, 192, 192, 1)",
         backgroundColor: "rgba(75, 192, 192, 0.2)",
@@ -153,7 +158,7 @@ const RevenueDashboard = () => {
         fill: true,
       },
       {
-        label: "Doanh thu theo năm",
+        label: t.revenueByYear,
         data: combinedData.yearlyData,
         borderColor: "rgba(255, 99, 132, 1)",
         backgroundColor: "rgba(255, 99, 132, 0.2)",
@@ -306,7 +311,7 @@ const RevenueDashboard = () => {
         <Grid container spacing={3} style={{ padding: "20px" }}>
           <Grid item xs={12}>
             <Typography variant="h4" align="center" gutterBottom>
-              Thống kê doanh thu
+              {t.revenueStatistics}
             </Typography>
           </Grid>
           <Grid item xs={12} md={12}>
@@ -316,7 +321,7 @@ const RevenueDashboard = () => {
         <Grid container spacing={3} style={{ padding: "20px" }}>
           <Grid item xs={12}>
             <Typography variant="h4" align="center" gutterBottom>
-              Thống kê doanh thu theo phương thức thanh toán
+              {t.paymentMethodRevenueStatistics}
             </Typography>
           </Grid>
           <Grid item xs={12} md={12}>
@@ -326,13 +331,13 @@ const RevenueDashboard = () => {
         <Grid container spacing={3} style={{ padding: "20px" }}>
           <Grid item xs={6} md={6}>
             <Typography variant="h6" align="center" gutterBottom>
-              Thống kê loại sản phẩm bán được nhiều nhất
+              {t.bestSellingProductStatistics}
             </Typography>
             <Pie data={pieChartData} options={pieChartOptions} />
           </Grid>{" "}
           <Grid item xs={6} md={6}>
             <Typography variant="h6" align="center" gutterBottom>
-              Thống kê thương hiệu sản phẩm bán được nhiều nhất
+              {t.bestSellingBrandStatistics}
             </Typography>
             <Pie data={pieChartDataBrand} options={pieChartOptions} />
           </Grid>

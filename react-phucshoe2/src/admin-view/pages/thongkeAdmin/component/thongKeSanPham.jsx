@@ -11,6 +11,8 @@ import {
   LinearScale,
 } from "chart.js";
 import { Grid, Typography } from "@mui/material";
+import translations from "../../../../redux/data/translations";
+import { useSelector } from "react-redux";
 
 // Đăng ký các thành phần cần thiết cho Chart.js
 ChartJS.register(
@@ -27,7 +29,8 @@ const ProductStatisticsChart = () => {
   const [statusChartData, setStatusChartData] = useState(null);
   const [loading, setLoading] = useState(true);
   const api = process.env.REACT_APP_URL_SERVER;
-
+  const language = useSelector((state) => state.language.language);
+  const t = translations[language];
   // Lấy dữ liệu thống kê sản phẩm yêu thích
   useEffect(() => {
     const fetchData = async () => {
@@ -109,11 +112,11 @@ const ProductStatisticsChart = () => {
   }, [api]);
 
   if (loading) {
-    return <p>Đang tải dữ liệu...</p>;
+    return <p>{t.loadingData}</p>;
   }
 
   if (!chartData || !statusChartData) {
-    return <p>Không có dữ liệu để hiển thị.</p>;
+    return <p>{t.noDataToDisplay}</p>;
   }
 
   return (
@@ -121,7 +124,7 @@ const ProductStatisticsChart = () => {
       {" "}
       <Grid item xs={12}>
         <Typography variant="h6" align="center" gutterBottom>
-          Số lượng sản phẩm theo trạng thái
+          {t.productCountByStatus}
         </Typography>
         <Bar
           data={statusChartData}
@@ -130,7 +133,7 @@ const ProductStatisticsChart = () => {
             plugins: {
               title: {
                 display: true,
-                text: "Thống kê số lượng sản phẩm theo trạng thái",
+                text: t.productCountByStatus,
               },
               tooltip: {
                 callbacks: {
@@ -148,13 +151,13 @@ const ProductStatisticsChart = () => {
               x: {
                 title: {
                   display: true,
-                  text: "Tên sản phẩm",
+                  text: t.productName,
                 },
               },
               y: {
                 title: {
                   display: true,
-                  text: "Số lượng sản phẩm",
+                  text: t.productQuantity,
                 },
                 beginAtZero: true,
               },
@@ -164,7 +167,7 @@ const ProductStatisticsChart = () => {
       </Grid>
       <Grid item xs={12}>
         <Typography variant="h6" align="center" gutterBottom>
-          Sản phẩm được yêu thích nhất
+          {t.MostPopularProducts}
         </Typography>
         <Pie
           data={chartData}
@@ -176,7 +179,7 @@ const ProductStatisticsChart = () => {
               },
               title: {
                 display: true,
-                text: "Thống kê sản phẩm yêu thích nhất",
+                text: t.mostLikedProductsStats,
               },
             },
           }}

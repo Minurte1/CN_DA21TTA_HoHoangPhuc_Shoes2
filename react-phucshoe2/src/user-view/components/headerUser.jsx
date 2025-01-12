@@ -272,7 +272,7 @@ const Header = () => {
             to="/profile"
             onClick={handleClose}
           >
-            Thông tin
+            {t.sidebarTitle}
           </MenuItem>
           <MenuItem
             sx={{
@@ -291,7 +291,7 @@ const Header = () => {
             component={Link}
             to="/profile/don-hang"
           >
-            Đơn hàng
+            {t.Oder}
           </MenuItem>{" "}
           <MenuItem
             sx={{
@@ -309,7 +309,7 @@ const Header = () => {
             component={Link}
             to="/profile/lich-su-mua-hang"
           >
-            Lịch sử mua hàng
+            {t.HistoryBuy}
           </MenuItem>{" "}
           <MenuItem
             sx={{
@@ -327,7 +327,7 @@ const Header = () => {
             component={Link}
             to="/profile/mat-khau-cai-dat"
           >
-            Mật khẩu & cài đặt
+            {t.passwordAndSettings}
           </MenuItem>{" "}
           {userInfo?.VAI_TRO === "1" ? (
             <>
@@ -370,7 +370,7 @@ const Header = () => {
               handleLogout();
             }}
           >
-            Đăng xuất
+            {t.logout}
           </MenuItem>
         </Menu>
       </Box>
@@ -427,11 +427,11 @@ const Header = () => {
               open={Boolean(mobileMoreAnchorEl)}
               onClose={handleMobileMenuClose}
             >
-              <MenuItem onClick={handleMobileMenuClose}>Support</MenuItem>
+              <MenuItem onClick={handleMobileMenuClose}>{t.support}</MenuItem>
               <MenuItem onClick={handleMobileMenuClose}>Distribute</MenuItem>
               <MenuItem onClick={handleMobileMenuClose}>
                 <LanguageIcon sx={{ marginRight: 1 }} />
-                Language
+                {t.language}
               </MenuItem>
               <MenuItem onClick={handleMenu}>
                 <AccountCircle sx={{ marginRight: 1 }} />

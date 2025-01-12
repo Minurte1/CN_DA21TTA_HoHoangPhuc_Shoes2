@@ -24,9 +24,14 @@ import BarChartIcon from "@mui/icons-material/BarChart";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
 import { Link, useLocation } from "react-router-dom";
 import { getThemeConfig } from "../../services/themeService";
+import { useSelector } from "react-redux";
+import translations from "../../redux/data/translations";
 const NavBarAdmin = () => {
   const [openSection, setOpenSection] = useState(null);
   const location = useLocation();
+  const language = useSelector((state) => state.language.language);
+  const t = translations[language];
+
   const currentTheme = getThemeConfig(localStorage.getItem("THEMES") || "dark");
   const toggleSection = (section) => {
     setOpenSection((prev) => (prev === section ? null : section));
@@ -72,7 +77,7 @@ const NavBarAdmin = () => {
             color: currentTheme.color,
           }}
         >
-          Quản lý hệ thống
+          {t.systemManagement}
         </Typography>
         <List component="nav">
           <ListItem
@@ -96,7 +101,7 @@ const NavBarAdmin = () => {
               <BarChartIcon sx={{ color: currentTheme.color }} />
             </ListItemIcon>
 
-            <ListItemText primary="Thống kê cơ bản" />
+            <ListItemText primary={t.basicStatistics} />
           </ListItem>
           {/* //----------------------- */}
           <List>
@@ -116,7 +121,7 @@ const NavBarAdmin = () => {
                 <PeopleIcon sx={{ color: currentTheme.color }} />
               </ListItemIcon>
               <ListItemText
-                primary="Quản lý người dùng"
+                primary={t.userManagement}
                 sx={{ color: currentTheme.color }}
               />
               {openSection === "nguoiDung" ? <ExpandLess /> : <ExpandMore />}
@@ -146,7 +151,7 @@ const NavBarAdmin = () => {
                     "&:hover": { backgroundColor: currentTheme.accentColor },
                   }}
                 >
-                  <ListItemText primary="Danh sách người dùng" />
+                  <ListItemText primary={t.userList} />
                 </ListItem>
 
                 {/* <ListItem
@@ -185,7 +190,7 @@ const NavBarAdmin = () => {
                 <InventoryIcon sx={{ color: currentTheme.color }} />
               </ListItemIcon>
               <ListItemText
-                primary="Quản lý sản phẩm"
+                primary={t.productManagement}
                 sx={{ color: currentTheme.color }}
               />
               {openSection === "sanPham" ? <ExpandLess /> : <ExpandMore />}
@@ -211,7 +216,7 @@ const NavBarAdmin = () => {
                     "&:hover": { backgroundColor: currentTheme.accentColor },
                   }}
                 >
-                  <ListItemText primary="Thêm sản phẩm" />
+                  <ListItemText primary={t.addProduct} />
                 </ListItem>{" "}
                 <ListItem
                   button
@@ -230,7 +235,7 @@ const NavBarAdmin = () => {
                     "&:hover": { backgroundColor: currentTheme.accentColor },
                   }}
                 >
-                  <ListItemText primary="Carousel Sản Phẩm" />
+                  <ListItemText primary={t.productCarousel} />
                 </ListItem>
                 <List>
                   <ListItem
@@ -276,7 +281,7 @@ const NavBarAdmin = () => {
                           },
                         }}
                       >
-                        <ListItemText primary="Chất liệu giày" />
+                        <ListItemText primary={t.shoeMaterial} />
                       </ListItem>
                       <ListItem
                         button
@@ -298,7 +303,7 @@ const NavBarAdmin = () => {
                           },
                         }}
                       >
-                        <ListItemText primary="Giới tính giày " />
+                        <ListItemText primary={t.shoeGender} />
                       </ListItem>
                       <ListItem
                         button
@@ -320,7 +325,7 @@ const NavBarAdmin = () => {
                           },
                         }}
                       >
-                        <ListItemText primary="Kích cỡ giày" />
+                        <ListItemText primary={t.shoeSize} />
                       </ListItem>
                       <ListItem
                         button
@@ -342,7 +347,7 @@ const NavBarAdmin = () => {
                           },
                         }}
                       >
-                        <ListItemText primary="Thể loại giày" />
+                        <ListItemText primary={t.shoeCategory} />
                       </ListItem>
                       <ListItem
                         button
@@ -364,7 +369,7 @@ const NavBarAdmin = () => {
                           },
                         }}
                       >
-                        <ListItemText primary="Màu sắc giày" />
+                        <ListItemText primary={t.shoeColor} />
                       </ListItem>
                       <ListItem
                         button
@@ -386,7 +391,7 @@ const NavBarAdmin = () => {
                           },
                         }}
                       >
-                        <ListItemText primary="Mục đích sử dụng" />
+                        <ListItemText primary={t.usagePurpose} />
                       </ListItem>
                       <ListItem
                         button
@@ -408,7 +413,7 @@ const NavBarAdmin = () => {
                           },
                         }}
                       >
-                        <ListItemText primary="Phong cách giày" />
+                        <ListItemText primary={t.shoeStyle} />
                       </ListItem>
                       <ListItem
                         button
@@ -430,7 +435,7 @@ const NavBarAdmin = () => {
                           },
                         }}
                       >
-                        <ListItemText primary="Thương hiệu giày" />
+                        <ListItemText primary={t.shoeBrand} />
                       </ListItem>
                     </List>
                   </Collapse>
@@ -451,7 +456,7 @@ const NavBarAdmin = () => {
               <ListItemIcon>
                 <ShoppingCartIcon sx={{ color: currentTheme.color }} />
               </ListItemIcon>
-              <ListItemText primary="Quản lý đơn hàng" />
+              <ListItemText primary={t.orderManagement} />
               {openSection === "donHang" ? <ExpandLess /> : <ExpandMore />}
             </ListItem>
             <Collapse
@@ -479,7 +484,7 @@ const NavBarAdmin = () => {
                     },
                   }}
                 >
-                  <ListItemText primary="Đơn hàng đang xử lý" />
+                  <ListItemText primary={t.processingOrders} />
                 </ListItem>
                 <ListItem
                   button
@@ -500,7 +505,7 @@ const NavBarAdmin = () => {
                     },
                   }}
                 >
-                  <ListItemText primary="Tất cả đơn hàng" />
+                  <ListItemText primary={t.allOrders} />
                 </ListItem>
                 <ListItem
                   button
@@ -521,7 +526,7 @@ const NavBarAdmin = () => {
                     },
                   }}
                 >
-                  <ListItemText primary="Đơn hàng đã giao" />
+                  <ListItemText primary={t.deliveredOrders} />
                 </ListItem>{" "}
                 <ListItem
                   button
@@ -542,7 +547,7 @@ const NavBarAdmin = () => {
                     },
                   }}
                 >
-                  <ListItemText primary="Đơn hàng đã hủy" />
+                  <ListItemText primary={t.canceledOrders} />
                 </ListItem>{" "}
                 <ListItem
                   button
@@ -563,7 +568,7 @@ const NavBarAdmin = () => {
                     },
                   }}
                 >
-                  <ListItemText primary="Phương Thức Thanh Toán" />
+                  <ListItemText primary={t.paymentMethods} />
                 </ListItem>
               </List>
             </Collapse>
@@ -581,7 +586,7 @@ const NavBarAdmin = () => {
               <ListItemIcon>
                 <GroupIcon sx={{ color: currentTheme.color }} />
               </ListItemIcon>
-              <ListItemText primary="Tương tác người dùng" />
+              <ListItemText primary={t.userInteraction} />
               {openSection === "tuongTac" ? <ExpandLess /> : <ExpandMore />}
             </ListItem>
             <Collapse
@@ -610,7 +615,7 @@ const NavBarAdmin = () => {
                     },
                   }}
                 >
-                  <ListItemText primary="Quản lý đánh giá" />
+                  <ListItemText primary={t.reviewManagement} />
                 </ListItem>
                 <ListItem
                   button
@@ -632,7 +637,7 @@ const NavBarAdmin = () => {
                     },
                   }}
                 >
-                  <ListItemText primary="Tin nhắn người dùng" />
+                  <ListItemText primary={t.userMessages} />
                 </ListItem>
               </List>
             </Collapse>
@@ -660,7 +665,7 @@ const NavBarAdmin = () => {
               <BookmarkIcon sx={{ color: currentTheme.color }} />
             </ListItemIcon>
 
-            <ListItemText primary="Blog" />
+            <ListItemText primary={t.blog} />
           </ListItem>
           {/* //----------------------- */}
           {/* <ListItem
@@ -737,7 +742,7 @@ const NavBarAdmin = () => {
             variant="body2"
             style={{ color: "#888", textAlign: "center" }}
           >
-            NEED HELP?
+            {t.needHelp}
           </Typography>
         </List>
       </Box>{" "}

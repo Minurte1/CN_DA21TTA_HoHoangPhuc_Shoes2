@@ -14,10 +14,14 @@ import RevenueDashboard from "./component/thongKeDoanhThu";
 import MostLikedProductsChart from "./component/thongKeSanPham";
 import CategoryProductsChart from "./component/thongKeTheLoai";
 import UsersByProvinceChart from "./component/thongKeNguoiDung";
+import { useSelector } from "react-redux";
+import translations from "../../../redux/data/translations";
 
 const DashboardAdmin = () => {
   const currentTheme = getThemeConfig(localStorage.getItem("THEMES") || "dark");
   const [tabIndex, setTabIndex] = useState(0);
+  const language = useSelector((state) => state.language.language);
+  const t = translations[language];
 
   const handleTabChange = (event, newValue) => {
     setTabIndex(newValue);
@@ -49,23 +53,23 @@ const DashboardAdmin = () => {
         >
           <Tab
             sx={{ color: currentTheme.color, fontSize: "12px" }}
-            label="Doanh thu"
+            label={t.revenue}
           />
           <Tab
             sx={{ color: currentTheme.color, fontSize: "12px" }}
-            label="Sản phẩm"
+            label={t.Products}
           />
           <Tab
             sx={{ color: currentTheme.color, fontSize: "12px" }}
-            label="Đơn hàng"
+            label={t.Oder}
           />
           <Tab
             sx={{ color: currentTheme.color, fontSize: "12px" }}
-            label="Thể loại"
+            label={t.categoryLabel}
           />
           <Tab
             sx={{ color: currentTheme.color, fontSize: "12px" }}
-            label="Người dùng"
+            label={t.userLabel}
           />
         </Tabs>
 

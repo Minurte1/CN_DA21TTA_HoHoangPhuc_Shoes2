@@ -12,6 +12,8 @@ import {
 import axios from "axios";
 import { CircularProgress } from "@mui/material"; // Dùng CircularProgress từ MUI để hiển thị loading
 import { getThemeConfig } from "../../../../services/themeService";
+import translations from "../../../../redux/data/translations";
+import { useSelector } from "react-redux";
 
 // Đăng ký các thành phần của Chart.js
 ChartJS.register(
@@ -28,6 +30,8 @@ const UsersByProvinceChart = () => {
   const [loading, setLoading] = useState(true); // Thêm state loading
   const api = process.env.REACT_APP_URL_SERVER;
   const currentTheme = getThemeConfig(localStorage.getItem("THEMES") || "dark");
+  const language = useSelector((state) => state.language.language);
+  const t = translations[language];
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -76,7 +80,7 @@ const UsersByProvinceChart = () => {
         color: currentTheme.color,
       }}
     >
-      <h2>Thống kê người dùng theo tỉnh/thành phố</h2>
+      <h2>{t.userStatisticsByProvince}</h2>
       <div style={{ width: "100%", height: "400px", margin: "0 auto" }}>
         {loading ? (
           <div
@@ -104,7 +108,7 @@ const UsersByProvinceChart = () => {
                 plugins: {
                   title: {
                     display: true,
-                    text: "Biểu đồ số lượng người dùng theo tỉnh/thành phố",
+                    text: t.userCountByProvinceChart,
                   },
                   tooltip: {
                     mode: "index",
@@ -115,7 +119,7 @@ const UsersByProvinceChart = () => {
                   x: {
                     title: {
                       display: true,
-                      text: "Tỉnh/Thành phố",
+                      text: t.province,
                     },
                     ticks: {
                       maxRotation: 90, // Xoay nhãn nếu cần thiết
@@ -125,7 +129,7 @@ const UsersByProvinceChart = () => {
                   y: {
                     title: {
                       display: true,
-                      text: "Số lượng người dùng",
+                      text: t.userCount,
                     },
                     beginAtZero: true,
                   },
@@ -162,7 +166,7 @@ const UsersByProvinceChart = () => {
                 plugins: {
                   title: {
                     display: true,
-                    text: "Biểu đồ số lượng người dùng theo tỉnh/thành phố",
+                    text: t.userCountByProvinceChart,
                   },
                   tooltip: {
                     mode: "index",
@@ -173,7 +177,7 @@ const UsersByProvinceChart = () => {
                   x: {
                     title: {
                       display: true,
-                      text: "Tỉnh/Thành phố",
+                      text: t.province,
                     },
                     ticks: {
                       maxRotation: 90, // Xoay nhãn nếu cần thiết
@@ -183,7 +187,7 @@ const UsersByProvinceChart = () => {
                   y: {
                     title: {
                       display: true,
-                      text: "Số lượng người dùng",
+                      text: t.userCount,
                     },
                     beginAtZero: true,
                   },

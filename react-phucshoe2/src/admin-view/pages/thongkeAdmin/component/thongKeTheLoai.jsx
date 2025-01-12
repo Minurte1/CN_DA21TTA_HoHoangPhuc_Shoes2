@@ -3,6 +3,8 @@ import { Pie } from "react-chartjs-2";
 import axios from "axios";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Grid, Typography } from "@mui/material";
+import { useSelector } from "react-redux";
+import translations from "../../../../redux/data/translations";
 
 // Đăng ký các thành phần cần thiết cho Chart.js
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -10,6 +12,8 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 const StatisticsChart = ({ apiUrl, title }) => {
   const [chartData, setChartData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const language = useSelector((state) => state.language.language);
+  const t = translations[language];
 
   useEffect(() => {
     const fetchData = async () => {
@@ -68,11 +72,11 @@ const StatisticsChart = ({ apiUrl, title }) => {
   }, [apiUrl]);
 
   if (loading) {
-    return <p>Đang tải dữ liệu...</p>;
+    return <p>{t.loadingData}</p>;
   }
 
   if (!chartData) {
-    return <p>Không có dữ liệu để hiển thị.</p>;
+    return <p>{t.noDataToDisplay}</p>;
   }
 
   return (
@@ -100,39 +104,42 @@ const StatisticsChart = ({ apiUrl, title }) => {
 };
 
 const CategoryProductsChart = () => {
+  const language = useSelector((state) => state.language.language);
+  const t = translations[language];
+
   const api = process.env.REACT_APP_URL_SERVER;
   const apiEndpoints = [
     {
       url: `${api}/thong-ke/products-by-brand`,
-      title: "Thống kê số lượng sản phẩm theo thương hiệu",
+      title: t.productCountByBrand,
     },
     {
       url: `${api}/thong-ke/products-by-color`,
-      title: "Thống kê sản phẩm theo màu sắc",
+      title: t.productCountByColor,
     },
     {
       url: `${api}/thong-ke/products-by-material`,
-      title: "Thống kê sản phẩm theo chất liệu",
+      title: t.productCountByMaterial,
     },
     {
       url: `${api}/thong-ke/products-by-size`,
-      title: "Thống kê sản phẩm theo kích cỡ",
+      title: t.productCountBySize,
     },
     {
       url: `${api}/thong-ke/products-by-style`,
-      title: "Thống kê sản phẩm theo phong cách",
+      title: t.productCountByStyle,
     },
     {
       url: `${api}/thong-ke/products-by-gender`,
-      title: "Thống kê sản phẩm theo giới tính",
+      title: t.productCountByGender,
     },
     {
       url: `${api}/thong-ke/products-by-category-type`,
-      title: "Thống kê sản phẩm theo loại danh mục",
+      title: t.productCountByCategory,
     },
     {
       url: `${api}/thong-ke/products-by-usage-purpose`,
-      title: "Thống kê sản phẩm theo mục đích sử dụng",
+      title: t.productCountByUsage,
     },
   ];
 
