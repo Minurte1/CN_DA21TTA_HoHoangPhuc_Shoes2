@@ -579,6 +579,7 @@ const getFavoriteProductsByUser = async (req, res) => {
         gt.TEN_GIOI_TINH,
         dm.TEN_DANH_MUC, dm.MO_TA_LOAI_DANH_MUC,
         cl.TEN_CHAT_LIEU_, cl.MO_TA_CHAT_LIEU,
+        th.ID_THUONG_HIEU,
         th.TEN_THUONG_HIEU,
         pc.ID_PHUONG_CACH, pc.TEN_PHONG_CACH, pc.CREATED_PHONG_CACH, pc.UPDATE_PHONG_CACH, pc.TRANG_THAI_PHONG_CACH,
         mdsd.ID_MUC_DICH_SU_DUNG, mdsd.TEN_MUC_DICH_SU_DUNG, mdsd.CREATE_MUC_DICH_SU_DUNG, mdsd.UPDATE_MUC_DICH_SU_DUNG, mdsd.TRANG_THAI_MUC_DICH_SU_DUNG,

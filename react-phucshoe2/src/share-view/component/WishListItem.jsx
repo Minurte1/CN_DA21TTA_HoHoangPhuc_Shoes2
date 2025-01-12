@@ -1,6 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Card, Box, Typography, Button, Modal } from "@mui/material";
 import { getThemeConfig } from "../../services/themeService";
+import moment from "moment";
+import { useSelector } from "react-redux";
+import translations from "../../redux/data/translations";
 
 const api = process.env.REACT_APP_URL_SERVER;
 
@@ -24,7 +27,8 @@ const WishlistItem = ({
   handleViewProduct,
 }) => {
   const currentTheme = getThemeConfig(localStorage.getItem("THEMES") || "dark");
-
+  const language = useSelector((state) => state.language.language);
+  const t = translations[language];
   return (
     <Card
       sx={{
@@ -49,7 +53,7 @@ const WishlistItem = ({
             {gender} | {category} | {material} | {brand}
           </Typography>
           <Typography variant="body2" color="gray">
-            Rating: {rating}
+            {moment(dateLiked).format(" HH:mm DD/MM/YYYY ")}
           </Typography>
         </Box>
       </Box>
@@ -72,7 +76,7 @@ const WishlistItem = ({
             },
           }}
         >
-          Remove
+          {t.remove}
         </Button>
 
         <Button
@@ -90,11 +94,7 @@ const WishlistItem = ({
           }}
           disabled={inCart || isLoading} // Disable button if product is already in cart or processing
         >
-          {isLoading
-            ? "Processing..."
-            : inCart
-            ? "View In Cart"
-            : "View Product"}
+          {isLoading ? t.processing : inCart ? t.viewInCart : t.viewProduct}
         </Button>
       </Box>
     </Card>

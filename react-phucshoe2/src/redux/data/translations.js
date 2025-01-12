@@ -235,10 +235,20 @@ const translations = {
     popular: "Phổ biến",
     selectColor: "Chọn màu sắc",
     selectSize: "Chọn kích cỡ",
+    remove: "Loại bỏ",
+
+    processing: "Đang xử lý...",
+    viewInCart: "Xem trong giỏ hàng",
+    viewProduct: "Xem sản phẩm",
   },
 
   // --------------------ENGLISH--------------------
   en: {
+    processing: "Processing...",
+    viewInCart: "View In Cart",
+    viewProduct: "View Product",
+
+    remove: "Remove",
     favorite: "Favorite",
     chooseSize: "Choose size",
     chooseColor: "Choose color",

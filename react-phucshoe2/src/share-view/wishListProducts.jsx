@@ -461,7 +461,7 @@ const WishlistProducts = () => {
                 <div
                   style={{ borderBottom: "1px solid rgba(204, 204, 204, 0.5)" }}
                 >
-                  <h4>{t.selectSize}</h4>
+                  <h4 style={{ color: currentTheme.color }}> {t.selectSize}</h4>
                   {uniqueSizes.map((size, index) => (
                     <button
                       key={`size-${index}`}
@@ -495,7 +495,9 @@ const WishlistProducts = () => {
                       }
                     }
                   >
-                    <h4>{t.selectColor}</h4>
+                    <h4 style={{ color: currentTheme.color }}>
+                      {t.selectColor}
+                    </h4>
                     {availableColors.map((detail, index) => (
                       <button
                         key={`color-${index}`}
