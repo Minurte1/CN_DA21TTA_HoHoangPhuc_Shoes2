@@ -13,6 +13,8 @@ import {
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { getThemeConfig } from "../../services/themeService";
+import { useSelector } from "react-redux";
+import translations from "../../redux/data/translations";
 
 const CommentsSection = ({ reviews }) => {
   const [expanded, setExpanded] = useState(false);
@@ -23,7 +25,8 @@ const CommentsSection = ({ reviews }) => {
 
   const currentTheme = getThemeConfig(localStorage.getItem("THEMES") || "dark");
   const api = process.env.REACT_APP_URL_SERVER;
-
+  const language = useSelector((state) => state.language.language);
+  const t = translations[language];
   // Hàm lọc theo số sao
   const handleStarFilterChange = (event) => {
     const star = event.target.value;
@@ -93,7 +96,9 @@ const CommentsSection = ({ reviews }) => {
           aria-controls="panel1a-content"
           id="panel1a-header"
         >
-          <Typography variant="h6">Xem bình luận ({reviews.length})</Typography>
+          <Typography variant="h6">
+            {t.xemBinhLuan} ({reviews.length})
+          </Typography>
         </AccordionSummary>
         <AccordionDetails>
           <Box
@@ -106,34 +111,34 @@ const CommentsSection = ({ reviews }) => {
             <Box sx={{ marginBottom: 2, display: "flex" }}>
               <Box>
                 <Typography variant="body2" sx={{ marginBottom: 1 }}>
-                  Lọc theo số sao:
+                  {t.locTheoSoSao}:
                 </Typography>
                 <Select
                   value={starFilter}
                   onChange={handleStarFilterChange}
                   sx={{ color: "#fff", backgroundColor: "#202020", width: 200 }}
                 >
-                  <MenuItem value="Tất cả">Tất cả</MenuItem>
-                  <MenuItem value="5">5 sao</MenuItem>
-                  <MenuItem value="4">4 sao</MenuItem>
-                  <MenuItem value="3">3 sao</MenuItem>
-                  <MenuItem value="2">2 sao</MenuItem>
-                  <MenuItem value="1">1 sao</MenuItem>
+                  <MenuItem value="Tất cả">{t.tatCa}</MenuItem>
+                  <MenuItem value="5">5 {t.sao}</MenuItem>
+                  <MenuItem value="4">4 {t.sao}</MenuItem>
+                  <MenuItem value="3">3 {t.sao}</MenuItem>
+                  <MenuItem value="2">2 {t.sao}</MenuItem>
+                  <MenuItem value="1">1 {t.sao}</MenuItem>
                 </Select>{" "}
               </Box>
 
               <Box sx={{ marginLeft: "10px" }}>
                 {/* Bộ lọc thời gian */}
                 <Typography variant="body2" sx={{ marginBottom: 1 }}>
-                  Lọc theo thời gian bình luận:
+                  {t.locTheoThoiGian}:
                 </Typography>
                 <Select
                   value={timeFilter}
                   onChange={handleTimeFilterChange}
                   sx={{ color: "#fff", backgroundColor: "#202020" }}
                 >
-                  <MenuItem value="latest">Lượt bình luận mới nhất</MenuItem>
-                  <MenuItem value="oldest">Lượt bình luận cũ nhất</MenuItem>
+                  <MenuItem value="latest">{t.luotBinhLuanMoiNhat}</MenuItem>
+                  <MenuItem value="oldest">{t.luotBinhLuanCuNhat}</MenuItem>
                 </Select>
               </Box>
             </Box>
@@ -148,7 +153,7 @@ const CommentsSection = ({ reviews }) => {
                   color: "gray",
                 }}
               >
-                Hãy mua sản phẩm này để trở thành người bình luận đầu tiên.
+                {t.muaSanPhamDeBinhLuan}
               </Typography>
             ) : (
               showReviews.map((review, index) => (
@@ -187,7 +192,7 @@ const CommentsSection = ({ reviews }) => {
                       sx={{ marginTop: 0.5, fontSize: 13 }}
                     />{" "}
                     <Typography sx={{ marginLeft: 1, fontSize: 11, mt: 0.5 }}>
-                      Màu {review.TEN_MAU_SAC},
+                      {t.tenMauSac} {review.TEN_MAU_SAC},
                     </Typography>
                     <Typography sx={{ marginLeft: 1, fontSize: 11, mt: 0.5 }}>
                       Size: {review.KICH_CO}
@@ -202,12 +207,12 @@ const CommentsSection = ({ reviews }) => {
             {/* Nút Xem tất cả / Thu gọn */}
             {reviews.length > 10 && !showAll && (
               <Button onClick={handleShowAll} sx={{ marginTop: 2 }}>
-                Xem tất cả
+                {t.xemTatCa}
               </Button>
             )}
             {showAll && reviews.length > 10 && (
               <Button onClick={handleShowLess} sx={{ marginTop: 2 }}>
-                Thu gọn
+                {t.thuGon}
               </Button>
             )}
           </Box>

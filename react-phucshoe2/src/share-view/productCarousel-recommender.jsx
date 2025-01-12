@@ -203,7 +203,7 @@ const RecommenderProductCarousel = ({ ID_SAN_PHAM }) => {
           },
         }}
       >
-        Gợi ý{" "}
+        {t.suggestionLabel}
         <ArrowForwardIosIcon
           className="arrow-icon"
           sx={{
@@ -323,7 +323,7 @@ const RecommenderProductCarousel = ({ ID_SAN_PHAM }) => {
             ))
           ) : (
             <Typography variant="body2" sx={{ textAlign: "center" }}>
-              Không có sản phẩm nào
+              {t.noProductsLabel}
             </Typography>
           )}
         </Box>

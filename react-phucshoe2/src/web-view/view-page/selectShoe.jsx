@@ -26,6 +26,7 @@ import RecommenderProductCarousel from "../../share-view/productCarousel-recomme
 import AddressSelector from "../../user-view/components/addressUser";
 import CommentsSection from "../component-view/binhLuan";
 import { getThemeConfig } from "../../services/themeService";
+import translations from "../../redux/data/translations";
 const api = process.env.REACT_APP_URL_SERVER;
 
 const SelectShoe = () => {
@@ -35,6 +36,8 @@ const SelectShoe = () => {
   const [binhLuan, setBinhLuan] = useState([]);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const language = useSelector((state) => state.language.language);
+  const t = translations[language];
   const { isAuthenticated, userInfo } = useSelector((state) => state.auth);
   const [selectPhuongThucThanhToan, setSelectPhuongThucThanhToan] =
     useState("");
@@ -225,20 +228,7 @@ const SelectShoe = () => {
             }}
           >
             <Typography sx={{ color: currentTheme.color }}>
-              Mô tả: {product.MO_TA_SAN_PHAM} {/* Product Description */}
-            </Typography>
-          </Box>{" "}
-          <Box
-            sx={{
-              textAlign: "left",
-              borderRadius: 1,
-              display: "flex",
-              alignItems: "center",
-              mt: 2,
-            }}
-          >
-            <Typography sx={{ color: currentTheme.color }}>
-              Mô tả chất liệu: {product.MO_TA_CHAT_LIEU}{" "}
+              {t.descriptionLabel}: {product.MO_TA_SAN_PHAM}{" "}
               {/* Product Description */}
             </Typography>
           </Box>{" "}
@@ -252,7 +242,21 @@ const SelectShoe = () => {
             }}
           >
             <Typography sx={{ color: currentTheme.color }}>
-              Mô tả thể loại: {product.MO_TA_LOAI_DANH_MUC}{" "}
+              {t.materialDescriptionLabel}: {product.MO_TA_CHAT_LIEU}{" "}
+              {/* Product Description */}
+            </Typography>
+          </Box>{" "}
+          <Box
+            sx={{
+              textAlign: "left",
+              borderRadius: 1,
+              display: "flex",
+              alignItems: "center",
+              mt: 2,
+            }}
+          >
+            <Typography sx={{ color: currentTheme.color }}>
+              {t.categoryDescriptionLabel}: {product.MO_TA_LOAI_DANH_MUC}{" "}
             </Typography>
           </Box>{" "}
           <Box
@@ -296,7 +300,7 @@ const SelectShoe = () => {
               <div
                 style={{ borderBottom: "1px solid rgba(204, 204, 204, 0.5)" }}
               >
-                <h4>Chọn kích cỡ</h4>
+                <h4>{t.chooseSizeLabel}</h4>
                 {uniqueSizes.map((size, index) => (
                   <button
                     key={`size-${index}`}
@@ -326,7 +330,7 @@ const SelectShoe = () => {
                 <div
                   style={{ borderBottom: "1px solid rgba(204, 204, 204, 0.5)" }}
                 >
-                  <h4>Chọn màu sắc</h4>
+                  <h4>{t.chooseSizeLabel}</h4>
                   {availableColors.map((detail, index) => (
                     <button
                       key={`color-${index}`}
@@ -370,7 +374,7 @@ const SelectShoe = () => {
               }}
               fullWidth
             >
-              Buy Now
+              {t.buyNowLabel}
             </Button>{" "}
             <Button
               onClick={() => handleAddToWish()}
@@ -388,7 +392,7 @@ const SelectShoe = () => {
               }}
               fullWidth
             >
-              Add To Wish
+              {t.addToWishLabel}
             </Button>
             <Button
               onClick={() => handleAddToCart(true)}
@@ -406,7 +410,7 @@ const SelectShoe = () => {
               }}
               fullWidth
             >
-              Add To Cart
+              {t.addToCartLabel}
             </Button>
             <Divider sx={{ backgroundColor: "#555", mb: 2 }} />
             <Box>
@@ -419,7 +423,8 @@ const SelectShoe = () => {
                   paddingBottom: 1,
                 }}
               >
-                Thể loại: {product.TEN_DANH_MUC} {/* Product Description */}
+                {t.categoryLabel}: {product.TEN_DANH_MUC}{" "}
+                {/* Product Description */}
               </Typography>{" "}
               <Typography
                 variant="body2"
@@ -430,18 +435,7 @@ const SelectShoe = () => {
                   paddingBottom: 1,
                 }}
               >
-                Phong cách: {product.TEN_PHONG_CACH} {/* Product Description */}
-              </Typography>
-              <Typography
-                variant="body2"
-                sx={{
-                  color: currentTheme.color,
-                  borderBottom: "1px solid rgba(204, 204, 204, 0.5)",
-                  paddingTop: 3,
-                  paddingBottom: 1,
-                }}
-              >
-                Thương hiệu: {product.TEN_THUONG_HIEU}{" "}
+                {t.styleLabel}: {product.TEN_PHONG_CACH}{" "}
                 {/* Product Description */}
               </Typography>
               <Typography
@@ -453,7 +447,19 @@ const SelectShoe = () => {
                   paddingBottom: 1,
                 }}
               >
-                Đối tượng phù hợp nhất: {product.TEN_GIOI_TINH}{" "}
+                {t.brandLabel}: {product.TEN_THUONG_HIEU}{" "}
+                {/* Product Description */}
+              </Typography>
+              <Typography
+                variant="body2"
+                sx={{
+                  color: currentTheme.color,
+                  borderBottom: "1px solid rgba(204, 204, 204, 0.5)",
+                  paddingTop: 3,
+                  paddingBottom: 1,
+                }}
+              >
+                {t.bestSuitableForLabel}: {product.TEN_GIOI_TINH}{" "}
               </Typography>{" "}
               <Typography
                 variant="body2"
@@ -464,7 +470,8 @@ const SelectShoe = () => {
                   paddingBottom: 1,
                 }}
               >
-                Chất liệu: {product.TEN_CHAT_LIEU_ || "N/A"} {/* Material */}
+                {t.materialLabel}: {product.TEN_CHAT_LIEU_ || "N/A"}{" "}
+                {/* Material */}
                 {/* {new Date(product.NGAY_TAO_SANPHAM).toLocaleDateString()} */}
               </Typography>{" "}
               <Typography
@@ -476,7 +483,7 @@ const SelectShoe = () => {
                   paddingBottom: 1,
                 }}
               >
-                Số lượng trong kho còn : {product.SO_LUONG_SANPHAM}
+                {t.stockQuantityLabel}: {product.SO_LUONG_SANPHAM}
                 {/* {new Date(product.NGAY_TAO_SANPHAM).toLocaleDateString()} */}
               </Typography>{" "}
             </Box>

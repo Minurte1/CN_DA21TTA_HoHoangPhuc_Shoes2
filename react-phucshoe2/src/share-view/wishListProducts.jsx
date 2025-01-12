@@ -23,6 +23,7 @@ import { setTotalCart } from "../redux/authSlice";
 import { getThemeConfig } from "../services/themeService";
 import WishlistItem from "./component/WishListItem";
 import WishlistFilters from "./component/WishListFilter";
+import translations from "../redux/data/translations";
 const api = process.env.REACT_APP_URL_SERVER;
 
 const WishlistProducts = () => {
@@ -35,7 +36,8 @@ const WishlistProducts = () => {
   const [danhMuc, setDanhMuc] = useState([]);
   const [chatLieu, setChatLieu] = useState([]);
   const [gioiTinh, setGioiTinh] = useState([]);
-
+  const language = useSelector((state) => state.language.language);
+  const t = translations[language];
   // ----------------------------------------------
   const [phongCach, setPhongCach] = useState([]);
   const [mauSac, setMauSac] = useState([]);
@@ -363,14 +365,14 @@ const WishlistProducts = () => {
     >
       <Grid item xs={12}>
         <Typography variant="h4" sx={{ color: currentTheme.color }}>
-          Yêu thích
+          {t.favorite}
         </Typography>
 
         <Divider sx={{ backgroundColor: "#555", mb: 2, mt: 4 }} />
       </Grid>
       <Grid item xs={12} md={8} lg={7}>
         {loading ? (
-          <Typography color="white">Loading...</Typography>
+          <Typography color="white">{t.loadingButton}</Typography>
         ) : (
           filteredProducts.map((item, index) => (
             <WishlistItem
@@ -407,7 +409,7 @@ const WishlistProducts = () => {
                 onClick={() => setOpenViewProduct(false)}
               />
               <Typography variant="body2" sx={{ color: currentTheme.color }}>
-                Sort by:{" "}
+                {t.sortBy}:{" "}
               </Typography>
               <FormControl sx={{ ml: 1, minWidth: 120 }}>
                 <Select
@@ -415,9 +417,9 @@ const WishlistProducts = () => {
                   sx={{ color: currentTheme.color }}
                   defaultValue="Newest"
                 >
-                  <MenuItem value="Newest">Newest</MenuItem>
-                  <MenuItem value="On Sale">On Sale</MenuItem>
-                  <MenuItem value="Popular">Popular</MenuItem>
+                  <MenuItem value="Newest">{t.newest}</MenuItem>
+
+                  <MenuItem value="Popular">{t.popular}</MenuItem>
                 </Select>
               </FormControl>
             </Box>
@@ -459,7 +461,7 @@ const WishlistProducts = () => {
                 <div
                   style={{ borderBottom: "1px solid rgba(204, 204, 204, 0.5)" }}
                 >
-                  <h4>Chọn kích cỡ</h4>
+                  <h4>{t.selectSize}</h4>
                   {uniqueSizes.map((size, index) => (
                     <button
                       key={`size-${index}`}
@@ -493,7 +495,7 @@ const WishlistProducts = () => {
                       }
                     }
                   >
-                    <h4>Chọn màu sắc</h4>
+                    <h4>{t.selectColor}</h4>
                     {availableColors.map((detail, index) => (
                       <button
                         key={`color-${index}`}
@@ -533,7 +535,7 @@ const WishlistProducts = () => {
                       fontWeight: "bold",
                     }}
                   >
-                    Thêm vào giỏ hàng
+                    {t.AddToCart}
                   </Button>
                 </Box>
               </div>
@@ -550,16 +552,16 @@ const WishlistProducts = () => {
                 onClick={() => setOpenViewProduct(true)}
               />
               <Typography variant="body2" sx={{ color: currentTheme.color }}>
-                Sort by:{" "}
+                {t.sortBy}:{" "}
               </Typography>
               <FormControl sx={{ ml: 1, minWidth: 120 }}>
                 <Select
                   sx={{ color: currentTheme.color }}
                   defaultValue="Newest"
                 >
-                  <MenuItem value="Newest">Newest</MenuItem>
-                  <MenuItem value="On Sale">On Sale</MenuItem>
-                  <MenuItem value="Popular">Popular</MenuItem>
+                  <MenuItem value="Newest">{t.newest}</MenuItem>
+                  <MenuItem value="On Sale">{t.onSale}</MenuItem>
+                  <MenuItem value="Popular">{t.popular}</MenuItem>
                 </Select>
               </FormControl>
             </Box>
