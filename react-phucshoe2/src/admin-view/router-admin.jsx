@@ -21,6 +21,7 @@ import TatCaDonHangAdminProcess from "./pages/thanhToan/donHangAdminProcess";
 import MessengerAdmin from "./pages/tuongTacNguoiDung/page/messengerAdmin";
 import BlogManager from "./pages/tuongTacNguoiDung/page/blogAdmin";
 import TatCaDonHangAdminDangGiaoHang from "./pages/thanhToan/donHangAdminDangGiaoHang";
+import ShoesSapHetHang from "./pages/quanLySanPham/sanPhamSapHetHang";
 
 // import QuanLySanPham from "./pages/QuanLySanPham";
 // import TuongTacNguoiDung from "./pages/TuongTacNguoiDung";
@@ -39,6 +40,10 @@ const RouterAdmin = () => {
     {
       path: "/san-pham/them-san-pham",
       element: <SanPhamManager />,
+    },
+    {
+      path: "/san-pham/product-sap-het",
+      element: <ShoesSapHetHang />,
     },
     {
       path: "/san-pham/carousel-product",

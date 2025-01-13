@@ -382,9 +382,11 @@ const translations = {
     order_in_delivery: "Đơn hàng đang giao",
     confirm_mark_order_in_delivery:
       "Bạn có chắc chắn muốn đánh dấu đơn hàng này là 'Đơn hàng đang giao'?",
+    product_soon_out_of_stock: "Sản phẩm sắp hết",
   },
-  // --------------------ENGLISH--------------------
+  // --------------------ENGLISH----------------------------------------------------------
   en: {
+    product_soon_out_of_stock: "Product is running out",
     confirm_mark_order_in_delivery:
       "Are you sure you want to mark this order as 'Order in delivery'?",
     order_in_delivery: "Order in delivery",

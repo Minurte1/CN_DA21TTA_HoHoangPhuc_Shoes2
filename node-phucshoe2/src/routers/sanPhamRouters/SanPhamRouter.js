@@ -21,6 +21,7 @@ const {
 
   getSAN_PHAM_ChiTiet_ById,
   updateSAN_PHAM_ChiTiet_ById,
+  getProductsUnder20,
 } = require("../../controllers/sanPhamController/SanPhamController");
 const uploads = require("../../config/multerConfig");
 // Định nghĩa các route
@@ -44,4 +45,8 @@ router.get("/search", getSAN_PHAM_Search);
 
 router.get("/chi-tiet/:id", getSAN_PHAM_ChiTiet_ById);
 router.put("/chi-tiet/:id", updateSAN_PHAM_ChiTiet_ById);
+//admin
+
+router.get("/products-under-20", getProductsUnder20);
+
 module.exports = router;

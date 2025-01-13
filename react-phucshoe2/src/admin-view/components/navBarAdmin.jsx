@@ -230,7 +230,28 @@ const NavBarAdmin = () => {
                 >
                   <ListItemText primary={t.addProduct} />
                 </ListItem>
-
+                <ListItem
+                  button
+                  component={Link}
+                  to="/admin/san-pham/product-sap-het"
+                  sx={{
+                    pl: 4,
+                    mt: 1,
+                    mb: 1,
+                    color:
+                      location.pathname === "/admin/san-pham/product-sap-het"
+                        ? "#000"
+                        : currentTheme.color,
+                    borderRadius: "13px",
+                    backgroundColor:
+                      location.pathname === "/admin/san-pham/product-sap-het"
+                        ? "#2ccaff"
+                        : "transparent", // Kiểm tra nếu đang ở trang này
+                    "&:hover": { backgroundColor: "#2ccaff", color: "#000" },
+                  }}
+                >
+                  <ListItemText primary={t.product_soon_out_of_stock} />
+                </ListItem>
                 <ListItem
                   button
                   component={Link}
@@ -704,7 +725,7 @@ const NavBarAdmin = () => {
               unmountOnExit
             >
               <List component="div" disablePadding>
-                <ListItem
+                {/* <ListItem
                   button
                   component={Link}
                   to="/admin/tuong-tac-nguoi-dung/reviews"
@@ -730,7 +751,7 @@ const NavBarAdmin = () => {
                   }}
                 >
                   <ListItemText primary={t.reviewManagement} />
-                </ListItem>
+                </ListItem> */}
                 <ListItem
                   button
                   component={Link}

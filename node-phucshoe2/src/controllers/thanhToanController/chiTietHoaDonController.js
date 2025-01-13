@@ -1643,6 +1643,156 @@ WHERE
   }
 };
 
+//Xuất excel
+const getChiTietHoaDonTheoThoiGian = async (req, res) => {
+  const { status, startDate, endDate } = req.body; // Lấy dữ liệu từ body
+  try {
+    // Truy vấn bảng DON_HANG với điều kiện trạng thái và thời gian bắt đầu, kết thúc
+    const [donHangResults] = await connection.execute(
+      `SELECT 
+          dh.ID_ODER, 
+          dh.ID_NGUOI_DUNG, 
+          dh.ID_THANH_TOAN, 
+          dh.ID_DON_HANG,
+          dh.TONG_TIEN, dh.DIA_CHI_DON_HANG,
+          dh.SO_DIEN_THOAI_DON_HANG, 
+          dh.TRANG_THAI_DON_HANG, 
+          dh.GHI_CHU_DONHANG, 
+          dh.NGAY_CAP_NHAT_DONHANG, 
+          dh.NGAY_TAO_DONHANG,
+          tt.PHUONG_THUC_THANH_TOAN, 
+          nd.EMAIL, 
+          nd.VAI_TRO, 
+          nd.HO_TEN, 
+          nd.SO_DIEN_THOAI, 
+          nd.DIA_CHI, 
+          nd.TRANG_THAI_USER, 
+          nd.NGAY_TAO_USER, 
+          nd.NGAY_CAP_NHAT_USER, 
+          nd.AVATAR, 
+          nd.NGAY_SINH, 
+          nd.DIA_CHI_Provinces, 
+          nd.DIA_CHI_Districts, 
+          nd.DIA_CHI_Wards, 
+          nd.THEMES, 
+          nd.LANGUAGE
+        FROM 
+          DON_HANG dh
+        LEFT JOIN 
+          THANH_TOAN tt ON dh.ID_THANH_TOAN = tt.ID_THANH_TOAN
+        LEFT JOIN 
+          NGUOI_DUNG nd ON dh.ID_NGUOI_DUNG = nd.ID_NGUOI_DUNG
+        WHERE 
+         
+          dh.TRANG_THAI_DON_HANG = ? AND 
+          dh.NGAY_TAO_DONHANG BETWEEN ? AND ?
+        ORDER BY 
+          dh.NGAY_CAP_NHAT_DONHANG DESC`,
+      [status, startDate, endDate]
+    );
+
+    // Nếu không có đơn hàng nào, trả về thông báo lỗi
+    if (donHangResults.length === 0) {
+      return res.status(200).json({
+        EM: "Không tìm thấy đơn hàng theo yêu cầu",
+        EC: 1,
+        DT: [],
+      });
+    }
+
+    // Kết quả cuối cùng
+    const results = [];
+
+    for (const donHang of donHangResults) {
+      // Lấy chi tiết hóa đơn của từng đơn hàng
+      const [chiTietHoaDonResults] = await connection.execute(
+        `SELECT 
+          sp.ID_SAN_PHAM, 
+          sp.ID_THUONG_HIEU, 
+          sp.ID_DANH_MUC, 
+          sp.GIOI_TINH_ID, 
+          sp.CHAT_LIEU_ID_,
+          sp.TEN_SAN_PHAM, 
+          sp.GIA, 
+          sp.MO_TA_SAN_PHAM, 
+          sp.HINH_ANH_SANPHAM, 
+          sp.TRANG_THAI_SANPHAM, 
+          sp.NGAY_TAO_SANPHAM, 
+          sp.NGAY_CAP_NHAT_SANPHAM, 
+          sp.SO_LUONG_SANPHAM,
+          gt.TEN_GIOI_TINH,
+          dm.TEN_DANH_MUC, 
+          dm.MO_TA_LOAI_DANH_MUC,
+          cl.TEN_CHAT_LIEU_, 
+          cl.MO_TA_CHAT_LIEU,
+          th.TEN_THUONG_HIEU,
+          pc.ID_PHUONG_CACH, 
+          pc.TEN_PHONG_CACH, 
+          ms.MAU_SAC_ID, 
+          ms.TEN_MAU_SAC, 
+          mdsd.ID_MUC_DICH_SU_DUNG, 
+          mdsd.TEN_MUC_DICH_SU_DUNG, 
+          kc.ID_KICH_CO, 
+          kc.KICH_CO, 
+          cthd.ID_CHI_TIET_HOA_DON, 
+          cthd.SO_LUONG_SP, 
+          cthd.DANH_GIA,
+          cthd.GIA_SAN_PHAM_CHI_TIET
+        FROM 
+          SAN_PHAM sp
+        LEFT JOIN 
+          GIOI_TINH gt ON sp.GIOI_TINH_ID = gt.GIOI_TINH_ID
+        LEFT JOIN 
+          LOAI_DANH_MUC dm ON sp.ID_DANH_MUC = dm.ID_DANH_MUC
+        LEFT JOIN 
+          CHAT_LIEU cl ON sp.CHAT_LIEU_ID_ = cl.CHAT_LIEU_ID_
+        LEFT JOIN 
+          THUONG_HIEU th ON sp.ID_THUONG_HIEU = th.ID_THUONG_HIEU
+        LEFT JOIN 
+          PHONG_CACH_SAN_PHAM pcs ON sp.ID_SAN_PHAM = pcs.ID_SAN_PHAM
+        LEFT JOIN 
+          PHONG_CACH pc ON pcs.ID_PHUONG_CACH = pc.ID_PHUONG_CACH
+        LEFT JOIN 
+          SAN_PHAM_CHI_TIET spct ON sp.ID_SAN_PHAM = spct.ID_SAN_PHAM
+        LEFT JOIN 
+          MAU_SAC ms ON spct.MAU_SAC_ID = ms.MAU_SAC_ID
+        LEFT JOIN 
+          MUC_DICH_SU_DUNG_SAN_PHAM mdsds ON sp.ID_SAN_PHAM = mdsds.ID_SAN_PHAM
+        LEFT JOIN 
+          MUC_DICH_SU_DUNG mdsd ON mdsds.ID_MUC_DICH_SU_DUNG = mdsd.ID_MUC_DICH_SU_DUNG
+        LEFT JOIN 
+          KICH_CO kc ON spct.ID_KICH_CO = kc.ID_KICH_CO
+        LEFT JOIN 
+          CHI_TIET_HOA_DON cthd ON cthd.ID_SAN_PHAM_CHI_TIET = spct.ID_SAN_PHAM_CHI_TIET
+        WHERE 
+          cthd.ID_DON_HANG IN (?) 
+        `,
+        [donHang.ID_DON_HANG]
+      );
+
+      // Ghép kết quả lại với nhau
+      results.push({
+        ...donHang,
+        chiTietHoaDon: chiTietHoaDonResults,
+      });
+    }
+
+    // Trả về kết quả
+    return res.status(200).json({
+      EM: "Lấy chi tiết hóa đơn theo thời gian thành công",
+      EC: 1,
+      DT: results,
+    });
+  } catch (error) {
+    console.error("Error fetching chi tiet hoa don theo thoi gian:", error);
+    return res.status(500).json({
+      EM: "Có lỗi xảy ra khi lấy chi tiết hóa đơn theo thời gian",
+      EC: 0,
+      DT: [],
+    });
+  }
+};
+
 module.exports = {
   getChiTietHoaDon,
   getChiTietHoaDonTheoNguoiDung_Success,
@@ -1657,4 +1807,5 @@ module.exports = {
   getALLChiTietHoaDonTheoNguoiDung_Cancel_Admin,
   getAllChiTietHoaDonTheoNguoiDung_Success_Admin,
   getALLPaidOrders_DangGiaoHang_Admin,
+  getChiTietHoaDonTheoThoiGian,
 };
