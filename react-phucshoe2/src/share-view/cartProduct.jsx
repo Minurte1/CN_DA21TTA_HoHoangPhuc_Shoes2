@@ -235,6 +235,38 @@ const Cart = () => {
             variant: "info",
           });
         }
+      } else if (selectPhuongThucThanhToan === 5) {
+        try {
+          const response = await axios.post(`${api}/don-hang`, requestData);
+
+          if (response.data.EC === 1) {
+            const responsive = await axios.post(
+              `${api}/thanh-toan-online/create_payment_url`,
+              {
+                orderId: orderInfo,
+
+                returnUrl: "http://localhost:3000/checkout",
+                amount: tongTienCart,
+                bankCode: "NCB",
+                orderType: "fashion",
+                language: "vi",
+              }
+            );
+
+            const paymentUrl = responsive.data.url;
+            window.location.href = paymentUrl;
+          } else {
+            enqueueSnackbar(response.data.EM, { variant: "info" });
+          }
+        } catch (error) {
+          console.error("Error during Momo payment creation:", error);
+          enqueueSnackbar(
+            "Không thể tạo liên kết thanh toán. Vui lòng thử lại sau!",
+            {
+              variant: "error",
+            }
+          );
+        }
       }
     } catch (error) {
       console.error("Unexpected error:", error);

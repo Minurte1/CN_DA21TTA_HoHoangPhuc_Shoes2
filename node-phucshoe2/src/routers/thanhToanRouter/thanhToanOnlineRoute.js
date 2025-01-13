@@ -12,14 +12,10 @@ router.post("/create_payment_url", function (req, res, next) {
     req.socket.remoteAddress ||
     req.connection.socket.remoteAddress;
 
-  var tmnCode = process.env.vnp_TmnCode;
-  var secretKey = process.env.vnp_HashSecret;
-  var vnpUrl = process.env.vnp_Url;
+  var tmnCode = "SQ2T80DZ";
+  var secretKey = "3ISEJ444992EJONGCPVUEXY1SKJIUG1O";
+  var vnpUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
   var returnUrl = req.body.returnUrl;
-  console.log("tmnCode", tmnCode);
-  console.log("secretKey", secretKey);
-  console.log("vnpUrl", vnpUrl);
-  console.log("returnUrl", returnUrl);
 
   if (!returnUrl || typeof returnUrl !== "string") {
     return res.status(400).json({ error: "Invalid returnUrl format" });
@@ -29,7 +25,7 @@ router.post("/create_payment_url", function (req, res, next) {
   var date = new Date();
 
   var createDate = moment(date).format("YYYYMMDDHHmmss");
-  var orderId = moment(date).format("HHmmss");
+  var orderId = req.body.orderId || moment(date).format("HHmmss");
   console.log("orderId", orderId);
   var amount = req.body.amount;
   if (!amount || isNaN(amount) || amount <= 0) {
@@ -78,6 +74,7 @@ router.post("/create_payment_url", function (req, res, next) {
     }
     return sorted;
   }
+
   vnp_Params = sortObject(vnp_Params);
 
   var querystring = require("qs");
@@ -96,6 +93,7 @@ router.post("/create_payment_url", function (req, res, next) {
 });
 
 // Vui lòng tham khảo thêm tại code demo
+
 router.get("/vnpay_ipn", function (req, res, next) {
   var vnp_Params = req.query;
   var secureHash = vnp_Params["vnp_SecureHash"];

@@ -56,6 +56,10 @@ const RouterView = () => {
       element: <CheckOutMoMo />,
     },
     {
+      path: "/checkout-vnpay",
+      element: <CheckOutMoMo />,
+    },
+    {
       path: "/selectShoe/:id",
       element: <SelectShoe />,
     },
