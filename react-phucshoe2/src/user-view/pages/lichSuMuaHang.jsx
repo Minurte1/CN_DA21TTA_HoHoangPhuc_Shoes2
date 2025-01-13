@@ -242,7 +242,7 @@ const LichSuMuaHangUser = () => {
                             ₫
                           </Typography>
                         </Box>{" "}
-                        {tabIndex === 1 ? (
+                        {tabIndex === 2 ? (
                           <>
                             <Button
                               variant="outlined"

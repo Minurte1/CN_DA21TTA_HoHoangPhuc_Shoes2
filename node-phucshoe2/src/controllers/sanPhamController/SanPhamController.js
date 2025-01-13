@@ -1262,6 +1262,163 @@ const getSAN_PHAM_ChiTiet_ById = async (req, res) => {
   }
 };
 
+// const updateSAN_PHAM_ChiTiet_ById = async (req, res) => {
+//   const { id } = req.params; // ID của sản phẩm cha
+//   const { existingDetails, newDetails, chiTietSanPham } = req.body; // Mảng chi tiết sản phẩm gửi từ client
+//   console.log("existingDetails", existingDetails);
+//   try {
+//     // Lặp qua từng chi tiết sản phẩm cũ để cập nhật
+//     for (let detail of existingDetails) {
+//       const {
+//         idSanPhamChiTiet, // Có thể là null nếu là sản phẩm mới
+//         mauSacId,
+//         kichCoId,
+//         soLuongSanPhamChiTiet,
+//       } = detail;
+
+//       // Lấy MAU_SAC_ID từ TEN_MAU_SAC
+//       const [mauSacResult] = await connection.execute(
+//         `SELECT MAU_SAC_ID FROM MAU_SAC WHERE TEN_MAU_SAC = ? AND TRANG_THAI_MAU_SAC = 1`,
+//         [mauSacId] // Tên màu
+//       );
+
+//       // Lấy ID_KICH_CO từ KICH_CO
+//       const [kichCoResult] = await connection.execute(
+//         `SELECT ID_KICH_CO FROM KICH_CO WHERE KICH_CO = ? AND TRANG_THAI_KICH_CO = 1`,
+//         [kichCoId] // Tên kích cỡ
+//       );
+
+//       // Kiểm tra nếu không tìm thấy MAU_SAC_ID hoặc ID_KICH_CO
+//       if (!mauSacResult[0] || !kichCoResult[0]) {
+//         return res.status(404).json({
+//           EM: "Không tìm thấy MAU_SAC_ID hoặc ID_KICH_CO hợp lệ",
+//           EC: 0,
+//           DT: [],
+//         });
+//       }
+
+//       const finalMauSacId = mauSacResult[0].MAU_SAC_ID;
+//       const finalKichCoId = kichCoResult[0].ID_KICH_CO;
+
+//       // Kiểm tra nếu finalMauSacId và finalKichCoId không phải undefined
+//       if (finalMauSacId === undefined || finalKichCoId === undefined) {
+//         return res.status(400).json({
+//           EM: "Lỗi: Không tìm thấy thông tin màu sắc hoặc kích cỡ cũ",
+//           EC: 0,
+//           DT: [],
+//         });
+//       }
+
+//       // Kiểm tra nếu đã tồn tại chi tiết sản phẩm với ID_SAN_PHAM, MAU_SAC_ID và ID_KICH_CO
+//       const [existingDetail] = await connection.execute(
+//         `SELECT * FROM SAN_PHAM_CHI_TIET
+//          WHERE ID_SAN_PHAM = ? AND MAU_SAC_ID = ? AND ID_KICH_CO = ?`,
+//         [id, finalMauSacId, finalKichCoId]
+//       );
+
+//       if (existingDetail.length > 0) {
+//         // Nếu đã tồn tại, thực hiện cập nhật số lượng
+//         const soLuong = parseInt(soLuongSanPhamChiTiet, 10);
+//         await connection.execute(
+//           `UPDATE SAN_PHAM_CHI_TIET
+//            SET SOLUONG_SANPHAM_CHITIET = ?
+//            WHERE ID_SAN_PHAM = ? AND MAU_SAC_ID = ? AND ID_KICH_CO = ?`,
+//           [soLuong, id, finalMauSacId, finalKichCoId]
+//         );
+//       } else {
+//         // Nếu không tồn tại, thêm mới chi tiết sản phẩm
+//         const soLuong = parseInt(soLuongSanPhamChiTiet, 10);
+//         await connection.execute(
+//           `INSERT INTO SAN_PHAM_CHI_TIET
+//            (ID_SAN_PHAM, MAU_SAC_ID, ID_KICH_CO, SOLUONG_SANPHAM_CHITIET, TRANGTHAI_SANPHAM_CHITIET)
+//            VALUES (?, ?, ?, ?, 1)`,
+//           [id, finalMauSacId, finalKichCoId, soLuong]
+//         );
+//       }
+//     }
+
+//     // Lặp qua các chi tiết sản phẩm mới để thêm vào cơ sở dữ liệu
+//     for (let newDetail of newDetails) {
+//       const { mauSacId, kichCoId, soLuongSanPhamChiTiet } = newDetail;
+
+//       // Lấy MAU_SAC_ID từ TEN_MAU_SAC
+//       const [mauSacResult] = await connection.execute(
+//         `SELECT MAU_SAC_ID FROM MAU_SAC WHERE TEN_MAU_SAC = ? AND TRANG_THAI_MAU_SAC = 1`,
+//         [mauSacId] // Tên màu
+//       );
+
+//       // Lấy ID_KICH_CO từ KICH_CO
+//       const [kichCoResult] = await connection.execute(
+//         `SELECT ID_KICH_CO FROM KICH_CO WHERE KICH_CO = ? AND TRANG_THAI_KICH_CO = "1"`,
+//         [kichCoId] // Tên kích cỡ
+//       );
+
+//       // Kiểm tra nếu không tìm thấy MAU_SAC_ID hoặc ID_KICH_CO
+//       if (!mauSacResult || !kichCoResult) {
+//         return res.status(404).json({
+//           EM: "Không tìm thấy MAU_SAC_ID hoặc ID_KICH_CO hợp lệ",
+//           EC: 0,
+//           DT: [],
+//         });
+//       }
+
+//       const finalMauSacId = mauSacResult[0].MAU_SAC_ID;
+//       const finalKichCoId = kichCoResult[0].ID_KICH_CO;
+
+//       // Kiểm tra nếu finalMauSacId và finalKichCoId không phải undefined
+//       if (finalMauSacId === undefined || finalKichCoId === undefined) {
+//         return res.status(400).json({
+//           EM: "Lỗi: Không tìm thấy thông tin màu sắc hoặc kích cỡ mới",
+//           EC: 0,
+//           DT: [],
+//         });
+//       }
+
+//       // Kiểm tra nếu đã tồn tại chi tiết sản phẩm với ID_SAN_PHAM, MAU_SAC_ID và ID_KICH_CO
+//       const [existingDetail] = await connection.execute(
+//         `SELECT * FROM SAN_PHAM_CHI_TIET
+//          WHERE ID_SAN_PHAM = ? AND MAU_SAC_ID = ? AND ID_KICH_CO = ?`,
+//         [id, finalMauSacId, finalKichCoId]
+//       );
+//       console.log("oke cc ", existingDetail);
+//       if (existingDetail.length > 0) {
+//         // Nếu đã tồn tại, cập nhật số lượng sản phẩm
+//         const soLuong = parseInt(soLuongSanPhamChiTiet, 10);
+//         console.log("oke update ", soLuong);
+//         await connection.execute(
+//           `UPDATE SAN_PHAM_CHI_TIET
+//            SET SOLUONG_SANPHAM_CHITIET = ?
+//            WHERE ID_SAN_PHAM = ? AND MAU_SAC_ID = ? AND ID_KICH_CO = ?`,
+//           [soLuong, id, finalMauSacId, finalKichCoId]
+//         );
+//       } else {
+//         // Nếu không tồn tại, thêm mới chi tiết sản phẩm
+//         const soLuong = parseInt(soLuongSanPhamChiTiet, 10);
+//         console.log("oke insert ", soLuong);
+//         await connection.execute(
+//           `INSERT INTO SAN_PHAM_CHI_TIET
+//            (ID_SAN_PHAM, MAU_SAC_ID, ID_KICH_CO, SOLUONG_SANPHAM_CHITIET, TRANGTHAI_SANPHAM_CHITIET)
+//            VALUES (?, ?, ?, ?, 1)`,
+//           [id, finalMauSacId, finalKichCoId, soLuong]
+//         );
+//       }
+//     }
+
+//     return res.status(200).json({
+//       EM: "Cập nhật và thêm chi tiết sản phẩm thành công",
+//       EC: 1,
+//       DT: [],
+//     });
+//   } catch (error) {
+//     console.error("Error updating/inserting chi tiet san pham:", error);
+//     return res.status(500).json({
+//       EM: "Có lỗi xảy ra khi cập nhật hoặc thêm chi tiết sản phẩm",
+//       EC: 0,
+//       DT: [],
+//     });
+//   }
+// };
+
 const updateSAN_PHAM_ChiTiet_ById = async (req, res) => {
   const { id } = req.params; // ID của sản phẩm cha
   const { existingDetails, newDetails, chiTietSanPham } = req.body; // Mảng chi tiết sản phẩm gửi từ client
@@ -1318,21 +1475,23 @@ const updateSAN_PHAM_ChiTiet_ById = async (req, res) => {
 
       if (existingDetail.length > 0) {
         // Nếu đã tồn tại, thực hiện cập nhật số lượng
+        const TRANGTHAI_SANPHAM_CHITIET = 1;
         const soLuong = parseInt(soLuongSanPhamChiTiet, 10);
         await connection.execute(
           `UPDATE SAN_PHAM_CHI_TIET 
-           SET SOLUONG_SANPHAM_CHITIET = ?
+           SET SOLUONG_SANPHAM_CHITIET = ?, TRANGTHAI_SANPHAM_CHITIET=?
            WHERE ID_SAN_PHAM = ? AND MAU_SAC_ID = ? AND ID_KICH_CO = ?`,
-          [soLuong, id, finalMauSacId, finalKichCoId]
+          [soLuong, TRANGTHAI_SANPHAM_CHITIET, id, finalMauSacId, finalKichCoId]
         );
       } else {
+        const TRANGTHAI_SANPHAM_CHITIET = 1;
         // Nếu không tồn tại, thêm mới chi tiết sản phẩm
         const soLuong = parseInt(soLuongSanPhamChiTiet, 10);
         await connection.execute(
           `INSERT INTO SAN_PHAM_CHI_TIET 
            (ID_SAN_PHAM, MAU_SAC_ID, ID_KICH_CO, SOLUONG_SANPHAM_CHITIET, TRANGTHAI_SANPHAM_CHITIET)
-           VALUES (?, ?, ?, ?, 1)`,
-          [id, finalMauSacId, finalKichCoId, soLuong]
+           VALUES (?, ?, ?, ?, ?)`,
+          [id, finalMauSacId, finalKichCoId, soLuong, TRANGTHAI_SANPHAM_CHITIET]
         );
       }
     }
@@ -1385,21 +1544,24 @@ const updateSAN_PHAM_ChiTiet_ById = async (req, res) => {
         // Nếu đã tồn tại, cập nhật số lượng sản phẩm
         const soLuong = parseInt(soLuongSanPhamChiTiet, 10);
         console.log("oke update ", soLuong);
+        const TRANGTHAI_SANPHAM_CHITIET = 1;
+
         await connection.execute(
           `UPDATE SAN_PHAM_CHI_TIET 
-           SET SOLUONG_SANPHAM_CHITIET = ?
+           SET SOLUONG_SANPHAM_CHITIET = ? , TRANGTHAI_SANPHAM_CHITIET= ?
            WHERE ID_SAN_PHAM = ? AND MAU_SAC_ID = ? AND ID_KICH_CO = ?`,
-          [soLuong, id, finalMauSacId, finalKichCoId]
+          [soLuong, TRANGTHAI_SANPHAM_CHITIET, id, finalMauSacId, finalKichCoId]
         );
       } else {
+        const TRANGTHAI_SANPHAM_CHITIET = 1;
         // Nếu không tồn tại, thêm mới chi tiết sản phẩm
         const soLuong = parseInt(soLuongSanPhamChiTiet, 10);
         console.log("oke insert ", soLuong);
         await connection.execute(
           `INSERT INTO SAN_PHAM_CHI_TIET 
            (ID_SAN_PHAM, MAU_SAC_ID, ID_KICH_CO, SOLUONG_SANPHAM_CHITIET, TRANGTHAI_SANPHAM_CHITIET)
-           VALUES (?, ?, ?, ?, 1)`,
-          [id, finalMauSacId, finalKichCoId, soLuong]
+           VALUES (?, ?, ?, ?, ?)`,
+          [id, finalMauSacId, finalKichCoId, soLuong, TRANGTHAI_SANPHAM_CHITIET]
         );
       }
     }
@@ -1418,7 +1580,6 @@ const updateSAN_PHAM_ChiTiet_ById = async (req, res) => {
     });
   }
 };
-
 module.exports = {
   getSAN_PHAM,
   createSAN_PHAM,
