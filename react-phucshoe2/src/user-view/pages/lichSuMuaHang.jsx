@@ -52,15 +52,16 @@ const LichSuMuaHangUser = () => {
         case 0: // Chờ xác nhận
           endpoint = `${apiUrl}/chi-tiet-hoa-don/dang-xu-ly/${userInfo.ID_NGUOI_DUNG}`;
           break;
-        case 1: // Đã giao
+        case 1: // Đơn hàng đang giao
+          endpoint = `${apiUrl}/chi-tiet-hoa-don/dang-giao/${userInfo.ID_NGUOI_DUNG}`;
+
+          break;
+        case 2: // Đã đã giao thành công
           endpoint = `${apiUrl}/chi-tiet-hoa-don/giao-dich-thanh-cong/${userInfo.ID_NGUOI_DUNG}`;
           break;
-        case 2: // Đã hủy
-          endpoint = `${apiUrl}/chi-tiet-hoa-don/giao-dich-huy/${userInfo.ID_NGUOI_DUNG}`;
-          break;
 
-        default:
-          endpoint = `${apiUrl}/chi-tiet-hoa-don/cho-thanh-toan/${userInfo.ID_NGUOI_DUNG}`;
+        default: // Đơn hàng đã hủy
+          endpoint = `${apiUrl}/chi-tiet-hoa-don/giao-dich-huy/${userInfo.ID_NGUOI_DUNG}`;
       }
 
       // Gọi API với endpoint tương ứng
@@ -126,11 +127,11 @@ const LichSuMuaHangUser = () => {
         <Tab
           sx={{ color: currentTheme.color }}
           label={t.waitingConfirmationTab}
-        />
+        />{" "}
+        <Tab sx={{ color: currentTheme.color }} label={t.order_in_delivery} />
         <Tab sx={{ color: currentTheme.color }} label={t.deliveredTab} />
         <Tab sx={{ color: currentTheme.color }} label={t.canceledTab} />
         {/* <Tab sx={{ color: color }} label="Tất cả" /> */}
-        <Tab sx={{ color: currentTheme.color }} label={t.notPaidTab} />
       </Tabs>
       {/* Danh sách đơn hàng */}
       {dataChiTietHoaDon.length > 0 ? (
@@ -189,7 +190,7 @@ const LichSuMuaHangUser = () => {
                               ? "#cc7c2c"
                               : order.TRANG_THAI_DON_HANG === "Đã hủy"
                               ? "red"
-                              : currentTheme.color, // Bạn có thể thêm một màu mặc định nếu không khớp với bất kỳ điều kiện nào
+                              : "#cc7c2c", // Bạn có thể thêm một màu mặc định nếu không khớp với bất kỳ điều kiện nào
                         }}
                       >
                         {order.TRANG_THAI_DON_HANG} || Với phương thức thanh

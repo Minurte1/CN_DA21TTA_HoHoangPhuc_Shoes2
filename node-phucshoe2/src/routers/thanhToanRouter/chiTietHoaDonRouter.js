@@ -14,6 +14,7 @@ const {
   getALLChiTietHoaDonTheoNguoiDung_Cancel_Admin,
   getAllChiTietHoaDonTheoNguoiDung_Success_Admin,
   getALLPaidOrders_DangGiaoHang_Admin,
+  getPaidOrdersDangGiaoHang_ByUser,
 } = require("../../controllers/thanhToanController/chiTietHoaDonController");
 
 // ----------Admin----------------------------
@@ -38,6 +39,7 @@ router.get("/giao-dich-huy/:id", getChiTietHoaDonTheoNguoiDung_Cancel);
 
 // Lấy danh sách các giao dịch đã thanh toán nhưng đang chờ xử lý
 router.get("/dang-xu-ly/:id", getPaidOrdersAwaitingProcessing);
+router.get("/dang-giao/:id", getPaidOrdersDangGiaoHang_ByUser);
 
 // Lấy các giao dịch đang chờ thanh toán
 router.get(
