@@ -10,6 +10,8 @@ import {
   Avatar,
 } from "@mui/material";
 import { getThemeConfig } from "../../../../services/themeService";
+import { useSelector } from "react-redux";
+import translations from "../../../../redux/data/translations";
 
 const MessageList = ({
   selectedUser,
@@ -20,6 +22,8 @@ const MessageList = ({
   setInputMess,
   userInfo,
 }) => {
+  const language = useSelector((state) => state.language.language);
+  const t = translations[language];
   const currentTheme = getThemeConfig(localStorage.getItem("THEMES") || "dark");
   const api = process.env.REACT_APP_URL_SERVER;
   useEffect(() => {
@@ -140,7 +144,7 @@ const MessageList = ({
               <TextField
                 variant="outlined"
                 fullWidth
-                placeholder="Nhập tin nhắn..."
+                placeholder={t.enterMessage}
                 value={inputMess}
                 onChange={(e) => setInputMess(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && SendMessNe()}
@@ -179,7 +183,7 @@ const MessageList = ({
         </>
       ) : (
         <Typography variant="h6" sx={{ color: currentTheme.color }}>
-          Vui lòng chọn người dùng để xem tin nhắn.
+          {t.selectUserToViewMessages}
         </Typography>
       )}
     </Box>

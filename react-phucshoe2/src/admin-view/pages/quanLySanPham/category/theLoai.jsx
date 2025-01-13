@@ -25,6 +25,8 @@ import { Add, Edit, Delete } from "@mui/icons-material";
 import axios from "axios";
 import moment from "moment";
 import { getThemeConfig } from "../../../../services/themeService";
+import translations from "../../../../redux/data/translations";
+import { useSelector } from "react-redux";
 
 const api = process.env.REACT_APP_URL_SERVER;
 
@@ -36,6 +38,8 @@ const LoaiDanhMucManager = () => {
   const [tenDanhMuc, setTenDanhMuc] = useState("");
   const [moTaLoaiDanhMuc, setMoTaLoaiDanhMuc] = useState("");
   const [trangThaiLoaiDanhMuc, setTrangThaiLoaiDanhMuc] = useState(1);
+  const language = useSelector((state) => state.language.language);
+  const t = translations[language];
 
   useEffect(() => {
     fetchLoaiDanhMucList();
@@ -111,10 +115,15 @@ const LoaiDanhMucManager = () => {
   };
 
   return (
-    <Container sx={{ height: "100vh" }}>
+    <Container
+      sx={{
+        backgroundColor: currentTheme.backgroundColor,
+        height: loaiDanhMucList.length <= 5 ? "100vh" : "auto",
+      }}
+    >
       <Box sx={{ width: "100%", textAlign: "left", mt: 4 }}>
         <Typography variant="h5" color="primary" gutterBottom>
-          DANH SÁCH LOẠI DANH MỤC
+          {t.categoryTypeList}
         </Typography>
         <Button
           variant="outlined"
@@ -126,7 +135,7 @@ const LoaiDanhMucManager = () => {
             color: currentTheme.color,
           }}
         >
-          Thêm Loại Danh Mục
+          {t.add}
         </Button>
       </Box>
       <Divider sx={{ my: 1, color: currentTheme.color, width: "100%" }} />
@@ -139,22 +148,22 @@ const LoaiDanhMucManager = () => {
             <TableRow>
               <TableCell sx={{ color: currentTheme.colorTitle }}>ID</TableCell>
               <TableCell sx={{ color: currentTheme.colorTitle }}>
-                Tên Loại Danh Mục
+                {t.categoryTypeName}
               </TableCell>
               <TableCell sx={{ color: currentTheme.colorTitle }}>
-                Mô Tả Danh Mục
+                {t.description}
               </TableCell>{" "}
               <TableCell sx={{ color: currentTheme.colorTitle }}>
-                Ngày Tạo
+                {t.createdDate}
               </TableCell>
               <TableCell sx={{ color: currentTheme.colorTitle }}>
-                Ngày Cập Nhật
+                {t.updatedDate}
               </TableCell>{" "}
               <TableCell sx={{ color: currentTheme.colorTitle }}>
-                Trạng Thái
+                {t.status}
               </TableCell>
               <TableCell sx={{ color: currentTheme.colorTitle }}>
-                Actions
+                {t.actions}
               </TableCell>
             </TableRow>
           </TableHead>
@@ -189,8 +198,8 @@ const LoaiDanhMucManager = () => {
                   }}
                 >
                   {loaiDanhMucItem.TRANG_THAI_DANHMUC === 1
-                    ? "Đang sử dụng"
-                    : "Ngưng sử dụng"}
+                    ? t.inUse
+                    : t.outOfUse}
                 </TableCell>
                 <TableCell>
                   <IconButton
@@ -213,14 +222,12 @@ const LoaiDanhMucManager = () => {
       </TableContainer>
 
       <Dialog open={openDialog} onClose={handleCloseDialog}>
-        <DialogTitle>
-          {currentLoaiDanhMuc ? "Sửa Loại Danh Mục" : "Thêm Loại Danh Mục"}
-        </DialogTitle>
+        <DialogTitle>{currentLoaiDanhMuc ? t.edit : t.add}</DialogTitle>
         <DialogContent>
           <TextField
             autoFocus
             margin="dense"
-            label="Tên Loại Danh Mục"
+            label={t.categoryTypeName}
             type="text"
             fullWidth
             variant="outlined"
@@ -230,7 +237,7 @@ const LoaiDanhMucManager = () => {
 
           <TextField
             margin="dense"
-            label="Mô Tả Loại Danh Mục"
+            label={t.description}
             type="text"
             fullWidth
             variant="outlined"
@@ -240,22 +247,22 @@ const LoaiDanhMucManager = () => {
 
           <Select
             margin="dense"
-            label="Trạng thái"
+            label={t.status}
             fullWidth
             variant="outlined"
             value={trangThaiLoaiDanhMuc}
             onChange={(e) => setTrangThaiLoaiDanhMuc(e.target.value)}
           >
-            <MenuItem value={1}>Đang sử dụng</MenuItem>
-            <MenuItem value={0}>Ngưng sử dụng</MenuItem>
+            <MenuItem value={1}>{t.inUse}</MenuItem>
+            <MenuItem value={0}>{t.outOfUse}</MenuItem>
           </Select>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialog} color="secondary">
-            Cancel
+            {t.cancelButtonLabel}
           </Button>
           <Button onClick={handleSave} color="primary">
-            {currentLoaiDanhMuc ? "Update" : "Add"}
+            {currentLoaiDanhMuc ? t.edit : t.add}
           </Button>
         </DialogActions>
       </Dialog>

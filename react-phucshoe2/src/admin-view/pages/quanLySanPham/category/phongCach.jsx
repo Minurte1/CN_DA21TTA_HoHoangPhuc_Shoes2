@@ -24,6 +24,8 @@ import moment from "moment";
 import { Add, Edit, Delete } from "@mui/icons-material";
 import axios from "axios";
 import { getThemeConfig } from "../../../../services/themeService";
+import translations from "../../../../redux/data/translations";
+import { useSelector } from "react-redux";
 
 const api = process.env.REACT_APP_URL_SERVER;
 
@@ -34,6 +36,8 @@ const PhongCachManager = () => {
   const [currentPhongCach, setCurrentPhongCach] = useState(null);
   const [tenPhuongCach, setTenPhuongCach] = useState("");
   const [trangThaiPhongCach, setTrangThaiPhongCach] = useState(1);
+  const language = useSelector((state) => state.language.language);
+  const t = translations[language];
 
   useEffect(() => {
     fetchPhongCach();
@@ -99,10 +103,15 @@ const PhongCachManager = () => {
   };
 
   return (
-    <Container sx={{ height: "100vh" }}>
+    <Container
+      sx={{
+        backgroundColor: currentTheme.backgroundColor,
+        height: phongCachList.length <= 5 ? "100vh" : "auto",
+      }}
+    >
       <Box sx={{ width: "100%", textAlign: "left", mt: 4 }}>
         <Typography variant="h5" color="primary" gutterBottom>
-          Danh Sách Phong Cách
+          {t.Style}
         </Typography>
         <Button
           variant="outlined"
@@ -114,7 +123,7 @@ const PhongCachManager = () => {
             color: currentTheme.color,
           }}
         >
-          Thêm Phong Cách
+          {t.add}
         </Button>
       </Box>
 
@@ -127,19 +136,19 @@ const PhongCachManager = () => {
             <TableRow>
               <TableCell sx={{ color: currentTheme.colorTitle }}>ID</TableCell>
               <TableCell sx={{ color: currentTheme.colorTitle }}>
-                Tên Phong Cách
+                {t.styleName}
               </TableCell>
               <TableCell sx={{ color: currentTheme.colorTitle }}>
-                Ngày Tạo
+                {t.createdDateLabel}
               </TableCell>
               <TableCell sx={{ color: currentTheme.colorTitle }}>
-                Ngày Cập Nhật
+                {t.updatedDateLabel}
               </TableCell>{" "}
               <TableCell sx={{ color: currentTheme.colorTitle }}>
-                Trạng Thái
+                {t.status}
               </TableCell>
               <TableCell sx={{ color: currentTheme.colorTitle }}>
-                Actions
+                {t.actions}
               </TableCell>
             </TableRow>
           </TableHead>
@@ -169,8 +178,8 @@ const PhongCachManager = () => {
                   }}
                 >
                   {phongCach.TRANG_THAI_PHONG_CACH === 1
-                    ? "Hoạt động"
-                    : "Không hoạt động"}
+                    ? t.activeStatus
+                    : t.inactiveStatus}
                 </TableCell>
                 <TableCell>
                   <IconButton
@@ -193,14 +202,12 @@ const PhongCachManager = () => {
       </TableContainer>
 
       <Dialog open={openDialog} onClose={handleCloseDialog}>
-        <DialogTitle>
-          {currentPhongCach ? "Sửa Phong Cách" : "Thêm Phong Cách"}
-        </DialogTitle>
+        <DialogTitle>{currentPhongCach ? t.edit : t.add}</DialogTitle>
         <DialogContent>
           <TextField
             autoFocus
             margin="dense"
-            label="Tên Phong Cách"
+            label={t.styleName}
             type="text"
             fullWidth
             variant="outlined"
@@ -214,16 +221,16 @@ const PhongCachManager = () => {
             value={trangThaiPhongCach}
             onChange={(e) => setTrangThaiPhongCach(e.target.value)}
           >
-            <MenuItem value={1}>Hoạt động</MenuItem>
-            <MenuItem value={0}>Không hoạt động</MenuItem>
+            <MenuItem value={1}>{t.activeStatus}</MenuItem>
+            <MenuItem value={0}>{t.inactiveStatus}</MenuItem>
           </Select>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialog} color="secondary">
-            Hủy
+            {t.cancelButtonLabel}
           </Button>
           <Button onClick={handleSave} color="primary">
-            {currentPhongCach ? "Sửa" : "Thêm"}
+            {currentPhongCach ? t.edit : t.add}
           </Button>
         </DialogActions>
       </Dialog>

@@ -24,6 +24,8 @@ import { Add, Edit, Delete } from "@mui/icons-material";
 import axios from "axios";
 import moment from "moment";
 import { getThemeConfig } from "../../../../services/themeService";
+import translations from "../../../../redux/data/translations";
+import { useSelector } from "react-redux";
 
 const api = process.env.REACT_APP_URL_SERVER;
 
@@ -31,6 +33,9 @@ const MucDichSuDungManager = () => {
   const [purposes, setPurposes] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
   const [currentPurpose, setCurrentPurpose] = useState(null);
+  const language = useSelector((state) => state.language.language);
+  const t = translations[language];
+
   const [tenMucDichSuDung, setTenMucDichSuDung] = useState("");
   const [trangThaiMucDichSuDung, setTrangThaiMucDichSuDung] = useState(1);
   const currentTheme = getThemeConfig(localStorage.getItem("THEMES") || "dark");
@@ -102,10 +107,15 @@ const MucDichSuDungManager = () => {
   };
 
   return (
-    <Container sx={{ height: "100vh" }}>
+    <Container
+      sx={{
+        backgroundColor: currentTheme.backgroundColor,
+        height: purposes.length <= 5 ? "100vh" : "auto",
+      }}
+    >
       <Box sx={{ width: "100%", textAlign: "left", mt: 4 }}>
         <Typography variant="h5" color="primary" gutterBottom>
-          DANH SÁCH MỤC ĐÍCH SỬ DỤNG
+          {t.usagePurpose}
         </Typography>
         <Button
           variant="outlined"
@@ -117,7 +127,7 @@ const MucDichSuDungManager = () => {
             color: currentTheme.color,
           }}
         >
-          Thêm Mục Đích Sử Dụng
+          {t.add}
         </Button>
       </Box>
 
@@ -130,19 +140,19 @@ const MucDichSuDungManager = () => {
             <TableRow>
               <TableCell sx={{ color: currentTheme.colorTitle }}>ID</TableCell>
               <TableCell sx={{ color: currentTheme.colorTitle }}>
-                Tên Mục Đích Sử Dụng
+                {t.purposeName}
               </TableCell>
               <TableCell sx={{ color: currentTheme.colorTitle }}>
-                Ngày Tạo
+                {t.createdDate}
               </TableCell>
               <TableCell sx={{ color: currentTheme.colorTitle }}>
-                Ngày Cập Nhật
+                {t.updatedDate}
               </TableCell>{" "}
               <TableCell sx={{ color: currentTheme.colorTitle }}>
-                Trạng Thái
+                {t.status}
               </TableCell>
               <TableCell sx={{ color: currentTheme.colorTitle }}>
-                Actions
+                {t.actions}
               </TableCell>
             </TableRow>
           </TableHead>
@@ -174,8 +184,8 @@ const MucDichSuDungManager = () => {
                   }}
                 >
                   {purpose.TRANG_THAI_MUC_DICH_SU_DUNG === 1
-                    ? "Đang sử dụng"
-                    : "Ngưng sử dụng"}
+                    ? t.inUse
+                    : t.outOfUse}
                 </TableCell>
                 <TableCell>
                   <IconButton
@@ -199,14 +209,12 @@ const MucDichSuDungManager = () => {
 
       {/* Dialog for Adding/Editing Purpose */}
       <Dialog open={openDialog} onClose={handleCloseDialog}>
-        <DialogTitle>
-          {currentPurpose ? "Sửa Mục Đích Sử Dụng" : "Thêm Mục Đích Sử Dụng"}
-        </DialogTitle>
+        <DialogTitle>{currentPurpose ? t.edit : t.add}</DialogTitle>
         <DialogContent>
           <TextField
             autoFocus
             margin="dense"
-            label="Tên Mục Đích Sử Dụng"
+            label={t.purposeName}
             type="text"
             fullWidth
             variant="outlined"
@@ -220,16 +228,16 @@ const MucDichSuDungManager = () => {
             value={trangThaiMucDichSuDung}
             onChange={(e) => setTrangThaiMucDichSuDung(e.target.value)}
           >
-            <MenuItem value={1}>Đang sử dụng</MenuItem>
-            <MenuItem value={0}>Ngưng sử dụng</MenuItem>
+            <MenuItem value={1}>{t.inUse}</MenuItem>
+            <MenuItem value={0}>{t.outOfUse}</MenuItem>
           </Select>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialog} color="secondary">
-            Hủy
+            {t.cancelButtonLabel}
           </Button>
           <Button onClick={handleSave} color="primary">
-            {currentPurpose ? "Lưu" : "Thêm"}
+            {currentPurpose ? t.save : t.add}
           </Button>
         </DialogActions>
       </Dialog>

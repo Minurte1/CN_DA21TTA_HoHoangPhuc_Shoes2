@@ -25,10 +25,15 @@ import { Add, Edit, Delete } from "@mui/icons-material";
 import axios from "axios";
 import moment from "moment";
 import { getThemeConfig } from "../../../../services/themeService";
+import translations from "../../../../redux/data/translations";
+import { useSelector } from "react-redux";
 
 const api = process.env.REACT_APP_URL_SERVER;
 
 const KichCoManager = () => {
+  const language = useSelector((state) => state.language.language);
+  const t = translations[language];
+
   const [kichCoList, setKichCoList] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
   const [currentKichCo, setCurrentKichCo] = useState(null);
@@ -107,7 +112,7 @@ const KichCoManager = () => {
           gutterBottom
           sx={{ textAlign: "left" }}
         >
-          DANH SÁCH KÍCH CỠ
+          {t.Size}
         </Typography>
         <Button
           variant="outlined"
@@ -119,7 +124,7 @@ const KichCoManager = () => {
             color: currentTheme.color,
           }}
         >
-          Thêm kích cỡ
+          {t.add}
         </Button>
       </Box>
       <Divider sx={{ my: 1, color: "#000", width: "100%" }} />
@@ -132,19 +137,19 @@ const KichCoManager = () => {
             <TableRow>
               <TableCell sx={{ color: currentTheme.colorTitle }}>ID</TableCell>
               <TableCell sx={{ color: currentTheme.colorTitle }}>
-                Tên Kích Cỡ
+                {t.Size}
               </TableCell>
               <TableCell sx={{ color: currentTheme.colorTitle }}>
-                Ngày Tạo
+                {t.createdDateLabel}
               </TableCell>
               <TableCell sx={{ color: currentTheme.colorTitle }}>
-                Ngày Cập Nhật
+                {t.dateUpdated}
               </TableCell>{" "}
               <TableCell sx={{ color: currentTheme.colorTitle }}>
-                Trạng Thái
+                {t.status}
               </TableCell>
               <TableCell sx={{ color: currentTheme.colorTitle }}>
-                Actions
+                {t.actions}
               </TableCell>
             </TableRow>
           </TableHead>
@@ -173,9 +178,7 @@ const KichCoManager = () => {
                       kichCoItem.TRANG_THAI_KICH_CO === "1" ? "#008000" : "red",
                   }}
                 >
-                  {kichCoItem.TRANG_THAI_KICH_CO === "1"
-                    ? "Đang sử dụng"
-                    : "Ngưng sử dụng"}
+                  {kichCoItem.TRANG_THAI_KICH_CO === "1" ? t.inUse : t.outOfUse}
                 </TableCell>
                 <TableCell>
                   <IconButton
@@ -198,14 +201,12 @@ const KichCoManager = () => {
       </TableContainer>
 
       <Dialog open={openDialog} onClose={handleCloseDialog}>
-        <DialogTitle>
-          {currentKichCo ? "Sửa kích cỡ" : "Thêm kích cỡ"}
-        </DialogTitle>
+        <DialogTitle>{currentKichCo ? t.edit : t.add}</DialogTitle>
         <DialogContent>
           <TextField
             autoFocus
             margin="dense"
-            label="Tên kích cỡ"
+            label={t.Size}
             type="text"
             fullWidth
             variant="outlined"
@@ -215,22 +216,22 @@ const KichCoManager = () => {
 
           <Select
             margin="dense"
-            label="Trạng thái"
+            label={t.orderStatusLabel}
             fullWidth
             variant="outlined"
             value={trangThaiKichCo}
             onChange={(e) => setTrangThaiKichCo(e.target.value)}
           >
-            <MenuItem value={1}>Đang sử dụng</MenuItem>
-            <MenuItem value={0}>Ngưng sử dụng</MenuItem>
+            <MenuItem value={1}>{t.inUse}</MenuItem>
+            <MenuItem value={0}>{t.outOfUse}</MenuItem>
           </Select>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialog} color="secondary">
-            Cancel
+            {t.cancelButtonLabel}
           </Button>
           <Button onClick={handleSave} color="primary">
-            {currentKichCo ? "Update" : "Add"}
+            {currentKichCo ? t.edit : t.add}
           </Button>
         </DialogActions>
       </Dialog>

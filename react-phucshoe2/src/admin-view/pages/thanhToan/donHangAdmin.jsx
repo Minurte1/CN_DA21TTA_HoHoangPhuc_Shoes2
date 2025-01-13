@@ -19,6 +19,8 @@ import VisibilityIcon from "@mui/icons-material/Visibility"; // Import icon Visi
 
 import ProductDetailModal from "./modal/chiTietDonHang";
 import { getThemeConfig } from "../../../services/themeService";
+import translations from "../../../redux/data/translations";
+import { useSelector } from "react-redux";
 
 const TatCaDonHangAdmin = () => {
   const currentTheme = getThemeConfig(localStorage.getItem("THEMES") || "dark");
@@ -26,6 +28,9 @@ const TatCaDonHangAdmin = () => {
   const [selectedOrderId, setSelectedOrderId] = useState(null);
   const [openModal, setOpenModal] = useState(false);
   const api = process.env.REACT_APP_URL_SERVER;
+  const language = useSelector((state) => state.language.language);
+  const t = translations[language];
+
   useEffect(() => {
     fetchOrders();
   }, []);
@@ -67,7 +72,7 @@ const TatCaDonHangAdmin = () => {
     >
       <Box sx={{ width: "100%", textAlign: "left", mt: 4, mb: 3 }}>
         <Typography variant="h5" color="primary">
-          TẤT CẢ ĐƠN HÀNG
+          {t.allOrders}
         </Typography>
       </Box>
       <TableContainer
@@ -84,48 +89,48 @@ const TatCaDonHangAdmin = () => {
               <TableCell
                 sx={{ fontSize: "0.875rem", color: currentTheme.colorTitle }}
               >
-                <b>ID Đơn Hàng</b>
+                <b>{t.orderIdLabel}</b>
               </TableCell>
               <TableCell
                 sx={{ fontSize: "0.875rem", color: currentTheme.colorTitle }}
               >
-                <b>Người dùng</b>
+                <b>{t.userLabel}</b>
               </TableCell>
               <TableCell
                 sx={{ fontSize: "0.875rem", color: currentTheme.colorTitle }}
               >
-                <b>Số điện thoại</b>
+                <b>{t.phoneNumberLabel}</b>
               </TableCell>
               <TableCell
                 sx={{ fontSize: "0.875rem", color: currentTheme.colorTitle }}
               >
-                <b>Tỉnh thành</b>
+                <b>{t.provinceLabel}</b>
               </TableCell>
               <TableCell
                 sx={{ fontSize: "0.875rem", color: currentTheme.colorTitle }}
               >
-                <b>Tổng Tiền</b>
+                <b>{t.totalAmountLabel}</b>
               </TableCell>
               <TableCell
                 sx={{ fontSize: "0.875rem", color: currentTheme.colorTitle }}
               >
-                <b>Trạng Thái</b>
+                <b>{t.orderStatusLabel}</b>
               </TableCell>
               <TableCell
                 sx={{ fontSize: "0.875rem", color: currentTheme.colorTitle }}
               >
-                <b>Ngày Tạo</b>
+                <b>{t.createdDateLabel}</b>
               </TableCell>
               <TableCell
                 sx={{ fontSize: "0.875rem", color: currentTheme.colorTitle }}
               >
-                <b>Ngày Cập Nhật</b>
+                <b>{t.updatedDateLabel}</b>
               </TableCell>{" "}
               <TableCell
                 sx={{ fontSize: "0.875rem", color: currentTheme.colorTitle }}
               >
-                <b>Chi Tiết</b>
-              </TableCell>
+                <b>{t.detailsLabel}</b>
+              </TableCell>{" "}
             </TableRow>
           </TableHead>
           <TableBody>

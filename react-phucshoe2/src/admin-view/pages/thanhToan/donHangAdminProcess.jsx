@@ -26,6 +26,8 @@ import { enqueueSnackbar } from "notistack";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { getThemeConfig } from "../../../services/themeService";
+import { useSelector } from "react-redux";
+import translations from "../../../redux/data/translations";
 const TatCaDonHangAdminProcess = () => {
   const [orders, setOrders] = useState([]);
   const [selectedOrderId, setSelectedOrderId] = useState(null);
@@ -35,6 +37,9 @@ const TatCaDonHangAdminProcess = () => {
   const [currentOrderId, setCurrentOrderId] = useState(null); // ID đơn hàng hiện tại
   const currentTheme = getThemeConfig(localStorage.getItem("THEMES") || "dark");
   const api = process.env.REACT_APP_URL_SERVER;
+  const language = useSelector((state) => state.language.language);
+  const t = translations[language];
+
   useEffect(() => {
     fetchOrders();
   }, []);
@@ -133,12 +138,12 @@ const TatCaDonHangAdminProcess = () => {
       sx={{
         backgroundColor: currentTheme.backgroundColor,
         color: currentTheme.color,
-        height: "100vh",
+        height: currentOrders.length <= 5 ? "120vh" : "auto",
       }}
     >
       <Box sx={{ width: "100%", textAlign: "left", mt: 4, mb: 3 }}>
         <Typography variant="h5" color="primary">
-          DANH SÁCH ĐƠN HÀNG ĐANG XỬ LÝ
+          {t.processingOrdersList}
         </Typography>
       </Box>
       <TableContainer
@@ -155,57 +160,57 @@ const TatCaDonHangAdminProcess = () => {
               <TableCell
                 sx={{ fontSize: "0.875rem", color: currentTheme.colorTitle }}
               >
-                <b>ID Đơn Hàng</b>
+                <b>{t.orderIdLabel}</b>
               </TableCell>
               <TableCell
                 sx={{ fontSize: "0.875rem", color: currentTheme.colorTitle }}
               >
-                <b>Người dùng</b>
+                <b>{t.userLabel}</b>
               </TableCell>
               <TableCell
                 sx={{ fontSize: "0.875rem", color: currentTheme.colorTitle }}
               >
-                <b>Số điện thoại</b>
+                <b>{t.phoneNumberLabel}</b>
               </TableCell>
               <TableCell
                 sx={{ fontSize: "0.875rem", color: currentTheme.colorTitle }}
               >
-                <b>Tỉnh thành</b>
+                <b>{t.provinceLabel}</b>
               </TableCell>
               <TableCell
                 sx={{ fontSize: "0.875rem", color: currentTheme.colorTitle }}
               >
-                <b>Tổng Tiền</b>
+                <b>{t.totalAmountLabel}</b>
               </TableCell>
               <TableCell
                 sx={{ fontSize: "0.875rem", color: currentTheme.colorTitle }}
               >
-                <b>Trạng Thái</b>
+                <b>{t.orderStatusLabel}</b>
               </TableCell>
               <TableCell
                 sx={{ fontSize: "0.875rem", color: currentTheme.colorTitle }}
               >
-                <b>Ngày Tạo</b>
+                <b>{t.createdDateLabel}</b>
               </TableCell>
               <TableCell
                 sx={{ fontSize: "0.875rem", color: currentTheme.colorTitle }}
               >
-                <b>Ngày Cập Nhật</b>
+                <b>{t.updatedDateLabel}</b>
               </TableCell>{" "}
               <TableCell
                 sx={{ fontSize: "0.875rem", color: currentTheme.colorTitle }}
               >
-                <b>Chi Tiết</b>
+                <b>{t.detailsLabel}</b>
               </TableCell>{" "}
               <TableCell
                 sx={{ fontSize: "0.875rem", color: currentTheme.colorTitle }}
               >
-                <b>Hành động</b>
+                <b>{t.actions}</b>
               </TableCell>{" "}
               <TableCell
                 sx={{ fontSize: "0.875rem", color: currentTheme.colorTitle }}
               >
-                <b>Hành động</b>
+                <b>{t.actions}</b>
               </TableCell>
             </TableRow>
           </TableHead>
@@ -286,7 +291,7 @@ const TatCaDonHangAdminProcess = () => {
                     }
                     // startIcon={<CheckCircleIcon sx={{ color: currentTheme.colorTitle }} />}
                   >
-                    Đã giao
+                    {t.deliveredTab}
                   </Button>
                 </TableCell>
                 <TableCell sx={{ fontSize: "0.875rem" }}>
@@ -298,7 +303,7 @@ const TatCaDonHangAdminProcess = () => {
                     }
                     // startIcon={<CancelIcon sx={{ color: currentTheme.colorTitle }} />}
                   >
-                    Đã hủy
+                    {t.canceledTab}
                   </Button>
                 </TableCell>
               </TableRow>
@@ -340,23 +345,20 @@ const TatCaDonHangAdminProcess = () => {
       )}{" "}
       {/* Modal xác nhận */}
       <Dialog open={openDialog} onClose={handleCloseDialog}>
-        <DialogTitle>Xác nhận hành động</DialogTitle>
+        <DialogTitle>{t.confirmActionTitle}</DialogTitle>
         <DialogContent>
           {actionType === "success" ? (
-            <p>
-              Bạn có chắc chắn muốn đánh dấu đơn hàng này là "Giao dịch thành
-              công"?
-            </p>
+            <p>{t.confirmSuccessAction}</p>
           ) : (
-            <p>Bạn có chắc chắn muốn hủy đơn hàng này không?</p>
+            <p>{t.confirmCancelAction}</p>
           )}
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialog} color="primary">
-            Hủy
+            {t.cancelButtonLabel}
           </Button>
           <Button onClick={handleConfirmAction} color="primary">
-            Xác nhận
+            {t.confirmButtonLabel}
           </Button>
         </DialogActions>
       </Dialog>

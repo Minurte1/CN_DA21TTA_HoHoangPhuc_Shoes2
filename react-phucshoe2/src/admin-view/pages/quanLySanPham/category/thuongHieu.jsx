@@ -24,6 +24,8 @@ import { Add, Edit, Delete } from "@mui/icons-material";
 import axios from "axios";
 import moment from "moment";
 import { getThemeConfig } from "../../../../services/themeService";
+import { useSelector } from "react-redux";
+import translations from "../../../../redux/data/translations";
 
 const api = process.env.REACT_APP_URL_SERVER;
 
@@ -34,6 +36,8 @@ const ThuongHieuManager = () => {
   const [currentBrand, setCurrentBrand] = useState(null);
   const [tenThuongHieu, setTenThuongHieu] = useState("");
   const [trangThaiThuongHieu, setTrangThaiThuongHieu] = useState(1); // Default active state
+  const language = useSelector((state) => state.language.language);
+  const t = translations[language];
 
   useEffect(() => {
     fetchBrands();
@@ -101,10 +105,15 @@ const ThuongHieuManager = () => {
   };
 
   return (
-    <Container sx={{ height: "100vh" }}>
+    <Container
+      sx={{
+        backgroundColor: currentTheme.backgroundColor,
+        height: brands.length <= 5 ? "100vh" : "auto",
+      }}
+    >
       <Box sx={{ width: "100%", textAlign: "left", mt: 4 }}>
         <Typography variant="h5" color="primary" gutterBottom>
-          Đối Tác Thương Hiệu
+          {t.brand}
         </Typography>
         <Button
           variant="outlined"
@@ -116,7 +125,7 @@ const ThuongHieuManager = () => {
             color: currentTheme.color,
           }}
         >
-          Thêm thương hiệu
+          {t.add}
         </Button>
       </Box>
 
@@ -129,19 +138,19 @@ const ThuongHieuManager = () => {
             <TableRow>
               <TableCell sx={{ color: currentTheme.colorTitle }}>ID</TableCell>
               <TableCell sx={{ color: currentTheme.colorTitle }}>
-                Tên thương hiệu
+                {t.brandName}
               </TableCell>
               <TableCell sx={{ color: currentTheme.colorTitle }}>
-                Trạng thái
+                {t.status}
               </TableCell>
               <TableCell sx={{ color: currentTheme.colorTitle }}>
-                Ngày tạo
+                {t.createdDate}
               </TableCell>
               <TableCell sx={{ color: currentTheme.colorTitle }}>
-                Ngày cập nhật
+                {t.updatedDate}
               </TableCell>
               <TableCell sx={{ color: currentTheme.colorTitle }}>
-                Actions
+                {t.actions}
               </TableCell>
             </TableRow>
           </TableHead>
@@ -160,9 +169,7 @@ const ThuongHieuManager = () => {
                       brand.TRANG_THAI_THUONG_HIEU === 1 ? "#008000" : "red",
                   }}
                 >
-                  {brand.TRANG_THAI_THUONG_HIEU === 1
-                    ? "Đang sử dụng"
-                    : "Ngưng sử dụng"}
+                  {brand.TRANG_THAI_THUONG_HIEU === 1 ? t.inUse : t.outOfUse}
                 </TableCell>
                 <TableCell sx={{ color: currentTheme.color }}>
                   {moment(brand.CREATE_THUONG_HIEU).format("DD/MM/YYYY")}
@@ -192,14 +199,12 @@ const ThuongHieuManager = () => {
 
       {/* Dialog for Adding/Editing Brand */}
       <Dialog open={openDialog} onClose={handleCloseDialog}>
-        <DialogTitle>
-          {currentBrand ? "Sửa Thương Hiệu" : "Thêm Thương Hiệu"}
-        </DialogTitle>
+        <DialogTitle>{currentBrand ? t.edit : t.add}</DialogTitle>
         <DialogContent>
           <TextField
             autoFocus
             margin="dense"
-            label="Tên thương hiệu"
+            label={t.brandName}
             type="text"
             fullWidth
             variant="outlined"
@@ -208,22 +213,22 @@ const ThuongHieuManager = () => {
           />
           <Select
             margin="dense"
-            label="Trạng thái"
+            label={t.status}
             fullWidth
             variant="outlined"
             value={trangThaiThuongHieu}
             onChange={(e) => setTrangThaiThuongHieu(e.target.value)}
           >
-            <MenuItem value={1}>Đang sử dụng</MenuItem>
-            <MenuItem value={0}>Ngưng sử dụng</MenuItem>
+            <MenuItem value={1}>{t.inUse}</MenuItem>
+            <MenuItem value={0}>{t.outOfUse}</MenuItem>
           </Select>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialog} color="secondary">
-            Hủy
+            {t.cancelButtonLabel}
           </Button>
           <Button onClick={handleSave} color="primary">
-            {currentBrand ? "Sửa" : "Thêm"}
+            {currentBrand ? t.edit : t.add}
           </Button>
         </DialogActions>
       </Dialog>

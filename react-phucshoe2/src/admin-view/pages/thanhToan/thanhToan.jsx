@@ -24,6 +24,8 @@ import moment from "moment";
 import { Add, Edit, Delete } from "@mui/icons-material";
 import axios from "axios";
 import { getThemeConfig } from "../../../services/themeService";
+import translations from "../../../redux/data/translations";
+import { useSelector } from "react-redux";
 
 const api = process.env.REACT_APP_URL_SERVER;
 const ThanhToanManager = () => {
@@ -33,6 +35,9 @@ const ThanhToanManager = () => {
   const [phuongThucThanhToan, setPhuongThucThanhToan] = useState("");
   const [trangThaiThanhToan, setTrangThaiThanhToan] = useState(1); // Default active
   const [paymentMethods, setPaymentMethods] = useState([]);
+  const language = useSelector((state) => state.language.language);
+  const t = translations[language];
+
   useEffect(() => {
     fetchPaymentMethods();
   }, []);
@@ -115,7 +120,7 @@ const ThanhToanManager = () => {
           gutterBottom
           sx={{ textAlign: "left" }}
         >
-          PHƯƠNG THỨC THANH TOÁN
+          {t.paymentMethods}
         </Typography>
         <Button
           variant="outlined"
@@ -127,7 +132,7 @@ const ThanhToanManager = () => {
             color: "black",
           }}
         >
-          Thêm phương thức
+          {t.add}
         </Button>
       </Box>
 
@@ -140,16 +145,16 @@ const ThanhToanManager = () => {
             <TableRow>
               <TableCell sx={{ color: currentTheme.colorTitle }}>ID</TableCell>
               <TableCell sx={{ color: currentTheme.colorTitle }}>
-                Thương thức
+                {t.paymentMethods}
               </TableCell>
               <TableCell sx={{ color: currentTheme.colorTitle }}>
-                Trạng Thái
+                {t.status}
               </TableCell>
               <TableCell sx={{ color: currentTheme.colorTitle }}>
-                Ngày thanh toán
+                {t.createdDateLabel}
               </TableCell>
               <TableCell sx={{ color: currentTheme.colorTitle }}>
-                Actions
+                {t.actions}
               </TableCell>
             </TableRow>
           </TableHead>
@@ -172,8 +177,8 @@ const ThanhToanManager = () => {
                   }}
                 >
                   {method.TRANG_THAI_THANH_TOAN === "1"
-                    ? "Đang hoạt động"
-                    : "Ngưng hoạt động"}
+                    ? t.activeStatus
+                    : t.inactiveStatus}
                 </TableCell>
                 <TableCell sx={{ color: currentTheme.color }}>
                   {moment(method.NGAY_THANH_TOAN).format(
@@ -202,14 +207,12 @@ const ThanhToanManager = () => {
 
       {/* Dialog for Adding/Editing Payment Method */}
       <Dialog open={openDialog} onClose={handleCloseDialog}>
-        <DialogTitle>
-          {currentMethod ? "Sửa Phương Thức" : "Thêm Phương Thức"}
-        </DialogTitle>
+        <DialogTitle>{currentMethod ? t.edit : t.add}</DialogTitle>
         <DialogContent>
           <TextField
             autoFocus
             margin="dense"
-            label="Phương thức thanh toán"
+            label={t.paymentMethods}
             type="text"
             fullWidth
             variant="outlined"
@@ -224,16 +227,16 @@ const ThanhToanManager = () => {
             value={trangThaiThanhToan}
             onChange={(e) => setTrangThaiThanhToan(e.target.value)}
           >
-            <MenuItem value={1}>Đang hoạt động</MenuItem>
-            <MenuItem value={0}>Ngưng hoạt động</MenuItem>
+            <MenuItem value={1}>{t.activeStatus}</MenuItem>
+            <MenuItem value={0}>{t.inactiveStatus}</MenuItem>
           </Select>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialog} color="secondary">
-            Hủy
+            {t.cancelButtonLabel}
           </Button>
           <Button onClick={handleSave} color="primary">
-            {currentMethod ? "Sửa" : "Thêm"}
+            {currentMethod ? t.edit : t.add}
           </Button>
         </DialogActions>
       </Dialog>

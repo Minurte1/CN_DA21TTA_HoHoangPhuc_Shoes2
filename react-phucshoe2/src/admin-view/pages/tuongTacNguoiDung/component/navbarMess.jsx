@@ -9,13 +9,16 @@ import {
   Avatar,
 } from "@mui/material";
 import { getThemeConfig } from "../../../../services/themeService";
+import translations from "../../../../redux/data/translations";
+import { useSelector } from "react-redux";
 
 const SidebarMess = ({ selectedUser, setSelectedUser, users, userInfo }) => {
   const api = process.env.REACT_APP_URL_SERVER;
   const [searchQuery, setSearchQuery] = useState("");
   const [scrollTop, setScrollTop] = useState(66); // Ban đầu là 66px
   const currentTheme = getThemeConfig(localStorage.getItem("THEMES") || "dark");
-
+  const language = useSelector((state) => state.language.language);
+  const t = translations[language];
   // Lọc người dùng theo tên
   const filteredUsers = users.filter(
     (user) =>
@@ -73,7 +76,7 @@ const SidebarMess = ({ selectedUser, setSelectedUser, users, userInfo }) => {
         <TextField
           fullWidth
           variant="outlined"
-          placeholder="Tìm kiếm người dùng"
+          placeholder={t.searchUser}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           sx={{

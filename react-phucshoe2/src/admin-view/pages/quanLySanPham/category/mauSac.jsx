@@ -24,6 +24,8 @@ import { Add, Edit, Delete } from "@mui/icons-material";
 import axios from "axios";
 import moment from "moment";
 import { getThemeConfig } from "../../../../services/themeService";
+import { useSelector } from "react-redux";
+import translations from "../../../../redux/data/translations";
 const api = process.env.REACT_APP_URL_SERVER;
 
 const MauSacManager = () => {
@@ -34,6 +36,9 @@ const MauSacManager = () => {
   const [tenMau, setTenMau] = useState("");
   const [trangThaiMauSac, setTrangThaiMauSac] = useState("");
   const [maMauSac, setMaMauSac] = useState("");
+  const language = useSelector((state) => state.language.language);
+  const t = translations[language];
+
   useEffect(() => {
     fetchMauSacList();
   }, []);
@@ -99,7 +104,7 @@ const MauSacManager = () => {
     <Container>
       <Box sx={{ width: "100%", textAlign: "left", mt: 4 }}>
         <Typography variant="h5" color="primary" gutterBottom>
-          DANH SÁCH MÀU SẮC
+          {t.color}
         </Typography>
         <Button
           variant="outlined"
@@ -111,7 +116,7 @@ const MauSacManager = () => {
             color: currentTheme.color,
           }}
         >
-          Thêm Màu Sắc
+          {t.add}
         </Button>
       </Box>
 
@@ -124,22 +129,22 @@ const MauSacManager = () => {
             <TableRow>
               <TableCell sx={{ color: currentTheme.colorTitle }}>ID</TableCell>
               <TableCell sx={{ color: currentTheme.colorTitle }}>
-                Tên Màu Sắc
+                {t.colorName}
               </TableCell>{" "}
               <TableCell sx={{ color: currentTheme.colorTitle }}>
-                Mã Màu Sắc
+                {t.colorCode}
               </TableCell>{" "}
               <TableCell sx={{ color: currentTheme.colorTitle }}>
-                Ngày Tạo Ra
+                {t.createdDateLabel}
               </TableCell>{" "}
               <TableCell sx={{ color: currentTheme.colorTitle }}>
-                Ngày Cập Nhật
+                {t.updatedDateLabel}
               </TableCell>{" "}
               <TableCell sx={{ color: currentTheme.colorTitle }}>
-                Trạng thái
+                {t.orderStatusLabel}
               </TableCell>
               <TableCell sx={{ color: currentTheme.colorTitle }}>
-                Actions
+                {t.actions}
               </TableCell>
             </TableRow>
           </TableHead>
@@ -178,9 +183,7 @@ const MauSacManager = () => {
                       mauSacItem.TRANG_THAI_MAU_SAC === 1 ? "#008000" : "red",
                   }}
                 >
-                  {mauSacItem.TRANG_THAI_MAU_SAC === 1
-                    ? "Đang sử dụng"
-                    : "Ngưng sử dụng"}
+                  {mauSacItem.TRANG_THAI_MAU_SAC === 1 ? t.inUse : t.outOfUse}
                 </TableCell>
                 <TableCell>
                   <IconButton
@@ -203,14 +206,12 @@ const MauSacManager = () => {
       </TableContainer>
 
       <Dialog open={openDialog} onClose={handleCloseDialog}>
-        <DialogTitle>
-          {currentMauSac ? "Sửa Màu Sắc" : "Thêm Màu Sắc"}
-        </DialogTitle>
+        <DialogTitle>{currentMauSac ? t.edit : t.add}</DialogTitle>
         <DialogContent>
           <TextField
             autoFocus
             margin="dense"
-            label="Tên Màu Sắc"
+            label={t.colorName}
             type="text"
             fullWidth
             variant="outlined"
@@ -220,7 +221,7 @@ const MauSacManager = () => {
           <TextField
             autoFocus
             margin="dense"
-            label="Mã Màu Sắc"
+            label={t.colorCode}
             type="text"
             fullWidth
             variant="outlined"
@@ -229,22 +230,22 @@ const MauSacManager = () => {
           />{" "}
           <Select
             margin="dense"
-            label="Trạng thái"
+            label={t.status}
             fullWidth
             variant="outlined"
             value={trangThaiMauSac}
             onChange={(e) => setTrangThaiMauSac(e.target.value)}
           >
-            <MenuItem value={1}>Đang sử dụng</MenuItem>
-            <MenuItem value={0}>Ngưng sử dụng</MenuItem>
+            <MenuItem value={1}>{t.inUse}</MenuItem>
+            <MenuItem value={0}>{t.outOfUse}</MenuItem>
           </Select>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialog} color="secondary">
-            Cancel
+            {t.cancelButtonLabel}
           </Button>
           <Button onClick={handleSave} color="primary">
-            {currentMauSac ? "Update" : "Add"}
+            {currentMauSac ? t.edit : t.add}
           </Button>
         </DialogActions>
       </Dialog>
