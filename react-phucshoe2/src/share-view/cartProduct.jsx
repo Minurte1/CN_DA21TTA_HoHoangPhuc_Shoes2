@@ -245,7 +245,7 @@ const Cart = () => {
               {
                 orderId: orderInfo,
 
-                returnUrl: "http://localhost:3000/checkout",
+                returnUrl: "http://localhost:3000/checkout-vnpay",
                 amount: tongTienCart,
                 bankCode: "NCB",
                 orderType: "fashion",

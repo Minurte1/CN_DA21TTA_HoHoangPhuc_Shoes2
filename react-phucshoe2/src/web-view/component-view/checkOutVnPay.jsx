@@ -28,10 +28,10 @@ const CheckOutVnpay = () => {
       accessKey: queryParams.get("accessKey"),
       requestId: queryParams.get("requestId"),
       amount: queryParams.get("amount"),
-      orderId: queryParams.get("orderId"),
+      orderId: queryParams.get("vnp_TxnRef"),
       orderInfo: queryParams.get("orderInfo"),
       orderType: queryParams.get("orderType"),
-      transId: queryParams.get("transId"),
+      vnp_TransactionStatus: queryParams.get("vnp_TransactionStatus"),
       message: queryParams.get("message"),
       localMessage: queryParams.get("localMessage"),
       responseTime: queryParams.get("responseTime"),
@@ -60,7 +60,7 @@ const CheckOutVnpay = () => {
   const handleOrder = async () => {
     try {
       // Lấy các thông tin từ paymentInfo và Redux state
-      const orderId = paymentInfo.orderInfo; // Lấy orderId từ query params
+      const orderId = paymentInfo.orderId; // Lấy orderId từ query params
       const requestData = {
         idNguoiDung: userInfo.ID_NGUOI_DUNG,
 
@@ -74,13 +74,13 @@ const CheckOutVnpay = () => {
         `${apiUrl}/don-hang/hoan-tat`,
         requestData
       );
-      navigate("/cart");
+      navigate("/");
       if (response.data.EC === 1) {
         // Đơn hàng được tạo thành công
         toast.success("Đặt hàng thành công!");
-        navigate("/cart");
+        navigate("/");
       } else {
-        navigate("/cart");
+        navigate("/");
         // Nếu có lỗi khi tạo đơn hàng
         toast.error("Đã có lỗi xảy ra khi đặt hàng.");
       }
@@ -92,16 +92,21 @@ const CheckOutVnpay = () => {
 
   useEffect(() => {
     console.log(paymentInfo);
-    // Kiểm tra nếu đã có thông tin thanh toán thành công, thực hiện xử lý đơn hàng
-    if (paymentInfo.message === "Thành công.") {
-      enqueueSnackbar(paymentInfo.message, { variant: "success" });
-      handleOrder(); // Xử lý đơn hàng khi thanh toán thành công
-    } else if (
-      paymentInfo.message ===
-      "Giao dịch bị từ chối do nhà phát hành tài khoản thanh toán."
-    ) {
-      enqueueSnackbar(paymentInfo.message, { variant: "error" });
-      navigate("/cart");
+    console.log(paymentInfo.vnp_TransactionStatus);
+    console.log(paymentInfo.vnp_TransactionStatus == "00");
+    if (paymentInfo.vnp_TransactionStatus) {
+      // Kiểm tra nếu đã có thông tin thanh toán thành công, thực hiện xử lý đơn hàng
+      if (paymentInfo.vnp_TransactionStatus == "00") {
+        enqueueSnackbar("Đơn hàng thanh toán online thành công !", {
+          variant: "success",
+        });
+        handleOrder(); // Xử lý đơn hàng khi thanh toán thành công
+      } else {
+        enqueueSnackbar("Đơn hàng thanh toán online thất bại !", {
+          variant: "error",
+        });
+        // navigate("/");
+      }
     }
   }, [paymentInfo]); // Chạy khi paymentInfo thay đổi
 
