@@ -20,13 +20,14 @@ import EmailIcon from "@mui/icons-material/Email";
 import PaymentIcon from "@mui/icons-material/Payment";
 import LockIcon from "@mui/icons-material/Lock";
 import StarIcon from "@mui/icons-material/Star";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import translations from "../../redux/data/translations";
 import { useSelector } from "react-redux";
 import InventoryIcon from "@mui/icons-material/Inventory";
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
 import { getThemeConfig } from "../../services/themeService";
 const NavBarUser = () => {
+  const location = useLocation();
   const currentTheme = getThemeConfig(localStorage.getItem("THEMES") || "dark");
   const language = useSelector((state) => state.language.language);
   const t = translations[language];
@@ -56,10 +57,31 @@ const NavBarUser = () => {
           button
           component={Link}
           to="/profile"
-          sx={{ color: currentTheme.color }}
+          sx={{
+            borderRadius: "13px",
+            color:
+              location.pathname === "/profile" ? "#000" : currentTheme.color,
+            backgroundColor:
+              location.pathname === "/profile"
+                ? "#2ccaff"
+                : currentTheme.backgroundColor,
+            "&:hover": {
+              backgroundColor:
+                location.pathname === "/profile"
+                  ? "#2ccaff" // Giữ màu nền khi hover
+                  : currentTheme.backgroundColor,
+            },
+          }}
         >
           <ListItemIcon>
-            <AccountCircleIcon sx={{ color: currentTheme.color }} />
+            <AccountCircleIcon
+              sx={{
+                color:
+                  location.pathname === "/profile"
+                    ? "#000"
+                    : currentTheme.color,
+              }}
+            />
           </ListItemIcon>
           <ListItemText
             primary={t.UserInfo ? t.UserInfo : "Thông tin người dùng"}
@@ -69,10 +91,33 @@ const NavBarUser = () => {
           button
           component={Link}
           to="/profile/don-hang"
-          sx={{ color: currentTheme.color }}
+          sx={{
+            borderRadius: "13px",
+            color:
+              location.pathname === "/profile/don-hang"
+                ? "#000"
+                : currentTheme.color,
+            backgroundColor:
+              location.pathname === "/profile/don-hang"
+                ? "#2ccaff"
+                : "transparent", // Kiểm tra nếu đang ở trang này
+            "&:hover": {
+              backgroundColor:
+                location.pathname === "/profile/don-hang"
+                  ? "#2ccaff" // Giữ màu nền khi hover
+                  : currentTheme.backgroundColor,
+            },
+          }}
         >
           <ListItemIcon>
-            <ShoppingBagIcon sx={{ color: currentTheme.color }} />
+            <ShoppingBagIcon
+              sx={{
+                color:
+                  location.pathname === "/profile/don-hang"
+                    ? "#000"
+                    : currentTheme.color,
+              }}
+            />
           </ListItemIcon>
           <ListItemText primary={t.Oder ? t.Oder : "Đơn hàng"} />
         </ListItem>{" "}
@@ -80,10 +125,33 @@ const NavBarUser = () => {
           button
           component={Link}
           to="/profile/lich-su-mua-hang"
-          sx={{ color: currentTheme.color }}
+          sx={{
+            borderRadius: "13px",
+            color:
+              location.pathname === "/profile/lich-su-mua-hang"
+                ? "#000"
+                : currentTheme.color,
+            backgroundColor:
+              location.pathname === "/profile/lich-su-mua-hang"
+                ? "#2ccaff"
+                : "transparent", // Kiểm tra nếu đang ở trang này
+            "&:hover": {
+              backgroundColor:
+                location.pathname === "/profile/lich-su-mua-hang"
+                  ? "#2ccaff" // Giữ màu nền khi hover
+                  : currentTheme.backgroundColor,
+            },
+          }}
         >
           <ListItemIcon>
-            <InventoryIcon sx={{ color: currentTheme.color }} />
+            <InventoryIcon
+              sx={{
+                color:
+                  location.pathname === "/profile/lich-su-mua-hang"
+                    ? "#000"
+                    : currentTheme.color,
+              }}
+            />
           </ListItemIcon>
           <ListItemText
             primary={t.HistoryBuy ? t.HistoryBuy : "Lịch sử mua hàng"}
@@ -93,10 +161,33 @@ const NavBarUser = () => {
           button
           component={Link}
           to="/profile/mat-khau-cai-dat"
-          sx={{ color: currentTheme.color }}
+          sx={{
+            borderRadius: "13px",
+            color:
+              location.pathname === "/profile/mat-khau-cai-dat"
+                ? "#000"
+                : currentTheme.color,
+            backgroundColor:
+              location.pathname === "/profile/mat-khau-cai-dat"
+                ? "#2ccaff"
+                : "transparent", // Kiểm tra nếu đang ở trang này
+            "&:hover": {
+              backgroundColor:
+                location.pathname === "/profile/mat-khau-cai-dat"
+                  ? "#2ccaff" // Giữ màu nền khi hover
+                  : currentTheme.backgroundColor,
+            },
+          }}
         >
           <ListItemIcon>
-            <LockIcon sx={{ color: currentTheme.color }} />
+            <LockIcon
+              sx={{
+                color:
+                  location.pathname === "/profile/mat-khau-cai-dat"
+                    ? "#000"
+                    : currentTheme.color,
+              }}
+            />
           </ListItemIcon>
           <ListItemText
             primary={
