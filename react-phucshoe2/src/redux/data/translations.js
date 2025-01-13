@@ -379,9 +379,15 @@ const translations = {
     postImage: "Hình ảnh bài viết",
     title: "Tiêu đề",
     delete: "Xóa",
+    order_in_delivery: "Đơn hàng đang giao",
+    confirm_mark_order_in_delivery:
+      "Bạn có chắc chắn muốn đánh dấu đơn hàng này là 'Đơn hàng đang giao'?",
   },
   // --------------------ENGLISH--------------------
   en: {
+    confirm_mark_order_in_delivery:
+      "Are you sure you want to mark this order as 'Order in delivery'?",
+    order_in_delivery: "Order in delivery",
     delete: "Delete",
     title: "Title",
     managePosts: "MANAGE POSTS",

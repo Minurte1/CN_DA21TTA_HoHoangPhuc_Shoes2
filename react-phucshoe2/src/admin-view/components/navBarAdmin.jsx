@@ -485,6 +485,27 @@ const NavBarAdmin = () => {
                   }}
                 >
                   <ListItemText primary={t.processingOrders} />
+                </ListItem>{" "}
+                <ListItem
+                  button
+                  component={Link}
+                  to="/admin/don-hang/dang-giao-hang"
+                  sx={{
+                    pl: 4,
+                    color: currentTheme.color,
+                    mt: 1,
+                    mb: 1,
+                    borderRadius: "13px",
+                    backgroundColor:
+                      location.pathname === "/admin/don-hang/dang-giao-hang"
+                        ? currentTheme.accentColor
+                        : "transparent", // Kiểm tra nếu đang ở trang này
+                    "&:hover": {
+                      backgroundColor: currentTheme.accentColor,
+                    },
+                  }}
+                >
+                  <ListItemText primary={t.order_in_delivery} />
                 </ListItem>
                 <ListItem
                   button

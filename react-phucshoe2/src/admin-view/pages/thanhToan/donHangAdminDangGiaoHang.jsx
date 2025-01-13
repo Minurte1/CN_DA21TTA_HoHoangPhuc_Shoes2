@@ -28,7 +28,7 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import { getThemeConfig } from "../../../services/themeService";
 import { useSelector } from "react-redux";
 import translations from "../../../redux/data/translations";
-const TatCaDonHangAdminProcess = () => {
+const TatCaDonHangAdminDangGiaoHang = () => {
   const [orders, setOrders] = useState([]);
   const [selectedOrderId, setSelectedOrderId] = useState(null);
   const [openModal, setOpenModal] = useState(false);
@@ -46,7 +46,7 @@ const TatCaDonHangAdminProcess = () => {
 
   const fetchOrders = async () => {
     try {
-      const response = await axios.get(`${api}/chi-tiet-hoa-don/all-process`);
+      const response = await axios.get(`${api}/chi-tiet-hoa-don/all-dang-giao`);
       if (response.data.EC === 1) {
         setOrders(response.data.DT);
       }
@@ -58,7 +58,7 @@ const TatCaDonHangAdminProcess = () => {
   const handleUpdateStatusSuccess = async (orderId) => {
     try {
       // Gửi yêu cầu cập nhật trạng thái "Giao dịch thành công"
-      const response = await axios.put(`${api}/don-hang/${orderId}/dang-giao`);
+      const response = await axios.put(`${api}/don-hang/${orderId}/success`);
 
       if (response.data.EC === 1) {
         enqueueSnackbar(response.data.EM);
@@ -143,7 +143,7 @@ const TatCaDonHangAdminProcess = () => {
     >
       <Box sx={{ width: "100%", textAlign: "left", mt: 4, mb: 3 }}>
         <Typography variant="h5" color="primary">
-          {t.processingOrdersList}
+          {t.order_in_delivery}
         </Typography>
       </Box>
       <TableContainer
@@ -207,11 +207,11 @@ const TatCaDonHangAdminProcess = () => {
               >
                 <b>{t.actions}</b>
               </TableCell>{" "}
-              <TableCell
+              {/* <TableCell
                 sx={{ fontSize: "0.875rem", color: currentTheme.colorTitle }}
               >
                 <b>{t.actions}</b>
-              </TableCell>
+              </TableCell> */}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -291,19 +291,21 @@ const TatCaDonHangAdminProcess = () => {
                     }
                     // startIcon={<CheckCircleIcon sx={{ color: currentTheme.colorTitle }} />}
                   >
-                    {t.order_in_delivery}
+                    {t.deliveredTab}
                   </Button>
                 </TableCell>
-                <TableCell sx={{ fontSize: "0.875rem" }}>
+                {/* <TableCell sx={{ fontSize: "0.875rem" }}>
+               
                   <Button
                     sx={{ color: "red" }}
                     onClick={() =>
                       handleOpenDialog("canceled", order.ID_DON_HANG)
                     }
+                  
                   >
                     {t.canceledTab}
                   </Button>
-                </TableCell>
+                </TableCell> */}
               </TableRow>
             ))}
           </TableBody>
@@ -346,7 +348,7 @@ const TatCaDonHangAdminProcess = () => {
         <DialogTitle>{t.confirmActionTitle}</DialogTitle>
         <DialogContent>
           {actionType === "success" ? (
-            <p>{t.confirm_mark_order_in_delivery}</p>
+            <p>{t.confirmSuccessAction}</p>
           ) : (
             <p>{t.confirmCancelAction}</p>
           )}
@@ -364,4 +366,4 @@ const TatCaDonHangAdminProcess = () => {
   );
 };
 
-export default TatCaDonHangAdminProcess;
+export default TatCaDonHangAdminDangGiaoHang;

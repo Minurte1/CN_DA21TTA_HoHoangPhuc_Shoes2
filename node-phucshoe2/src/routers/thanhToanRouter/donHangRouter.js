@@ -10,6 +10,7 @@ const {
   updateOrderStatusCanceled_User,
   updateOrderStatusCanceled,
   updateOrderStatusSuccess,
+  updateOrderStatusDangGiaoHang,
 } = require("../../controllers/thanhToanController/donHangController");
 // Định nghĩa các route
 router.get("/", getDON_HANG); //admin
@@ -21,7 +22,8 @@ router.delete("/:id", deleteDON_HANG);
 
 //Success - Admin
 router.put("/:orderId/success", updateOrderStatusSuccess);
-
+//Đang giao
+router.put("/:orderId/dang-giao", updateOrderStatusDangGiaoHang);
 //Cancel - Admin
 router.put("/:orderId/canceled", updateOrderStatusCanceled);
 

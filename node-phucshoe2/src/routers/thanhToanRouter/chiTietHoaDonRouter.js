@@ -13,6 +13,7 @@ const {
   getALLPaidOrdersAwaitingProcessing_Admin,
   getALLChiTietHoaDonTheoNguoiDung_Cancel_Admin,
   getAllChiTietHoaDonTheoNguoiDung_Success_Admin,
+  getALLPaidOrders_DangGiaoHang_Admin,
 } = require("../../controllers/thanhToanController/chiTietHoaDonController");
 
 // ----------Admin----------------------------
@@ -22,6 +23,7 @@ router.get("/all-success", getAllChiTietHoaDonTheoNguoiDung_Success_Admin);
 router.get("/all-cancel", getALLChiTietHoaDonTheoNguoiDung_Cancel_Admin);
 
 router.get("/all-process", getALLPaidOrdersAwaitingProcessing_Admin);
+router.get("/all-dang-giao", getALLPaidOrders_DangGiaoHang_Admin);
 
 // --------User ---------------------------------
 
