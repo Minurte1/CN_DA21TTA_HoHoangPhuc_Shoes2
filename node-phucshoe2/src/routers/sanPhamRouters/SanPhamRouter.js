@@ -24,12 +24,12 @@ const {
 } = require("../../controllers/sanPhamController/SanPhamController");
 const uploads = require("../../config/multerConfig");
 // Định nghĩa các route
-router.get("/use/nu", getSAN_PHAM_Use_Nu);
+router.post("/use/nu", getSAN_PHAM_Use_Nu);
 router.get("/use/tre-em", getSAN_PHAM_Use_TreEm);
-router.get("/use/nam", getSAN_PHAM_Use_Nam);
+router.post("/use/nam", getSAN_PHAM_Use_Nam);
 router.get("/use/last2products", getLatest2Products);
 router.get("/", getSAN_PHAM);
-router.get("/use/", getSAN_PHAM_Use);
+router.post("/use/", getSAN_PHAM_Use);
 
 router.get("/use/5best-selling", getTop5BestSellingProducts);
 router.get("/use/5best-expensive", getTopExpensiveProducts);

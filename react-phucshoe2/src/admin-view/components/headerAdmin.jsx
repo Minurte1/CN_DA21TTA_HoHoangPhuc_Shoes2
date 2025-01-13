@@ -272,7 +272,7 @@ const Header = () => {
             to="/profile"
             onClick={handleClose}
           >
-            Thông tin
+            {t.sidebarTitle}
           </MenuItem>
           <MenuItem
             sx={{
@@ -291,7 +291,7 @@ const Header = () => {
             component={Link}
             to="/profile/don-hang"
           >
-            Đơn hàng
+            {t.orders}
           </MenuItem>{" "}
           <MenuItem
             sx={{
@@ -309,7 +309,7 @@ const Header = () => {
             component={Link}
             to="/profile/lich-su-mua-hang"
           >
-            Lịch sử mua hàng
+            {t.purchaseHistory}
           </MenuItem>{" "}
           <MenuItem
             sx={{
@@ -327,7 +327,7 @@ const Header = () => {
             component={Link}
             to="/profile/mat-khau-cai-dat"
           >
-            Mật khẩu & cài đặt
+            {t.passwordAndSettings}
           </MenuItem>{" "}
           {userInfo?.VAI_TRO === "1" ? (
             <>
@@ -371,7 +371,7 @@ const Header = () => {
               handleLogout();
             }}
           >
-            Đăng xuất
+            {t.logout}
           </MenuItem>
         </Menu>
       </Box>

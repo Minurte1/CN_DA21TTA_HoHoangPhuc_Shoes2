@@ -14,6 +14,8 @@ import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import { useDispatch, useSelector } from "react-redux";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import FavoriteIcon from "@mui/icons-material/Favorite"; // Import FavoriteIcon
+
 import "./css/productCarousel.css";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -21,7 +23,7 @@ import { setTotalCart } from "../redux/authSlice";
 import { enqueueSnackbar } from "notistack";
 import translations from "../redux/data/translations";
 import { getThemeConfig } from "../services/themeService";
-const ProductCarousel = ({ title, products, api }) => {
+const ProductCarousel = ({ title, products, api, fetchProducts }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [productLength, setProductLength] = useState(0);
   const [disable, setDisable] = useState(false);
@@ -107,6 +109,7 @@ const ProductCarousel = ({ title, products, api }) => {
       const response = await axios.post(`${api}/yeu-thich/`, payload);
 
       if (response.data.EC === 1) {
+        fetchProducts();
         enqueueSnackbar(response.data.EM, { variant: "success" });
       } else {
         enqueueSnackbar(response.data.EM, { variant: "error" });
@@ -117,6 +120,25 @@ const ProductCarousel = ({ title, products, api }) => {
     }
   };
 
+  const removeFromFavorites = async (product) => {
+    try {
+      const response = await axios.post(`${api}/yeu-thich/delete`, {
+        idSanPham: product.ID_SAN_PHAM,
+        idNguoiDung: userInfo.ID_NGUOI_DUNG,
+      });
+
+      if (response.data.EC === 1) {
+        fetchProducts();
+        enqueueSnackbar(response.data.EM, { variant: "success" }); // Thông báo thành công
+      } else {
+        fetchProducts();
+        enqueueSnackbar(response.data.EM, { variant: "error" }); // Thông báo lỗi
+      }
+    } catch (error) {
+      console.error("Error removing product from favorites:", error);
+      enqueueSnackbar(error.response.data.EM, { variant: "error" }); // Thông báo lỗi
+    }
+  };
   return (
     <div
       className="container-product-carousel mt-4 mb-4"
@@ -224,13 +246,34 @@ const ProductCarousel = ({ title, products, api }) => {
                 }}
                 onClick={() => handleBuyProduct(product.ID_SAN_PHAM)}
               >
-                <Tooltip title={t.AddToWish} arrow>
+                {product.isLiked ? (
+                  <FavoriteIcon
+                    sx={{
+                      position: "absolute", // Đặt icon ở góc trên bên phải
+                      top: 8,
+                      right: 8,
+                      color: "red", // Màu đỏ khi liked
+                      borderRadius: "50%", // Tạo hình tròn cho icon
+                      margin: "8px",
+                      fontSize: "23px",
+                      cursor: "pointer",
+                      transition: "transform 0.3s ease", // Thêm hiệu ứng chuyển động khi hover
+                      "&:hover": {
+                        transform: "scale(1.2)", // Phóng to icon khi hover
+                      },
+                    }}
+                    onClick={(e) => {
+                      e.stopPropagation(); // Ngừng sự kiện click lên card khi nhấn vào icon
+                      removeFromFavorites(product); // Gọi hàm thêm vào giỏ hàng
+                    }}
+                  />
+                ) : (
                   <FavoriteBorderIcon
                     sx={{
                       position: "absolute", // Đặt icon ở góc trên bên phải
                       top: 8,
                       right: 8,
-                      color: "#101014", // Màu icon
+                      color: "#101014", // Màu đen khi chưa liked
                       borderRadius: "50%", // Tạo hình tròn cho icon
                       margin: "8px",
                       fontSize: "23px",
@@ -245,7 +288,8 @@ const ProductCarousel = ({ title, products, api }) => {
                       handleAddToWish(product); // Gọi hàm thêm vào giỏ hàng
                     }}
                   />
-                </Tooltip>
+                )}
+
                 <CardMedia
                   component="img"
                   image={`${api}/images/${product.HINH_ANH_SANPHAM}`}
@@ -278,21 +322,7 @@ const ProductCarousel = ({ title, products, api }) => {
                     {product.GIA
                       ? `${product.GIA.toLocaleString("vi-VN")}đ`
                       : "Giá không có sẵn"}{" "}
-                    {/* <Tooltip title={t.AddToCart} arrow>
-                      <AddShoppingCartIcon
-                        sx={{
-                          cursor: "pointer",
-                          "&:hover": {
-                            color: "#555", // Màu nền khi hover
-                          },
-                        }}
-                        onClick={(e) => {
-                          e.stopPropagation(); // Ngừng sự kiện click lên card khi nhấn vào icon
-                          // handleAddToCart(product);
-                        }}
-                      />
-                    </Tooltip> */}
-                  </Typography>{" "}
+                  </Typography>
                 </CardContent>
               </Card>
             ))

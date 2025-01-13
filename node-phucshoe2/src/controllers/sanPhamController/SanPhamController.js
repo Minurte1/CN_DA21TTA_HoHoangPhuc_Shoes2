@@ -188,48 +188,73 @@ GROUP BY sp.ID_SAN_PHAM, gt.TEN_GIOI_TINH, gt.CREATED_GIOI_TINH, gt.UPDATE_GIOI_
 
 const getSAN_PHAM_Use = async (req, res) => {
   try {
-    const [results] = await connection.execute(`
+    const { ID_NGUOI_DUNG } = req.body; // Lấy ID_NGUOI_DUNG từ query
+
+    // Lấy danh sách sản phẩm
+    const [products] = await connection.execute(`
       SELECT 
-    sp.ID_SAN_PHAM, 
-    sp.ID_THUONG_HIEU, 
-    sp.ID_DANH_MUC, 
-    sp.GIOI_TINH_ID, 
-    sp.CHAT_LIEU_ID_,
-    sp.TEN_SAN_PHAM, 
-    sp.GIA, 
-    sp.MO_TA_SAN_PHAM, 
-    sp.HINH_ANH_SANPHAM, 
-    sp.TRANG_THAI_SANPHAM, 
-    sp.NGAY_TAO_SANPHAM, 
-    sp.NGAY_CAP_NHAT_SANPHAM, 
-    sp.SO_LUONG_SANPHAM,
-    gt.TEN_GIOI_TINH,
-    dm.TEN_DANH_MUC, 
-    dm.MO_TA_LOAI_DANH_MUC,
-    cl.TEN_CHAT_LIEU_, 
-    cl.MO_TA_CHAT_LIEU,
-    th.TEN_THUONG_HIEU,
-    GROUP_CONCAT(DISTINCT CONCAT(ms.TEN_MAU_SAC, ' - ', kc.KICH_CO) ORDER BY ms.TEN_MAU_SAC SEPARATOR ', ') AS CHI_TIET_SAN_PHAM
-
-FROM SAN_PHAM sp
-LEFT JOIN GIOI_TINH gt ON sp.GIOI_TINH_ID = gt.GIOI_TINH_ID
-LEFT JOIN LOAI_DANH_MUC dm ON sp.ID_DANH_MUC = dm.ID_DANH_MUC
-LEFT JOIN CHAT_LIEU cl ON sp.CHAT_LIEU_ID_ = cl.CHAT_LIEU_ID_
-LEFT JOIN THUONG_HIEU th ON sp.ID_THUONG_HIEU = th.ID_THUONG_HIEU
-LEFT JOIN SAN_PHAM_CHI_TIET spct ON sp.ID_SAN_PHAM = spct.ID_SAN_PHAM
-LEFT JOIN MAU_SAC ms ON spct.MAU_SAC_ID = ms.MAU_SAC_ID
-LEFT JOIN KICH_CO kc ON spct.ID_KICH_CO = kc.ID_KICH_CO
-
-WHERE sp.TRANG_THAI_SANPHAM = 1
-
-GROUP BY sp.ID_SAN_PHAM;
-
+        sp.ID_SAN_PHAM, 
+        sp.ID_THUONG_HIEU, 
+        sp.ID_DANH_MUC, 
+        sp.GIOI_TINH_ID, 
+        sp.CHAT_LIEU_ID_,
+        sp.TEN_SAN_PHAM, 
+        sp.GIA, 
+        sp.MO_TA_SAN_PHAM, 
+        sp.HINH_ANH_SANPHAM, 
+        sp.TRANG_THAI_SANPHAM, 
+        sp.NGAY_TAO_SANPHAM, 
+        sp.NGAY_CAP_NHAT_SANPHAM, 
+        sp.SO_LUONG_SANPHAM,
+        gt.TEN_GIOI_TINH,
+        dm.TEN_DANH_MUC, 
+        dm.MO_TA_LOAI_DANH_MUC,
+        cl.TEN_CHAT_LIEU_, 
+        cl.MO_TA_CHAT_LIEU,
+        th.TEN_THUONG_HIEU,
+        GROUP_CONCAT(DISTINCT CONCAT(ms.TEN_MAU_SAC, ' - ', kc.KICH_CO) ORDER BY ms.TEN_MAU_SAC SEPARATOR ', ') AS CHI_TIET_SAN_PHAM
+      FROM SAN_PHAM sp
+      LEFT JOIN GIOI_TINH gt ON sp.GIOI_TINH_ID = gt.GIOI_TINH_ID
+      LEFT JOIN LOAI_DANH_MUC dm ON sp.ID_DANH_MUC = dm.ID_DANH_MUC
+      LEFT JOIN CHAT_LIEU cl ON sp.CHAT_LIEU_ID_ = cl.CHAT_LIEU_ID_
+      LEFT JOIN THUONG_HIEU th ON sp.ID_THUONG_HIEU = th.ID_THUONG_HIEU
+      LEFT JOIN SAN_PHAM_CHI_TIET spct ON sp.ID_SAN_PHAM = spct.ID_SAN_PHAM
+      LEFT JOIN MAU_SAC ms ON spct.MAU_SAC_ID = ms.MAU_SAC_ID
+      LEFT JOIN KICH_CO kc ON spct.ID_KICH_CO = kc.ID_KICH_CO
+      WHERE sp.TRANG_THAI_SANPHAM = 1
+      GROUP BY sp.ID_SAN_PHAM;
     `);
 
+    if (ID_NGUOI_DUNG) {
+      // Lấy danh sách sản phẩm đã yêu thích
+      const [likedProducts] = await connection.execute(
+        `
+        SELECT ID_SAN_PHAM FROM YEU_THICH WHERE ID_NGUOI_DUNG = ?
+      `,
+        [ID_NGUOI_DUNG]
+      );
+
+      // Tạo danh sách ID sản phẩm đã yêu thích
+      const likedProductIds = likedProducts.map((item) => item.ID_SAN_PHAM);
+
+      // Thêm thuộc tính isLiked cho mỗi sản phẩm
+      const productsWithLikes = products.map((product) => ({
+        ...product,
+        isLiked: likedProductIds.includes(product.ID_SAN_PHAM), // true nếu sản phẩm đã được yêu thích
+      }));
+
+      return res.status(200).json({
+        EM: "Xem thông tin sản phẩm thành công",
+        EC: 1,
+        DT: productsWithLikes,
+      });
+    }
+
+    // Nếu không có ID_NGUOI_DUNG, trả về danh sách sản phẩm bình thường
     return res.status(200).json({
       EM: "Xem thông tin sản phẩm thành công",
       EC: 1,
-      DT: results,
+      DT: products,
     });
   } catch (error) {
     console.error("Error getting san pham:", error);
@@ -240,6 +265,7 @@ GROUP BY sp.ID_SAN_PHAM;
     });
   }
 };
+
 //Search theo sản phẩm
 const getSAN_PHAM_Search = async (req, res) => {
   const { query } = req.query; // Nhận từ khóa tìm kiếm từ frontend
@@ -291,9 +317,11 @@ const getSAN_PHAM_Search = async (req, res) => {
   }
 };
 
-//lấy tất cả sản phẩm ĐANG HOẠT ĐỘNG = NỮ
 const getSAN_PHAM_Use_Nu = async (req, res) => {
   try {
+    const ID_NGUOI_DUNG = req.body.ID_NGUOI_DUNG;
+
+    // Truy vấn sản phẩm với điều kiện giới tính là 'Nữ' và trạng thái sản phẩm là 1 (Đang hoạt động)
     const [results] = await connection.execute(`
       SELECT 
         sp.ID_SAN_PHAM, sp.ID_THUONG_HIEU, sp.ID_DANH_MUC, sp.GIOI_TINH_ID, sp.CHAT_LIEU_ID_,
@@ -312,6 +340,35 @@ const getSAN_PHAM_Use_Nu = async (req, res) => {
       AND gt.TEN_GIOI_TINH = 'Nữ'  -- Điều kiện phân loại theo giới tính là "Nữ"
     `);
 
+    // Nếu có ID_NGUOI_DUNG, ta cần kiểm tra các sản phẩm đã được yêu thích chưa
+    if (ID_NGUOI_DUNG) {
+      const [likedProducts] = await connection.execute(
+        `
+        SELECT ID_SAN_PHAM 
+        FROM YEU_THICH 
+        WHERE ID_NGUOI_DUNG = ?
+      `,
+        [ID_NGUOI_DUNG]
+      );
+
+      const likedProductIds = likedProducts.map(
+        (product) => product.ID_SAN_PHAM
+      );
+
+      // Dùng vòng lặp map để kiểm tra từng sản phẩm và thêm thông tin đã yêu thích
+      const resultsWithLikedStatus = results.map((product) => {
+        product.isLiked = likedProductIds.includes(product.ID_SAN_PHAM);
+        return product;
+      });
+
+      return res.status(200).json({
+        EM: "Xem thông tin sản phẩm thành công",
+        EC: 1,
+        DT: resultsWithLikedStatus,
+      });
+    }
+
+    // Nếu không có ID_NGUOI_DUNG, trả về kết quả bình thường
     return res.status(200).json({
       EM: "Xem thông tin sản phẩm thành công",
       EC: 1,
@@ -329,7 +386,10 @@ const getSAN_PHAM_Use_Nu = async (req, res) => {
 
 const getSAN_PHAM_Use_Nam = async (req, res) => {
   try {
-    const [results] = await connection.execute(`
+    const { ID_NGUOI_DUNG } = req.body; // Lấy ID_NGUOI_DUNG từ query
+
+    // Lấy danh sách sản phẩm
+    const [products] = await connection.execute(`
       SELECT 
         sp.ID_SAN_PHAM, sp.ID_THUONG_HIEU, sp.ID_DANH_MUC, sp.GIOI_TINH_ID, sp.CHAT_LIEU_ID_,
         sp.TEN_SAN_PHAM, sp.GIA, sp.MO_TA_SAN_PHAM, sp.HINH_ANH_SANPHAM, sp.TRANG_THAI_SANPHAM, 
@@ -344,13 +404,39 @@ const getSAN_PHAM_Use_Nam = async (req, res) => {
       LEFT JOIN CHAT_LIEU cl ON sp.CHAT_LIEU_ID_ = cl.CHAT_LIEU_ID_
       LEFT JOIN THUONG_HIEU th ON sp.ID_THUONG_HIEU = th.ID_THUONG_HIEU
       WHERE sp.TRANG_THAI_SANPHAM = 1
-      AND gt.TEN_GIOI_TINH = 'Nam'  -- Điều kiện phân loại theo giới tính là "Nữ"
+      AND gt.TEN_GIOI_TINH = 'Nam'
     `);
 
+    if (ID_NGUOI_DUNG) {
+      // Lấy danh sách các sản phẩm đã yêu thích của người dùng
+      const [likedProducts] = await connection.execute(
+        `
+        SELECT ID_SAN_PHAM FROM YEU_THICH WHERE ID_NGUOI_DUNG = ?
+      `,
+        [ID_NGUOI_DUNG]
+      );
+
+      // Tạo danh sách ID sản phẩm đã yêu thích
+      const likedProductIds = likedProducts.map((item) => item.ID_SAN_PHAM);
+
+      // Thêm thuộc tính isLiked cho mỗi sản phẩm
+      const productsWithLikes = products.map((product) => ({
+        ...product,
+        isLiked: likedProductIds.includes(product.ID_SAN_PHAM), // true nếu sản phẩm đã được yêu thích
+      }));
+
+      return res.status(200).json({
+        EM: "Xem thông tin sản phẩm thành công",
+        EC: 1,
+        DT: productsWithLikes,
+      });
+    }
+
+    // Nếu không có ID_NGUOI_DUNG, trả về danh sách sản phẩm bình thường
     return res.status(200).json({
       EM: "Xem thông tin sản phẩm thành công",
       EC: 1,
-      DT: results,
+      DT: products,
     });
   } catch (error) {
     console.error(error);
@@ -361,6 +447,7 @@ const getSAN_PHAM_Use_Nam = async (req, res) => {
     });
   }
 };
+
 const getSAN_PHAM_Use_TreEm = async (req, res) => {
   try {
     const [results] = await connection.execute(`

@@ -24,6 +24,7 @@ import ReactQuill from "react-quill";
 import { enqueueSnackbar } from "notistack";
 import { getThemeConfig } from "../../../../services/themeService";
 import { Add, Edit, Delete } from "@mui/icons-material";
+import translations from "../../../../redux/data/translations";
 
 const BlogManager = () => {
   const currentTheme = getThemeConfig(localStorage.getItem("THEMES") || "dark");
@@ -36,6 +37,9 @@ const BlogManager = () => {
   const [images, setImages] = useState(null);
   const [descriptionTitle, setDecripttionTitle] = useState("");
   const [listBlog, setListBlog] = useState([]);
+  const language = useSelector((state) => state.language.language);
+  const t = translations[language];
+
   useEffect(() => {
     fetchBlog();
   }, []);
@@ -219,7 +223,12 @@ const BlogManager = () => {
     setOpen(false);
   };
   return (
-    <Container>
+    <Container
+      sx={{
+        backgroundColor: currentTheme.backgroundColor,
+        height: listBlog.length <= 5 ? "100vh" : "auto",
+      }}
+    >
       {" "}
       <Box sx={{ width: "100%", textAlign: "left", mt: 4 }}>
         <Typography
@@ -228,7 +237,7 @@ const BlogManager = () => {
           gutterBottom
           sx={{ textAlign: "left" }}
         >
-          QUẢN LÝ BÀI VIẾT
+          {t.managePosts}
         </Typography>
         <Button
           variant="outlined"
@@ -240,7 +249,7 @@ const BlogManager = () => {
             color: currentTheme.backgroundColor,
           }}
         >
-          TẠO BÀI VIẾT
+          {t.createPost}
         </Button>
       </Box>
       <TableContainer
@@ -255,20 +264,28 @@ const BlogManager = () => {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell sx={{ color: currentTheme.color }}>Tiêu đề</TableCell>
+              <TableCell sx={{ color: currentTheme.color }}>
+                {t.title}
+              </TableCell>
               <TableCell
                 sx={{
                   color: currentTheme.color,
                 }}
               >
-                Nội dung tiêu đề
+                {t.postContentTitle}
               </TableCell>
-              <TableCell sx={{ color: currentTheme.color }}>Ngày Tạo</TableCell>
               <TableCell sx={{ color: currentTheme.color }}>
-                Trạng thái
+                {t.createdDate}
+              </TableCell>
+              <TableCell sx={{ color: currentTheme.color }}>
+                {t.status}
               </TableCell>{" "}
-              <TableCell sx={{ color: currentTheme.color }}>Hình ảnh</TableCell>
-              <TableCell sx={{ color: currentTheme.color }}>Actions</TableCell>
+              <TableCell sx={{ color: currentTheme.color }}>
+                {t.image}
+              </TableCell>
+              <TableCell sx={{ color: currentTheme.color }}>
+                {t.actions}
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -292,7 +309,7 @@ const BlogManager = () => {
                 <TableCell
                   sx={{
                     color:
-                      blog.TRANG_THAI_BAIVIET === "Đang hoạt động"
+                      blog.TRANG_THAI_BAIVIET === t.activeStatus
                         ? "green"
                         : "red",
                     fontWeight: "bold",
@@ -318,7 +335,7 @@ const BlogManager = () => {
                     color="primary"
                     onClick={() => handleEditClick(blog)}
                   >
-                    Chỉnh sửa
+                    {t.edit}
                   </Button>
 
                   <Button
@@ -326,7 +343,7 @@ const BlogManager = () => {
                     color="primary"
                     onClick={() => handleDelete(blog)}
                   >
-                    Xóa
+                    {t.delete}
                   </Button>
                 </TableCell>
               </TableRow>
@@ -339,7 +356,7 @@ const BlogManager = () => {
         <DialogContent>
           <TextField
             fullWidth
-            label="Tiêu đề bài viết"
+            label={t.postTitle}
             name="title"
             value={title || ""}
             onChange={(e) => setTitle(e.target.value)}
@@ -349,7 +366,7 @@ const BlogManager = () => {
           <TextField
             multiline
             margin="dense"
-            label="Nội dung tiêu đề"
+            label={t.postContent}
             type="text"
             value={descriptionTitle}
             fullWidth
@@ -361,7 +378,7 @@ const BlogManager = () => {
 
           <TextField
             margin="dense"
-            label="Hình ảnh bài viết"
+            label={t.postImage}
             type="file"
             fullWidth
             name="images"
@@ -381,10 +398,10 @@ const BlogManager = () => {
 
         <DialogActions>
           <Button onClick={handleClose} color="primary">
-            Cancel
+            {t.cancelButtonLabel}
           </Button>
           <Button onClick={handleSave} color="primary">
-            Save
+            {t.save}
           </Button>
         </DialogActions>
       </Dialog>

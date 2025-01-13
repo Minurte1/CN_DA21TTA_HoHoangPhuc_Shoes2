@@ -59,11 +59,15 @@ const Home = () => {
         bestFavoriteResponse,
         bestExpensiveResponse,
       ] = await Promise.all([
-        axios.get(`${api}/san-pham/use/nu`),
+        axios.post(`${api}/san-pham/use/nu`, {
+          ID_NGUOI_DUNG: userInfo.ID_NGUOI_DUNG,
+        }),
         axios.get(`${api}/san-pham/use/last2products`),
         axios.get(`${api}/carousel-products/use`),
         axios.get(`${api}/san-pham/use/tre-em`),
-        axios.get(`${api}/san-pham/use/nam`),
+        axios.post(`${api}/san-pham/use/nam`, {
+          ID_NGUOI_DUNG: userInfo.ID_NGUOI_DUNG,
+        }),
         axios.get(`${api}/san-pham/use/5best-selling`),
         axios.get(`${api}/san-pham/use/5best-favorite`),
         axios.get(`${api}/san-pham/use/5best-expensive`),
@@ -127,6 +131,7 @@ const Home = () => {
             title={t.ProductsGirl ? t.ProductsGirl : "Sản phẩm dành cho nữ"}
             products={nuProducts}
             api={api}
+            fetchProducts={fetchAllProducts}
           />
           <Box
             sx={{
@@ -206,6 +211,7 @@ const Home = () => {
             title={t.ProductsMale}
             products={namProducts}
             api={api}
+            fetchProducts={fetchAllProducts}
           />
           <Box
             sx={{

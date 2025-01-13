@@ -29,6 +29,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { setTotalCart } from "../../redux/authSlice";
 import { enqueueSnackbar } from "notistack";
 import { getThemeConfig } from "../../services/themeService";
+import FavoriteIcon from "@mui/icons-material/Favorite"; // Import FavoriteIcon
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 const api = process.env.REACT_APP_URL_SERVER;
 
 const BrowseProduct = () => {
@@ -48,7 +50,7 @@ const BrowseProduct = () => {
   const [kichCo, setKichCo] = useState([]);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
+  const { isAuthenticated, userInfo } = useSelector((state) => state.auth);
   useEffect(() => {
     fetchProduct();
     fetchData();
@@ -56,7 +58,9 @@ const BrowseProduct = () => {
 
   const fetchProduct = async (id) => {
     try {
-      const response = await axios.get(`${api}/san-pham/use`);
+      const response = await axios.post(`${api}/san-pham/use`, {
+        ID_NGUOI_DUNG: userInfo.ID_NGUOI_DUNG,
+      });
       if (response.data.EC === 1) {
         setProducts(response.data.DT); // Set product data
       }
@@ -121,7 +125,6 @@ const BrowseProduct = () => {
     navigate(`/selectShoe/${id}`);
   };
 
-  const { isAuthenticated, userInfo } = useSelector((state) => state.auth);
   const handleAddToCart = async (product) => {
     if (!isAuthenticated) {
       // Nếu chưa, chuyển hướng đến trang đăng nhập
@@ -165,9 +168,10 @@ const BrowseProduct = () => {
       const response = await axios.post(`${api}/yeu-thich/`, payload);
 
       if (response.data.EC === 1) {
-        enqueueSnackbar(response.data.EM);
+        fetchProduct();
+        enqueueSnackbar(response.data.EM, { variant: "success" });
       } else {
-        enqueueSnackbar(response.data.EM);
+        enqueueSnackbar(response.data.EM, { variant: "info" });
       }
     } catch (error) {
       console.error("Lỗi hệ thống:", error);
@@ -175,6 +179,24 @@ const BrowseProduct = () => {
     }
   };
 
+  const removeFromFavorites = async (product) => {
+    try {
+      const response = await axios.post(`${api}/yeu-thich/delete`, {
+        idSanPham: product.ID_SAN_PHAM,
+        idNguoiDung: userInfo.ID_NGUOI_DUNG,
+      });
+
+      if (response.data.EC === 1) {
+        fetchProduct();
+        enqueueSnackbar(response.data.EM, { variant: "success" }); // Thông báo thành công
+      } else {
+        enqueueSnackbar(response.data.EM, { variant: "info" }); // Thông báo lỗi
+      }
+    } catch (error) {
+      console.error("Error removing product from favorites:", error);
+      enqueueSnackbar(error.response.data.EM, { variant: "error" }); // Thông báo lỗi
+    }
+  };
   //filter products
   const [selectedThuongHieu, setSelectedThuongHieu] = useState("");
   const [selectedChatLieu, setSelectedChatLieu] = useState("");
@@ -304,7 +326,11 @@ const BrowseProduct = () => {
     <>
       <Box>
         <div>
-          <ProductCarousel api={api} products={products} />
+          <ProductCarousel
+            api={api}
+            products={products}
+            fetchProducts={fetchProduct}
+          />
         </div>
 
         <div style={{ display: "flex" }}>
@@ -320,27 +346,49 @@ const BrowseProduct = () => {
                     {" "}
                     {/* Đảm bảo Card có position: relative */}
                     <Tooltip title="Add to Wish" arrow>
-                      <FavoriteBorder
-                        sx={{
-                          position: "absolute", // Đặt icon ở góc trên bên phải
-                          top: 8,
-                          right: 8,
-                          color: "#101014", // Màu icon
-                          borderRadius: "50%", // Tạo hình tròn cho icon
-                          margin: "8px",
-                          zIndex: 1,
-                          fontSize: "22px",
-                          cursor: "pointer",
-                          transition: "transform 0.3s ease",
-                          "&:hover": {
-                            transform: "scale(1.2)",
-                          },
-                        }}
-                        onClick={(e) => {
-                          e.stopPropagation(); // Ngừng sự kiện click lên card khi nhấn vào icon
-                          handleAddToWish(product); // Gọi hàm thêm vào giỏ hàng
-                        }}
-                      />
+                      {product.isLiked ? (
+                        <FavoriteIcon
+                          sx={{
+                            position: "absolute", // Đặt icon ở góc trên bên phải
+                            top: 8,
+                            right: 8,
+                            color: "red", // Màu đỏ khi liked
+                            borderRadius: "50%", // Tạo hình tròn cho icon
+                            margin: "8px",
+                            fontSize: "23px",
+                            cursor: "pointer",
+                            transition: "transform 0.3s ease", // Thêm hiệu ứng chuyển động khi hover
+                            "&:hover": {
+                              transform: "scale(1.2)", // Phóng to icon khi hover
+                            },
+                          }}
+                          onClick={(e) => {
+                            e.stopPropagation(); // Ngừng sự kiện click lên card khi nhấn vào icon
+                            removeFromFavorites(product); // Gọi hàm thêm vào giỏ hàng
+                          }}
+                        />
+                      ) : (
+                        <FavoriteBorderIcon
+                          sx={{
+                            position: "absolute", // Đặt icon ở góc trên bên phải
+                            top: 8,
+                            right: 8,
+                            color: "#101014", // Màu đen khi chưa liked
+                            borderRadius: "50%", // Tạo hình tròn cho icon
+                            margin: "8px",
+                            fontSize: "23px",
+                            cursor: "pointer",
+                            transition: "transform 0.3s ease", // Thêm hiệu ứng chuyển động khi hover
+                            "&:hover": {
+                              transform: "scale(1.2)", // Phóng to icon khi hover
+                            },
+                          }}
+                          onClick={(e) => {
+                            e.stopPropagation(); // Ngừng sự kiện click lên card khi nhấn vào icon
+                            handleAddToWish(product); // Gọi hàm thêm vào giỏ hàng
+                          }}
+                        />
+                      )}
                     </Tooltip>
                     <CardMedia
                       component="img"
