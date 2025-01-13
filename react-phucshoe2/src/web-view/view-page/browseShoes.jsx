@@ -251,7 +251,7 @@ const BrowseProduct = () => {
 
       if (selectPhongCach) {
         updatedProducts = updatedProducts.filter(
-          (product) => product.ID_PHUONG_CACH === selectPhongCach
+          (product) => product.ID_PHUONG_CACH == selectPhongCach
         );
       }
 
