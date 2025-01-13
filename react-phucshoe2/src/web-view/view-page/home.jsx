@@ -43,70 +43,117 @@ const Home = () => {
   const t = translations[language];
 
   useEffect(() => {
-    fetchAllProducts();
+    fetchBestSellingProducts();
+    fetchBestFavorite();
+    fetchNamProducts();
+    fetchNuProducts();
+    fetchBestExpensive();
+    fetchTreEmProducts();
+    fetchLast2Products();
+    fetchCarouselProducts();
   }, []);
 
-  const fetchAllProducts = async () => {
+  // =============================================
+  const fetchProductDataPost = async (apiEndpoint, params, callback) => {
     try {
       setLoading(true);
-      const [
-        nuResponse,
-        last2Response,
-        carouselResponse,
-        treEmResponse,
-        namResponse,
-        bestSellingResponse,
-        bestFavoriteResponse,
-        bestExpensiveResponse,
-      ] = await Promise.all([
-        axios.post(`${api}/san-pham/use/nu`, {
-          ID_NGUOI_DUNG: userInfo.ID_NGUOI_DUNG,
-        }),
-        axios.get(`${api}/san-pham/use/last2products`),
-        axios.get(`${api}/carousel-products/use`),
-        axios.get(`${api}/san-pham/use/tre-em`),
-        axios.post(`${api}/san-pham/use/nam`, {
-          ID_NGUOI_DUNG: userInfo.ID_NGUOI_DUNG,
-        }),
-        axios.get(`${api}/san-pham/use/5best-selling`),
-        axios.get(`${api}/san-pham/use/5best-favorite`),
-        axios.get(`${api}/san-pham/use/5best-expensive`),
-      ]);
 
-      // Cập nhật dữ liệu và set loading = false sau khi nhận được kết quả
-      if (nuResponse.data.EC === 1) {
-        setNuProducts(nuResponse.data.DT);
-      }
-      if (namResponse.data.EC === 1) {
-        setNamProducts(namResponse.data.DT);
-      }
-      if (last2Response.data.EC === 1) {
-        setLast2Products(last2Response.data.DT);
-      }
-      if (carouselResponse.data.EC === 1) {
-        setCarouselProducts(carouselResponse.data.DT);
-      }
-      if (treEmResponse.data.EC === 1) {
-        setTreEmProducts(treEmResponse.data.DT);
-      }
-      if (bestSellingResponse.data.EC === 1) {
-        setBestSellingProducts(bestSellingResponse.data.DT);
-      }
-      if (bestFavoriteResponse.data.EC === 1) {
-        setBestFavorite(bestFavoriteResponse.data.DT);
-      }
-      if (bestExpensiveResponse.data.EC === 1) {
-        setBestExpensive(bestExpensiveResponse.data.DT);
+      const response = await axios.post(apiEndpoint, params);
+
+      // Kiểm tra nếu API trả về thành công
+      if (response.data.EC === 1) {
+        // Gọi callback để xử lý dữ liệu sau khi fetch thành công
+        callback(response.data.DT);
+      } else {
+        console.error("Error fetching data:", response.data);
       }
 
-      // Đặt loading = false khi đã lấy dữ liệu xong
       setLoading(false);
     } catch (error) {
-      console.error("Error fetching products:", error);
-
+      console.error("Error fetching product data:", error);
       setLoading(false);
     }
   };
+
+  // Hàm này chỉ gọi API khi cần, thay vì gọi tất cả một lần
+  const fetchNuProducts = () => {
+    const userId = userInfo?.ID_NGUOI_DUNG || false;
+    fetchProductDataPost(
+      `${api}/san-pham/use/nu`,
+      { ID_NGUOI_DUNG: userId },
+      setNuProducts
+    );
+  };
+
+  const fetchNamProducts = () => {
+    const userId = userInfo?.ID_NGUOI_DUNG || false;
+    fetchProductDataPost(
+      `${api}/san-pham/use/nam`,
+      { ID_NGUOI_DUNG: userId },
+      setNamProducts
+    );
+  };
+  const fetchProductDataGet = async (apiEndpoint, callback) => {
+    try {
+      setLoading(true);
+
+      const response = await axios.get(apiEndpoint);
+
+      // Kiểm tra nếu API trả về thành công
+      if (response.data.EC === 1) {
+        // Gọi callback để xử lý dữ liệu sau khi fetch thành công
+        callback(response.data.DT);
+      } else {
+        console.error("Error fetching data:", response.data);
+      }
+
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching product data:", error);
+      setLoading(false);
+    }
+  };
+
+  const fetchLast2Products = () => {
+    fetchProductDataGet(`${api}/san-pham/use/last2products`, setLast2Products);
+  };
+
+  const fetchCarouselProducts = () => {
+    fetchProductDataGet(`${api}/carousel-products/use`, setCarouselProducts);
+  };
+
+  const fetchTreEmProducts = () => {
+    fetchProductDataGet(`${api}/san-pham/use/tre-em`, setTreEmProducts);
+  };
+
+  const fetchBestSellingProducts = () => {
+    const userId = userInfo?.ID_NGUOI_DUNG || false;
+    fetchProductDataPost(
+      `${api}/san-pham/use/5best-selling`,
+      { ID_NGUOI_DUNG: userId },
+      setBestSellingProducts
+    );
+  };
+
+  const fetchBestFavorite = () => {
+    const userId = userInfo?.ID_NGUOI_DUNG || false;
+    fetchProductDataPost(
+      `${api}/san-pham/use/5best-favorite`,
+      { ID_NGUOI_DUNG: userId },
+      setBestFavorite
+    );
+  };
+
+  const fetchBestExpensive = () => {
+    const userId = userInfo?.ID_NGUOI_DUNG || false;
+    fetchProductDataPost(
+      `${api}/san-pham/use/5best-expensive`,
+      { ID_NGUOI_DUNG: userId },
+      setBestExpensive
+    );
+  };
+
+  // =============================================
   const handleBuyProduct = (id) => {
     navigate(`/selectShoe/${id}`);
   };
@@ -131,7 +178,7 @@ const Home = () => {
             title={t.ProductsGirl ? t.ProductsGirl : "Sản phẩm dành cho nữ"}
             products={nuProducts}
             api={api}
-            fetchProducts={fetchAllProducts}
+            fetchProducts={fetchNuProducts}
           />
           <Box
             sx={{
@@ -211,7 +258,7 @@ const Home = () => {
             title={t.ProductsMale}
             products={namProducts}
             api={api}
-            fetchProducts={fetchAllProducts}
+            fetchProducts={fetchNamProducts}
           />
           <Box
             sx={{
@@ -227,6 +274,7 @@ const Home = () => {
                     title={t.BestSellers}
                     api={api}
                     items={bestSellingProducts}
+                    fetchProducts={fetchBestSellingProducts}
                   />
                 )}
               </Grid>
@@ -237,6 +285,7 @@ const Home = () => {
                     title={t.HighestValue}
                     api={api}
                     items={bestExpensive}
+                    fetchProducts={fetchBestExpensive}
                   />
                 )}
               </Grid>
@@ -247,6 +296,7 @@ const Home = () => {
                     title={t.MostPopularProducts}
                     items={bestFavorite}
                     api={api}
+                    fetchProducts={fetchBestFavorite}
                   />
                 ) : null}
               </Grid>

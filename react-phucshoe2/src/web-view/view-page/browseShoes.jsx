@@ -57,9 +57,10 @@ const BrowseProduct = () => {
   }, []);
 
   const fetchProduct = async (id) => {
+    const ID_NGUOI_DUNG = userInfo?.ID_NGUOI_DUNG || false;
     try {
       const response = await axios.post(`${api}/san-pham/use`, {
-        ID_NGUOI_DUNG: userInfo.ID_NGUOI_DUNG,
+        ID_NGUOI_DUNG,
       });
       if (response.data.EC === 1) {
         setProducts(response.data.DT); // Set product data
@@ -242,7 +243,7 @@ const BrowseProduct = () => {
           : [];
         return { ...product, parsedDetails: details };
       });
-      console.log("updatedProducts", updatedProducts);
+
       if (selectMucDichSuDung) {
         updatedProducts = updatedProducts.filter(
           (product) => product.ID_MUC_DICH_SU_DUNG === selectMucDichSuDung
@@ -261,7 +262,7 @@ const BrowseProduct = () => {
           product.parsedDetails.some((detail) => detail.kichCo === selectKichCo)
         );
       }
-      console.log("selectedMauSac", selectedMauSac);
+
       // Filter by color using parsed details
       if (selectedMauSac) {
         updatedProducts = updatedProducts.filter((product) =>

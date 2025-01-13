@@ -567,30 +567,62 @@ const get_5CheapestProdcts = async (req, res) => {
 
 const getTop5BestSellingProducts = async (req, res) => {
   try {
-    const [results] = await connection.execute(`
-     SELECT 
-    sp.ID_SAN_PHAM, sp.ID_THUONG_HIEU, sp.ID_DANH_MUC, sp.GIOI_TINH_ID, sp.CHAT_LIEU_ID_,
-    sp.TEN_SAN_PHAM, sp.GIA, sp.MO_TA_SAN_PHAM, sp.HINH_ANH_SANPHAM, sp.TRANG_THAI_SANPHAM, 
-    sp.NGAY_TAO_SANPHAM, sp.NGAY_CAP_NHAT_SANPHAM, sp.SO_LUONG_SANPHAM,
-    gt.TEN_GIOI_TINH,
-    dm.TEN_DANH_MUC, dm.MO_TA_LOAI_DANH_MUC,
-    cl.TEN_CHAT_LIEU_, cl.MO_TA_CHAT_LIEU,
-    th.TEN_THUONG_HIEU,
-    SUM(cthd.SO_LUONG_SP) AS total_sold
-FROM SAN_PHAM sp
-LEFT JOIN SAN_PHAM_CHI_TIET spct ON sp.ID_SAN_PHAM = spct.ID_SAN_PHAM
-LEFT JOIN CHI_TIET_HOA_DON cthd ON spct.ID_SAN_PHAM_CHI_TIET = cthd.ID_SAN_PHAM_CHI_TIET
-LEFT JOIN GIOI_TINH gt ON sp.GIOI_TINH_ID = gt.GIOI_TINH_ID
-LEFT JOIN LOAI_DANH_MUC dm ON sp.ID_DANH_MUC = dm.ID_DANH_MUC
-LEFT JOIN CHAT_LIEU cl ON sp.CHAT_LIEU_ID_ = cl.CHAT_LIEU_ID_
-LEFT JOIN THUONG_HIEU th ON sp.ID_THUONG_HIEU = th.ID_THUONG_HIEU
-WHERE sp.TRANG_THAI_SANPHAM = 1
-GROUP BY sp.ID_SAN_PHAM
-ORDER BY total_sold DESC
-LIMIT 5;
+    const { ID_NGUOI_DUNG } = req.body; // Lấy ID_NGUOI_DUNG từ query params
 
+    // Truy vấn top 5 sản phẩm bán chạy nhất
+    const [results] = await connection.execute(`
+      SELECT 
+        sp.ID_SAN_PHAM, sp.ID_THUONG_HIEU, sp.ID_DANH_MUC, sp.GIOI_TINH_ID, sp.CHAT_LIEU_ID_,
+        sp.TEN_SAN_PHAM, sp.GIA, sp.MO_TA_SAN_PHAM, sp.HINH_ANH_SANPHAM, sp.TRANG_THAI_SANPHAM, 
+        sp.NGAY_TAO_SANPHAM, sp.NGAY_CAP_NHAT_SANPHAM, sp.SO_LUONG_SANPHAM,
+        gt.TEN_GIOI_TINH,
+        dm.TEN_DANH_MUC, dm.MO_TA_LOAI_DANH_MUC,
+        cl.TEN_CHAT_LIEU_, cl.MO_TA_CHAT_LIEU,
+        th.TEN_THUONG_HIEU,
+        SUM(cthd.SO_LUONG_SP) AS total_sold
+      FROM SAN_PHAM sp
+      LEFT JOIN SAN_PHAM_CHI_TIET spct ON sp.ID_SAN_PHAM = spct.ID_SAN_PHAM
+      LEFT JOIN CHI_TIET_HOA_DON cthd ON spct.ID_SAN_PHAM_CHI_TIET = cthd.ID_SAN_PHAM_CHI_TIET
+      LEFT JOIN GIOI_TINH gt ON sp.GIOI_TINH_ID = gt.GIOI_TINH_ID
+      LEFT JOIN LOAI_DANH_MUC dm ON sp.ID_DANH_MUC = dm.ID_DANH_MUC
+      LEFT JOIN CHAT_LIEU cl ON sp.CHAT_LIEU_ID_ = cl.CHAT_LIEU_ID_
+      LEFT JOIN THUONG_HIEU th ON sp.ID_THUONG_HIEU = th.ID_THUONG_HIEU
+      WHERE sp.TRANG_THAI_SANPHAM = 1
+      GROUP BY sp.ID_SAN_PHAM
+      ORDER BY total_sold DESC
+      LIMIT 5;
     `);
 
+    if (ID_NGUOI_DUNG) {
+      // Lấy danh sách ID sản phẩm được người dùng yêu thích
+      const [likedProducts] = await connection.execute(
+        `
+        SELECT ID_SAN_PHAM
+        FROM YEU_THICH
+        WHERE ID_NGUOI_DUNG = ?;
+      `,
+        [ID_NGUOI_DUNG]
+      );
+
+      // Chuyển danh sách ID sản phẩm yêu thích thành một Set để kiểm tra nhanh hơn
+      const likedProductIds = new Set(
+        likedProducts.map((item) => item.ID_SAN_PHAM)
+      );
+
+      // Gắn cờ isLiked cho từng sản phẩm
+      const updatedResults = results.map((product) => ({
+        ...product,
+        isLiked: likedProductIds.has(product.ID_SAN_PHAM), // Kiểm tra sản phẩm có trong danh sách yêu thích
+      }));
+
+      return res.status(200).json({
+        EM: "Xem 5 sản phẩm bán chạy nhất thành công",
+        EC: 1,
+        DT: updatedResults,
+      });
+    }
+
+    // Trả dữ liệu bình thường nếu không có ID_NGUOI_DUNG
     return res.status(200).json({
       EM: "Xem 5 sản phẩm bán chạy nhất thành công",
       EC: 1,
@@ -605,9 +637,13 @@ LIMIT 5;
     });
   }
 };
+
 // Lấy 5 sản phẩm được người ta yêu thích nhiều nhất
 const get5TopFavoriteProducts = async (req, res) => {
   try {
+    const { ID_NGUOI_DUNG } = req.body; // Lấy ID_NGUOI_DUNG từ query params
+
+    // Truy vấn 5 sản phẩm được yêu thích nhất
     const [results] = await connection.execute(`
       SELECT 
         sp.ID_SAN_PHAM, sp.TEN_SAN_PHAM, sp.GIA, sp.HINH_ANH_SANPHAM,
@@ -620,6 +656,36 @@ const get5TopFavoriteProducts = async (req, res) => {
       LIMIT 5
     `);
 
+    if (ID_NGUOI_DUNG) {
+      // Truy vấn danh sách sản phẩm mà người dùng đã yêu thích
+      const [likedProducts] = await connection.execute(
+        `
+        SELECT ID_SAN_PHAM
+        FROM YEU_THICH
+        WHERE ID_NGUOI_DUNG = ?;
+      `,
+        [ID_NGUOI_DUNG]
+      );
+
+      // Chuyển danh sách ID sản phẩm yêu thích thành một Set để kiểm tra nhanh
+      const likedProductIds = new Set(
+        likedProducts.map((item) => item.ID_SAN_PHAM)
+      );
+
+      // Gắn cờ isLiked cho từng sản phẩm
+      const updatedResults = results.map((product) => ({
+        ...product,
+        isLiked: likedProductIds.has(product.ID_SAN_PHAM), // Kiểm tra sản phẩm có trong danh sách yêu thích
+      }));
+
+      return res.status(200).json({
+        EM: "Xem thông tin sản phẩm được yêu thích nhất thành công",
+        EC: 1,
+        DT: updatedResults,
+      });
+    }
+
+    // Trả dữ liệu bình thường nếu không có ID_NGUOI_DUNG
     return res.status(200).json({
       EM: "Xem thông tin sản phẩm được yêu thích nhất thành công",
       EC: 1,
@@ -634,9 +700,12 @@ const get5TopFavoriteProducts = async (req, res) => {
     });
   }
 };
-// Lấy 5 sản phẩm có giá tiền cao nhất
+
 const getTopExpensiveProducts = async (req, res) => {
   try {
+    const { ID_NGUOI_DUNG } = req.body; // Lấy ID_NGUOI_DUNG từ query params
+
+    // Truy vấn 5 sản phẩm có giá cao nhất
     const [results] = await connection.execute(`
       SELECT 
         sp.ID_SAN_PHAM, sp.TEN_SAN_PHAM, sp.GIA, sp.HINH_ANH_SANPHAM, sp.MO_TA_SAN_PHAM
@@ -646,6 +715,36 @@ const getTopExpensiveProducts = async (req, res) => {
       LIMIT 5
     `);
 
+    if (ID_NGUOI_DUNG) {
+      // Truy vấn danh sách sản phẩm mà người dùng đã yêu thích
+      const [likedProducts] = await connection.execute(
+        `
+        SELECT ID_SAN_PHAM
+        FROM YEU_THICH
+        WHERE ID_NGUOI_DUNG = ?;
+      `,
+        [ID_NGUOI_DUNG]
+      );
+
+      // Chuyển danh sách ID sản phẩm yêu thích thành một Set để kiểm tra nhanh
+      const likedProductIds = new Set(
+        likedProducts.map((item) => item.ID_SAN_PHAM)
+      );
+
+      // Gắn cờ isLiked cho từng sản phẩm
+      const updatedResults = results.map((product) => ({
+        ...product,
+        isLiked: likedProductIds.has(product.ID_SAN_PHAM), // Kiểm tra sản phẩm có trong danh sách yêu thích
+      }));
+
+      return res.status(200).json({
+        EM: "Xem thông tin sản phẩm có giá cao nhất thành công",
+        EC: 1,
+        DT: updatedResults,
+      });
+    }
+
+    // Trả dữ liệu bình thường nếu không có ID_NGUOI_DUNG
     return res.status(200).json({
       EM: "Xem thông tin sản phẩm có giá cao nhất thành công",
       EC: 1,

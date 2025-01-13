@@ -16,9 +16,11 @@ import { useNavigate } from "react-router-dom";
 import { enqueueSnackbar } from "notistack";
 import { setTotalCart } from "../redux/authSlice";
 import translations from "../redux/data/translations";
+import FavoriteIcon from "@mui/icons-material/Favorite"; // Import FavoriteIcon
+
 import { getThemeConfig } from "../services/themeService";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-const ListGame = ({ title, items, api }) => {
+const ListGame = ({ title, items, api, fetchProducts }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const handleBuyProduct = (id) => {
@@ -74,12 +76,31 @@ const ListGame = ({ title, items, api }) => {
       const response = await axios.post(`${api}/yeu-thich/`, payload);
 
       if (response.data.EC === 1) {
+        fetchProducts();
         enqueueSnackbar(response.data.EM, { variant: "success" }); // Thông báo lỗi
       } else {
         enqueueSnackbar(response.data.EM, { variant: "error" }); // Thông báo lỗi
       }
     } catch (error) {
       console.error("Lỗi hệ thống:", error);
+      enqueueSnackbar(error.response.data.EM, { variant: "error" }); // Thông báo lỗi
+    }
+  };
+  const removeFromFavorites = async (product) => {
+    try {
+      const response = await axios.post(`${api}/yeu-thich/delete`, {
+        idSanPham: product.ID_SAN_PHAM,
+        idNguoiDung: userInfo.ID_NGUOI_DUNG,
+      });
+
+      if (response.data.EC === 1) {
+        fetchProducts();
+        enqueueSnackbar(response.data.EM, { variant: "success" }); // Thông báo thành công
+      } else {
+        enqueueSnackbar(response.data.EM, { variant: "error" }); // Thông báo lỗi
+      }
+    } catch (error) {
+      console.error("Error removing product from favorites:", error);
       enqueueSnackbar(error.response.data.EM, { variant: "error" }); // Thông báo lỗi
     }
   };
@@ -176,12 +197,23 @@ const ListGame = ({ title, items, api }) => {
                         transform: "scale(1.2)", // Phóng to icon khi hover
                       },
                     }}
-                    onClick={(e) => {
-                      e.stopPropagation(); // Ngừng sự kiện click lên card khi nhấn vào icon
-                      handleAddToWish(item); // Gọi hàm thêm vào giỏ hàng
-                    }}
                   >
-                    <FavoriteBorderIcon />
+                    {item.isLiked ? (
+                      <FavoriteIcon
+                        sx={{ color: "red" }}
+                        onClick={(e) => {
+                          e.stopPropagation(); // Ngừng sự kiện click lên card khi nhấn vào icon
+                          removeFromFavorites(item); // Gọi hàm thêm vào giỏ hàng
+                        }}
+                      />
+                    ) : (
+                      <FavoriteBorderIcon
+                        onClick={(e) => {
+                          e.stopPropagation(); // Ngừng sự kiện click lên card khi nhấn vào icon
+                          handleAddToWish(item); // Gọi hàm thêm vào giỏ hàng
+                        }}
+                      />
+                    )}
                   </IconButton>
                 </Tooltip>
               </Box>

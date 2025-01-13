@@ -31,10 +31,10 @@ router.get("/use/last2products", getLatest2Products);
 router.get("/", getSAN_PHAM);
 router.post("/use/", getSAN_PHAM_Use);
 
-router.get("/use/5best-selling", getTop5BestSellingProducts);
-router.get("/use/5best-expensive", getTopExpensiveProducts);
+router.post("/use/5best-selling", getTop5BestSellingProducts);
+router.post("/use/5best-expensive", getTopExpensiveProducts);
+router.post("/use/5best-favorite", get5TopFavoriteProducts);
 
-router.get("/use/5best-favorite", get5TopFavoriteProducts);
 router.get("/use/wishlist-user/:id", getFavoriteProductsByUser);
 router.post("/", uploads.single("images"), createSAN_PHAM);
 router.put("/:id", uploads.single("images"), updateSAN_PHAM);
