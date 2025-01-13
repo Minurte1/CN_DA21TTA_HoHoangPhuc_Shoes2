@@ -248,7 +248,7 @@ const NavBarAdmin = () => {
                     }}
                   >
                     <ListItemText
-                      primary="Danh mục sản phẩm"
+                      primary={t.productCategory}
                       sx={{
                         borderRadius: "13px",
                         color: currentTheme.color,

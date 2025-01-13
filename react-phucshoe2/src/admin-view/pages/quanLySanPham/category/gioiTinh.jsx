@@ -25,10 +25,15 @@ import { Add, Edit, Delete } from "@mui/icons-material";
 import axios from "axios";
 import moment from "moment";
 import { getThemeConfig } from "../../../../services/themeService";
+import translations from "../../../../redux/data/translations";
+import { useSelector } from "react-redux";
 
 const api = process.env.REACT_APP_URL_SERVER;
 
 const GioiTinhManager = () => {
+  const language = useSelector((state) => state.language.language);
+  const t = translations[language];
+
   const currentTheme = getThemeConfig(localStorage.getItem("THEMES") || "dark");
   const [genders, setGenders] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
@@ -108,7 +113,7 @@ const GioiTinhManager = () => {
           gutterBottom
           sx={{ textAlign: "left" }}
         >
-          GIỚI TÍNH CỦA GIÀY
+          {t.shoeTarget}
         </Typography>
         <Button
           variant="outlined"
@@ -120,7 +125,7 @@ const GioiTinhManager = () => {
             color: currentTheme.color,
           }}
         >
-          Thêm giới tính
+          {t.addShoeTarget}
         </Button>
       </Box>
       <Divider sx={{ my: 1, color: "#000", width: "100%" }} />
@@ -136,19 +141,19 @@ const GioiTinhManager = () => {
             <TableRow>
               <TableCell sx={{ color: currentTheme.colorTitle }}>ID</TableCell>
               <TableCell sx={{ color: currentTheme.colorTitle }}>
-                Tên Giới Tính
+                {t.shoeTarget}
               </TableCell>
               <TableCell sx={{ color: currentTheme.colorTitle }}>
-                Ngày Tạo
+                {t.createdDateLabel}
               </TableCell>
               <TableCell sx={{ color: currentTheme.colorTitle }}>
-                Ngày Cập Nhật
+                {t.updatedDateLabel}
               </TableCell>{" "}
               <TableCell sx={{ color: currentTheme.colorTitle }}>
-                Trạng Thái
+                {t.status}
               </TableCell>
               <TableCell sx={{ color: currentTheme.colorTitle }}>
-                Actions
+                {t.actions}
               </TableCell>
             </TableRow>
           </TableHead>
@@ -177,9 +182,7 @@ const GioiTinhManager = () => {
                       gender.TRANG_THAI_GIOI_TINH === 1 ? "#008000" : "red",
                   }}
                 >
-                  {gender.TRANG_THAI_GIOI_TINH === 1
-                    ? "Đang sử dụng"
-                    : "Ngưng sử dụng"}
+                  {gender.TRANG_THAI_GIOI_TINH === 1 ? t.inUse : t.outOfUse}
                 </TableCell>
                 <TableCell>
                   <IconButton
@@ -202,14 +205,12 @@ const GioiTinhManager = () => {
       </TableContainer>
 
       <Dialog open={openDialog} onClose={handleCloseDialog}>
-        <DialogTitle>
-          {currentGender ? "Sửa giới tình giày" : "Thêm giới tính giày"}
-        </DialogTitle>
+        <DialogTitle>{currentGender ? t.edit : t.add}</DialogTitle>
         <DialogContent>
           <TextField
             autoFocus
             margin="dense"
-            label="Loại giới tính giày"
+            label={t.shoeTarget}
             type="text"
             fullWidth
             variant="outlined"
@@ -219,22 +220,22 @@ const GioiTinhManager = () => {
 
           <Select
             margin="dense"
-            label="Trạng thái"
+            label={t.status}
             fullWidth
             variant="outlined"
             value={trangThaiGioiTinh}
             onChange={(e) => setTrangThaiGioiTinh(e.target.value)}
           >
-            <MenuItem value={1}>Đang sử dụng</MenuItem>
-            <MenuItem value={0}>Ngưng sử dụng</MenuItem>
+            <MenuItem value={1}>{t.inUse}</MenuItem>
+            <MenuItem value={0}>{t.outOfUse}</MenuItem>
           </Select>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialog} color="secondary">
-            Cancel
+            {t.cancelButtonLabel}
           </Button>
           <Button onClick={handleSave} color="primary">
-            {currentGender ? "Update" : "Add"}
+            {currentGender ? t.edit : t.add}
           </Button>
         </DialogActions>
       </Dialog>

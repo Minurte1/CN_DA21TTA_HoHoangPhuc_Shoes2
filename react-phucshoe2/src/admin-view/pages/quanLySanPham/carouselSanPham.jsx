@@ -28,6 +28,8 @@ import moment from "moment";
 import { Add, Edit, Delete, Search } from "@mui/icons-material";
 import axios from "axios";
 import { getThemeConfig } from "../../../services/themeService";
+import translations from "../../../redux/data/translations";
+import { useSelector } from "react-redux";
 
 const api = process.env.REACT_APP_URL_SERVER;
 
@@ -42,6 +44,9 @@ const CarouselManager = () => {
   const [moTaCarousel, setMoTaCarousel] = useState("");
   const [trangThaiCarousel, setTrangThaiCarousel] = useState(1); // Mặc định
   const [products, setProducts] = useState([]);
+  const language = useSelector((state) => state.language.language);
+  const t = translations[language];
+
   useEffect(() => {
     fetchCarouselProducts();
     fetchProducts();
@@ -157,7 +162,12 @@ const CarouselManager = () => {
     );
   }, [searchTerm, products]);
   return (
-    <Container>
+    <Container
+      sx={{
+        backgroundColor: currentTheme.backgroundColor,
+        height: carouselProducts.length <= 5 ? "100vh" : "auto",
+      }}
+    >
       <Box
         sx={{
           width: "100%",
@@ -168,7 +178,7 @@ const CarouselManager = () => {
         }}
       >
         <Typography variant="h5" color="primary" gutterBottom>
-          Quản lý Carousel Sản Phẩm
+          {t.manageProductCarousel}
         </Typography>
         <Button
           variant="outlined"
@@ -180,7 +190,7 @@ const CarouselManager = () => {
             color: "black",
           }}
         >
-          Thêm sản phẩm carousel
+          {t.addProductCarousel}
         </Button>
       </Box>
 
@@ -196,20 +206,26 @@ const CarouselManager = () => {
             <TableRow>
               <TableCell sx={{ color: currentTheme.color }}>ID</TableCell>
               <TableCell sx={{ color: currentTheme.color }}>
-                Hình ảnh nền
+                {t.backgroundImage}
               </TableCell>{" "}
               <TableCell sx={{ color: currentTheme.color }}>
-                Hình ảnh icon
+                {t.iconImage}
               </TableCell>
-              <TableCell sx={{ color: currentTheme.color }}>Mô tả</TableCell>{" "}
               <TableCell sx={{ color: currentTheme.color }}>
-                Trạng thái
-              </TableCell>
-              <TableCell sx={{ color: currentTheme.color }}>Ngày tạo</TableCell>
+                {t.description}
+              </TableCell>{" "}
               <TableCell sx={{ color: currentTheme.color }}>
-                Ngày cập nhật
+                {t.status}
               </TableCell>
-              <TableCell sx={{ color: currentTheme.color }}>Actions</TableCell>
+              <TableCell sx={{ color: currentTheme.color }}>
+                {t.createdDate}
+              </TableCell>
+              <TableCell sx={{ color: currentTheme.color }}>
+                {t.updatedDate}
+              </TableCell>
+              <TableCell sx={{ color: currentTheme.color }}>
+                {t.actions}
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -241,9 +257,7 @@ const CarouselManager = () => {
                       product.TRANG_THAI_CAROUSEL === 1 ? "#008000" : "red",
                   }}
                 >
-                  {product.TRANG_THAI_CAROUSEL === 1
-                    ? "Đang sử dụng"
-                    : "Ngưng sử dụng"}
+                  {product.TRANG_THAI_CAROUSEL === 1 ? t.inUse : t.outOfUse}
                 </TableCell>
                 <TableCell sx={{ color: currentTheme.color }}>
                   {moment(product.NGAY_TAO_CAROUSEL).format(
@@ -299,7 +313,7 @@ const CarouselManager = () => {
               renderInput={(params) => (
                 <TextField
                   {...params}
-                  placeholder="Tìm kiếm sản phẩm..."
+                  placeholder={t.searchStore}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   InputProps={{
@@ -334,7 +348,7 @@ const CarouselManager = () => {
           /> */}
           <TextField
             margin="dense"
-            label="Hình ảnh nền"
+            label={t.backgroundImage}
             type="file"
             fullWidth
             variant="outlined"
@@ -348,7 +362,7 @@ const CarouselManager = () => {
           />
           <TextField
             margin="dense"
-            label="Hình ảnh icon"
+            label={t.iconImage}
             type="file"
             fullWidth
             variant="outlined"
@@ -362,7 +376,7 @@ const CarouselManager = () => {
           />
           <TextField
             margin="dense"
-            label="Mô tả"
+            label={t.descriptionLabel}
             type="text"
             fullWidth
             variant="outlined"
@@ -371,22 +385,22 @@ const CarouselManager = () => {
           />
           <Select
             margin="dense"
-            label="Trạng thái"
+            label={t.status}
             fullWidth
             variant="outlined"
             value={trangThaiCarousel}
             onChange={(e) => setTrangThaiCarousel(e.target.value)}
           >
-            <MenuItem value={1}>Đang sử dụng</MenuItem>
-            <MenuItem value={0}>Ngưng sử dụng</MenuItem>
+            <MenuItem value={1}>{t.inUse}</MenuItem>
+            <MenuItem value={0}>{t.outOfUse}</MenuItem>
           </Select>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialog} color="secondary">
-            Hủy
+            {t.cancelButtonLabel}
           </Button>
           <Button onClick={handleSave} color="primary">
-            {currentCarouselProduct ? "Sửa" : "Thêm"}
+            {currentCarouselProduct ? t.edit : t.addProduct}
           </Button>
         </DialogActions>
       </Dialog>

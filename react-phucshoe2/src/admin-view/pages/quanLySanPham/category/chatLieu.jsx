@@ -26,6 +26,8 @@ import moment from "moment";
 import { Add, Edit, Delete } from "@mui/icons-material";
 import axios from "axios";
 import { getThemeConfig } from "../../../../services/themeService";
+import translations from "../../../../redux/data/translations";
+import { useSelector } from "react-redux";
 const api = process.env.REACT_APP_URL_SERVER;
 const ChatLieuManager = () => {
   const [materials, setMaterials] = useState([]);
@@ -33,6 +35,9 @@ const ChatLieuManager = () => {
   const [currentMaterial, setCurrentMaterial] = useState(null);
   const [tenChatLieu, setTenChatLieu] = useState("");
   const [moTaChatLieu, setMoTaChatLieu] = useState("");
+  const language = useSelector((state) => state.language.language);
+  const t = translations[language];
+
   const [trangThaiChatLieu, setTrangThaiChatLieu] = useState(1); // Mặc định
   const currentTheme = getThemeConfig(localStorage.getItem("THEMES") || "dark");
   useEffect(() => {
@@ -117,7 +122,7 @@ const ChatLieuManager = () => {
           gutterBottom
           sx={{ textAlign: "left" }} // Căn trái cho tiêu đề
         >
-          CHẤT LIỆU CỦA GIÀY
+          {t.shoeMaterial}
         </Typography>
         <Button
           variant="outlined"
@@ -130,7 +135,7 @@ const ChatLieuManager = () => {
             textAlign: "left",
           }}
         >
-          Thêm chất liệu
+          {t.addMaterial}
         </Button>
       </Box>
       <Divider sx={{ my: 1, color: "#000", width: "100%" }} />
@@ -146,19 +151,19 @@ const ChatLieuManager = () => {
                 Tên chất liệu
               </TableCell>{" "}
               <TableCell sx={{ color: currentTheme.colorTitle }}>
-                Mô tả
+                {t.description}
               </TableCell>
               <TableCell sx={{ color: currentTheme.colorTitle }}>
-                Ngày tạo chất liệu
+                {t.createdDate}
               </TableCell>{" "}
               <TableCell sx={{ color: currentTheme.colorTitle }}>
-                Ngày cập nhật chất liệu gần nhất
+                {t.updatedDate}
               </TableCell>{" "}
               <TableCell sx={{ color: currentTheme.colorTitle }}>
-                Trạng Thái
+                {t.status}
               </TableCell>{" "}
               <TableCell sx={{ color: currentTheme.colorTitle }}>
-                Actions
+                {t.actions}
               </TableCell>
             </TableRow>
           </TableHead>
@@ -190,9 +195,7 @@ const ChatLieuManager = () => {
                       material.TRANG_THAI_CHAT_LIEU === 1 ? "#008000" : "red",
                   }}
                 >
-                  {material.TRANG_THAI_CHAT_LIEU == 1
-                    ? "Đang sử dụng"
-                    : "Ngưng sử dụng"}
+                  {material.TRANG_THAI_CHAT_LIEU == 1 ? t.inUse : t.outOfUse}
                 </TableCell>{" "}
                 <TableCell>
                   <IconButton
@@ -223,7 +226,7 @@ const ChatLieuManager = () => {
           <TextField
             autoFocus
             margin="dense"
-            label="Tên chất liệu"
+            label={t.materialName}
             type="text"
             fullWidth
             variant="outlined"
@@ -232,7 +235,7 @@ const ChatLieuManager = () => {
           />
           <TextField
             margin="dense"
-            label="Mô tả chất liệu"
+            label={t.description}
             type="text"
             fullWidth
             variant="outlined"
@@ -241,22 +244,22 @@ const ChatLieuManager = () => {
           />
           <Select
             margin="dense"
-            label="Material Status"
+            label={t.materialStatus}
             fullWidth
             variant="outlined"
             value={trangThaiChatLieu}
             onChange={(e) => setTrangThaiChatLieu(e.target.value)}
           >
-            <MenuItem value={1}>Đang sử dụng</MenuItem>
-            <MenuItem value={0}>Ngưng sử dụng</MenuItem>
+            <MenuItem value={1}>{t.inUse}</MenuItem>
+            <MenuItem value={0}>{t.outOfUse}</MenuItem>
           </Select>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialog} color="secondary">
-            Hủy
+            {t.cancelButtonLabel}
           </Button>
           <Button onClick={handleSave} color="primary">
-            {currentMaterial ? "Sửa" : "Thêm"}
+            {currentMaterial ? t.edit : t.add}
           </Button>
         </DialogActions>
       </Dialog>
