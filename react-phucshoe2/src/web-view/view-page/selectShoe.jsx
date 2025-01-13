@@ -169,6 +169,7 @@ const SelectShoe = () => {
       const selected = product.CHI_TIET_SAN_PHAM.find(
         (item) => item.KICH_CO === selectedSize && item.MAU_SAC_ID === value
       );
+
       setSelectedDetail(selected);
     }
   };
@@ -474,18 +475,25 @@ const SelectShoe = () => {
                 {/* Material */}
                 {/* {new Date(product.NGAY_TAO_SANPHAM).toLocaleDateString()} */}
               </Typography>{" "}
-              <Typography
-                variant="body2"
-                sx={{
-                  color: currentTheme.color,
-                  borderBottom: "1px solid rgba(204, 204, 204, 0.5)",
-                  paddingTop: 3,
-                  paddingBottom: 1,
-                }}
-              >
-                {t.stockQuantityLabel}: {product.SO_LUONG_SANPHAM}
-                {/* {new Date(product.NGAY_TAO_SANPHAM).toLocaleDateString()} */}
-              </Typography>{" "}
+              {selectedDetail ? (
+                <>
+                  {" "}
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      color: currentTheme.color,
+                      borderBottom: "1px solid rgba(204, 204, 204, 0.5)",
+                      paddingTop: 3,
+                      paddingBottom: 1,
+                    }}
+                  >
+                    {t.stockQuantityLabel}:{" "}
+                    {selectedDetail.SOLUONG_SANPHAM_CHITIET}{" "}
+                  </Typography>{" "}
+                </>
+              ) : (
+                <></>
+              )}
             </Box>
           </Box>
         </Grid>

@@ -156,6 +156,31 @@ const createDON_HANG = async (req, res) => {
     // Đảm bảo items luôn là mảng
     const itemsArray = Array.isArray(items) ? items : [items];
 
+    // Kiểm tra số lượng sản phẩm trước khi tạo đơn hàng
+    for (const item of itemsArray) {
+      const { ID_SAN_PHAM_CHI_TIET, TONG_SO_LUONG = 1 } = item;
+
+      const [productResult] = await connection.execute(
+        "SELECT SOLUONG_SANPHAM_CHITIET FROM SAN_PHAM_CHI_TIET WHERE ID_SAN_PHAM_CHI_TIET = ?",
+        [ID_SAN_PHAM_CHI_TIET]
+      );
+
+      if (productResult.length === 0) {
+        return res.status(404).json({
+          EM: `Sản phẩm với ID ${ID_SAN_PHAM_CHI_TIET} không tồn tại.`,
+          EC: 0,
+        });
+      }
+
+      const { SOLUONG_SANPHAM_CHITIET } = productResult[0];
+
+      if (SOLUONG_SANPHAM_CHITIET < TONG_SO_LUONG) {
+        return res.status(400).json({
+          EM: `Sản phẩm "${item.TEN_SAN_PHAM}" không đủ số lượng. Còn lại: ${SOLUONG_SANPHAM_CHITIET}, yêu cầu: ${TONG_SO_LUONG}.`,
+          EC: 0,
+        });
+      }
+    }
     // Tạo đơn hàng
     const ngayTaoDonHang = new Date();
     const [results] = await connection.execute(

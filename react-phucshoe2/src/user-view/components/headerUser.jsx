@@ -119,7 +119,7 @@ const Header = () => {
           color: currentTheme.color,
         }}
       >
-        {t.support}
+        {/* {t.support} */}
       </Button>
       <Box sx={{ display: "flex", alignItems: "center", ml: 2 }}>
         <IconButton
@@ -427,7 +427,7 @@ const Header = () => {
               open={Boolean(mobileMoreAnchorEl)}
               onClose={handleMobileMenuClose}
             >
-              <MenuItem onClick={handleMobileMenuClose}>{t.support}</MenuItem>
+              {/* <MenuItem onClick={handleMobileMenuClose}>{t.support}</MenuItem> */}
               <MenuItem onClick={handleMobileMenuClose}>Distribute</MenuItem>
               <MenuItem onClick={handleMobileMenuClose}>
                 <LanguageIcon sx={{ marginRight: 1 }} />

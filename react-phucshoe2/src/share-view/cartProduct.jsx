@@ -122,11 +122,11 @@ const Cart = () => {
 
           // onQuantityChange(id, newQuantity);
         } else {
-          console.error("Error removing quantity:", response.data.EM);
+          enqueueSnackbar(response.data.EM, { variant: "info" });
         }
       }
     } catch (error) {
-      console.error("Error updating quantity:", error);
+      enqueueSnackbar(error.response.data.EM, { variant: "info" });
     }
   };
 
@@ -157,59 +157,90 @@ const Cart = () => {
 
   const handleSummitThanhToan = async () => {
     if (selectPhuongThucThanhToan === "") {
-      enqueueSnackbar("Vui lòng chọn phương thức thanh toán!!");
+      enqueueSnackbar("Vui lòng chọn phương thức thanh toán!!", {
+        variant: "warning",
+      });
       return;
     }
-    // Lưu giỏ hàng vào Redux
-    dispatch(setItemCart(items));
 
-    // Tạo mã đơn hàng duy nhất
-    const orderId = uuidv4();
-    const orderInfo = `PhucShoes - Mã đơn hàng: ${orderId}`;
-    const requestData = {
-      idNguoiDung: userInfo.ID_NGUOI_DUNG,
-      idThanhToan: selectPhuongThucThanhToan,
-      tongTien: tongTienCart,
-      trangThaiDonHang: "Đang chờ thanh toán",
-      ID_ODER: orderInfo,
-      items: items,
-      email: userInfo.EMAIL,
-      DIA_CHI_DON_HANG: isSwitchOn
-        ? `${userInfo.DIA_CHI_STREETNAME}, ${userInfo.DIA_CHI_Wards}, ${userInfo.DIA_CHI_Districts}, ${userInfo.DIA_CHI_Provinces}`
-        : `${selectStreetName}, ${selectedWards?.full_name}, ${selectedDistrict?.full_name}, ${selectedProvince?.full_name}`,
-      SO_DIEN_THOAI_DON_HANG: isSwitchOn
-        ? `${userInfo.SO_DIEN_THOAI}`
-        : `${soDienThoai}`,
-    };
+    try {
+      // Lưu giỏ hàng vào Redux
+      dispatch(setItemCart(items));
 
-    if (selectPhuongThucThanhToan === 1) {
-      try {
+      // Tạo mã đơn hàng duy nhất
+      const orderId = uuidv4();
+      const orderInfo = `PhucShoes - Mã đơn hàng: ${orderId}`;
+      const requestData = {
+        idNguoiDung: userInfo.ID_NGUOI_DUNG,
+        idThanhToan: selectPhuongThucThanhToan,
+        tongTien: tongTienCart,
+        trangThaiDonHang: "Đang chờ thanh toán",
+        ID_ODER: orderInfo,
+        items: items,
+        email: userInfo.EMAIL,
+        DIA_CHI_DON_HANG: isSwitchOn
+          ? `${userInfo.DIA_CHI_STREETNAME}, ${userInfo.DIA_CHI_Wards}, ${userInfo.DIA_CHI_Districts}, ${userInfo.DIA_CHI_Provinces}`
+          : `${selectStreetName}, ${selectedWards?.full_name}, ${selectedDistrict?.full_name}, ${selectedProvince?.full_name}`,
+        SO_DIEN_THOAI_DON_HANG: isSwitchOn
+          ? `${userInfo.SO_DIEN_THOAI}`
+          : `${soDienThoai}`,
+      };
+
+      if (selectPhuongThucThanhToan === 1) {
         dispatch(setIdOder(orderId));
-        const responsive = await axios.post(
-          "http://emailserivce.somee.com/api/Momo/CreatePaymentUrl",
-          {
-            fullName: userInfo.HO_TEN,
-            orderId: orderInfo,
-            options: "mutil",
-            orderInfo: orderInfo,
-            returnUrl: "http://localhost:3000/checkout",
-            amount: tongTienCart, // Gửi tổng tiền trong giỏ hàng
+
+        try {
+          const response = await axios.post(`${api}/don-hang`, requestData);
+
+          if (response.data.EC === 1) {
+            const responsive = await axios.post(
+              "http://emailserivce.somee.com/api/Momo/CreatePaymentUrl",
+              {
+                fullName: userInfo.HO_TEN,
+                orderId: orderInfo,
+                options: "mutil",
+                orderInfo: orderInfo,
+                returnUrl: "http://localhost:3000/checkout",
+                amount: tongTienCart,
+              }
+            );
+
+            const paymentUrl = responsive.data.url;
+            window.location.href = paymentUrl;
+          } else {
+            enqueueSnackbar(response.data.EM, { variant: "info" });
           }
-        );
-        axios.post(`${api}/don-hang`, requestData);
-        const paymentUrl = responsive.data.url;
+        } catch (error) {
+          console.error("Error during Momo payment creation:", error);
+          enqueueSnackbar(
+            "Không thể tạo liên kết thanh toán. Vui lòng thử lại sau!",
+            {
+              variant: "error",
+            }
+          );
+        }
+      } else if (selectPhuongThucThanhToan === 2) {
+        try {
+          const response = await axios.post(`${api}/don-hang`, requestData);
 
-        window.location.href = paymentUrl;
-      } catch (error) {
-        console.error("Error during payment creation:", error);
+          if (response.data.EC === 1) {
+            enqueueSnackbar(response.data.EM, { variant: "success" });
+            fetchCartItems();
+          } else {
+            enqueueSnackbar(response.data.EM, { variant: "info" });
+          }
+        } catch (error) {
+          console.error("Error during order creation:", error);
+          enqueueSnackbar(error.response.data.EM, {
+            variant: "info",
+          });
+        }
       }
-    } else if (selectPhuongThucThanhToan === 2) {
-      const response = await axios.post(`${api}/don-hang`, requestData);
-
-      if (response.data.EC == 1) {
-        enqueueSnackbar(response.data.EM, { variant: "success" });
-        fetchCartItems();
-      }
+    } catch (error) {
+      console.error("Unexpected error:", error);
+      enqueueSnackbar("Đã xảy ra lỗi. Vui lòng thử lại sau!", {
+        variant: "error",
+      });
     }
   };
 
@@ -243,10 +274,10 @@ const Cart = () => {
         </Box>
 
         <Box sx={{ display: "flex", alignItems: "center", mt: 2, mb: 2 }}>
-          <Switch defaultChecked color="primary" />
+          {/* <Switch defaultChecked color="primary" />
           <Typography variant="body2" sx={{ color: currentTheme.color }}>
             Sort by:{" "}
-          </Typography>
+          </Typography> */}
           <FormControl sx={{ ml: 1, minWidth: 120 }}>
             {/* <Select sx={{ color: currentTheme.color }} defaultValue="Newest">
               <MenuItem value="Newest">Newest</MenuItem>

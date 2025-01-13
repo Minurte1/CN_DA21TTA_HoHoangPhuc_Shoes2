@@ -119,7 +119,7 @@ const Header = () => {
           color: currentTheme.color,
         }}
       >
-        {t.support}
+        {/* {t.support} */}
       </Button>
       <Box sx={{ display: "flex", alignItems: "center", ml: 2 }}>
         <IconButton

@@ -74,7 +74,7 @@ const Footer = () => {
           </Typography>
           <Box>
             <Link href="#" underline="hover" sx={{ color: currentTheme.color }}>
-              {t.support}
+              {/* {t.support} */}
             </Link>
             <br />
             <Link href="#" underline="hover" sx={{ color: currentTheme.color }}>

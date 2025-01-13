@@ -119,11 +119,11 @@ const SelectNewsShoes = () => {
                 sx={{
                   "& img": {
                     maxWidth: "50%",
-
                     height: "auto",
                   },
+                  color: currentTheme.color,
                 }}
-              ></Typography>
+              />
             </Box>
 
             {blogData.HINH_ANH_BAIVIET && (

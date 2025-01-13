@@ -24,6 +24,7 @@ const createGioHang = async (req, res) => {
     NGAY_CAP_NHAT_GIOHANG,
     ID_SAN_PHAM_CHI_TIET,
   } = req.body;
+
   console.log("req.body", req.body);
 
   // Định dạng ngày
@@ -32,13 +33,50 @@ const createGioHang = async (req, res) => {
   );
 
   try {
-    // Bước 1: Thêm sản phẩm vào giỏ hàng
+    // Bước 1: Kiểm tra sản phẩm chi tiết tồn tại và số lượng của nó
+    const [detailResults] = await connection.execute(
+      `SELECT SOLUONG_SANPHAM_CHITIET 
+       FROM SAN_PHAM_CHI_TIET 
+       WHERE ID_SAN_PHAM_CHI_TIET = ?`,
+      [ID_SAN_PHAM_CHI_TIET]
+    );
+
+    if (detailResults.length === 0) {
+      return res.status(404).json({
+        EM: "Sản phẩm chi tiết không tồn tại",
+        EC: -1,
+      });
+    }
+
+    const availableDetailQuantity = detailResults[0].SOLUONG_SANPHAM_CHITIET;
+
+    // Tính tổng số lượng sản phẩm chi tiết này trong giỏ hàng của người dùng
+    const [cartDetailResults] = await connection.execute(
+      `SELECT COUNT(ID_SAN_PHAM_CHI_TIET) AS cartDetailQuantity
+       FROM GIO_HANG
+       WHERE ID_NGUOI_DUNG = ? AND ID_SAN_PHAM_CHI_TIET = ?`,
+      [ID_NGUOI_DUNG, ID_SAN_PHAM_CHI_TIET]
+    );
+
+    const cartDetailQuantity = cartDetailResults[0].cartDetailQuantity;
+
+    // Kiểm tra số lượng sản phẩm chi tiết
+    if (cartDetailQuantity >= availableDetailQuantity) {
+      return res.status(400).json({
+        EM: "Số lượng sản phẩm chi tiết trong giỏ hàng đã đạt giới hạn",
+        EC: -1,
+      });
+    }
+
+    // Bước 2: Thêm sản phẩm vào giỏ hàng
     const [results] = await connection.execute(
-      "INSERT INTO `GIO_HANG` (ID_SAN_PHAM, ID_NGUOI_DUNG, NGAY_CAP_NHAT_GIOHANG , ID_SAN_PHAM_CHI_TIET) VALUES (?, ?, ?,?)",
+      `INSERT INTO GIO_HANG 
+       (ID_SAN_PHAM, ID_NGUOI_DUNG, NGAY_CAP_NHAT_GIOHANG, ID_SAN_PHAM_CHI_TIET) 
+       VALUES (?, ?, ?, ?)`,
       [ID_SAN_PHAM, ID_NGUOI_DUNG, formattedDate, ID_SAN_PHAM_CHI_TIET]
     );
 
-    // Bước 2: Tính tổng số lượng sản phẩm trong giỏ hàng của người dùng
+    // Bước 3: Tính tổng số lượng sản phẩm trong giỏ hàng
     const [totalResults] = await connection.execute(
       `SELECT COUNT(ID_SAN_PHAM) AS totalQuantity
        FROM GIO_HANG
@@ -46,7 +84,6 @@ const createGioHang = async (req, res) => {
       [ID_NGUOI_DUNG]
     );
 
-    // Bước 3: Trả về phản hồi với tổng số sản phẩm trong giỏ hàng
     const totalQuantity = totalResults[0].totalQuantity;
 
     res.status(201).json({
@@ -98,8 +135,46 @@ const addSingleProductToCart = async (req, res) => {
   const formattedUpdateDate = moment(updateDate).format("YYYY-MM-DD HH:mm:ss");
 
   try {
+    // Bước 1: Kiểm tra sản phẩm chi tiết tồn tại và số lượng
+    const [productDetailResults] = await connection.execute(
+      `SELECT SOLUONG_SANPHAM_CHITIET 
+       FROM SAN_PHAM_CHI_TIET 
+       WHERE ID_SAN_PHAM_CHI_TIET = ?`,
+      [ID_SAN_PHAM_CHI_TIET]
+    );
+
+    if (productDetailResults.length === 0) {
+      return res.status(404).json({
+        EM: "Sản phẩm chi tiết không tồn tại",
+        EC: -1,
+      });
+    }
+
+    const availableDetailQuantity =
+      productDetailResults[0].SOLUONG_SANPHAM_CHITIET;
+
+    // Bước 2: Tính số lượng sản phẩm chi tiết đã có trong giỏ hàng của người dùng
+    const [cartDetailResults] = await connection.execute(
+      `SELECT COUNT(ID_SAN_PHAM_CHI_TIET) AS cartDetailQuantity
+       FROM GIO_HANG
+       WHERE ID_NGUOI_DUNG = ? AND ID_SAN_PHAM_CHI_TIET = ?`,
+      [userId, ID_SAN_PHAM_CHI_TIET]
+    );
+
+    const cartDetailQuantity = cartDetailResults[0].cartDetailQuantity;
+
+    // Bước 3: Kiểm tra số lượng
+    if (cartDetailQuantity >= availableDetailQuantity) {
+      return res.status(400).json({
+        EM: "Số lượng sản phẩm trong giỏ hàng đã đạt giới hạn",
+        EC: -1,
+      });
+    }
+
+    // Bước 4: Thêm sản phẩm vào giỏ hàng
     const [results] = await connection.execute(
-      "INSERT INTO `GIO_HANG` (ID_NGUOI_DUNG, ID_SAN_PHAM, NGAY_CAP_NHAT_GIOHANG ,ID_SAN_PHAM_CHI_TIET) VALUES (?, ?, ?,?)",
+      `INSERT INTO GIO_HANG (ID_NGUOI_DUNG, ID_SAN_PHAM, NGAY_CAP_NHAT_GIOHANG, ID_SAN_PHAM_CHI_TIET) 
+       VALUES (?, ?, ?, ?)`,
       [userId, productId, formattedUpdateDate, ID_SAN_PHAM_CHI_TIET]
     );
 
