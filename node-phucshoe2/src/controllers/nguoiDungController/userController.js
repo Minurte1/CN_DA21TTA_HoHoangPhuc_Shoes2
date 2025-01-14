@@ -340,16 +340,18 @@ const loginUserGoogle = async (req, res) => {
       "SELECT * FROM NGUOI_DUNG WHERE EMAIL = ?",
       [email]
     );
-    const user = rows[0];
-    // Kiểm tra nếu tài khoản bị khóa
-    if (user.TRANG_THAI_USER == 0) {
-      return res.status(403).json({
-        EM: "Tài khoản bị khóa, không thể đăng nhập",
-        EC: 0,
-        DT: "Account is disabled",
-      });
-    }
+
     if (rows.length > 0) {
+      const user = rows[0];
+      console.log("user", user);
+      // Kiểm tra nếu tài khoản bị khóa
+      if (user.TRANG_THAI_USER == 0) {
+        return res.status(403).json({
+          EM: "Tài khoản bị khóa, không thể đăng nhập",
+          EC: 0,
+          DT: "Account is disabled",
+        });
+      }
       console.log(user);
       const token = jwt.sign(
         {
@@ -371,14 +373,6 @@ const loginUserGoogle = async (req, res) => {
         JWT_SECRET,
         { expiresIn: "5h" }
       );
-      // Kiểm tra nếu role = -1, không cho phép đăng nhập
-      if (user.role === -1) {
-        return res.status(403).json({
-          EM: "Tài khoản đã bị khóa, không thể đăng nhập",
-          EC: 403,
-          DT: "Account is disabled",
-        });
-      }
 
       return res.status(200).json({
         EM: "Login successful",
