@@ -188,10 +188,10 @@ def recommend():
     
         # Xây dựng ma trận similarity
         similarity_matrix = build_similarity_matrix(all_products)
-        
+        print(similarity_matrix)
         # Lấy gợi ý sản phẩm
         recommended_product_ids = recommend_products(product_id, all_products, similarity_matrix, top_n=10)
-        
+        print(recommended_product_ids)
         # Lấy thông tin chi tiết của các sản phẩm gợi ý
         recommended_product_details = fetch_products_by_ids(db, recommended_product_ids)
         

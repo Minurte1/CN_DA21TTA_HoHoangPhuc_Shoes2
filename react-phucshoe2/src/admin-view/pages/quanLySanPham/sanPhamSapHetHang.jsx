@@ -115,6 +115,9 @@ const ShoesSapHetHang = () => {
               <TableCell sx={{ color: currentTheme.color }}>{t.Size}</TableCell>
               <TableCell sx={{ color: currentTheme.color }}>
                 {t.color}
+              </TableCell>{" "}
+              <TableCell sx={{ color: currentTheme.color }}>
+                Số lượng còn
               </TableCell>
             </TableRow>
           </TableHead>
@@ -145,6 +148,9 @@ const ShoesSapHetHang = () => {
                 </TableCell>
                 <TableCell sx={{ color: currentTheme.color }}>
                   {product.TEN_MAU_SAC}
+                </TableCell>{" "}
+                <TableCell sx={{ color: currentTheme.color }}>
+                  {product.SOLUONG_SANPHAM_CHITIET}
                 </TableCell>
               </TableRow>
             ))}

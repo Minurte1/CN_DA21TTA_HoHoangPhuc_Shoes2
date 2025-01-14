@@ -696,17 +696,17 @@ const updateOrderStatusSuccess = async (req, res) => {
         [orderId]
       );
 
-      // Trừ số lượng sản phẩm trong bảng SAN_PHAM_CHI_TIET
-      for (let i = 0; i < orderDetails.length; i++) {
-        const { ID_SAN_PHAM_CHI_TIET, SO_LUONG_SP } = orderDetails[i];
-        // Trừ số lượng trong SAN_PHAM_CHI_TIET
-        await conn.execute(
-          `UPDATE SAN_PHAM_CHI_TIET 
-           SET SOLUONG_SANPHAM_CHITIET = SOLUONG_SANPHAM_CHITIET - ? 
-           WHERE ID_SAN_PHAM_CHI_TIET = ? `,
-          [SO_LUONG_SP, ID_SAN_PHAM_CHI_TIET]
-        );
-      }
+      // // Trừ số lượng sản phẩm trong bảng SAN_PHAM_CHI_TIET
+      // for (let i = 0; i < orderDetails.length; i++) {
+      //   const { ID_SAN_PHAM_CHI_TIET, SO_LUONG_SP } = orderDetails[i];
+      //   // Trừ số lượng trong SAN_PHAM_CHI_TIET
+      //   await conn.execute(
+      //     `UPDATE SAN_PHAM_CHI_TIET
+      //      SET SOLUONG_SANPHAM_CHITIET = SOLUONG_SANPHAM_CHITIET - ?
+      //      WHERE ID_SAN_PHAM_CHI_TIET = ? `,
+      //     [SO_LUONG_SP, ID_SAN_PHAM_CHI_TIET]
+      //   );
+      // }
 
       // Nếu tất cả các thao tác thành công, commit giao dịch
       await conn.commit();
