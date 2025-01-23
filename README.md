@@ -55,7 +55,7 @@ Cần cài đặt các công cụ sau:
 ### Installation
 1. Clone the repository 📂:
    ```bash
-   git clone https://github.com/yourusername/managing-and-optimizing-faculty-teaching-hours.git](https://github.com/Minurte1/CN_DA21TTA_HoHoangPhuc_Shoes2.git
+   git clone https://github.com/Minurte1/CN_DA21TTA_HoHoangPhuc_Shoes2.git
   
 
 2. Install backend dependencies 📂:
